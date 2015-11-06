@@ -33,8 +33,23 @@ class Request
         return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
     }
 
-    public static function getHostAddress()
+    public static function getHost()
     {
         return isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+    }
+
+    public static function getUri()
+    {
+        return isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    }
+
+    public static function getHostAddress()
+    {
+        return isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+    }
+
+    public static function getUserAgent()
+    {
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     }
 }

@@ -69,10 +69,28 @@ class BaseLb
         return Request::getClientAddress();
     }
 
-    // Get Host IP Address
+    // Get Host
+    public function getHost()
+    {
+        return Request::getHost();
+    }
+
+    // Get Request URI
+    public function getUri()
+    {
+        return Request::getUri();
+    }
+
+    // Ger Host IP Address
     public function getHostAddress()
     {
         return Request::getHostAddress();
+    }
+
+    // Get User Agent
+    public function getUserAgent()
+    {
+        return Request::getUserAgent();
     }
 
     // Get App Name
