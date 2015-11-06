@@ -50,12 +50,22 @@ class Lb extends \lb\BaseLb
     {
         if (isset(Lb::app()->config['root_dir'])) {
             $root_dir = Lb::app()->config['root_dir'];
-            $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
-            $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
-            if (is_dir($controllers_dir)) {
-                $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . $className . 'Controller.php';
-                if (file_exists($class_file_path)) {
-                    include_once($class_file_path);
+            if (strpos($className, 'app\controllers\\') === 0) {
+                $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
+                if (is_dir($controllers_dir)) {
+                    $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . str_replace('app\controllers\\', '', $className) . 'Controller.php';
+                    if (file_exists($class_file_path)) {
+                        include_once($class_file_path);
+                    }
+                }
+            }
+            if (strpos($className, 'app\models\\') === 0) {
+                $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
+                if (is_dir($models_dir)) {
+                    $class_file_path = $models_dir . DIRECTORY_SEPARATOR . str_replace('app\models\\', '', $className) . '.php';
+                    if (file_exists($class_file_path)) {
+                        include_once($class_file_path);
+                    }
                 }
             }
         }
