@@ -38,7 +38,7 @@ class Route
 
     public static function redirect($route_info)
     {
-        $controller_name = $route_info['controller'];
+        $controller_name = ucfirst($route_info['controller']);
         $action_name = $route_info['action'];
         $controller = new $controller_name();
         if (method_exists($controller, $action_name)) {
