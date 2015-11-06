@@ -9,6 +9,8 @@
 
 namespace lb;
 
+use lb\components\Request;
+
 class BaseLb
 {
     protected static $app;
@@ -56,6 +58,11 @@ class BaseLb
             }
         }
         return '';
+    }
+
+    public function getClientAddress()
+    {
+        return Request::getClientAddress();
     }
 
     // Autoloader
