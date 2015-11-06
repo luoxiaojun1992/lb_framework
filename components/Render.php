@@ -17,13 +17,13 @@ class Render
 
     public static function getViewDir()
     {
-        $root_dir = self::$root_dir ? : Lb::app()->config['root_dir'];
+        $root_dir = self::$root_dir ? : Lb::app()->getRootDir();
         return $root_dir . DIRECTORY_SEPARATOR . 'views';
     }
 
     public static function getLayoutDir()
     {
-        $root_dir = self::$root_dir ? : Lb::app()->config['root_dir'];
+        $root_dir = self::$root_dir ? : Lb::app()->getRootDir();
         return $root_dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts';
     }
 
@@ -49,8 +49,9 @@ class Render
 
     public static function output($template_name, $params, $layout_name)
     {
-        if (isset(Lb::app()->config['root_dir'])) {
-            self::$root_dir = Lb::app()->config['root_dir'];
+        $root_dir = Lb::app()->getRootDir();
+        if ($root_dir) {
+            self::$root_dir = $root_dir;
 
             $view_file_path = self::getViewPath($template_name);
             if (file_exists($view_file_path)) {

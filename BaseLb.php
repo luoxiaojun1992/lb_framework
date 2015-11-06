@@ -16,6 +16,7 @@ class BaseLb
     public $config = [];
     protected $is_single = false;
     protected $route_info = [];
+    public $root_dir = '';
 
     public function __construct($is_single = false)
     {
@@ -45,11 +46,23 @@ class BaseLb
         }
     }
 
+    public function getRootDir()
+    {
+        if ($this->root_dir && is_dir($this->root_dir)) {
+            return $this->root_dir;
+        } else {
+            if (isset(Lb::app()->config['root_dir'])) {
+                return ($this->root_dir = Lb::app()->config['root_dir']);
+            }
+        }
+        return '';
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
-        if (isset(Lb::app()->config['root_dir'])) {
-            $root_dir = Lb::app()->config['root_dir'];
+        $root_dir = Lb::app()->getRootDir();
+        if ($root_dir) {
             if (strpos($className, 'app\controllers\\') === 0) {
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
                 if (is_dir($controllers_dir)) {
