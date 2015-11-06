@@ -16,10 +16,11 @@ class BaseLb
 {
     protected static $app;
 
-    public $config = [];
+    public $config = []; // App Configuration
     protected $is_single = false;
     protected $route_info = [];
-    public $root_dir = '';
+    public $root_dir = ''; // App Root Directory
+    public $name = ''; // App Name
 
     public function __construct($is_single = false)
     {
@@ -49,6 +50,7 @@ class BaseLb
         }
     }
 
+    // Get App Root Directory
     public function getRootDir()
     {
         if ($this->root_dir && is_dir($this->root_dir)) {
@@ -61,9 +63,23 @@ class BaseLb
         return '';
     }
 
+    // Get Client IP Address
     public function getClientAddress()
     {
         return Request::getClientAddress();
+    }
+
+    // Get App Name
+    public function getName()
+    {
+        if ($this->name) {
+            return $this->name;
+        } else {
+            if (isset(Lb::app()->config['name'])) {
+                return ($this->name = Lb::app()->config['name']);
+            }
+        }
+        return '';
     }
 
     // Autoloader
