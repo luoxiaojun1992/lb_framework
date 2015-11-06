@@ -7,7 +7,7 @@
  * Lb framework base bootstrap file
  */
 
-namespace Lb;
+namespace lb;
 
 class BaseLb
 {

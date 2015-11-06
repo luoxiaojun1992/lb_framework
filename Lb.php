@@ -7,9 +7,9 @@
  * Lb framework bootstrap file
  */
 
-namespace Lb;
+namespace lb;
 
-class Lb extends \Lb\BaseLb
+class Lb extends \lb\BaseLb
 {
     public function run()
     {
