@@ -23,9 +23,12 @@ class Route
             $query_params = explode('&', $_SERVER['QUERY_STRING']);
             if ($query_params) {
                 $route_info['controller'] = array_shift($query_params);
-                foreach ($query_params as $query_param => $query_param_value) {
-                    if (array_key_exists($query_param, $route_info)) {
-                        $route_info[$query_param] = $query_param_value;
+                foreach ($query_params as $query_param) {
+                    if (strpos($query_param, '=') !== false) {
+                        list($query_param_name, $query_param_value) = explode('=', $query_param);
+                        if (array_key_exists($query_param_name, $route_info)) {
+                            $route_info[$query_param_name] = $query_param_value;
+                        }
                     }
                 }
             }
