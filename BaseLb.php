@@ -10,6 +10,7 @@
 namespace lb;
 
 use lb\components\Request;
+use lb\components\Route;
 
 class BaseLb
 {

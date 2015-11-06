@@ -4,10 +4,10 @@
  * User: luoxiaojun
  * Date: 15/11/6
  * Time: 下午1:26
- * Lb framework route file
+ * Lb framework route component file
  */
 
-namespace lb;
+namespace lb\components;
 
 class Route
 {
