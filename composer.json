@@ -1,0 +1,34 @@
+{
+  "name": "lbsoft/lb_framework",
+  "description": "Lb PHP Framework Version 1",
+  "keywords": [
+    "lb",
+    "soft",
+    "framework"
+  ],
+  "homepage": "http://www.luoxiaojun1992.biz/",
+  "type": "library",
+  "license": "Apache",
+  "authors": [
+    {
+      "name": "Xiaojun Luo",
+      "email": "luoxiaojun1992@sina.cn",
+      "homepage": "http://www.luoxiaojun1992.biz/",
+      "role": "Founder and project lead"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/yiisoft/yii2"
+  },
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "autoload": {
+    "psr-4": {"yii\\": ""}
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-master"
+    }
+  }
+}
