@@ -13,23 +13,26 @@ class Lb extends \lb\BaseLb
 {
     protected static $app;
 
-    public $config;
+    public $config = [];
     protected $is_single = false;
     protected $route_info = [];
 
     public function __construct($is_single = false)
     {
-        if ($is_single) {
-            $this->is_single = $is_single;
-        }
-
         // Init Config
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
             $this->config = include(CONFIG_FILE);
         }
 
-        // Route
-        Route::getControllerAction();
+        if ($is_single) {
+            $this->is_single = $is_single;
+        } else {
+            // Route
+            $this->route_info = Route::getInfo();
+
+            // Auto Load
+            spl_autoload_register(['self', 'autoload'], true, true);
+        }
     }
 
     // Singleton App
@@ -42,11 +45,30 @@ class Lb extends \lb\BaseLb
         }
     }
 
+    // Autoloader
+    protected static function autoload($className)
+    {
+        if (isset(Lb::app()->config['root_dir'])) {
+            $root_dir = Lb::app()->config['root_dir'];
+            $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
+            $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
+            if (is_dir($controllers_dir)) {
+                $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . $className . 'Controller.php';
+                if (file_exists($class_file_path)) {
+                    include_once($class_file_path);
+                }
+            }
+        }
+    }
+
     // Start App
     public function run()
     {
         if (!$this->is_single) {
             echo Lb::app()->config['name'];
+            if ($this->route_info['controller'] && $this->route_info['action']) {
+
+            }
         }
     }
 }

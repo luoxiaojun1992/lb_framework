@@ -11,13 +11,25 @@ namespace lb;
 
 class Route
 {
-    public static function getControllerAction()
+    public static function getInfo()
     {
+        $route_info = [
+            'controller' => '',
+            'action' => '',
+            'id' => '',
+        ];
         $request_uri = $_SERVER['REQUEST_URI'];
-        $query_string = $_SERVER['QUERY_STRING'];
-        $real_uri = str_replace($query_string, '', $request_uri);
-        var_dump($request_uri);
-        var_dump($query_string);
-        var_dump($real_uri);
+        if (strpos($request_uri, '?') !== false) {
+            $query_params = explode('&', $_SERVER['QUERY_STRING']);
+            if ($query_params) {
+                $route_info['controller'] = array_shift($query_params);
+                foreach ($query_params as $query_param => $query_param_value) {
+                    if (array_key_exists($query_param, $route_info)) {
+                        $route_info[$query_param] = $query_param_value;
+                    }
+                }
+            }
+        }
+        return $route_info;
     }
 }
