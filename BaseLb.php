@@ -87,6 +87,7 @@ class BaseLb
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
+            // Auto Load Controllers
             if (strpos($className, 'app\controllers\\') === 0) {
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
                 if (is_dir($controllers_dir)) {
@@ -96,10 +97,23 @@ class BaseLb
                     }
                 }
             }
+
+            // Auto Load Models
             if (strpos($className, 'app\models\\') === 0) {
                 $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
                 if (is_dir($models_dir)) {
                     $class_file_path = $models_dir . DIRECTORY_SEPARATOR . str_replace('app\models\\', '', $className) . '.php';
+                    if (file_exists($class_file_path)) {
+                        include_once($class_file_path);
+                    }
+                }
+            }
+
+            // Auto Load Components
+            if (strpos($className, 'app\components\\') === 0) {
+                $components_dir = $root_dir . DIRECTORY_SEPARATOR . 'components';
+                if (is_dir($components_dir)) {
+                    $class_file_path = $components_dir . DIRECTORY_SEPARATOR . str_replace('app\components\\', '', $className) . '.php';
                     if (file_exists($class_file_path)) {
                         include_once($class_file_path);
                     }
