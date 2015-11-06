@@ -65,9 +65,8 @@ class Lb extends \lb\BaseLb
     public function run()
     {
         if (!$this->is_single) {
-            echo Lb::app()->config['name'];
             if ($this->route_info['controller'] && $this->route_info['action']) {
-
+                Route::redirect($this->route_info);
             }
         }
     }

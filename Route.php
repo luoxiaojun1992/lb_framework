@@ -32,4 +32,13 @@ class Route
         }
         return $route_info;
     }
+
+    public static function redirect($route_info)
+    {
+        list($controller_name, $action_name) = $route_info;
+        $controller = new $controller_name();
+        if (method_exists($controller, $action_name)) {
+            $controller->$action_name();
+        }
+    }
 }
