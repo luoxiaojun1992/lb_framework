@@ -36,7 +36,7 @@ class BaseController
                             $content = ob_get_contents();
                             ob_end_clean();
                             include_once($layout_file_path);
-                            die();
+                            Lb::app()->stop();
                         }
                     }
                     include_once($view_file_path);

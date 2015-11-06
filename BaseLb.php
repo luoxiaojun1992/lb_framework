@@ -71,6 +71,12 @@ class BaseLb
         }
     }
 
+    // Stop App
+    public function stop()
+    {
+        die();
+    }
+
     // Start App
     public function run()
     {
