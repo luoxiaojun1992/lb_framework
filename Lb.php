@@ -11,9 +11,11 @@ namespace lb;
 
 class Lb extends \lb\BaseLb
 {
+    protected static $app;
+
     public $config;
     protected $is_single = false;
-    protected static $app;
+    protected $route_info = [];
 
     public function __construct($is_single = false)
     {
@@ -23,8 +25,11 @@ class Lb extends \lb\BaseLb
 
         // Init Config
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include_once(CONFIG_FILE);
+            $this->config = include(CONFIG_FILE);
         }
+
+        // Route
+        Route::getControllerAction();
     }
 
     // Singleton App
