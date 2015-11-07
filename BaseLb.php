@@ -35,7 +35,7 @@ class BaseLb
             $this->route_info = Route::getInfo();
 
             // Auto Load
-            spl_autoload_register(['self', 'autoload'], true, true);
+            spl_autoload_register(['self', 'autoload'], true, false);
 
             // Container Register
             // Set Configuration
