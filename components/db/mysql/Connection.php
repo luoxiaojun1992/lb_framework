@@ -24,8 +24,9 @@ class Connection
     const DB_TYPE = 'mysql';
     protected $dsn_format = '%s:host=%s;dbname=%s';
 
-    public function __construct()
+    public function __construct($containers)
     {
+        $this->containers = $containers;
         if (isset($this->containers['config'])) {
             $db_config = $this->containers['config']->get('mysql');
             if ($db_config) {
@@ -50,12 +51,12 @@ class Connection
         $this->conn = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
     }
 
-    public static function component($reset = false)
+    public static function component($containers = [], $reset = false)
     {
         if (self::$instance instanceof self) {
-            return $reset ? (self::$instance = new self()) : self::$instance;
+            return $reset ? (self::$instance = new self($containers)) : self::$instance;
         } else {
-            return (self::$instance = new self());
+            return (self::$instance = new self($containers));
         }
     }
 }

@@ -54,9 +54,8 @@ class BaseLb
             // Inject Config Container
             Lb::app()->containers['config'] = $config_container;
             // Connect Mysql
-            $mysql_connection = Connection::component();
-            $mysql_connection->containers['config'] = $config_container;
-            Connection::component(true);
+            $containers['config'] = $config_container;
+            Connection::component($containers);
         }
     }
 
