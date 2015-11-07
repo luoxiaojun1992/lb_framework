@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\error_handlers\Level;
 use lb\components\Request;
 use lb\components\Route;
 use lb\components\containers\Config;
@@ -151,10 +152,8 @@ class BaseLb
     // Init
     public function init()
     {
-        if (defined('LB_ENV') && strtolower(LB_ENV) == 'production') {
-            //报告运行时错误
-            error_reporting(E_ERROR | E_WARNING | E_PARSE);
-        }
+        // Set Error Level
+        Level::set();
     }
 
     // Start App
