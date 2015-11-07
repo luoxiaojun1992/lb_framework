@@ -17,6 +17,10 @@ class WebController extends BaseController
 
     protected function render($template_name, $params, $return = false)
     {
-        Render::output($template_name, $params, $this->layout, $return);
+        if ($return) {
+            return Render::output($template_name, $params, $this->layout, $return);
+        } else {
+            Render::output($template_name, $params, $this->layout, $return);
+        }
     }
 }
