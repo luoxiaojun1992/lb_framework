@@ -26,6 +26,9 @@ class BaseLb
         if ($is_single) {
             $this->is_single = $is_single;
         } else {
+            // Init
+            $this->init();
+
             // Init Config
             if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
                 $this->config = include(CONFIG_FILE);
@@ -143,6 +146,15 @@ class BaseLb
     public function stop()
     {
         die();
+    }
+
+    // Init
+    public function init()
+    {
+        if (defined('LB_ENV') && strtolower(LB_ENV) == 'production') {
+            //报告运行时错误
+            error_reporting(E_ERROR | E_WARNING | E_PARSE);
+        }
     }
 
     // Start App
