@@ -11,6 +11,7 @@ namespace lb;
 
 use lb\components\Request;
 use lb\components\Route;
+use lb\components\containers\Config;
 
 class BaseLb
 {
@@ -19,24 +20,31 @@ class BaseLb
     public $config = []; // App Configuration
     protected $is_single = false;
     protected $route_info = [];
-    public $root_dir = ''; // App Root Directory
-    public $name = ''; // App Name
 
     public function __construct($is_single = false)
     {
-        // Init Config
-        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include(CONFIG_FILE);
-        }
-
         if ($is_single) {
             $this->is_single = $is_single;
         } else {
+            // Init Config
+            if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
+                $this->config = include(CONFIG_FILE);
+            }
+
             // Route
             $this->route_info = Route::getInfo();
 
             // Auto Load
             spl_autoload_register(['self', 'autoload'], true, true);
+
+            // Container Register
+            // Set Configuration
+            $config_container = Config::component();
+            foreach ($this->config as $config_name => $config_content)
+            {
+                $config_container->set($config_name, $config_content);
+            }
+            $this->config = [];
         }
     }
 
@@ -53,14 +61,7 @@ class BaseLb
     // Get App Root Directory
     public function getRootDir()
     {
-        if ($this->root_dir && is_dir($this->root_dir)) {
-            return $this->root_dir;
-        } else {
-            if (isset(Lb::app()->config['root_dir'])) {
-                return ($this->root_dir = Lb::app()->config['root_dir']);
-            }
-        }
-        return '';
+        return Config::component()->get('root_dir');
     }
 
     // Get Client IP Address
@@ -96,14 +97,7 @@ class BaseLb
     // Get App Name
     public function getName()
     {
-        if ($this->name) {
-            return $this->name;
-        } else {
-            if (isset(Lb::app()->config['name'])) {
-                return ($this->name = Lb::app()->config['name']);
-            }
-        }
-        return '';
+        return Config::component()->get('name');
     }
 
     // Autoloader
