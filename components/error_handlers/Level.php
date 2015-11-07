@@ -22,6 +22,8 @@ class Level
                 error_reporting(E_ERROR | E_WARNING | E_PARSE);
                 break;
             case 'dev':
+                //报告所有错误
+                error_reporting(E_ALL);
                 break;
             default:
                 break;

@@ -21,6 +21,7 @@ class BaseLb
     public $config = []; // App Configuration
     protected $is_single = false;
     protected $route_info = [];
+    public $containers = [];
 
     public function __construct($is_single = false)
     {
@@ -48,6 +49,8 @@ class BaseLb
                 $config_container->set($config_name, $config_content);
             }
             $this->config = [];
+            // Inject Config Container
+            Lb::app()->containers['config'] = $config_container;
         }
     }
 
@@ -64,7 +67,10 @@ class BaseLb
     // Get App Root Directory
     public function getRootDir()
     {
-        return Config::component()->get('root_dir');
+        if (isset($this->containers['config'])) {
+            return $this->containers['config']->get('root_dir');
+        }
+        return '';
     }
 
     // Get Client IP Address
@@ -100,7 +106,10 @@ class BaseLb
     // Get App Name
     public function getName()
     {
-        return Config::component()->get('name');
+        if (isset($this->containers['config'])) {
+            return $this->containers['config']->get('name');
+        }
+        return '';
     }
 
     // Autoloader
