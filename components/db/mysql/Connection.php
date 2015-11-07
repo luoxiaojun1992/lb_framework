@@ -11,7 +11,7 @@ namespace lb\components\db\mysql;
 
 class Connection
 {
-    protected $_conn = false;
+    public $conn = false;
     protected $_db = '';
     protected $_host = '';
     protected $_username = '';
@@ -47,7 +47,7 @@ class Connection
 
     protected function getConnection()
     {
-        $this->_conn = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+        $this->conn = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
     }
 
     public static function component($reset = false)
