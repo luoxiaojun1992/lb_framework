@@ -117,6 +117,17 @@ class BaseLb
         return '';
     }
 
+    // Get Db Connection
+    public function getDb($db_type)
+    {
+        switch ($db_type) {
+            case 'mysql':
+                return Connection::component()->conn;
+                break;
+        }
+        return false;
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
