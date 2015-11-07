@@ -15,8 +15,8 @@ class WebController extends BaseController
 {
     protected $layout = 'default';
 
-    protected function render($template_name, $params)
+    protected function render($template_name, $params, $return = false)
     {
-        Render::output($template_name, $params, $this->layout);
+        Render::output($template_name, $params, $this->layout, $return);
     }
 }

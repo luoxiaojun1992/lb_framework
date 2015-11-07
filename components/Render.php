@@ -47,7 +47,7 @@ class Render
         return $layout_file_path;
     }
 
-    public static function output($template_name, $params, $layout_name)
+    public static function output($template_name, $params, $layout_name, $return = false)
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
@@ -64,10 +64,27 @@ class Render
                     include_once($view_file_path);
                     $content = ob_get_contents();
                     ob_end_clean();
-                    include_once($layout_file_path);
+                    if ($return) {
+                        ob_start();
+                        include_once($layout_file_path);
+                        $return_content = ob_get_contents();
+                        ob_end_clean();
+                        return $return_content;
+                    } else {
+                        include_once($layout_file_path);
+                        Lb::app()->stop();
+                    }
+                }
+                if ($return) {
+                    ob_start();
+                    include_once($view_file_path);
+                    $return_content = ob_get_contents();
+                    ob_end_clean();
+                    return $return_content;
+                } else {
+                    include_once($view_file_path);
                     Lb::app()->stop();
                 }
-                include_once($view_file_path);
             }
         }
     }
