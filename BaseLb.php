@@ -40,8 +40,7 @@ class BaseLb
             // Container Register
             // Set Configuration
             $config_container = Config::component();
-            foreach ($this->config as $config_name => $config_content)
-            {
+            foreach ($this->config as $config_name => $config_content) {
                 $config_container->set($config_name, $config_content);
             }
             $this->config = [];
