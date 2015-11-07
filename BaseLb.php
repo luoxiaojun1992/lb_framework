@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\db\mysql\Connection;
 use lb\components\error_handlers\Level;
 use lb\components\Request;
 use lb\components\Route;
@@ -51,6 +52,8 @@ class BaseLb
             $this->config = [];
             // Inject Config Container
             Lb::app()->containers['config'] = $config_container;
+            // Connect Mysql
+            Connection::component()->containers['config'] = $config_container;
         }
     }
 
