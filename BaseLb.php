@@ -32,31 +32,6 @@ class BaseLb
         } else {
             // Init
             $this->init();
-
-            // Init Config
-            if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-                $this->config = include(CONFIG_FILE);
-            }
-
-            // Container Register
-            // Register Configuration
-            $config_container = Config::component();
-            foreach ($this->config as $config_name => $config_content) {
-                $config_container->set($config_name, $config_content);
-            }
-            $this->config = [];
-
-            // Inject Config Container
-            Lb::app()->containers['config'] = $config_container;
-            // Connect Mysql
-            $containers['config'] = $config_container;
-            Connection::component($containers);
-
-            // Route
-            $this->route_info = Route::getInfo();
-
-            // Auto Load
-            spl_autoload_register(['self', 'autoload'], true, false);
         }
     }
 
@@ -191,6 +166,31 @@ class BaseLb
     // Init
     public function init()
     {
+        // Init Config
+        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
+            $this->config = include(CONFIG_FILE);
+        }
+
+        // Container Register
+        // Register Configuration
+        $config_container = Config::component();
+        foreach ($this->config as $config_name => $config_content) {
+            $config_container->set($config_name, $config_content);
+        }
+        $this->config = [];
+
+        // Inject Config Container
+        Lb::app()->containers['config'] = $config_container;
+        // Connect Mysql
+        $containers['config'] = $config_container;
+        Connection::component($containers);
+
+        // Route
+        $this->route_info = Route::getInfo();
+
+        // Auto Load
+        spl_autoload_register(['self', 'autoload'], true, false);
+
         // Set Error Level
         Level::set();
     }
