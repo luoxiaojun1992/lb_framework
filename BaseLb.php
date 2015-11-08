@@ -118,6 +118,11 @@ class BaseLb
         return UrlManager::createAbsoluteUrl($uri, $query_params);
     }
 
+    public function getParam($param_name)
+    {
+        
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
