@@ -120,6 +120,11 @@ class BaseLb
 
     public function getParam($param_name)
     {
+
+    }
+
+    public function getCsrfToken()
+    {
         
     }
 
