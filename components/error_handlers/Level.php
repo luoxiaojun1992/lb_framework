@@ -26,7 +26,8 @@ class Level
                 error_reporting(E_ALL);
                 break;
             default:
-                break;
+                //报告所有错误
+                error_reporting(E_ALL);
         }
     }
 }

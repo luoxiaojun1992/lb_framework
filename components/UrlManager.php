@@ -23,7 +23,11 @@ class UrlManager
         if (strpos($uri, '?') !== false) {
             $tmpArr = [];
             foreach ($query_params as $query_param_name => $query_param_value) {
-                $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                if (is_int($query_param_name)) {
+                    $tmpArr[] = $query_param_value;
+                } else {
+                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                }
             }
             if ($tmpArr) {
                 $uri .= ('&' . implode('&', $tmpArr));
@@ -31,7 +35,11 @@ class UrlManager
         } else {
             $tmpArr = [];
             foreach ($query_params as $query_param_name => $query_param_value) {
-                $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                if (is_int($query_param_name)) {
+                    $tmpArr[] = $query_param_value;
+                } else {
+                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                }
             }
             if ($tmpArr) {
                 $uri .= ('?' . implode('&', $tmpArr));

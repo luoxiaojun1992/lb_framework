@@ -125,8 +125,9 @@ class BaseLb
             case 'mysql':
                 return Connection::component()->conn;
                 break;
+            default:
+                return false;
         }
-        return false;
     }
 
     // Request Redirect
