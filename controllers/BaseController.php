@@ -11,5 +11,5 @@ namespace lb\controllers;
 
 class BaseController
 {
-
+    public $controller_id = '';
 }

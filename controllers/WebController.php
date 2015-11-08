@@ -33,12 +33,10 @@ class WebController extends BaseController
             if ($path) {
                 $action_id = array_shift($path);
                 $params = $path;
-                $controller_id = strtolower(get_class($this));
-                $forward_url = Lb::app()->createAbsoluteUrl("/index.php?$controller_id&action=$action_id", $params);
+                $forward_url = Lb::app()->createAbsoluteUrl("/index.php?{$this->controller_id}&action={$action_id}", $params);
                 Lb::app()->redirect($forward_url, $replace, $http_response_code);
-            } else {
-                Lb::app()->stop();
             }
+            Lb::app()->stop();
         }
     }
 }

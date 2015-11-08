@@ -40,9 +40,11 @@ class Route
 
     public static function redirect($route_info)
     {
-        $controller_name = 'app\controllers\\' . ucfirst($route_info['controller']);
+        $controller_id = $route_info['controller'];
+        $controller_name = 'app\controllers\\' . ucfirst($controller_id);
         $action_name = $route_info['action'];
         $controller = new $controller_name();
+        $controller->controller_id = $controller_id;
         if (method_exists($controller, $action_name)) {
             $controller->$action_name();
         }
