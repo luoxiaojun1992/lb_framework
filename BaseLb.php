@@ -193,6 +193,9 @@ class BaseLb
 
         // Set Error Level
         Level::set();
+
+        // Input Filter
+        Security::inputFilter();
     }
 
     // Start App
