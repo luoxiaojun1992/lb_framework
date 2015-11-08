@@ -38,12 +38,6 @@ class BaseLb
                 $this->config = include(CONFIG_FILE);
             }
 
-            // Route
-            $this->route_info = Route::getInfo();
-
-            // Auto Load
-            spl_autoload_register(['self', 'autoload'], true, false);
-
             // Container Register
             // Register Configuration
             $config_container = Config::component();
@@ -57,6 +51,12 @@ class BaseLb
             // Connect Mysql
             $containers['config'] = $config_container;
             Connection::component($containers);
+
+            // Route
+            $this->route_info = Route::getInfo();
+
+            // Auto Load
+            spl_autoload_register(['self', 'autoload'], true, false);
         }
     }
 
@@ -133,6 +133,12 @@ class BaseLb
     public function redirect($path, $replace = true, $http_response_code = null)
     {
         UrlManager::redirect($path, $replace, $http_response_code);
+    }
+
+    // Create Absolute Url
+    public function createAbsoluteUrl($uri, $query_params = [])
+    {
+        return UrlManager::createAbsoluteUrl($uri, $query_params);
     }
 
     // Autoloader

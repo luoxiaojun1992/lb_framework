@@ -9,6 +9,8 @@
 
 namespace lb\components;
 
+use lb\Lb;
+
 class Route
 {
     public static function getInfo()
@@ -18,7 +20,7 @@ class Route
             'action' => '',
             'id' => '',
         ];
-        $request_uri = $_SERVER['REQUEST_URI'];
+        $request_uri = Lb::app()->getUri();
         if (strpos($request_uri, '?') !== false) {
             $query_params = explode('&', $_SERVER['QUERY_STRING']);
             if ($query_params) {
