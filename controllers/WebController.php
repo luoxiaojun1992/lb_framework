@@ -9,6 +9,7 @@
 
 namespace lb\controllers;
 
+use lb\Lb;
 use lb\components\Render;
 
 class WebController extends BaseController
@@ -21,6 +22,15 @@ class WebController extends BaseController
             return Render::output($template_name, $params, $this->layout, $return);
         } else {
             Render::output($template_name, $params, $this->layout, $return);
+        }
+    }
+
+    protected function redirect($path, $replace = true, $http_response_code = null)
+    {
+        if (!is_array($path)) {
+            Lb::app()->redirect($path, $replace, $http_response_code);
+        } else {
+
         }
     }
 }
