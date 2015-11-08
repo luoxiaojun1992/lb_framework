@@ -14,6 +14,7 @@ use lb\components\error_handlers\Level;
 use lb\components\Request;
 use lb\components\Route;
 use lb\components\containers\Config;
+use lb\components\UrlManager;
 
 class BaseLb
 {
@@ -126,6 +127,12 @@ class BaseLb
                 break;
         }
         return false;
+    }
+
+    // Request Redirect
+    public function redirect($path, $replace = true, $http_response_code = null)
+    {
+        UrlManager::redirect($path, $replace, $http_response_code);
     }
 
     // Autoloader
