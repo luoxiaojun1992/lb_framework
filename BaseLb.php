@@ -15,6 +15,7 @@ use lb\components\Request;
 use lb\components\Route;
 use lb\components\containers\Config;
 use lb\components\UrlManager;
+use lb\components\Security;
 
 class BaseLb
 {
@@ -204,6 +205,9 @@ class BaseLb
         if (!$this->is_single) {
             if ($this->route_info['controller'] && $this->route_info['action']) {
                 Route::redirect($this->route_info);
+            } else {
+                $this->route_info['controller'] = 'index';
+                $this->route_info['action'] = 'index';
             }
         }
     }

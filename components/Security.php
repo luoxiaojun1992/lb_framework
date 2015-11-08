@@ -7,7 +7,7 @@
  * Lb framework security component file
  */
 
-namespace lb;
+namespace lb\components;
 
 class Security
 {
