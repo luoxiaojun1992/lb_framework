@@ -203,12 +203,11 @@ class BaseLb
     public function run()
     {
         if (!$this->is_single) {
-            if ($this->route_info['controller'] && $this->route_info['action']) {
-                Route::redirect($this->route_info);
-            } else {
+            if (!$this->route_info['controller'] || !$this->route_info['action']) {
                 $this->route_info['controller'] = 'index';
                 $this->route_info['action'] = 'index';
             }
+            Route::redirect($this->route_info);
         }
     }
 }
