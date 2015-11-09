@@ -120,12 +120,12 @@ class BaseLb
 
     public function getParam($param_name)
     {
-
+        return $_REQUEST[$param_name];
     }
 
     public function getCsrfToken()
     {
-        
+        return Security::generateCsrfToken();
     }
 
     // Autoloader

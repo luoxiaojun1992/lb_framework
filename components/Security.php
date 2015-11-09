@@ -23,4 +23,9 @@ class Security
         $input_value = addslashes($input_value);
         return $input_value;
     }
+
+    public static function generateCsrfToken()
+    {
+        return md5(uniqid(rand(), true));
+    }
 }
