@@ -46,7 +46,20 @@ class Route
         $controller = new $controller_name();
         $controller->controller_id = $controller_id;
         if (method_exists($controller, $action_name)) {
-            $controller->$action_name();
+            $method = new \ReflectionMethod($controller_name, $action_name);
+            $params = $method->getParameters();
+            $param_values = [];
+            foreach ($params as $param) {
+                $param_name = $param->getName();
+                if (array_key_exists($param_name, $_REQUEST)) {
+                    $param_values[] = $_REQUEST[$param_name];
+                }
+            }
+            if ($param_values) {
+                $method->invokeArgs($controller, $param_values);
+            } else {
+                $controller->$action_name();
+            }
         }
     }
 }
