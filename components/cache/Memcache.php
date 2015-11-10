@@ -47,11 +47,11 @@ class Memcache
 
     public function get($key)
     {
-
+        return $this->conn->get($key);
     }
 
-    public function set($key, $value)
+    public function set($key, $value, $expiration = null)
     {
-
+        $this->conn->set($key, $value, $expiration);
     }
 }
