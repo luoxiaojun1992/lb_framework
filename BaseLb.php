@@ -149,6 +149,18 @@ class BaseLb
         return Request::getRequestMethod();
     }
 
+    // Memcache Get
+    public function memcacheGet($key)
+    {
+        return Memcache::component()->get($key);
+    }
+
+    // Memcache Set
+    public function memcacheSet($key, $value, $expiration = null)
+    {
+        Memcache::component()->set($key, $value, $expiration);
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
