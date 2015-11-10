@@ -130,6 +130,24 @@ class BaseLb
         return Security::generateCsrfToken();
     }
 
+    // Get Session Value
+    public function getSession($session_key)
+    {
+        return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+    }
+
+    // Set Session Value
+    public function setSession($session_key, $session_value)
+    {
+        $_SESSION[$session_key] = $session_value;
+    }
+
+    // Get Request Method
+    public function getRequestMethod()
+    {
+        return Request::getRequestMethod();
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
@@ -192,23 +210,11 @@ class BaseLb
         }
         $this->config = [];
 
-        // Csrf Token Validation
-        session_start();
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = Lb::app()->getCsrfToken();
-            $config_container->set('csrf_token', $_SESSION['csrf_token']);
-        } else {
-            $config_container->set('csrf_token', $_SESSION['csrf_token']);
-            $meta_tags = get_meta_tags('http://' . Lb::app()->getHost() . '/' . Lb::app()->getUri());
-            if (isset($meta_tags['csrf_token'])) {
-                if ($_SESSION['csrf_token'] != $meta_tags['csrf_token']) {
-                    Lb::app()->stop();
-                }
-            }
-        }
-
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
+
+        // Start Session
+        session_start();
 
         // Connect Mysql
         $containers['config'] = $config_container;
@@ -225,6 +231,9 @@ class BaseLb
 
         // Input Filter
         Security::inputFilter();
+
+        // Csrf Token Validation
+        Security::validCsrfToken();
     }
 
     // Start App
