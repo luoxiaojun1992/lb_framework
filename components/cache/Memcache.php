@@ -52,6 +52,6 @@ class Memcache
 
     public function set($key, $value, $expiration = null)
     {
-        $this->conn->set($key, $value, $expiration);
+        $this->conn->add($key, $value, $expiration);
     }
 }
