@@ -30,11 +30,11 @@ class Connection
         if (isset($this->containers['config'])) {
             $db_config = $this->containers['config']->get('mysql');
             if ($db_config) {
-                $this->_db = $db_config['dbname'];
-                $this->_host = $db_config['host'];
-                $this->_username = $db_config['username'];
-                $this->_password = $db_config['password'];
-                $this->_options = $db_config['options'];
+                $this->_db = isset($db_config['dbname']) ? $db_config['dbname'] : '';
+                $this->_host = isset($db_config['host']) ? $db_config['host'] : '';
+                $this->_username = isset($db_config['username']) ? $db_config['username'] : '';
+                $this->_password = isset($db_config['password']) ? $db_config['password'] : '';
+                $this->_options = isset($db_config['options']) ? $db_config['options'] : [];
                 $this->getDsn();
                 $this->getConnection();
             }

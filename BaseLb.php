@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\cache\Memcache;
 use lb\components\db\mysql\Connection;
 use lb\components\error_handlers\Level;
 use lb\components\Request;
@@ -219,6 +220,9 @@ class BaseLb
         // Connect Mysql
         $containers['config'] = $config_container;
         Connection::component($containers);
+
+        // Connect Memcache
+        Memcache::component($containers);
 
         // Route
         $this->route_info = Route::getInfo();
