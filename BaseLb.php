@@ -202,8 +202,11 @@ class BaseLb
     }
 
     // Stop App
-    public function stop()
+    public function stop($content = '')
     {
+        if ($content) {
+            echo $content;
+        }
         die();
     }
 
