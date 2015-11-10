@@ -12,4 +12,14 @@ namespace lb\controllers;
 class BaseController
 {
     public $controller_id = '';
+
+    public function __construct()
+    {
+        $this->beforeAction();
+    }
+
+    protected function beforeAction()
+    {
+
+    }
 }

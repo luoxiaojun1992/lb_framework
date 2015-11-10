@@ -16,8 +16,19 @@ class WebController extends BaseController
 {
     protected $layout = 'default';
 
+    protected function beforeRender()
+    {
+
+    }
+
+    protected function beforeRedirect()
+    {
+
+    }
+
     protected function render($template_name, $params, $return = false)
     {
+        $this->beforeRender();
         if ($return) {
             return Render::output($template_name, $params, $this->layout, $return);
         } else {
@@ -27,6 +38,7 @@ class WebController extends BaseController
 
     protected function redirect($path, $replace = true, $http_response_code = null)
     {
+        $this->beforeRedirect();
         if (!is_array($path)) {
             Lb::app()->redirect($path, $replace, $http_response_code);
         } else {
