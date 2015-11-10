@@ -54,10 +54,9 @@ class Route
                 if (array_key_exists($param_name, $_REQUEST)) {
                     $param_values[] = $_REQUEST[$param_name];
                 } else {
-                    $param_default_value = $param->getDefaultValue();
-                    if ($param_default_value) {
-                        $param_values[] = $param_default_value;
-                    } else {
+                    try {
+                        $param_values[] = $param->getDefaultValue();
+                    } catch (\Exception $e) {
                         $param_values[] = null;
                     }
                 }
