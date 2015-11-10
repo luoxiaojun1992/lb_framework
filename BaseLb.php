@@ -118,11 +118,13 @@ class BaseLb
         return UrlManager::createAbsoluteUrl($uri, $query_params);
     }
 
+    // Get Http Request Param Value
     public function getParam($param_name)
     {
         return $_REQUEST[$param_name];
     }
 
+    // Get Csrf Token
     public function getCsrfToken()
     {
         return Security::generateCsrfToken();
@@ -190,8 +192,24 @@ class BaseLb
         }
         $this->config = [];
 
+        // Csrf Token Validation
+        session_start();
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = Lb::app()->getCsrfToken();
+            $config_container->set('csrf_token', $_SESSION['csrf_token']);
+        } else {
+            $config_container->set('csrf_token', $_SESSION['csrf_token']);
+            $meta_tags = get_meta_tags('http://' . Lb::app()->getHost() . '/' . Lb::app()->getUri());
+            if (isset($meta_tags['csrf_token'])) {
+                if ($_SESSION['csrf_token'] != $meta_tags['csrf_token']) {
+                    Lb::app()->stop();
+                }
+            }
+        }
+
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
+
         // Connect Mysql
         $containers['config'] = $config_container;
         Connection::component($containers);
