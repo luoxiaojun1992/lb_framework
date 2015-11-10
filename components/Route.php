@@ -53,6 +53,13 @@ class Route
                 $param_name = $param->getName();
                 if (array_key_exists($param_name, $_REQUEST)) {
                     $param_values[] = $_REQUEST[$param_name];
+                } else {
+                    $param_default_value = $param->getDefaultValue();
+                    if ($param_default_value) {
+                        $param_values[] = $param_default_value;
+                    } else {
+                        $param_values[] = null;
+                    }
                 }
             }
             if ($param_values) {
