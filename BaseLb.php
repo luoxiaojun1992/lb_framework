@@ -11,6 +11,7 @@ namespace lb;
 
 use lb\components\cache\Memcache;
 use lb\components\db\mysql\Connection;
+use lb\components\Environment;
 use lb\components\error_handlers\Level;
 use lb\components\Request;
 use lb\components\Route;
@@ -168,6 +169,12 @@ class BaseLb
         if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
             include_once($path);
         }
+    }
+
+    // Get environment variable
+    public function getEnv($env_name)
+    {
+        return Environment::getValue($env_name);
     }
 
     // Autoloader
