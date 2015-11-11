@@ -84,15 +84,37 @@ class Dao
 
     public function find()
     {
+        $result = [];
+        $query_result = $this->query();
+        if ($query_result) {
+            $result = $query_result->fetch();
+        }
+        return $result;
+    }
+
+    public function findAll()
+    {
+        $result = [];
+        $query_result = $this->query();
+        if ($query_result) {
+            $result = $query_result->fetchAll();
+        }
+        return $result;
+    }
+
+    protected function query()
+    {
+        $result = false;
         if ($this->is_query) {
             $query_sql_statement = $this->createStatement();
             if ($query_sql_statement) {
                 $conn = Connection::component()->conn;
                 if ($conn) {
-                    
+                    $result = $conn->query($query_sql_statement);
                 }
             }
         }
+        return $result;
     }
 
     protected function createStatement()
