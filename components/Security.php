@@ -13,6 +13,10 @@ use lb\Lb;
 
 class Security
 {
+    protected static $getfilter = "'|(and|or)\\b.+?(>|<|=|in|like)|\\/\\*.+?\\*\\/|<\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)";
+    protected static $postfilter = "\\b(and|or)\\b.{1,6}?(=|>|<|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|<\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)";
+    protected static $cookiefilter = "\\b(and|or)\\b.{1,6}?(=|>|<|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|<\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)";
+
     public static function inputFilter()
     {
         foreach ($_REQUEST as $request_name => $request_value) {
@@ -22,9 +26,27 @@ class Security
 
     protected static function getFilteredInput($input_value)
     {
-        $input_value = trim($input_value);
-        $input_value = strip_tags($input_value);
-        $input_value = addslashes($input_value);
+        if (!is_array($input_value)) {
+            $input_value = trim($input_value);
+            $input_value = strip_tags($input_value);
+            $input_value = addslashes($input_value);
+        }
+        $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
+        if (property_exists('self', $filter_name)) {
+            $filter = self::$$filter_name;
+            $input_value = self::sqlFilter($input_value, $filter);
+        }
+        return $input_value;
+    }
+
+    public static function sqlFilter($input_value, $filter){
+        $tmp_value = $input_value;
+        if(is_array($tmp_value)) {
+            $tmp_value = implode('', $tmp_value);
+        }
+        if (preg_match("/".$filter."/is", $tmp_value) == true){
+            $input_value = preg_replace("/".$filter."/is", '', $tmp_value);
+        }
         return $input_value;
     }
 
