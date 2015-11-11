@@ -49,40 +49,51 @@ class Dao
         $this->is_query = true;
         if (is_array($fields) && $fields) {
             $this->_fields = $fields;
+            return self::$instance;
         }
+        return false;
     }
 
     public function from($table)
     {
         $this->_table = $table;
+        return self::$instance;
     }
 
     public function where($conditions)
     {
         if ($this->_table && is_array($conditions) && $conditions) {
             $this->_conditions = $conditions;
+            return self::$instance;
         }
+        return false;
     }
 
     public function order($orders)
     {
         if ($this->_table && is_array($orders) && $orders) {
             $this->_orders = $orders;
+            return self::$instance;
         }
+        return false;
     }
 
     public function limit($limit)
     {
         if ($this->_table && $limit) {
             $this->_limit = $limit;
+            return self::$instance;
         }
+        return false;
     }
 
     public function group($group_fields)
     {
         if ($this->_table && is_array($group_fields) && $group_fields) {
             $this->_group_fields = $group_fields;
+            return self::$instance;
         }
+        return false;
     }
 
     public function find()
