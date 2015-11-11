@@ -23,6 +23,7 @@ class Security
     protected static function getFilteredInput($input_value)
     {
         $input_value = trim($input_value);
+        $input_value = strip_tags($input_value);
         $input_value = addslashes($input_value);
         return $input_value;
     }
