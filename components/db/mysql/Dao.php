@@ -10,6 +10,7 @@
 namespace lb\components\db\mysql;
 
 use lb\components\helpers\ArrayHelper;
+use lb\components\Security;
 
 class Dao
 {
@@ -112,7 +113,7 @@ class Dao
             if ($query_sql_statement) {
                 $conn = Connection::component()->conn;
                 if ($conn) {
-                    $result = $conn->query($query_sql_statement);
+                    $result = $conn->query(Security::sqlFilter($query_sql_statement));
                 }
             }
         }

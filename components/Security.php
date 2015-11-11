@@ -29,17 +29,16 @@ class Security
         if (!is_array($input_value)) {
             $input_value = trim($input_value);
             $input_value = strip_tags($input_value);
-            $input_value = addslashes($input_value);
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
         if (property_exists('self', $filter_name)) {
             $filter = self::$$filter_name;
-            $input_value = self::sqlFilter($input_value, $filter);
+            $input_value = self::filter($input_value, $filter);
         }
         return $input_value;
     }
 
-    public static function sqlFilter($input_value, $filter){
+    protected static function filter($input_value, $filter){
         $tmp_value = $input_value;
         if(is_array($tmp_value)) {
             $tmp_value = implode('', $tmp_value);
@@ -69,5 +68,10 @@ class Security
         } else {
             Lb::app()->setSession('csrf_token', Lb::app()->getCsrfToken());
         }
+    }
+
+    public static function sqlFilter($sql_statement)
+    {
+       return addslashes($sql_statement);
     }
 }
