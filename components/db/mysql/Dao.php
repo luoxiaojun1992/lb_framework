@@ -42,6 +42,8 @@ class Dao
 
     public function select($fields)
     {
+        $this->is_query = true;
+        $this->is_modify = false;
         if (is_array($fields) && $fields) {
             $this->_fields = $fields;
         }
@@ -49,8 +51,6 @@ class Dao
 
     public function from($table)
     {
-        $this->is_query = true;
-        $this->is_modify = false;
         $this->_table = $table;
     }
 
