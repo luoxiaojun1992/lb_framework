@@ -24,6 +24,15 @@ class JsonHelper
         return $json;
     }
 
+    public static function decode($json)
+    {
+        $result = [$json];
+        if (self::is_json($json)) {
+            $result = json_decode($json, true);
+        }
+        return $result;
+    }
+
     public static function is_json($string) {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
