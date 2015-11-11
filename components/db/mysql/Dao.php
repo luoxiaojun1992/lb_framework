@@ -9,6 +9,8 @@
 
 namespace lb\components\db\mysql;
 
+use lb\components\helpers\ArrayHelper;
+
 class Dao
 {
     protected static $instance = false;
@@ -26,6 +28,7 @@ class Dao
 
     // Create
     const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
+    const MULTI_INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES %s";
 
     // Read
     const SELECT_FROM_SQL_TPL = "SELECT %s FROM %s";
@@ -134,6 +137,37 @@ class Dao
             }
             if ($filtered_values) {
                 $insert_sql_statement = sprintf(self::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
+                $conn = Connection::component()->conn;
+                if ($conn) {
+                    $statement = $conn->prepare($insert_sql_statement);
+                    $result = $statement->execute();
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function insertAll($table, $fields, $multi_values)
+    {
+        $result = false;
+        if ($table && is_array($fields) && $fields && is_array($multi_values) && ArrayHelper::is_multi_array($multi_values)) {
+            $this->is_query = false;
+            $filtered_multi_values = [];
+            foreach ($multi_values as $values) {
+                $filtered_values = [];
+                foreach ($values as $value) {
+                    if (is_string($value)) {
+                        $filtered_values[] = '"' . $value . '"';
+                    } else {
+                        $filtered_values[] = $value;
+                    }
+                }
+                if ($filtered_values) {
+                    $filtered_multi_values[] = '(' . implode(',', $filtered_values) . ')';
+                }
+            }
+            if ($filtered_multi_values) {
+                $insert_sql_statement = sprintf(self::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
                 $conn = Connection::component()->conn;
                 if ($conn) {
                     $statement = $conn->prepare($insert_sql_statement);
