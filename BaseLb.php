@@ -17,6 +17,7 @@ use lb\components\Route;
 use lb\components\containers\Config;
 use lb\components\UrlManager;
 use lb\components\Security;
+use lb\components\helpers\FileHelper;
 
 class BaseLb
 {
@@ -159,6 +160,14 @@ class BaseLb
     public function memcacheSet($key, $value, $expiration = null)
     {
         Memcache::component()->set($key, $value, $expiration);
+    }
+
+    // Import PHP File
+    public function import($path)
+    {
+        if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
+            include_once($path);
+        }
     }
 
     // Autoloader
