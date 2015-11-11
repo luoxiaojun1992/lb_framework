@@ -25,6 +25,10 @@ class Dao
     protected $is_query = false;
     protected $is_modify = false;
 
+    // Create
+    const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
+
+    // Read
     const SELECT_FROM_SQL_TPL = "SELECT %s FROM %s";
     const WHERE_SQL_TPL = "WHERE %s";
     const ORDER_SQL_TPL = "ORDER BY %s";
