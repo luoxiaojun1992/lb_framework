@@ -16,15 +16,12 @@ class Dao
     protected static $instance = false;
     protected $_table = '';
     protected $_fields = [];
-
     protected $_conditions = [];
+    protected $is_query = false;
+
     protected $_orders = [];
     protected $_limit = '';
     protected $_group_fields = [];
-
-    protected $_statement = '';
-
-    protected $is_query = false;
 
     // Create
     const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
