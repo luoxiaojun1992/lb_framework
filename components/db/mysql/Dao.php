@@ -23,7 +23,6 @@ class Dao
     protected $_statement = '';
 
     protected $is_query = false;
-    protected $is_modify = false;
 
     // Create
     const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
@@ -47,7 +46,6 @@ class Dao
     public function select($fields)
     {
         $this->is_query = true;
-        $this->is_modify = false;
         if (is_array($fields) && $fields) {
             $this->_fields = $fields;
         }
@@ -110,7 +108,7 @@ class Dao
     {
         $result = false;
         if ($this->is_query) {
-            $query_sql_statement = $this->createStatement();
+            $query_sql_statement = $this->createQueryStatement();
             if ($query_sql_statement) {
                 $conn = Connection::component()->conn;
                 if ($conn) {
@@ -121,10 +119,34 @@ class Dao
         return $result;
     }
 
-    protected function createStatement()
+    public function insertOne($table, $fields, $values)
+    {
+        $result = false;
+        if ($table && is_array($fields) && is_array($values) && $fields && $values) {
+            $this->is_query = false;
+            $filtered_values = [];
+            foreach ($values as $value) {
+                if (is_string($value)) {
+                    $filtered_values[] = '"' . $value . '"';
+                } else {
+                    $filtered_values[] = $value;
+                }
+            }
+            if ($filtered_values) {
+                $insert_sql_statement = sprintf(self::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
+                $conn = Connection::component()->conn;
+                if ($conn) {
+                    $statement = $conn->prepare($insert_sql_statement);
+                    $result = $statement->execute();
+                }
+            }
+        }
+        return $result;
+    }
+
+    protected function createQueryStatement()
     {
         $statement = '';
-
         if ($this->is_query) {
             if ($this->_fields && $this->_table) {
                 $select_from_sql_statement = sprintf(self::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
@@ -173,11 +195,6 @@ class Dao
                 }
             }
         }
-
-        if ($this->is_modify) {
-
-        }
-
         return $statement;
     }
 }
