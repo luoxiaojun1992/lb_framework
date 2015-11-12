@@ -244,6 +244,38 @@ class Dao
         return $result;
     }
 
+    public function delete($table, $conditions = true)
+    {
+        $result = false;
+        if ($table) {
+            $this->is_query = false;
+            if (is_array($conditions)) {
+                $new_conditions = [];
+                foreach ($conditions as $key => $value) {
+                    if (is_string($value)) {
+                        $new_conditions[] = implode('=', [$key, '"' . $value . '"']);
+                    } else {
+                        $new_conditions[] = implode('=', [$key, $value]);
+                    }
+                }
+                if (!$new_conditions) {
+                    $new_conditions = true;
+                }
+            } else {
+                $new_conditions = $conditions;
+            }
+
+            if ($new_conditions) {
+                $delete_sql_statement = sprintf(self::DELETE_SQL_TPL, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
+                $statement = self::prepare($delete_sql_statement);
+                if ($statement) {
+                    $result = $statement->execute();
+                }
+            }
+        }
+        return $result;
+    }
+
     protected function createQueryStatement()
     {
         $statement = '';
