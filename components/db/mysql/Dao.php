@@ -122,9 +122,8 @@ class Dao
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement();
             if ($query_sql_statement) {
-                $conn = Connection::component()->conn;
-                if ($conn) {
-                    $statement = $conn->prepare($query_sql_statement);
+                $statement = self::prepare($query_sql_statement);
+                if ($statement) {
                     $res = $statement->execute();
                     if ($res) {
                         $result = $statement;
@@ -133,6 +132,16 @@ class Dao
             }
         }
         return $result;
+    }
+
+    public static function prepare($sql_statement)
+    {
+        $statement = false;
+        $conn = Connection::component()->conn;
+        if ($conn) {
+            $statement = $conn->prepare($sql_statement);
+        }
+        return $statement;
     }
 
     public function insertOne($table, $fields, $values)
@@ -150,9 +159,8 @@ class Dao
             }
             if ($filtered_values) {
                 $insert_sql_statement = sprintf(self::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
-                $conn = Connection::component()->conn;
-                if ($conn) {
-                    $statement = $conn->prepare($insert_sql_statement);
+                $statement = self::prepare($insert_sql_statement);
+                if ($statement) {
                     $result = $statement->execute();
                 }
             }
@@ -181,9 +189,8 @@ class Dao
             }
             if ($filtered_multi_values) {
                 $insert_sql_statement = sprintf(self::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
-                $conn = Connection::component()->conn;
-                if ($conn) {
-                    $statement = $conn->prepare($insert_sql_statement);
+                $statement = self::prepare($insert_sql_statement);
+                if ($statement) {
                     $result = $statement->execute();
                 }
             }
