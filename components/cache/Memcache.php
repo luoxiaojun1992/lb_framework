@@ -54,4 +54,9 @@ class Memcache
     {
         $this->conn->add($key, $value, $expiration);
     }
+
+    public function delete($key)
+    {
+        $this->conn->delete($key);
+    }
 }

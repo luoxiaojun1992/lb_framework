@@ -58,4 +58,9 @@ class Redis
     {
         $this->conn->set($key, $value, $expiration);
     }
+
+    public function delete($key)
+    {
+        $this->conn->delete($key);
+    }
 }

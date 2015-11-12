@@ -164,6 +164,12 @@ class BaseLb
         Memcache::component()->set($key, $value, $expiration);
     }
 
+    // Memcache Delete
+    public function memcacheDelete($key)
+    {
+        Memcache::component()->delete($key);
+    }
+
     // Redis Get
     public function redisGet($key)
     {
@@ -174,6 +180,12 @@ class BaseLb
     public function redisSet($key, $value, $expiration = 0)
     {
         Redis::component()->set($key, $value, $expiration);
+    }
+
+    // Redis Delete
+    public function redisDelete($key)
+    {
+        Redis::component()->delete($key);
     }
 
     // Import PHP File
