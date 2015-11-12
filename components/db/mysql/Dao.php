@@ -226,6 +226,12 @@ class Dao
                     }
                 }
 
+                // GROUP
+                if ($this->_group_fields) {
+                    $group_sql_statement = sprintf(self::GROUP_SQL_TPL, implode(',', $this->_group_fields));
+                    $statement .= (' ' . $group_sql_statement);
+                }
+
                 // ORDER
                 if ($this->_orders) {
                     $orders = [];
@@ -243,12 +249,6 @@ class Dao
                 if ($this->_limit) {
                     $limit_sql_statement = sprintf(self::LIMIT_SQL_TPL, $this->_limit);
                     $statement .= (' ' . $limit_sql_statement);
-                }
-
-                // GROUP
-                if ($this->_group_fields) {
-                    $group_sql_statement = sprintf(self::GROUP_SQL_TPL, implode(',', $this->_group_fields));
-                    $statement .= (' ' . $group_sql_statement);
                 }
             }
         }
