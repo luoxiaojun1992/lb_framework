@@ -10,6 +10,7 @@
 namespace lb;
 
 use lb\components\cache\Memcache;
+use lb\components\cache\Redis;
 use lb\components\db\mysql\Connection;
 use lb\components\Environment;
 use lb\components\error_handlers\Level;
@@ -163,6 +164,18 @@ class BaseLb
         Memcache::component()->set($key, $value, $expiration);
     }
 
+    // Redis Get
+    public function redisGet($key)
+    {
+        return Redis::component()->get($key);
+    }
+
+    // Redis Set
+    public function redisSet($key, $value, $expiration = 0)
+    {
+        Redis::component()->set($key, $value, $expiration);
+    }
+
     // Import PHP File
     public function import($path)
     {
@@ -254,6 +267,9 @@ class BaseLb
 
         // Connect Memcache
         Memcache::component($containers);
+
+        // Connect Redis
+        Redis::component($containers);
 
         // Route
         $this->route_info = Route::getInfo();
