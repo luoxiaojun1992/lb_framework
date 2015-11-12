@@ -266,7 +266,7 @@ class Dao
             }
 
             if ($new_conditions) {
-                $delete_sql_statement = sprintf(self::DELETE_SQL_TPL, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
+                $delete_sql_statement = sprintf(self::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
                 $statement = self::prepare($delete_sql_statement);
                 if ($statement) {
                     $result = $statement->execute();
