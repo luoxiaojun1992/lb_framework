@@ -124,7 +124,8 @@ class Dao
             if ($query_sql_statement) {
                 $conn = Connection::component()->conn;
                 if ($conn) {
-                    $result = $conn->query(Security::sqlFilter($query_sql_statement));
+                    $statement = $conn->prepare($query_sql_statement);
+                    $result = $statement->execute();
                 }
             }
         }
