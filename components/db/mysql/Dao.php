@@ -125,7 +125,10 @@ class Dao
                 $conn = Connection::component()->conn;
                 if ($conn) {
                     $statement = $conn->prepare($query_sql_statement);
-                    $result = $statement->execute();
+                    $res = $statement->execute();
+                    if ($res) {
+                        $result = $statement;
+                    }
                 }
             }
         }
