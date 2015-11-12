@@ -211,7 +211,11 @@ class Dao
                             }
                         } else {
                             foreach ($val as $op => $value) {
-                                $conditions[] = implode($op, [$key, $value]);
+                                if (is_string($value)) {
+                                    $conditions[] = implode($op, [$key, '"' . $value . '"']);
+                                } else {
+                                    $conditions[] = implode($op, [$key, $value]);
+                                }
                             }
                         }
                     }
