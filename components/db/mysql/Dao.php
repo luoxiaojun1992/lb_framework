@@ -39,6 +39,7 @@ class Dao
     const UPDATE_SQL_TPL = "UPDATE %s SET %s WHERE %s";
 
     // Delete
+    const DELETE_SQL_TPL = "DELETE FROM %s WHERE %s";
 
     public static function component()
     {
