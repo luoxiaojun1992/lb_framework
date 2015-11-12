@@ -31,9 +31,14 @@ class Dao
     // Read
     const SELECT_FROM_SQL_TPL = "SELECT %s FROM %s";
     const WHERE_SQL_TPL = "WHERE %s";
+    const GROUP_SQL_TPL = "GROUP BY %s";
     const ORDER_SQL_TPL = "ORDER BY %s";
     const LIMIT_SQL_TPL = "LIMIT %s";
-    const GROUP_SQL_TPL = "GROUP BY %s";
+
+    // Update
+    const UPDATE_SQL_TPL = "UPDATE %s SET %s WHERE %s";
+
+    // Delete
 
     public static function component()
     {
@@ -190,6 +195,46 @@ class Dao
             if ($filtered_multi_values) {
                 $insert_sql_statement = sprintf(self::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
                 $statement = self::prepare($insert_sql_statement);
+                if ($statement) {
+                    $result = $statement->execute();
+                }
+            }
+        }
+        return $result;
+    }
+
+    public function update($table, $values, $conditions = true)
+    {
+        $result = false;
+        if ($table && is_array($values) && $values) {
+            $this->is_query = false;
+            $new_values = [];
+            foreach ($values as $key => $value) {
+                if (is_string($value)) {
+                    $new_values[] = implode('=', [$key, '"' . $value . '"']);
+                } else {
+                    $new_values[] = implode('=', [$key, $value]);
+                }
+            }
+            if (is_array($conditions)) {
+                $new_conditions = [];
+                foreach ($conditions as $key => $value) {
+                    if (is_string($value)) {
+                        $new_conditions[] = implode('=', [$key, '"' . $value . '"']);
+                    } else {
+                        $new_conditions[] = implode('=', [$key, $value]);
+                    }
+                }
+                if (!$new_conditions) {
+                    $new_conditions = true;
+                }
+            } else {
+                $new_conditions = $conditions;
+            }
+
+            if ($new_values && $new_conditions) {
+                $update_sql_statement = sprintf(self::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
+                $statement = self::prepare($update_sql_statement);
                 if ($statement) {
                     $result = $statement->execute();
                 }
