@@ -203,10 +203,16 @@ class Dao
                 if ($this->_conditions) {
                     $conditions = [];
                     foreach ($this->_conditions as $key => $val) {
-                        if (is_string($val)) {
-                            $conditions[] = implode('=', [$key, '"' . $val . '"']);
+                        if (!is_array($val)) {
+                            if (is_string($val)) {
+                                $conditions[] = implode('=', [$key, '"' . $val . '"']);
+                            } else {
+                                $conditions[] = implode('=', [$key, $val]);
+                            }
                         } else {
-                            $conditions[] = implode('=', [$key, $val]);
+                            foreach ($val as $op => $value) {
+                                $conditions[] = implode($op, [$key, $value]);
+                            }
                         }
                     }
                     if ($conditions) {
