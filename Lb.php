@@ -13,7 +13,12 @@ class Lb extends \lb\BaseLb
 {
     public function run()
     {
-        // Start App
-        parent::run();
+        if (strtolower(php_sapi_name()) !== 'cli') {
+            // Start App
+            parent::run();
+        } else {
+            echo 'Unsupported running mode.';
+            die();
+        }
     }
 }
