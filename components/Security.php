@@ -69,9 +69,4 @@ class Security
             Lb::app()->setSession('csrf_token', Lb::app()->getCsrfToken());
         }
     }
-
-    public static function sqlFilter($sql_statement)
-    {
-       return addslashes($sql_statement);
-    }
 }
