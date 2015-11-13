@@ -4,9 +4,10 @@
  * User: 224
  * Date: 2015/11/13
  * Time: 17:55
+ * Lb framework javascript asset file
  */
 
-namespace lb\components\Assets;
+namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;

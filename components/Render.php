@@ -9,7 +9,8 @@
 
 namespace lb\components;
 
-use lb\components\Assets\Javascript;
+use lb\components\assets\Javascript;
+use lb\components\assets\Css;
 use lb\Lb;
 
 class Render
@@ -65,7 +66,7 @@ class Render
                 }
                 $css_html = '';
                 if ($css_files) {
-                    
+                    $css_html = '<style>' . Css::dump($css_files) . '</style>';
                 }
                 $layout_file_path = self::getLayoutPath($layout_name);
                 if (file_exists($layout_file_path)) {
