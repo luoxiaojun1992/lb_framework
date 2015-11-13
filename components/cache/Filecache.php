@@ -85,7 +85,7 @@ class Filecache {
         $fp = opendir($this->cache_path);
         while(($fn = readdir($fp))) {
             if($fn != '.' && $fn != '..') {
-                unlink($this->cache_path . $fn);
+                unlink($this->cache_path . DIRECTORY_SEPARATOR . $fn);
             }
         }
     }
