@@ -203,6 +203,12 @@ class BaseLb
         return Environment::getValue($env_name);
     }
 
+    // Send Swift Mail
+    public function swiftSend($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
+    {
+        Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
