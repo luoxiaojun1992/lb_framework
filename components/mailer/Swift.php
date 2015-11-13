@@ -53,20 +53,24 @@ class Swift
     public function send($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
     {
         $err_msg = '';
-        if ($from_name && is_array($receivers) && $receivers && $subject && $body) {
-            $mailer = \Swift_Mailer::newInstance($this->transport);
-            $message = \Swift_Message::newInstance();
-            $message->setFrom([$this->_username => $from_name]);
-            $message->setTo($receivers);
-            $message->setSubject($subject);
-            $message->setBody($body, $content_type, $charset);
-            try {
-                $mailer->send($message);
-            } catch (\Swift_ConnectionException $e) {
-                $err_msg = 'There was a problem communicating with SMTP: ' . $e->getMessage();
+        if ($this->transport) {
+            if ($from_name && is_array($receivers) && $receivers && $subject && $body) {
+                $mailer = \Swift_Mailer::newInstance($this->transport);
+                $message = \Swift_Message::newInstance();
+                $message->setFrom([$this->_username => $from_name]);
+                $message->setTo($receivers);
+                $message->setSubject($subject);
+                $message->setBody($body, $content_type, $charset);
+                try {
+                    $mailer->send($message);
+                } catch (\Swift_SwiftException $e) {
+                    $err_msg = 'There was a problem communicating with SMTP: ' . $e->getMessage();
+                }
+            } else {
+                $err_msg = 'Invalid Parameter.';
             }
         } else {
-            $err_msg = 'Invalid Parameter.';
+            $err_msg = 'Transport not set.';
         }
         return $err_msg;
     }

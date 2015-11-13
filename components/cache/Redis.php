@@ -51,16 +51,20 @@ class Redis
 
     public function get($key)
     {
-        return $this->conn->get($key);
+        return $this->conn ? $this->conn->get($key) : '';
     }
 
     public function set($key, $value, $expiration = 0)
     {
-        $this->conn->set($key, $value, $expiration);
+        if ($this->conn) {
+            $this->conn->set($key, $value, $expiration);
+        }
     }
 
     public function delete($key)
     {
-        $this->conn->delete($key);
+        if ($this->conn) {
+            $this->conn->delete($key);
+        }
     }
 }
