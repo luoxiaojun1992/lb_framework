@@ -21,7 +21,6 @@ class Javascript
         }
         $js = new AssetCollection($js_assets);
 
-        header('Content-Type: application/js');
         return $js->dump();
     }
 }
