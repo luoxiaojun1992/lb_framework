@@ -14,6 +14,7 @@ use lb\components\cache\Redis;
 use lb\components\db\mysql\Connection;
 use lb\components\Environment;
 use lb\components\error_handlers\Level;
+use lb\components\mailer\Swift;
 use lb\components\Request;
 use lb\components\Route;
 use lb\components\containers\Config;
@@ -282,6 +283,9 @@ class BaseLb
 
         // Connect Redis
         Redis::component($containers);
+
+        // Init Swift Mailer
+        Swift::component($containers);
 
         // Route
         $this->route_info = Route::getInfo();
