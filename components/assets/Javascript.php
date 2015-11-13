@@ -10,17 +10,18 @@ namespace lb\components\Assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Filter\Yui\JsCompressorFilter as YuiCompressorFilter;
 
 class Javascript
 {
-    public static function dump()
+    public static function dump($js_files)
     {
-        $js = new AssetCollection(array(
-            new FileAsset(__DIR__.'/jquery.js'),
-        ));
+        $js_assets = [];
+        foreach ($js_files as $js_file) {
+            $js_assets[] = new FileAsset($js_file);
+        }
+        $js = new AssetCollection($js_assets);
 
         header('Content-Type: application/js');
-        echo $js->dump();
+        return $js->dump();
     }
 }
