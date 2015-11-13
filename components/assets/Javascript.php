@@ -19,7 +19,7 @@ class Javascript
         foreach ($js_files as $js_file) {
             $js_assets[] = new FileAsset($js_file);
         }
-        $js = new AssetCollection($js_assets);
+        $js = new AssetCollection($js_assets, new JSqueezeFilter());
 
         return $js->dump();
     }
