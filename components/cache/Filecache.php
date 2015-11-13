@@ -53,7 +53,7 @@ class Filecache {
         //写文件, 文件锁避免出错
         $time = time();
         touch($filename, $time, $time + $this->cache_time);
-        file_put_contents($filename, serialize($value), LOCK_EX);
+        file_put_contents($filename, serialize(base64_encode($value)), LOCK_EX);
     }
 
     //删除对应的一个缓存
@@ -73,7 +73,7 @@ class Filecache {
             $filename = $this->_get_cache_file($key);
             $file_content = file_get_contents($filename);
             if ($file_content) {
-                $value = unserialize($value);
+                $value = base64_decode(unserialize($file_content));
             }
         }
         return $value;
@@ -125,7 +125,7 @@ class Filecache {
     //拼接缓存路径
     private function _get_cache_file($key)
     {
-        return $this->cache_path . $this->_safe_filename($key) . $this->cache_extension;
+        return $this->cache_path . DIRECTORY_SEPARATOR . $this->_safe_filename($key) . $this->cache_extension;
     }
 
     public static function component($containers = [], $reset = false)
