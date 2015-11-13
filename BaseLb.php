@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\cache\Filecache;
 use lb\components\cache\Memcache;
 use lb\components\cache\Redis;
 use lb\components\db\mysql\Connection;
@@ -209,6 +210,30 @@ class BaseLb
         Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
     }
 
+    // File Cache Set
+    public function fileCacheSet($key, $value, $cache_time = 86400)
+    {
+        Filecache::component()->add($key, $value, $cache_time);
+    }
+
+    // File Cache Get
+    public function fileCacheGet($key)
+    {
+        return Filecache::component()->get($key);
+    }
+
+    // File Cache Delete
+    public function fileCacheDelete($key)
+    {
+        Filecache::component()->delete($key);
+    }
+
+    // File Cache Flush
+    public function fileCacheFlush()
+    {
+        Filecache::component()->flush();
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
@@ -292,6 +317,9 @@ class BaseLb
 
         // Init Swift Mailer
         Swift::component($containers);
+
+        // Init File Cache
+        Filecache::component($containers);
 
         // Route
         $this->route_info = Route::getInfo();
