@@ -48,7 +48,7 @@ class Render
         return $layout_file_path;
     }
 
-    public static function output($template_name, $params, $layout_name, $return = false, $js_files = [])
+    public static function output($template_name, $params, $layout_name, $return = false, $js_files = [], $css_files = [])
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
@@ -62,6 +62,10 @@ class Render
                 $js_html = '';
                 if ($js_files) {
                     $js_html = '<script>' . Javascript::dump($js_files) . '</script>';
+                }
+                $css_html = '';
+                if ($css_files) {
+                    
                 }
                 $layout_file_path = self::getLayoutPath($layout_name);
                 if (file_exists($layout_file_path)) {
