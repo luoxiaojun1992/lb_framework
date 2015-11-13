@@ -29,10 +29,11 @@ class WebController extends BaseController
     protected function render($template_name, $params, $return = false)
     {
         $this->beforeRender();
+        $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         if ($return) {
-            return Render::output($template_name, $params, $this->layout, $return);
+            return Render::output($template_name, $params, $this->layout, $return, $js_files);
         } else {
-            Render::output($template_name, $params, $this->layout, $return);
+            Render::output($template_name, $params, $this->layout, $return, $js_files);
         }
     }
 

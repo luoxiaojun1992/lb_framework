@@ -10,6 +10,7 @@ namespace lb\components\Assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
+use Assetic\Filter\JSqueezeFilter;
 
 class Javascript
 {

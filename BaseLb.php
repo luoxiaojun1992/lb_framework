@@ -100,6 +100,21 @@ class BaseLb
         return '';
     }
 
+    // Get Js Files
+    public function getJsFiles($controller_id, $template_id)
+    {
+        $js_files = [];
+        if (isset($this->containers['config'])) {
+            $asset_config = $this->containers['config']->get('assets');
+            if ($asset_config) {
+                if (isset($asset_config[$controller_id][$template_id]['js'])) {
+                    $js_files = $asset_config[$controller_id][$template_id]['js'];
+                }
+            }
+        }
+        return $js_files;
+    }
+
     // Get Db Connection
     public function getDb($db_type)
     {

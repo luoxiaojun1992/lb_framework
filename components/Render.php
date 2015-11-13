@@ -9,6 +9,7 @@
 
 namespace lb\components;
 
+use lb\components\Assets\Javascript;
 use lb\Lb;
 
 class Render
@@ -47,7 +48,7 @@ class Render
         return $layout_file_path;
     }
 
-    public static function output($template_name, $params, $layout_name, $return = false)
+    public static function output($template_name, $params, $layout_name, $return = false, $js_files = [])
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
@@ -57,6 +58,10 @@ class Render
             if (file_exists($view_file_path)) {
                 foreach ($params as $param_name => $param_value) {
                     $$param_name = $param_value;
+                }
+                $js_html = '';
+                if ($js_files) {
+                    $js_html = '<script>' . Javascript::dump($js_files) . '</script>';
                 }
                 $layout_file_path = self::getLayoutPath($layout_name);
                 if (file_exists($layout_file_path)) {
