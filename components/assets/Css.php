@@ -27,7 +27,7 @@ class Css
         if (!is_dir($assets_cache_dir)) {
             mkdir($assets_cache_dir, 0777, true);
         }
-        $assets_cache_name = serialize($css_files);
+        $assets_cache_name = md5(serialize($css_files));
         $assets_cache_path = $assets_cache_dir . DIRECTORY_SEPARATOR . $assets_cache_name;
         if (!file_exists($assets_cache_path)) {
             file_put_contents($assets_cache_path, $css_html);
