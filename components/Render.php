@@ -62,7 +62,7 @@ class Render
                 }
                 $js_html = '';
                 if ($js_files) {
-                    $js_html = '<script src="' . Javascript::dump($js_files) . '" defer></script>';
+                    $js_html = '<script src="' . Javascript::dump($js_files) . '"></script>';
                 }
                 $css_html = '';
                 if ($css_files) {
