@@ -24,7 +24,7 @@ class Javascript
         }
         $js = new AssetCollection($js_assets, new JSqueezeFilter());
         $js_html = $js->dump();
-        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'asstes/js';
+        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'assets/js';
         if (!is_dir($assets_cache_dir)) {
             mkdir($assets_cache_dir, 0777, true);
         }
