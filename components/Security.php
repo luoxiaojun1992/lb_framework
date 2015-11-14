@@ -58,15 +58,15 @@ class Security
     {
         if (strtolower(Lb::app()->getRequestMethod()) == 'post') {
             $session_csrf_token = Lb::app()->getSession('csrf_token');
-            if (!$session_csrf_token) {
-                Lb::app()->stop();
-            } else {
-                if ($session_csrf_token != Lb::app()->getParam('csrf_token')) {
+            $request_csrf_token = Lb::app()->getParam('csrf_token');
+            if ($session_csrf_token && $request_csrf_token) {
+                if (Lb::app()->getSession('csrf_token') != Lb::app()->getParam('csrf_token')) {
                     Lb::app()->stop();
                 }
+            } else {
+                Lb::app()->stop();
             }
-        } else {
-            Lb::app()->setSession('csrf_token', Lb::app()->getCsrfToken());
         }
+        Lb::app()->setSession('csrf_token', Lb::app()->getCsrfToken());
     }
 }

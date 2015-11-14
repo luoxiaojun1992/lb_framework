@@ -157,7 +157,7 @@ class BaseLb
     // Get Http Request Param Value
     public function getParam($param_name)
     {
-        return $_REQUEST[$param_name];
+        return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : false;
     }
 
     // Get Csrf Token
