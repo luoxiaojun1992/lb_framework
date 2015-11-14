@@ -12,6 +12,7 @@ namespace lb\components\assets;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\JSqueezeFilter;
+use lb\Lb;
 
 class Javascript
 {
@@ -22,7 +23,16 @@ class Javascript
             $js_assets[] = new FileAsset($js_file);
         }
         $js = new AssetCollection($js_assets, new JSqueezeFilter());
-
-        return $js->dump();
+        $js_html = $js->dump();
+        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'asstes/js';
+        if (!is_dir($assets_cache_dir)) {
+            mkdir($assets_cache_dir, 0777, true);
+        }
+        $assets_cache_name = serialize($js_files);
+        $assets_cache_path = $assets_cache_dir . DIRECTORY_SEPARATOR . $assets_cache_name;
+        if (!file_exists($assets_cache_path)) {
+            file_put_contents($assets_cache_path, $js_html);
+        }
+        return DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $assets_cache_name;
     }
 }

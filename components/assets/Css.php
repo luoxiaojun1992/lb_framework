@@ -11,6 +11,7 @@ namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
+use lb\Lb;
 
 class Css
 {
@@ -21,7 +22,16 @@ class Css
             $css_assets[] = new FileAsset($css_file);
         }
         $css = new AssetCollection($css_assets);
-
-        return $css->dump();
+        $css_html = $css->dump();
+        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'asstes/css';
+        if (!is_dir($assets_cache_dir)) {
+            mkdir($assets_cache_dir, 0777, true);
+        }
+        $assets_cache_name = serialize($css_files);
+        $assets_cache_path = $assets_cache_dir . DIRECTORY_SEPARATOR . $assets_cache_name;
+        if (!file_exists($assets_cache_path)) {
+            file_put_contents($assets_cache_path, $css_html);
+        }
+        return DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . $assets_cache_name;
     }
 }
