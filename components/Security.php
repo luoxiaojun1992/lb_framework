@@ -60,7 +60,7 @@ class Security
             $session_csrf_token = Lb::app()->getSession('csrf_token');
             $request_csrf_token = Lb::app()->getParam('csrf_token');
             if ($session_csrf_token && $request_csrf_token) {
-                if (Lb::app()->getSession('csrf_token') != Lb::app()->getParam('csrf_token')) {
+                if ($session_csrf_token != $request_csrf_token) {
                     Lb::app()->stop();
                 }
             } else {
