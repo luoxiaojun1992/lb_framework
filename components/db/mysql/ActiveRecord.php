@@ -82,6 +82,35 @@ class ActiveRecord
         return false;
     }
 
+    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    {
+        $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
+        if (is_array($conditions) && $conditions) {
+            $dao->where($conditions);
+        }
+        if (is_array($group_fields) && $group_fields) {
+            $dao->group($group_fields);
+        }
+        if (is_array($orders) && $orders) {
+            $dao->order($orders);
+        }
+        if ($limit) {
+            $dao->limit($limit);
+        }
+        $result = $dao->findAll();
+        if ($result) {
+            $models = [];
+            foreach ($result as $attributes) {
+                $model_class = get_class($this);
+                $model = new $model_class();
+                $model->setAttributes($attributes);
+                $models[] = $model;
+            }
+            return $models;
+        }
+        return [];
+    }
+
     public function getPrimaryKey()
     {
         if (array_key_exists($this->_primary_key, $this->_attributes)) {
