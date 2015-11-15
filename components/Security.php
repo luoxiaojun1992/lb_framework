@@ -32,14 +32,14 @@ class Security
     protected static function getFilteredInput($input_value)
     {
         if (!is_array($input_value)) {
-            $input_value = trim($input_value);
-            $input_value = htmlspecialchars($input_value);
-            $input_value = addslashes($input_value);
             foreach (self::$xssfilters as $xssfilter) {
-                if (preg_match($xssfilter, $input_value) == true){
+                if (preg_match($xssfilter, $input_value) == true) {
                     $input_value = preg_replace($xssfilter, '', $input_value);
                 }
             }
+            $input_value = trim($input_value);
+            $input_value = htmlspecialchars($input_value);
+            $input_value = addslashes($input_value);
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
         if (property_exists(get_called_class(), $filter_name)) {
@@ -54,7 +54,7 @@ class Security
         if(is_array($tmp_value)) {
             $tmp_value = implode('', $tmp_value);
         }
-        if (preg_match("/".$filter."/is", $tmp_value) == true){
+        if (preg_match("/".$filter."/is", $tmp_value) == true) {
             $input_value = preg_replace("/".$filter."/is", '', $tmp_value);
         }
         return $input_value;
