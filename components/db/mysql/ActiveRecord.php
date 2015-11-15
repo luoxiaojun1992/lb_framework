@@ -41,10 +41,13 @@ class ActiveRecord
 
     public static function model()
     {
-        if (static::$_instance instanceof static) {
-            return static::$_instance;
-        } else {
-            return (static::$_instance = new static());
+        if (property_exists('static', '_instance')) {
+            if (static::$_instance instanceof static) {
+                return static::$_instance;
+            } else {
+                return (static::$_instance = new static());
+            }
         }
+        return false;
     }
 }
