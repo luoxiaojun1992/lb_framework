@@ -39,12 +39,12 @@ class ActiveRecord
         }
     }
 
-    public function model()
+    public static function model()
     {
-        if (self::$_instance instanceof self) {
-            return self::$_instance;
+        if (static::$_instance instanceof static) {
+            return static::$_instance;
         } else {
-            return (self::$_instance = new self());
+            return (static::$_instance = new static());
         }
     }
 }
