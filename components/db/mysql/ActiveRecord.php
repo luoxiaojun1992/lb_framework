@@ -11,7 +11,6 @@ namespace lb\components\db\mysql;
 
 class ActiveRecord
 {
-    const TABLE_NAME = '';
     protected $_attributes = [];
 
     public function __set($name, $value)
@@ -46,6 +45,38 @@ class ActiveRecord
             } else {
                 return (static::$_instance = new static());
             }
+        }
+        return false;
+    }
+
+    public function findAll()
+    {
+        $result = Dao::component()->select(['*'])->from(static::TABLE_NAME)->findAll();
+        if ($result) {
+            $models = [];
+            foreach ($result as $attributes) {
+                $model_class = get_class($this);
+                $model = new $model_class();
+                $model->setAttributes($attributes);
+                $models[] = $model;
+            }
+            return $models;
+        }
+        return [];
+    }
+
+    public function findByPk($primary_key)
+    {
+        $attributes = Dao::component()
+            ->select(['*'])
+            ->from(static::TABLE_NAME)
+            ->where(['id' => $primary_key])
+            ->find();
+        if ($attributes) {
+            $model_class = get_class($this);
+            $model = new $model_class();
+            $model->setAttributes($attributes);
+            return $model;
         }
         return false;
     }
