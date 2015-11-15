@@ -31,7 +31,7 @@ class Security
             $input_value = strip_tags($input_value);
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
-        if (property_exists('self', $filter_name)) {
+        if (property_exists(get_called_class(), $filter_name)) {
             $filter = self::$$filter_name;
             $input_value = self::filter($input_value, $filter);
         }

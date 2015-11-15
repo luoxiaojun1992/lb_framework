@@ -13,7 +13,6 @@ class ActiveRecord
 {
     const TABLE_NAME = '';
     protected $_attributes = [];
-    protected static $_instance = false;
 
     public function __set($name, $value)
     {
@@ -41,7 +40,7 @@ class ActiveRecord
 
     public static function model()
     {
-        if (property_exists('static', '_instance')) {
+        if (property_exists(get_called_class(), '_instance')) {
             if (static::$_instance instanceof static) {
                 return static::$_instance;
             } else {
