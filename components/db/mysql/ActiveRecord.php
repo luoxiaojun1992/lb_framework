@@ -11,6 +11,7 @@ namespace lb\components\db\mysql;
 
 class ActiveRecord
 {
+    protected $_primary_key = '';
     protected $_attributes = [];
 
     public function __set($name, $value)
@@ -70,7 +71,7 @@ class ActiveRecord
         $attributes = Dao::component()
             ->select(['*'])
             ->from(static::TABLE_NAME)
-            ->where(['id' => $primary_key])
+            ->where([$this->_primary_key => $primary_key])
             ->find();
         if ($attributes) {
             $model_class = get_class($this);
@@ -79,5 +80,15 @@ class ActiveRecord
             return $model;
         }
         return false;
+    }
+
+    public function getPrimaryKey()
+    {
+        return $this->_primary_key;
+    }
+
+    public function getAttributes()
+    {
+        return $this->_attributes;
     }
 }
