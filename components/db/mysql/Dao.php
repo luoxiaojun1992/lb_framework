@@ -145,7 +145,7 @@ class Dao
         $statement = false;
         $conn = Connection::component()->conn;
         if ($conn) {
-            $statement = $conn->prepare($sql_statement);
+            $statement = $conn->prepare(stripslashes($sql_statement));
         }
         return $statement;
     }
