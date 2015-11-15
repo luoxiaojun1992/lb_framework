@@ -84,7 +84,10 @@ class ActiveRecord
 
     public function getPrimaryKey()
     {
-        return $this->_primary_key;
+        if (array_key_exists($this->_primary_key, $this->_attributes)) {
+            return $this->_attributes[$this->_primary_key];
+        }
+        return 0;
     }
 
     public function getAttributes()
