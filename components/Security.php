@@ -40,6 +40,20 @@ class Security
             $input_value = trim($input_value);
             $input_value = htmlspecialchars($input_value);
             $input_value = addslashes($input_value);
+        } else {
+            foreach ($input_value as $key => $value) {
+                if (!is_array($value)) {
+                    foreach (self::$xssfilters as $xssfilter) {
+                        if (preg_match($xssfilter, $value) == true) {
+                            $value = preg_replace($xssfilter, '', $value);
+                        }
+                    }
+                    $value = trim($value);
+                    $value = htmlspecialchars($value);
+                    $value = addslashes($value);
+                    $input_value[$key] = $value;
+                }
+            }
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
         if (property_exists(get_called_class(), $filter_name)) {
@@ -50,12 +64,19 @@ class Security
     }
 
     protected static function filter($input_value, $filter){
-        $tmp_value = $input_value;
-        if(is_array($tmp_value)) {
-            $tmp_value = implode('', $tmp_value);
-        }
-        if (preg_match("/".$filter."/is", $tmp_value) == true) {
-            $input_value = preg_replace("/".$filter."/is", '', $tmp_value);
+        if (is_array($input_value)) {
+            foreach ($input_value as $key => $value) {
+                if (!is_array($value)) {
+                    if (preg_match("/" . $filter . "/is", $value) == true) {
+                        $value = preg_replace("/" . $filter . "/is", '', $value);
+                        $input_value[$key] = $value;
+                    }
+                }
+            }
+        } else {
+            if (preg_match("/".$filter."/is", $input_value) == true) {
+                $input_value = preg_replace("/".$filter."/is", '', $input_value);
+            }
         }
         return $input_value;
     }
