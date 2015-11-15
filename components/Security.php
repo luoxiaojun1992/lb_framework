@@ -28,7 +28,7 @@ class Security
     {
         if (!is_array($input_value)) {
             $input_value = trim($input_value);
-            $input_value = strip_tags($input_value);
+            $input_value = htmlspecialchars($input_value);
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
         if (property_exists(get_called_class(), $filter_name)) {
