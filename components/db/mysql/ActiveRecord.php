@@ -190,11 +190,16 @@ class ActiveRecord
         if (!$this->is_single) {
             $this->beforeSave();
             if ($this->is_new_record) {
-                $this->is_new_record = false;
+                $res = Dao::component()->insertOne(static::TABLE_NAME, array_keys($this->_attributes), array_values($this->_attributes));
+                if ($res) {
+                    $this->is_new_record = false;
+                }
             } else {
-
+                $res = Dao::component()->update(static::TABLE_NAME, $this->_attributes, [$this->_primary_key => $this->_attributes[$this->_primary_key]]);
             }
-            $this->afterSave();
+            if ($res) {
+                $this->afterSave();
+            }
         }
     }
 }
