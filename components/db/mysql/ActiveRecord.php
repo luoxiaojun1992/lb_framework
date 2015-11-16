@@ -200,6 +200,8 @@ class ActiveRecord
             if ($res) {
                 $this->afterSave();
             }
+            return $res;
         }
+        return false;
     }
 }
