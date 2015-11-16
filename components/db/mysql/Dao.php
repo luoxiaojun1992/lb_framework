@@ -10,7 +10,6 @@
 namespace lb\components\db\mysql;
 
 use lb\components\helpers\ArrayHelper;
-use lb\components\Security;
 
 class Dao
 {
@@ -128,7 +127,7 @@ class Dao
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement();
             if ($query_sql_statement) {
-                $statement = self::prepare($query_sql_statement);
+                $statement = self::prepare($query_sql_statement, 'slave');
                 if ($statement) {
                     $res = $statement->execute();
                     if ($res) {
@@ -140,10 +139,19 @@ class Dao
         return $result;
     }
 
-    public static function prepare($sql_statement)
+    public static function prepare($sql_statement, $node_type)
     {
         $statement = false;
-        $conn = Connection::component()->conn;
+        switch ($node_type) {
+            case 'master':
+                $conn = Connection::component()->write_conn;
+                break;
+            case 'slave':
+                $conn = Connection::component()->read_conn;
+                break;
+            default:
+                $conn = false;
+        }
         if ($conn) {
             $statement = $conn->prepare(stripslashes($sql_statement));
         }
@@ -165,7 +173,7 @@ class Dao
             }
             if ($filtered_values) {
                 $insert_sql_statement = sprintf(self::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
-                $statement = self::prepare($insert_sql_statement);
+                $statement = self::prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -195,7 +203,7 @@ class Dao
             }
             if ($filtered_multi_values) {
                 $insert_sql_statement = sprintf(self::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
-                $statement = self::prepare($insert_sql_statement);
+                $statement = self::prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -235,7 +243,7 @@ class Dao
 
             if ($new_values && $new_conditions) {
                 $update_sql_statement = sprintf(self::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = self::prepare($update_sql_statement);
+                $statement = self::prepare($update_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -267,7 +275,7 @@ class Dao
 
             if ($new_conditions) {
                 $delete_sql_statement = sprintf(self::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = self::prepare($delete_sql_statement);
+                $statement = self::prepare($delete_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }

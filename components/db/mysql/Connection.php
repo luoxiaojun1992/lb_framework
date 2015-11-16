@@ -11,13 +11,20 @@ namespace lb\components\db\mysql;
 
 class Connection
 {
-    public $conn = false;
-    protected $_db = '';
-    protected $_host = '';
-    protected $_username = '';
-    protected $_password = '';
-    protected $_options = [];
-    protected $_dsn = '';
+    public $write_conn = false;
+    public $read_conn = false;
+    protected $_master_db = '';
+    protected $_master_host = '';
+    protected $_master_username = '';
+    protected $_master_password = '';
+    protected $_master_options = [];
+    protected $_master_dsn = '';
+    protected $_slave_db = '';
+    protected $_slave_host = '';
+    protected $_slave_username = '';
+    protected $_slave_password = '';
+    protected $_slave_options = [];
+    protected $_slave_dsn = '';
     public $containers = [];
     protected static $instance = false;
 
@@ -30,25 +37,55 @@ class Connection
         if (isset($this->containers['config'])) {
             $db_config = $this->containers['config']->get('mysql');
             if ($db_config) {
-                $this->_db = isset($db_config['dbname']) ? $db_config['dbname'] : '';
-                $this->_host = isset($db_config['host']) ? $db_config['host'] : '';
-                $this->_username = isset($db_config['username']) ? $db_config['username'] : '';
-                $this->_password = isset($db_config['password']) ? $db_config['password'] : '';
-                $this->_options = isset($db_config['options']) ? $db_config['options'] : [];
-                $this->getDsn();
-                $this->getConnection();
+                if (isset($db_config['master'])) {
+                    $master_db_config = $db_config['master'];
+                    $this->_master_db = isset($master_db_config['dbname']) ? $master_db_config['dbname'] : '';
+                    $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
+                    $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
+                    $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
+                    $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
+                    $this->getDsn('master');
+                    $this->getConnection('master');
+                }
+                if (isset($db_config['slaves'])) {
+                    $slave_config = $db_config['slaves'];
+                    $slave_count = count($slave_config);
+                    $slave_target_num = mt_rand(0, $slave_count - 1);
+                    $slave_db_config = $slave_config[$slave_target_num];
+                    $this->_slave_db = isset($slave_db_config['dbname']) ? $slave_db_config['dbname'] : '';
+                    $this->_slave_host = isset($slave_db_config['host']) ? $slave_db_config['host'] : '';
+                    $this->_slave_username = isset($slave_db_config['username']) ? $slave_db_config['username'] : '';
+                    $this->_slave_password = isset($slave_db_config['password']) ? $slave_db_config['password'] : '';
+                    $this->_slave_options = isset($slave_db_config['options']) ? $slave_db_config['options'] : [];
+                    $this->getDsn('slave');
+                    $this->getConnection('slave');
+                }
             }
         }
     }
 
-    protected function getDsn()
+    protected function getDsn($node_type)
     {
-        $this->_dsn = sprintf($this->dsn_format, self::DB_TYPE, $this->_host, $this->_db);
+        switch ($node_type) {
+            case 'master':
+                $this->_master_dsn = sprintf($this->dsn_format, self::DB_TYPE, $this->_master_host, $this->_master_db);
+                break;
+            case 'slave':
+                $this->_slave_dsn = sprintf($this->dsn_format, self::DB_TYPE, $this->_slave_host, $this->_slave_db);
+                break;
+        }
     }
 
-    protected function getConnection()
+    protected function getConnection($node_type)
     {
-        $this->conn = new \PDO($this->_dsn, $this->_username, $this->_password, $this->_options);
+        switch ($node_type) {
+            case 'master':
+                $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+                break;
+            case 'slave':
+                $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
+                break;
+        }
     }
 
     public static function component($containers = [], $reset = false)

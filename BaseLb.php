@@ -131,15 +131,21 @@ class BaseLb
     }
 
     // Get Db Connection
-    public function getDb($db_type)
+    public function getDb($db_type, $node_type)
     {
         switch ($db_type) {
             case 'mysql':
-                return Connection::component()->conn;
+                switch ($node_type) {
+                    case 'master':
+                        return Connection::component()->write_conn;
+                    case 'slave':
+                        return Connection::component()->read_conn;
+                }
                 break;
             default:
                 return false;
         }
+        return false;
     }
 
     // Request Redirect
