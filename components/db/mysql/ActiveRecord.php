@@ -111,6 +111,28 @@ class ActiveRecord
         return [];
     }
 
+    public function findBySql($sql)
+    {
+        $statement = Dao::component()->prepare($sql);
+        if ($statement) {
+            $res = $statement->execute();
+            if ($res) {
+                $result = $statement->fetchAll();
+                if ($result) {
+                    $models = [];
+                    foreach ($result as $attributes) {
+                        $model_class = get_class($this);
+                        $model = new $model_class();
+                        $model->setAttributes($attributes);
+                        $models[] = $model;
+                    }
+                    return $models;
+                }
+            }
+        }
+        return [];
+    }
+
     public function getPrimaryKey()
     {
         if (array_key_exists($this->_primary_key, $this->_attributes)) {
