@@ -113,7 +113,7 @@ class ActiveRecord
 
     public function findBySql($sql)
     {
-        $statement = Dao::component()->prepare($sql);
+        $statement = Dao::component()->prepare($sql, 'slave');
         if ($statement) {
             $res = $statement->execute();
             if ($res) {
