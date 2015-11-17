@@ -20,6 +20,7 @@ class ActiveRecord
     {
         if (!$this->is_single) {
             if (array_key_exists($name, $this->_attributes)) {
+                settype($value, gettype($this->_attributes[$name]));
                 $this->_attributes[$name] = $value;
             }
         }
@@ -40,6 +41,7 @@ class ActiveRecord
         if (!$this->is_single) {
             foreach ($attributes as $attribute_name => $attribute_value) {
                 if (array_key_exists($attribute_name, $this->_attributes)) {
+                    settype($attribute_value, gettype($this->_attributes[$attribute_name]));
                     $this->_attributes[$attribute_name] = $attribute_value;
                 }
             }
