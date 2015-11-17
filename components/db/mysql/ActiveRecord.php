@@ -15,6 +15,7 @@ class ActiveRecord
     protected $_attributes = [];
     protected $is_single = false;
     protected $rules = [];
+    protected $errors = [];
     public $is_new_record = true;
 
     public function __set($name, $value)
@@ -180,13 +181,32 @@ class ActiveRecord
 
     protected function valid()
     {
+        $is_valid = true;
         $rules = $this->rules;
         if ($rules) {
             foreach ($rules as $rule) {
                 list($attributes, $rule_type, $condition) = $rule;
+                foreach ($attributes as $attribute) {
+                    if (array_key_exists($attribute, $this->_attributes)) {
+                        $attribute_value = $this->_attributes[$attribute];
+                        switch ($rule_type) {
+                            case 'length':
+                                list($op, $condition_value) = $condition;
+                                switch ($op) {
+                                    case 'max':
+                                        if (strlen($attribute_value) > $condition_value) {
+                                            $is_valid = false;
+                                            $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
+                                        }
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                }
             }
         }
-        return true;
+        return $is_valid;
     }
 
     protected function beforeSave()
