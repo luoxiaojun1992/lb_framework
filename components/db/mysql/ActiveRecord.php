@@ -191,14 +191,21 @@ class ActiveRecord
                         $attribute_value = $this->_attributes[$attribute];
                         switch ($rule_type) {
                             case 'length':
-                                list($op, $condition_value) = $condition;
-                                switch ($op) {
-                                    case 'max':
-                                        if (strlen($attribute_value) > $condition_value) {
-                                            $is_valid = false;
-                                            $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
-                                        }
-                                        break;
+                                foreach ($condition as $op => $condition_value) {
+                                    switch ($op) {
+                                        case 'max':
+                                            if (strlen($attribute_value) > $condition_value) {
+                                                $is_valid = false;
+                                                $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
+                                            }
+                                            break;
+                                        case 'min':
+                                            if (strlen($attribute_value) < $condition_value) {
+                                                $is_valid = false;
+                                                $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
+                                            }
+                                            break;
+                                    }
                                 }
                                 break;
                         }
