@@ -180,6 +180,12 @@ class ActiveRecord
 
     protected function valid()
     {
+        $rules = $this->rules;
+        if ($rules) {
+            foreach ($rules as $rule) {
+                list($attributes, $rule_type, $condition) = $rule;
+            }
+        }
         return true;
     }
 
