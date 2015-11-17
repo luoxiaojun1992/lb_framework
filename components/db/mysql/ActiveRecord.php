@@ -14,6 +14,7 @@ class ActiveRecord
     protected $_primary_key = '';
     protected $_attributes = [];
     protected $is_single = false;
+    protected $rules = [];
     public $is_new_record = true;
 
     public function __set($name, $value)
@@ -177,11 +178,17 @@ class ActiveRecord
         return [];
     }
 
+    protected function valid()
+    {
+        return true;
+    }
+
     protected function beforeSave()
     {
         if (!$this->is_single) {
-
+            return $this->valid();
         }
+        return false;
     }
 
     protected function afterSave()
@@ -194,31 +201,32 @@ class ActiveRecord
     public function save()
     {
         if (!$this->is_single) {
-            $this->beforeSave();
-            if ($this->is_new_record) {
-                $values = $this->_attributes;
-                if (array_key_exists($this->_primary_key, $this->_attributes)) {
-                    $this->{$this->_primary_key} = 0;
-                    unset($values[$this->_primary_key]);
+            if ($this->beforeSave()) {
+                if ($this->is_new_record) {
+                    $values = $this->_attributes;
+                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
+                        $this->{$this->_primary_key} = 0;
+                        unset($values[$this->_primary_key]);
+                    }
+                    $res = Dao::component()->insertOne(static::TABLE_NAME, array_keys($values), array_values($values));
+                    if ($res) {
+                        $this->{$this->_primary_key} = Connection::component()->write_conn->lastInsertId();
+                        $this->is_new_record = false;
+                    }
+                } else {
+                    $values = $this->_attributes;
+                    $primary_key = 0;
+                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
+                        $primary_key = $this->_attributes[$this->_primary_key];
+                        unset($values[$this->_primary_key]);
+                    }
+                    $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
                 }
-                $res = Dao::component()->insertOne(static::TABLE_NAME, array_keys($values), array_values($values));
                 if ($res) {
-                    $this->{$this->_primary_key} = Connection::component()->write_conn->lastInsertId();
-                    $this->is_new_record = false;
+                    $this->afterSave();
                 }
-            } else {
-                $values = $this->_attributes;
-                $primary_key = 0;
-                if (array_key_exists($this->_primary_key, $this->_attributes)) {
-                    $primary_key = $this->_attributes[$this->_primary_key];
-                    unset($values[$this->_primary_key]);
-                }
-                $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
+                return $res;
             }
-            if ($res) {
-                $this->afterSave();
-            }
-            return $res;
         }
         return false;
     }
