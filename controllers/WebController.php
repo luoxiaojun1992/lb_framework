@@ -32,9 +32,9 @@ class WebController extends BaseController
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
-            return Render::output($template_name, $params, $this->layout, $return, $js_files, $css_files);
+            return Render::output($template_name, $params, $this->controller_id . DIRECTORY_SEPARATOR . $this->layout, $return, $js_files, $css_files);
         } else {
-            Render::output($template_name, $params, $this->layout, $return, $js_files, $css_files);
+            Render::output($template_name, $params, $this->controller_id . DIRECTORY_SEPARATOR . $this->layout, $return, $js_files, $css_files);
         }
     }
 
