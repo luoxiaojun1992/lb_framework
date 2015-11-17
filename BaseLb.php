@@ -91,6 +91,12 @@ class BaseLb
         return Request::getUserAgent();
     }
 
+    // Get Query String
+    public function getQueryString()
+    {
+        return Request::getQueryString();
+    }
+
     // Get App Name
     public function getName()
     {

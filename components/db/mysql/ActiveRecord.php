@@ -177,12 +177,16 @@ class ActiveRecord
 
     protected function beforeSave()
     {
+        if (!$this->is_single) {
 
+        }
     }
 
     protected function afterSave()
     {
+        if (!$this->is_single) {
 
+        }
     }
 
     public function save()

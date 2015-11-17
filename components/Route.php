@@ -22,7 +22,7 @@ class Route
         ];
         $request_uri = Lb::app()->getUri();
         if (strpos($request_uri, '?') !== false) {
-            $query_params = explode('&', $_SERVER['QUERY_STRING']);
+            $query_params = explode('&', Lb::app()->getQueryString());
             if ($query_params) {
                 $route_info['controller'] = array_shift($query_params);
                 foreach ($query_params as $query_param) {
