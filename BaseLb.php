@@ -108,6 +108,19 @@ class BaseLb
         return '';
     }
 
+    // Is Pretty Url
+    public function isPrettyUrl()
+    {
+        $is_pretty_url = false;
+        if (isset($this->containers['config'])) {
+            $urlManager = $this->containers['config']->get('urlManager');
+            if (isset($urlManager['is_pretty_url'])) {
+                $is_pretty_url = $urlManager['is_pretty_url'];
+            }
+        }
+        return $is_pretty_url;
+    }
+
     // Get Js Files
     public function getJsFiles($controller_id, $template_id)
     {

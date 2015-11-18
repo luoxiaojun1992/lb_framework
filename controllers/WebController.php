@@ -47,7 +47,11 @@ class WebController extends BaseController
             if ($path) {
                 $action_id = array_shift($path);
                 $params = $path;
-                $forward_url = Lb::app()->createAbsoluteUrl("/index.php?{$this->controller_id}&action={$action_id}", $params);
+                if (Lb::app()->isPrettyUrl()) {
+                    $forward_url = Lb::app()->createAbsoluteUrl("/{$this->controller_id}/action/{$action_id}", $params);
+                } else {
+                    $forward_url = Lb::app()->createAbsoluteUrl("/index.php?{$this->controller_id}&action={$action_id}", $params);
+                }
                 Lb::app()->redirect($forward_url, $replace, $http_response_code);
             }
             Lb::app()->stop();

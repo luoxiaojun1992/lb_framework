@@ -21,15 +21,25 @@ class Route
             'id' => '',
         ];
         $request_uri = Lb::app()->getUri();
-        if (strpos($request_uri, '?') !== false) {
-            $query_params = explode('&', Lb::app()->getQueryString());
-            if ($query_params) {
-                $route_info['controller'] = array_shift($query_params);
-                foreach ($query_params as $query_param) {
-                    if (strpos($query_param, '=') !== false) {
-                        list($query_param_name, $query_param_value) = explode('=', $query_param);
-                        if (array_key_exists($query_param_name, $route_info)) {
-                            $route_info[$query_param_name] = $query_param_value;
+        if (Lb::app()->isPrettyUrl()) {
+            $query_params = explode('/', trim($request_uri, '/'));
+            $route_info['controller'] = array_shift($query_params);
+            foreach ($query_params as $key => $query_param) {
+                if (array_key_exists($query_param, $route_info) && $query_param != 'controller') {
+                    $route_info[$query_param] = $query_params[$key + 1];
+                }
+            }
+        } else {
+            if (strpos($request_uri, '?') !== false) {
+                $query_params = explode('&', Lb::app()->getQueryString());
+                if ($query_params) {
+                    $route_info['controller'] = array_shift($query_params);
+                    foreach ($query_params as $query_param) {
+                        if (strpos($query_param, '=') !== false) {
+                            list($query_param_name, $query_param_value) = explode('=', $query_param);
+                            if (array_key_exists($query_param_name, $route_info) && $query_param_name != 'controller') {
+                                $route_info[$query_param_name] = $query_param_value;
+                            }
                         }
                     }
                 }
