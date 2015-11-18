@@ -278,6 +278,11 @@ class BaseLb
         Filecache::component()->flush();
     }
 
+    public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
+    {
+        Log::component()->log($role, $level, $message, $context);
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
@@ -369,7 +374,7 @@ class BaseLb
         $this->route_info = Route::getInfo();
 
         // Log
-        Log::component()->log('system', Logger::NOTICE, Lb::app()->getHostAddress(), $this->route_info);
+        Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress(), $this->route_info);
 
         // Auto Load
         spl_autoload_register(['self', 'autoload'], true, false);
