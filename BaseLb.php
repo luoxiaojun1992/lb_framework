@@ -9,12 +9,14 @@
 
 namespace lb;
 
+use Monolog\Logger;
 use lb\components\cache\Filecache;
 use lb\components\cache\Memcache;
 use lb\components\cache\Redis;
 use lb\components\db\mysql\Connection;
 use lb\components\Environment;
 use lb\components\error_handlers\Level;
+use lb\components\Log;
 use lb\components\mailer\Swift;
 use lb\components\Request;
 use lb\components\Route;
@@ -365,6 +367,9 @@ class BaseLb
 
         // Route
         $this->route_info = Route::getInfo();
+
+        // Log
+        Log::component()->log('system', Logger::NOTICE, Lb::app()->getHostAddress(), $this->route_info);
 
         // Auto Load
         spl_autoload_register(['self', 'autoload'], true, false);
