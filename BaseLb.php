@@ -291,6 +291,7 @@ class BaseLb
         Filecache::component()->flush();
     }
 
+    // Log Route Info
     public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
     {
         Log::component()->log($role, $level, $message, $context);
@@ -363,6 +364,16 @@ class BaseLb
 
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
+
+        // Set Timezone
+        if (isset($this->containers['config'])) {
+            $config_time_zone = $this->containers['config']->get('timeZone');
+            if ($config_time_zone) {
+                if (date_default_timezone_get() != $config_time_zone) {
+                    date_default_timezone_set($config_time_zone);
+                }
+            }
+        }
 
         // Start Session
         session_start();
