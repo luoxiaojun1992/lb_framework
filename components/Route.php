@@ -22,7 +22,11 @@ class Route
         ];
         $request_uri = Lb::app()->getUri();
         if (Lb::app()->isPrettyUrl()) {
-            $query_params = explode('/', trim($request_uri, '/'));
+            if (Lb::app()->getQueryString()) {
+                $query_params = explode('/', trim(str_replace('?' . Lb::app()->getQueryString(), '', $request_uri), '/'));
+            } else {
+                $query_params = explode('/', trim($request_uri, '/'));
+            }
             $route_info['controller'] = array_shift($query_params);
             foreach ($query_params as $key => $query_param) {
                 if (array_key_exists($query_param, $route_info) && $query_param != 'controller') {
