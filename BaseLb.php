@@ -108,6 +108,15 @@ class BaseLb
         return '';
     }
 
+    // Get Time Zone
+    public function getTimeZone()
+    {
+        if (isset($this->containers['config'])) {
+            return $this->containers['config']->get('timeZone');
+        }
+        return '';
+    }
+
     // Is Pretty Url
     public function isPrettyUrl()
     {
@@ -366,12 +375,10 @@ class BaseLb
         Lb::app()->containers['config'] = $config_container;
 
         // Set Timezone
-        if (isset($this->containers['config'])) {
-            $config_time_zone = $this->containers['config']->get('timeZone');
-            if ($config_time_zone) {
-                if (date_default_timezone_get() != $config_time_zone) {
-                    date_default_timezone_set($config_time_zone);
-                }
+        $config_time_zone = Lb::app()->getTimeZone();
+        if ($config_time_zone) {
+            if (date_default_timezone_get() != $config_time_zone) {
+                date_default_timezone_set($config_time_zone);
             }
         }
 
