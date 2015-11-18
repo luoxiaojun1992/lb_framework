@@ -31,14 +31,15 @@
     "jdorn/sql-formatter": "1.2.17",
     "kriswallsmith/assetic": "1.3.1",
     "patchwork/jsqueeze": "2.0.3",
-    "twbs/bootstrap": "3.3.5"
+    "twbs/bootstrap": "3.3.5",
+    "overtrue/pinyin": "2.*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.3.x-dev"
+      "dev-master": "1.5.x-dev"
     }
   }
 }
