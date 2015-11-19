@@ -306,6 +306,12 @@ class BaseLb
         Log::component()->log($role, $level, $message, $context);
     }
 
+    // Check If Logged In
+    public function loginRequired()
+    {
+
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
