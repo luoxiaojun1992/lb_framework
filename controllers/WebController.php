@@ -21,6 +21,11 @@ class WebController extends BaseController
 
     }
 
+    protected function beforeRenderPartial()
+    {
+
+    }
+
     protected function beforeRedirect()
     {
 
@@ -35,6 +40,18 @@ class WebController extends BaseController
             return Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, $this->layout, $return, $js_files, $css_files);
         } else {
             Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, $this->layout, $return, $js_files, $css_files);
+        }
+    }
+
+    public function renderPartial($template_name, $params, $return = false)
+    {
+        $this->beforeRenderPartial();
+        $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
+        $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
+        if ($return) {
+            return Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
+        } else {
+            Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
         }
     }
 
