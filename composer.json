@@ -34,7 +34,8 @@
     "twbs/bootstrap": "3.*",
     "overtrue/pinyin": "2.*",
     "goat1000/svggraph": "2.*",
-    "phpoffice/phpexcel": "1.*"
+    "phpoffice/phpexcel": "1.*",
+    "qiniu/php-sdk": "7.*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
