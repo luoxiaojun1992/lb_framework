@@ -9,6 +9,8 @@
 
 namespace lb\controllers;
 
+use lb\components\helpers\JsonHelper;
+use lb\components\helpers\XMLHelper;
 use lb\Lb;
 use lb\components\Render;
 
@@ -29,6 +31,26 @@ class WebController extends BaseController
     protected function beforeRedirect()
     {
 
+    }
+
+    protected function renderJson($array, $return = false)
+    {
+        $json = JsonHelper::encode($array);
+        if ($return) {
+            return $json;
+        } else {
+            Lb::app()->stop($json);
+        }
+    }
+
+    protected function renderXML($array, $return = false)
+    {
+        $xml = XMLHelper::encode($array);
+        if ($return) {
+            return $xml;
+        } else {
+            Lb::app()->stop($xml);
+        }
     }
 
     protected function render($template_name, $params, $return = false)
