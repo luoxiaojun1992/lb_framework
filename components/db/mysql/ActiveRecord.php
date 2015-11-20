@@ -16,6 +16,7 @@ class ActiveRecord
     protected $is_single = false;
     protected $rules = [];
     protected $errors = [];
+    public $labels = [];
     public $is_new_record = true;
 
     public function __set($name, $value)
