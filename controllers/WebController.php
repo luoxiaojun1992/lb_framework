@@ -18,6 +18,16 @@ class WebController extends BaseController
 {
     protected $layout = 'default';
 
+    protected function beforeRenderJson()
+    {
+
+    }
+
+    protected function beforeRenderXML()
+    {
+
+    }
+
     protected function beforeRender()
     {
 
@@ -35,6 +45,7 @@ class WebController extends BaseController
 
     protected function renderJson($array, $return = false)
     {
+        $this->beforeRenderJson();
         $json = JsonHelper::encode($array);
         if ($return) {
             return $json;
@@ -45,6 +56,7 @@ class WebController extends BaseController
 
     protected function renderXML($array, $return = false)
     {
+        $this->beforeRenderXML();
         $xml = XMLHelper::encode($array);
         if ($return) {
             return $xml;
