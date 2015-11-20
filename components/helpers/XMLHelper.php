@@ -26,26 +26,20 @@ class XMLHelper
 
     public static function arrToXMLString($array)
     {
-        return self::arrToXMLElement($array)->asXML();
+        $xmlTpl = '<?xml version="1.0" encoding="UTF-8" ?>';
+        return $xmlTpl . self::arrToXMLContent($array);
     }
 
-    public static function arrToXMLElement($array, $xmlElement = false)
+    public static function arrToXMLContent($array)
     {
-        $xmlTpl = <<<XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<xml></xml>
-XML;
-        if (!$xmlElement) {
-            $xmlElement = simplexml_load_string($xmlTpl, 'SimpleXMLElement', LIBXML_NOCDATA);
-        }
+        $xml_content = '';
         foreach ($array as $key => $val) {
             if (!is_array($val)) {
-                $xmlElement->addChild($key, $val);
+                $xml_content .= ("<{$key}>{$val}</{$key}>");
             } else {
-                $xmlElement->addChild($key);
-                $xmlElement = self::arrToXML($val, $xmlElement);
+                $xml_content .= ("<{$key}>" . self::arrToXMLContent($val) . "</{$key}>");
             }
         }
-        return $xmlElement;
+        return $xml_content;
     }
 }
