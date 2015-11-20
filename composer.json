@@ -33,14 +33,15 @@
     "patchwork/jsqueeze": "2.*",
     "twbs/bootstrap": "3.*",
     "overtrue/pinyin": "2.*",
-    "goat1000/svggraph": "2.*"
+    "goat1000/svggraph": "2.*",
+    "phpoffice/phpexcel": "1.*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.8.x-dev"
+      "dev-master": "1.9.x-dev"
     }
   }
 }
