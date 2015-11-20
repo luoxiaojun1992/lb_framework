@@ -49,6 +49,7 @@ class WebController extends BaseController
         if ($return) {
             return $xml;
         } else {
+            Header('Content-type:application/xml');
             Lb::app()->stop($xml);
         }
     }
