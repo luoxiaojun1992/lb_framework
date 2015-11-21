@@ -29,7 +29,7 @@ class Connection
     protected static $instance = false;
 
     const DB_TYPE = 'mysql';
-    protected $dsn_format = '%s:host=%s;dbname=%s';
+    protected $dsn_format = '%s:host=%s;dbname=%s;charset=utf8';
 
     public function __construct($containers)
     {
