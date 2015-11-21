@@ -180,6 +180,22 @@ class ActiveRecord
         return [];
     }
 
+    public function getLabels()
+    {
+        if (!$this->is_single) {
+            return $this->labels;
+        }
+        return [];
+    }
+
+    public function isNewRecord()
+    {
+        if (!$this->is_single) {
+            return $this->is_new_record;
+        }
+        return false;
+    }
+
     protected function valid()
     {
         $is_valid = true;
