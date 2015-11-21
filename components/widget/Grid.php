@@ -11,14 +11,23 @@ namespace lb\components\widget;
 
 class Grid extends Base
 {
-    public static function render($data_provider, $options)
+    public static function render($data_provider, $options, $htmlOptions = [])
     {
         $grid_tpl = <<<Grid
-<table>
+<table %s>
     <thead>%s</thead>
     <tbody>%s</tbody>
 </table>
 Grid;
+
+        $tableHtmlOptions = [];
+        if ($htmlOptions) {
+            foreach ($htmlOptions as $attribute_name => $attribute_value) {
+                $tableHtmlOptions[] = "$attribute_name=\"{$attribute_value}\"";
+            }
+        }
+        $tableHtmlOptionHtml = implode(' ', $tableHtmlOptions);
+
         $thead_tpl = '<tr>%s</tr>';
         $thead = [];
         foreach ($options as $option) {
@@ -50,7 +59,7 @@ Grid;
         }
         $tbody_html = implode('', $tbody);
 
-        $grid_html = sprintf($grid_tpl, $thead_html, $tbody_html);
+        $grid_html = sprintf($grid_tpl, $tableHtmlOptionHtml, $thead_html, $tbody_html);
 
         return $grid_html;
     }
