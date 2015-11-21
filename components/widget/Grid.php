@@ -45,7 +45,7 @@ Grid;
             foreach ($options as $option) {
                 if (isset($option['attribute'])) {
                     $data_value = $data->{$option['attribute']};
-                    if ($data_value) {
+                    if ($data_value !== false) {
                         $tmpStr .= "<td>{$data_value}</td>";
                     } else {
                         $tmpStr .= '<td>Not Set</td>';
