@@ -9,6 +9,8 @@
 
 namespace lb\components\widget;
 
+use lb\Lb;
+
 class Grid extends Base
 {
     public static function render($data_provider, $options, $htmlOptions = [])
@@ -75,7 +77,7 @@ Grid;
 Pagination;
 
         $page_total = ceil($data_total / $page_size);
-        if (!$page || !ctype_digit($page) || $page < 1) {
+        if (!$page || !is_int($page) || $page < 1) {
             $page = 1;
         }
         if ($page > $page_total) {
@@ -106,19 +108,24 @@ Pagination;
         }
 
         $page_code = '';
+        $uri = Lb::app()->getUri();
         if ($page > 1) {
             $page_code .= "<li>
-      <a href=\"#\" aria-label=\"Previous\">
+      <a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $page - 1]) . "\" aria-label=\"Previous\">
         <span aria-hidden=\"true\">&laquo;</span>
       </a>
     </li>";
         }
         for ($i = $init; $i <= $max; ++$i) {
-            $page_code .= "<li><a href=\"#\">{$i}</a></li>";
+            if ($page != $i) {
+                $page_code .= "<li><a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $i]) . "\">{$i}</a></li>";
+            } else {
+                $page_code .= "<li class=\"active\"><a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $i]) . "\">{$i} <span class=\"sr-only\">(current)</span></a></li>";
+            }
         }
         if ($page < $page_total) {
             $page_code .= "<li>
-      <a href=\"#\" aria-label=\"Next\">
+      <a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $page + 1]) . "\" aria-label=\"Next\">
         <span aria-hidden=\"true\">&raquo;</span>
       </a>
     </li>";
