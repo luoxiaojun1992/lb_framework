@@ -29,6 +29,7 @@ class Dao
 
     // Read
     const SELECT_FROM_SQL_TPL = "SELECT %s FROM %s";
+    const SELECT_COUNT_FROM_SQL_TPL = "SELECT COUNT(*) AS total FROM %s";
     const WHERE_SQL_TPL = "WHERE %s";
     const GROUP_SQL_TPL = "GROUP BY %s";
     const ORDER_SQL_TPL = "ORDER BY %s";
@@ -101,6 +102,19 @@ class Dao
         return false;
     }
 
+    public function count()
+    {
+        $count = 0;
+        $query_result = $this->query(true);
+        if ($query_result) {
+            $result = $query_result->fetch();
+            if (isset($result['total'])) {
+                $count = $result['total'];
+            }
+        }
+        return $count;
+    }
+
     public function find()
     {
         $result = [];
@@ -121,11 +135,11 @@ class Dao
         return $result;
     }
 
-    protected function query()
+    protected function query($count = false)
     {
         $result = false;
         if ($this->is_query) {
-            $query_sql_statement = $this->createQueryStatement();
+            $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
                 $statement = self::prepare($query_sql_statement, 'slave');
                 if ($statement) {
@@ -284,12 +298,16 @@ class Dao
         return $result;
     }
 
-    protected function createQueryStatement()
+    protected function createQueryStatement($count = false)
     {
         $statement = '';
         if ($this->is_query) {
             if ($this->_fields && $this->_table) {
-                $select_from_sql_statement = sprintf(self::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
+                if ($count) {
+                    $select_from_sql_statement = sprintf(self::SELECT_COUNT_FROM_SQL_TPL, $this->_table);
+                } else {
+                    $select_from_sql_statement = sprintf(self::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
+                }
                 $statement .= $select_from_sql_statement;
 
                 // WHERE

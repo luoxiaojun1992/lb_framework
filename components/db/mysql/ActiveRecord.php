@@ -86,6 +86,14 @@ class ActiveRecord
         return [];
     }
 
+    public function countAll()
+    {
+        if ($this->is_single) {
+            return Dao::component()->select(['*'])->from(static::TABLE_NAME)->count();
+        }
+        return 0;
+    }
+
     public function findByPk($primary_key)
     {
         if ($this->is_single) {
