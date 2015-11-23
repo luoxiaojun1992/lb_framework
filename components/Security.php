@@ -86,10 +86,10 @@ class Security
         return md5(uniqid(rand(), true));
     }
 
-    public static function validCsrfToken()
+    public static function validCsrfToken($controller, $action)
     {
         if (strtolower(Lb::app()->getRequestMethod()) == 'post') {
-            $session_csrf_token = Lb::app()->getSession('csrf_token');
+            $session_csrf_token = Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
             $request_csrf_token = Lb::app()->getParam('csrf_token');
             if ($session_csrf_token && $request_csrf_token) {
                 if ($session_csrf_token != $request_csrf_token) {
@@ -99,6 +99,6 @@ class Security
                 Lb::app()->stop();
             }
         }
-        Lb::app()->setSession('csrf_token', Lb::app()->getCsrfToken());
+        Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
     }
 }

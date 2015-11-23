@@ -409,6 +409,10 @@ class BaseLb
 
         // Route
         $this->route_info = Route::getInfo();
+        if (!$this->route_info['controller'] || !$this->route_info['action']) {
+            $this->route_info['controller'] = 'index';
+            $this->route_info['action'] = 'index';
+        }
 
         // Log
         Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress(), $this->route_info);
@@ -423,17 +427,13 @@ class BaseLb
         Security::inputFilter();
 
         // Csrf Token Validation
-        Security::validCsrfToken();
+        Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
     }
 
     // Start App
     public function run()
     {
         if (!$this->is_single) {
-            if (!$this->route_info['controller'] || !$this->route_info['action']) {
-                $this->route_info['controller'] = 'index';
-                $this->route_info['action'] = 'index';
-            }
             Route::redirect($this->route_info);
         }
     }
