@@ -48,12 +48,22 @@ Grid;
                 if (isset($option['attribute'])) {
                     $data_value = $data->{$option['attribute']};
                     if ($data_value !== false) {
-                        $tmpStr .= "<td>{$data_value}</td>";
+                        if (isset($option['value'])) {
+                            $data_value = $option['value']($data_value);
+                            $tmpStr .= "<td>{$data_value}</td>";
+                        } else {
+                            $tmpStr .= "<td>{$data_value}</td>";
+                        }
                     } else {
                         $tmpStr .= '<td>Not Set</td>';
                     }
                 } else {
-                    $tmpStr .= '<td>Not Set</td>';
+                    if (isset($option['value'])) {
+                        $data_value = $option['value']();
+                        $tmpStr .= "<td>{$data_value}</td>";
+                    } else {
+                        $tmpStr .= '<td>Not Set</td>';
+                    }
                 }
             }
             $tmpStr .= '</tr>';
