@@ -12,6 +12,7 @@ namespace lb\components\assets;
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
 use Assetic\Filter\JSqueezeFilter;
+use Assetic\Filter\JSMinFilter;
 use lb\Lb;
 
 class Javascript
@@ -22,7 +23,7 @@ class Javascript
         foreach ($js_files as $js_file) {
             $js_assets[] = new FileAsset($js_file);
         }
-        $js = new AssetCollection($js_assets, new JSqueezeFilter());
+        $js = new AssetCollection($js_assets, new JSMinFilter());
         $js_html = $js->dump();
         $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'assets/js';
         if (!is_dir($assets_cache_dir)) {
