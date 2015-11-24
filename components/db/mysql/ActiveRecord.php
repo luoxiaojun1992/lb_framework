@@ -113,6 +113,17 @@ class ActiveRecord
         return false;
     }
 
+    public function deleteByPk($primary_key)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->delete(static::TABLE_NAME, [
+                    $this->_primary_key => $primary_key,
+                ]);
+        }
+        return false;
+    }
+
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
