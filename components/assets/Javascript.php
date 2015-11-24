@@ -11,7 +11,6 @@ namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Filter\JSqueezeFilter;
 use Assetic\Filter\JSMinFilter;
 use lb\Lb;
 
