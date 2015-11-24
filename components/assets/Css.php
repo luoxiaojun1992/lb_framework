@@ -11,7 +11,7 @@ namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Asset\CssMinFilter;
+use Assetic\Filter\CssMinFilter;
 use lb\Lb;
 
 class Css
