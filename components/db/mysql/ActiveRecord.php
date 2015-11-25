@@ -124,6 +124,15 @@ class ActiveRecord
         return false;
     }
 
+    public function deleteByConditions($conditions)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->delete(static::TABLE_NAME, $conditions);
+        }
+        return false;
+    }
+
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
