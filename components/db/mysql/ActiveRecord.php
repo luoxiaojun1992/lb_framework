@@ -133,6 +133,19 @@ class ActiveRecord
         return false;
     }
 
+    public function deleteBySql($sql)
+    {
+        if ($this->is_single) {
+            $res = false;
+            $statement = Dao::component()->prepare($sql, 'master');
+            if ($statement) {
+                $res = $statement->execute();
+            }
+            return $res;
+        }
+        return false;
+    }
+
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
