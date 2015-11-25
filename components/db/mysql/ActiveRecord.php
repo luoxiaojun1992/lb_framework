@@ -200,6 +200,14 @@ class ActiveRecord
         return 0;
     }
 
+    public function getPrimaryName()
+    {
+        if ($this->is_single) {
+            return $this->_primary_key;
+        }
+        return false;
+    }
+
     public function getAttributes()
     {
         if (!$this->is_single) {
