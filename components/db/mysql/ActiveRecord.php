@@ -19,6 +19,11 @@ class ActiveRecord
     public $labels = [];
     public $is_new_record = true;
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     public function __set($name, $value)
     {
         if (!$this->is_single) {

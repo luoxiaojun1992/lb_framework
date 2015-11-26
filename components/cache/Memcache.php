@@ -30,6 +30,11 @@ class Memcache
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     protected function getConnection()
     {
         $this->conn = new \Memcached();

@@ -43,6 +43,11 @@ class Filecache {
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     //增加一对缓存数据
     public function add($key, $value, $cache_time = 86400)
     {

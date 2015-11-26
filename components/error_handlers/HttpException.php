@@ -18,4 +18,9 @@ class HttpException extends \Exception
         parent::__construct($message, $code, $previous);
         Lb::app()->stop(implode(':', [$code, $message]));
     }
+
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
 }

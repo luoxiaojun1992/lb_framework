@@ -29,6 +29,11 @@ class Log
         $this->loggers['user'] = $user_logger;
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     public static function component()
     {
         if (self::$instance instanceof self) {

@@ -34,6 +34,11 @@ class Swift
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     protected function getConnection()
     {
         $this->transport = \Swift_SmtpTransport::newInstance($this->_smtp, $this->_smtp_port);

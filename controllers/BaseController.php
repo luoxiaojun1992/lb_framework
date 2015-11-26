@@ -18,6 +18,11 @@ class BaseController
         $this->beforeAction();
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     protected function beforeAction()
     {
 

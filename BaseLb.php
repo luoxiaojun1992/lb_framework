@@ -44,6 +44,11 @@ class BaseLb
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     // Singleton App
     public static function app()
     {

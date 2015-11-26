@@ -11,5 +11,8 @@ namespace lb\components\widget;
 
 class Base
 {
-
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
 }

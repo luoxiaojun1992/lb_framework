@@ -64,6 +64,11 @@ class Connection
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     protected function getDsn($node_type)
     {
         switch ($node_type) {

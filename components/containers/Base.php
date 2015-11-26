@@ -14,6 +14,11 @@ class Base
     protected $components = [];
     protected static $instance = false;
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     public function __set($component_name, $component_content)
     {
         if (!property_exists('self', $component_name)) {

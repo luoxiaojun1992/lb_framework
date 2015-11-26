@@ -50,6 +50,11 @@ class Dao
         }
     }
 
+    public function __clone()
+    {
+        // TODO: Implement __clone() method.
+    }
+
     public function select($fields)
     {
         $this->is_query = true;
