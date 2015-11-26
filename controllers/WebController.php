@@ -109,4 +109,9 @@ class WebController extends BaseController
             Lb::app()->stop();
         }
     }
+
+    protected function isPost()
+    {
+        return strtolower(Lb::app()->getRequestMethod()) == 'post';
+    }
 }
