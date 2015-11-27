@@ -52,10 +52,10 @@ class BaseLb
     // Singleton App
     public static function app()
     {
-        if (self::$app instanceof self) {
-            return self::$app;
+        if (static::$app instanceof self) {
+            return static::$app;
         } else {
-            return (self::$app = new self(true));
+            return (static::$app = new static(true));
         }
     }
 
