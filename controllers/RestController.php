@@ -21,11 +21,12 @@ class RestController extends BaseController
 
     protected function response($data, $format)
     {
-        $response_content = '';
         switch ($format) {
-            case 'json' :
+            case 'json':
                 $response_content = JsonHelper::encode($data);
                 break;
+            default:
+                $response_content = '';
         }
         Lb::app()->stop($response_content);
     }
