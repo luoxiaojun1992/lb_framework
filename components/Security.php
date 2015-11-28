@@ -25,14 +25,14 @@ class Security
     public static function inputFilter()
     {
         foreach ($_REQUEST as $request_name => $request_value) {
-            $_REQUEST[$request_name] = self::getFilteredInput($request_value);
+            $_REQUEST[$request_name] = static::getFilteredInput($request_value);
         }
     }
 
     protected static function getFilteredInput($input_value)
     {
         if (!is_array($input_value)) {
-            foreach (self::$xssfilters as $xssfilter) {
+            foreach (static::$xssfilters as $xssfilter) {
                 if (preg_match($xssfilter, $input_value) == true) {
                     $input_value = preg_replace($xssfilter, '', $input_value);
                 }
@@ -43,7 +43,7 @@ class Security
         } else {
             foreach ($input_value as $key => $value) {
                 if (!is_array($value)) {
-                    foreach (self::$xssfilters as $xssfilter) {
+                    foreach (static::$xssfilters as $xssfilter) {
                         if (preg_match($xssfilter, $value) == true) {
                             $value = preg_replace($xssfilter, '', $value);
                         }
@@ -57,8 +57,8 @@ class Security
         }
         $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
         if (property_exists(get_called_class(), $filter_name)) {
-            $filter = self::$$filter_name;
-            $input_value = self::filter($input_value, $filter);
+            $filter = static::$$filter_name;
+            $input_value = static::filter($input_value, $filter);
         }
         return $input_value;
     }
