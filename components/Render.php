@@ -53,7 +53,7 @@ class Render
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
-            self::$root_dir = $root_dir;
+            static::$root_dir = $root_dir;
 
             $view_file_path = static::getViewPath($template_name);
             if (file_exists($view_file_path)) {
