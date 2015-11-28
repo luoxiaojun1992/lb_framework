@@ -34,10 +34,10 @@ class Config extends Base
      */
     public static function component()
     {
-        if (self::$instance instanceof self) {
-            return self::$instance;
+        if (static::$instance instanceof static) {
+            return static::$instance;
         } else {
-            return (self::$instance = new self());
+            return (static::$instance = new static());
         }
     }
 }
