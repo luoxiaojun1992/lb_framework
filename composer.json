@@ -37,14 +37,15 @@
     "phpoffice/phpexcel": "1.*",
     "qiniu/php-sdk": "7.*",
     "elasticsearch/elasticsearch": "2.*",
-    "denissimon/prediction-builder": "*"
+    "denissimon/prediction-builder": "*",
+    "centraldesktop/protobuf-php": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.1.x-dev"
+      "dev-master": "1.2.x-dev"
     }
   }
 }
