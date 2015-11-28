@@ -11,6 +11,8 @@ namespace lb\components\helpers;
 
 class XMLHelper
 {
+    const XML_TPL = '<?xml version="1.0" encoding="UTF-8" ?>';
+
     public static function encode($data)
     {
         $xml = '';
@@ -26,8 +28,7 @@ class XMLHelper
 
     public static function arrToXMLString($array)
     {
-        $xmlTpl = '<?xml version="1.0" encoding="UTF-8" ?>';
-        return $xmlTpl . static::arrToXMLContent($array);
+        return self::XML_TPL . static::arrToXMLContent($array);
     }
 
     public static function arrToXMLContent($array)
