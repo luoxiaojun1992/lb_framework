@@ -68,7 +68,7 @@ class Render
                 if ($css_files) {
                     $css_html = '<link rel="stylesheet" href="' . Css::dump($css_files) . '" />';
                 }
-                $layout_file_path = self::getLayoutPath($layout_name);
+                $layout_file_path = static::getLayoutPath($layout_name);
                 if (file_exists($layout_file_path)) {
                     ob_start();
                     include_once($view_file_path);
