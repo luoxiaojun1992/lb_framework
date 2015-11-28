@@ -43,10 +43,10 @@ class Dao
 
     public static function component()
     {
-        if (self::$instance instanceof self) {
-            return self::$instance;
+        if (static::$instance instanceof static) {
+            return static::$instance;
         } else {
-            return (self::$instance = new self());
+            return (static::$instance = new static());
         }
     }
 
@@ -60,7 +60,7 @@ class Dao
         $this->is_query = true;
         if (is_array($fields) && $fields) {
             $this->_fields = $fields;
-            return self::$instance;
+            return static::$instance;
         }
         return false;
     }
@@ -68,14 +68,14 @@ class Dao
     public function from($table)
     {
         $this->_table = $table;
-        return self::$instance;
+        return static::$instance;
     }
 
     public function where($conditions)
     {
         if ($this->_table && is_array($conditions) && $conditions) {
             $this->_conditions = $conditions;
-            return self::$instance;
+            return static::$instance;
         }
         return false;
     }
@@ -84,7 +84,7 @@ class Dao
     {
         if ($this->_table && is_array($orders) && $orders) {
             $this->_orders = $orders;
-            return self::$instance;
+            return static::$instance;
         }
         return false;
     }
@@ -93,7 +93,7 @@ class Dao
     {
         if ($this->_table && $limit) {
             $this->_limit = $limit;
-            return self::$instance;
+            return static::$instance;
         }
         return false;
     }
@@ -102,7 +102,7 @@ class Dao
     {
         if ($this->_table && is_array($group_fields) && $group_fields) {
             $this->_group_fields = $group_fields;
-            return self::$instance;
+            return static::$instance;
         }
         return false;
     }
@@ -146,7 +146,7 @@ class Dao
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
-                $statement = self::prepare($query_sql_statement, 'slave');
+                $statement = static::prepare($query_sql_statement, 'slave');
                 if ($statement) {
                     $res = $statement->execute();
                     if ($res) {
@@ -191,8 +191,8 @@ class Dao
                 }
             }
             if ($filtered_values) {
-                $insert_sql_statement = sprintf(self::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
-                $statement = self::prepare($insert_sql_statement, 'master');
+                $insert_sql_statement = sprintf(static::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
+                $statement = static::prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -221,8 +221,8 @@ class Dao
                 }
             }
             if ($filtered_multi_values) {
-                $insert_sql_statement = sprintf(self::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
-                $statement = self::prepare($insert_sql_statement, 'master');
+                $insert_sql_statement = sprintf(static::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
+                $statement = static::prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -261,8 +261,8 @@ class Dao
             }
 
             if ($new_values && $new_conditions) {
-                $update_sql_statement = sprintf(self::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = self::prepare($update_sql_statement, 'master');
+                $update_sql_statement = sprintf(static::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
+                $statement = static::prepare($update_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -293,8 +293,8 @@ class Dao
             }
 
             if ($new_conditions) {
-                $delete_sql_statement = sprintf(self::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = self::prepare($delete_sql_statement, 'master');
+                $delete_sql_statement = sprintf(static::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
+                $statement = static::prepare($delete_sql_statement, 'master');
                 if ($statement) {
                     $result = $statement->execute();
                 }
@@ -309,9 +309,9 @@ class Dao
         if ($this->is_query) {
             if ($this->_fields && $this->_table) {
                 if ($count) {
-                    $select_from_sql_statement = sprintf(self::SELECT_COUNT_FROM_SQL_TPL, $this->_table);
+                    $select_from_sql_statement = sprintf(static::SELECT_COUNT_FROM_SQL_TPL, $this->_table);
                 } else {
-                    $select_from_sql_statement = sprintf(self::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
+                    $select_from_sql_statement = sprintf(static::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
                 }
                 $statement .= $select_from_sql_statement;
 
@@ -337,14 +337,14 @@ class Dao
                     }
                     if ($conditions) {
                         $condition_statement = implode(' AND ', $conditions);
-                        $where_sql_statement = sprintf(self::WHERE_SQL_TPL, $condition_statement);
+                        $where_sql_statement = sprintf(static::WHERE_SQL_TPL, $condition_statement);
                         $statement .= (' ' . $where_sql_statement);
                     }
                 }
 
                 // GROUP
                 if ($this->_group_fields) {
-                    $group_sql_statement = sprintf(self::GROUP_SQL_TPL, implode(',', $this->_group_fields));
+                    $group_sql_statement = sprintf(static::GROUP_SQL_TPL, implode(',', $this->_group_fields));
                     $statement .= (' ' . $group_sql_statement);
                 }
 
@@ -356,14 +356,14 @@ class Dao
                     }
                     if ($orders) {
                         $order_statement = implode(',', $orders);
-                        $order_sql_statement = sprintf(self::ORDER_SQL_TPL, $order_statement);
+                        $order_sql_statement = sprintf(static::ORDER_SQL_TPL, $order_statement);
                         $statement .= (' ' . $order_sql_statement);
                     }
                 }
 
                 // LIMIT
                 if ($this->_limit) {
-                    $limit_sql_statement = sprintf(self::LIMIT_SQL_TPL, $this->_limit);
+                    $limit_sql_statement = sprintf(static::LIMIT_SQL_TPL, $this->_limit);
                     $statement .= (' ' . $limit_sql_statement);
                 }
             }
