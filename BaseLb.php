@@ -308,7 +308,7 @@ class BaseLb
     // Log Route Info
     public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
     {
-        Log::component()->log($role, $level, $message, $context);
+        Log::component()->record($role, $level, $message, $context);
     }
 
     // Check If Logged In

@@ -36,14 +36,14 @@ class Log
 
     public static function component()
     {
-        if (self::$instance instanceof self) {
-            return self::$instance;
+        if (static::$instance instanceof static) {
+            return static::$instance;
         } else {
-            return (self::$instance = new self());
+            return (static::$instance = new static());
         }
     }
 
-    public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
+    public function record($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
     {
         if (isset($this->loggers[$role])) {
             $this->loggers[$role]->addRecord($level, $message, $context);
