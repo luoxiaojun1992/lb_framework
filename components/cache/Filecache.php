@@ -31,7 +31,7 @@ class Filecache {
     {
         $this->containers = $containers;
         if (isset($this->containers['config'])) {
-            $cache_config = $this->containers['config']->get(self::CACHE_TYPE);
+            $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
             if ($cache_config) {
                 $this->cache_path = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime/cache';
                 $this->cache_time = isset($cache_config['cache_time']) ? $cache_config['cache_time'] : $this->cache_time;
@@ -135,10 +135,10 @@ class Filecache {
 
     public static function component($containers = [], $reset = false)
     {
-        if (self::$instance instanceof self) {
-            return $reset ? (self::$instance = new self($containers)) : self::$instance;
+        if (static::$instance instanceof static) {
+            return $reset ? (static::$instance = new static($containers)) : static::$instance;
         } else {
-            return (self::$instance = new self($containers));
+            return (static::$instance = new static($containers));
         }
     }
 }
