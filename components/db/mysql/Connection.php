@@ -73,10 +73,10 @@ class Connection
     {
         switch ($node_type) {
             case 'master':
-                $this->_master_dsn = sprintf($this->dsn_format, self::DB_TYPE, $this->_master_host, $this->_master_db);
+                $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
                 break;
             case 'slave':
-                $this->_slave_dsn = sprintf($this->dsn_format, self::DB_TYPE, $this->_slave_host, $this->_slave_db);
+                $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
                 break;
         }
     }
@@ -95,10 +95,10 @@ class Connection
 
     public static function component($containers = [], $reset = false)
     {
-        if (self::$instance instanceof self) {
-            return $reset ? (self::$instance = new self($containers)) : self::$instance;
+        if (static::$instance instanceof static) {
+            return $reset ? (static::$instance = new static($containers)) : static::$instance;
         } else {
-            return (self::$instance = new self($containers));
+            return (static::$instance = new static($containers));
         }
     }
 }
