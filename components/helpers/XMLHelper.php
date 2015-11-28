@@ -28,7 +28,7 @@ class XMLHelper
 
     public static function arrToXMLString($array)
     {
-        return self::XML_TPL . static::arrToXMLContent($array);
+        return static::XML_TPL . static::arrToXMLContent($array);
     }
 
     public static function arrToXMLContent($array)
