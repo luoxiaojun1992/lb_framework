@@ -281,6 +281,8 @@ class ActiveRecord
                                     }
                                 }
                                 break;
+                            default:
+                                $is_valid = true;
                         }
                     }
                 }
