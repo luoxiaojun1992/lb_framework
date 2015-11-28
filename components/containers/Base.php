@@ -32,7 +32,7 @@ class Base
             if (array_key_exists($component_name, $this->components)) {
                 return $this->components[$component_name];
             }
-            return false;
         }
+        return false;
     }
 }
