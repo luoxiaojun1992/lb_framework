@@ -48,10 +48,10 @@ class Swift
 
     public static function component($containers = [], $reset = false)
     {
-        if (self::$instance instanceof self) {
-            return $reset ? (self::$instance = new self($containers)) : self::$instance;
+        if (static::$instance instanceof static) {
+            return $reset ? (static::$instance = new static($containers)) : static::$instance;
         } else {
-            return (self::$instance = new self($containers));
+            return (static::$instance = new static($containers));
         }
     }
 

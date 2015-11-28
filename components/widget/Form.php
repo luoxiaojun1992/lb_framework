@@ -29,11 +29,11 @@ EndForm;
                 $otherAttributes[] = implode('=', [$attribute_name, '"' . $attribute_value . '"']);
             }
         }
-        return sprintf(self::FORM_TPL, $id, $method, $action, $class, implode(' ', $otherAttributes));
+        return sprintf(static::FORM_TPL, $id, $method, $action, $class, implode(' ', $otherAttributes));
     }
 
     public static function endForm($controller_id = '', $csrf_token = '')
     {
-        return sprintf(self::END_FORM_TPL, $controller_id, $controller_id, $csrf_token);
+        return sprintf(static::END_FORM_TPL, $controller_id, $controller_id, $csrf_token);
     }
 }
