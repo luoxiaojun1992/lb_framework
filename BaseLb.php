@@ -175,12 +175,13 @@ class BaseLb
                         return Connection::component()->write_conn;
                     case 'slave':
                         return Connection::component()->read_conn;
+                    default:
+                        return Connection::component()->write_conn;
                 }
                 break;
             default:
                 return false;
         }
-        return false;
     }
 
     // Request Redirect
