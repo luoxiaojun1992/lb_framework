@@ -276,6 +276,8 @@ class ActiveRecord
                                                 $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
                                             }
                                             break;
+                                        default:
+                                            $is_valid = true;
                                     }
                                 }
                                 break;
