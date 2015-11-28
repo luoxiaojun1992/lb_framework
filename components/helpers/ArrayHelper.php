@@ -18,7 +18,7 @@ class ArrayHelper
 
             foreach ($array as $value) {
                 if (is_array($value)) {
-                    $depth = self::array_depth($value) + 1;
+                    $depth = static::array_depth($value) + 1;
 
                     if ($depth > $max_depth) {
                         $max_depth = $depth;
@@ -34,7 +34,7 @@ class ArrayHelper
     {
         $result = false;
         if (is_array($array)) {
-            $result = self::array_depth($array) > 1;
+            $result = static::array_depth($array) > 1;
         }
         return $result;
     }

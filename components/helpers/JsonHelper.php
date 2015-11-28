@@ -27,7 +27,7 @@ class JsonHelper
     public static function decode($json)
     {
         $result = [$json];
-        if (self::is_json($json)) {
+        if (static::is_json($json)) {
             $result = json_decode($json, true);
         }
         return $result;
