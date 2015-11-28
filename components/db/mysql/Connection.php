@@ -78,6 +78,8 @@ class Connection
             case 'slave':
                 $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
                 break;
+            default:
+                $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
         }
     }
 
@@ -90,6 +92,8 @@ class Connection
             case 'slave':
                 $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
                 break;
+            default:
+                $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
         }
     }
 
