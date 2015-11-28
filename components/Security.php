@@ -101,4 +101,17 @@ class Security
         }
         Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
     }
+
+    public static function cors($controller, $action)
+    {
+        if (isset(Lb::app()->containers['config'])) {
+            $config = Lb::app()->containers['config'];
+            $cors = $config->get('cors');
+            if ($cors) {
+                if (isset($cors[$controller][$action]) && $cors[$controller][$action] == true) {
+                    header('Access Control Allow Origin: *');
+                }
+            }
+        }
+    }
 }

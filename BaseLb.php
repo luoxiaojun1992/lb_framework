@@ -434,6 +434,9 @@ class BaseLb
 
         // Csrf Token Validation
         Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
+
+        // CORS
+        Security::cors($this->route_info['controller'], $this->route_info['action']);
     }
 
     // Start App
