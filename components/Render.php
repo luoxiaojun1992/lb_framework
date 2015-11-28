@@ -19,20 +19,20 @@ class Render
 
     public static function getViewDir()
     {
-        $root_dir = self::$root_dir ? : Lb::app()->getRootDir();
+        $root_dir = static::$root_dir ? : Lb::app()->getRootDir();
         return $root_dir . DIRECTORY_SEPARATOR . 'views';
     }
 
     public static function getLayoutDir()
     {
-        $root_dir = self::$root_dir ? : Lb::app()->getRootDir();
+        $root_dir = static::$root_dir ? : Lb::app()->getRootDir();
         return $root_dir . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts';
     }
 
     public static function getViewPath($template_name)
     {
         $view_file_path = '';
-        $views_dir = self::getViewDir();
+        $views_dir = static::getViewDir();
         if (is_dir($views_dir)) {
             $view_file_path = $views_dir . DIRECTORY_SEPARATOR . $template_name . '.php';
         }
@@ -42,7 +42,7 @@ class Render
     public static function getLayoutPath($layout_name)
     {
         $layout_file_path = '';
-        $layouts_dir = self::getLayoutDir();
+        $layouts_dir = static::getLayoutDir();
         if (is_dir($layouts_dir)) {
             $layout_file_path = $layouts_dir . DIRECTORY_SEPARATOR . $layout_name . '.php';
         }
@@ -55,7 +55,7 @@ class Render
         if ($root_dir) {
             self::$root_dir = $root_dir;
 
-            $view_file_path = self::getViewPath($template_name);
+            $view_file_path = static::getViewPath($template_name);
             if (file_exists($view_file_path)) {
                 foreach ($params as $param_name => $param_value) {
                     $$param_name = $param_value;
