@@ -429,6 +429,9 @@ class BaseLb
         // Set Error Level
         Level::set();
 
+        // IP Filter
+        Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
+
         // Input Filter
         Security::inputFilter();
 

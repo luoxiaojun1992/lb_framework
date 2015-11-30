@@ -9,6 +9,7 @@
 
 namespace lb\components;
 
+use lb\components\helpers\ArrayHelper;
 use lb\Lb;
 
 class Security
@@ -110,6 +111,21 @@ class Security
             if ($cors) {
                 if (isset($cors[$controller][$action]) && $cors[$controller][$action] == true) {
                     header('Access Control Allow Origin: *');
+                }
+            }
+        }
+    }
+
+    public static function ipFilter($controller, $action)
+    {
+        if (isset(Lb::app()->containers['config'])) {
+            $config = Lb::app()->containers['config'];
+            $filter = $config->get('filter');
+            if ($filter) {
+                if (isset($filter['ip'][$controller][$action]) && is_array($filter['ip'][$controller][$action]) && ArrayHelper::array_depth($filter['ip'][$controller][$action]) == 1) {
+                    if (in_array(Lb::app()->getClientAddress(), $filter['ip'][$controller][$action])) {
+                        Lb::app()->stop('IP Forbidden');
+                    }
                 }
             }
         }
