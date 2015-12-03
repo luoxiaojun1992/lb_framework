@@ -148,9 +148,22 @@ class Dao
             if ($query_sql_statement) {
                 $statement = static::prepare($query_sql_statement, 'slave');
                 if ($statement) {
-                    $res = $statement->execute();
-                    if ($res) {
-                        $result = $statement;
+                    try {
+                        $res = $statement->execute();
+                        if ($res) {
+                            $result = $statement;
+                        }
+                    } catch(\PDOException $e) {
+                        if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006){
+                            Connection::component(Connection::component()->containers, true);
+                            $statement = static::prepare($query_sql_statement, 'slave');
+                            if ($statement) {
+                                $res = $statement->execute();
+                                if ($res) {
+                                    $result = $statement;
+                                }
+                            }
+                        }
                     }
                 }
             }
