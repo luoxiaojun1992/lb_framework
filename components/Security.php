@@ -46,9 +46,9 @@ class Security
             // ;? matches the ;, which is optional
             // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
             // @ @ search for the hex values
-            $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val); // with a ;
+            $val = preg_replace('/(&#[xX]0{0,8}'.dechex(ord($search[$i])).';?)/i', $search[$i], $val);
             // @ @ 0{0,7} matches '0' zero to seven times
-            $val = preg_replace('/(�{0,8}'.ord($search[$i]).';?)/', $search[$i], $val); // with a ;
+            $val = preg_replace('/(�{0,8}'.ord($search[$i]).';?)/', $search[$i], $val);
         }
         // now the only remaining whitespace attacks are \t, \n, and \r
         $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
