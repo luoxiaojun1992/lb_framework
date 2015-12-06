@@ -1,2 +1,2 @@
 REVIEWBOARD_URL = 'http://120.27.135.130/'
-REPOSITORY = 'Lb_Framework'
+REPOSITORY = 'https://git.oschina.net/lb002/lb_framework.git'

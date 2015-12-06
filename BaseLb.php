@@ -324,7 +324,7 @@ class BaseLb
 
     }
 
-    // Login
+    // Log In
     public function login()
     {
 
