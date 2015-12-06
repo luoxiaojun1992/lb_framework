@@ -16,7 +16,6 @@ class Form extends Base
 Form;
 
     const END_FORM_TPL = <<<EndForm
-<input type="hidden" name="%s" value="%s" />
 <input type="hidden" name="csrf_token" value="%s" />
 </form>
 EndForm;
@@ -32,8 +31,8 @@ EndForm;
         return sprintf(static::FORM_TPL, $id, $method, $action, $class, implode(' ', $otherAttributes));
     }
 
-    public static function endForm($controller_id = '', $csrf_token = '')
+    public static function endForm($csrf_token = '')
     {
-        return sprintf(static::END_FORM_TPL, $controller_id, $controller_id, $csrf_token);
+        return sprintf(static::END_FORM_TPL, $csrf_token);
     }
 }
