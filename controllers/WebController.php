@@ -69,7 +69,7 @@ class WebController extends BaseController
     protected function render($template_name, $params, $return = false)
     {
         $this->beforeRender();
-        $params += ['this' => $this];
+        $params += ['controller' => $this];
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
@@ -82,7 +82,7 @@ class WebController extends BaseController
     public function renderPartial($template_name, $params, $return = false)
     {
         $this->beforeRenderPartial();
-        $params += ['this' => $this];
+        $params += ['controller' => $this];
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
