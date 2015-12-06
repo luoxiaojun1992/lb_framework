@@ -324,6 +324,12 @@ class BaseLb
 
     }
 
+    // Login
+    public function login()
+    {
+
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
