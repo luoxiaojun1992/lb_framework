@@ -318,6 +318,12 @@ class BaseLb
 
     }
 
+    // Check If is Guest
+    public function isGuest()
+    {
+
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
