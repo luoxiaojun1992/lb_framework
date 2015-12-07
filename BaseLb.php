@@ -125,8 +125,8 @@ class BaseLb
     // Get Cdn Host
     public function getCdnHost()
     {
-        if (isset($this->containers['config']['cdn_host'])) {
-            return trim($this->containers['config']['cdn_host'], '/');
+        if (isset($this->containers['config'])) {
+            return trim($this->containers['config']->get('cdn_host'), '/');
         }
         return '';
     }
