@@ -62,11 +62,19 @@ class Render
                 }
                 $js_html = '';
                 if ($js_files) {
-                    $js_html = '<script src="' . Javascript::dump($js_files) . '"></script>';
+                    if (Lb::app()->getCdnHost()) {
+                        $js_html = '<script src="' . Lb::app()->getCdnHost() . Javascript::dump($js_files) . '"></script>';
+                    } else {
+                        $js_html = '<script src="' . Javascript::dump($js_files) . '"></script>';
+                    }
                 }
                 $css_html = '';
                 if ($css_files) {
-                    $css_html = '<link rel="stylesheet" href="' . Css::dump($css_files) . '" />';
+                    if (Lb::app()->getCdnHost()) {
+                        $css_html = '<link rel="stylesheet" href="' . Lb::app()->getCdnHost() . Css::dump($css_files) . '" />';
+                    } else {
+                        $css_html = '<link rel="stylesheet" href="' . Css::dump($css_files) . '" />';
+                    }
                 }
                 $layout_file_path = static::getLayoutPath($layout_name);
                 if (file_exists($layout_file_path)) {

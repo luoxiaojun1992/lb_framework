@@ -122,6 +122,15 @@ class BaseLb
         return '';
     }
 
+    // Get Cdn Host
+    public function getCdnHost()
+    {
+        if (isset($this->containers['config']['cdn_host'])) {
+            return $this->containers['config']['cdn_host'];
+        }
+        return '';
+    }
+
     // Is Pretty Url
     public function isPrettyUrl()
     {
