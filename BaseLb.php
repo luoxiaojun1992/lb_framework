@@ -230,6 +230,12 @@ class BaseLb
         $_SESSION[$session_key] = $session_value;
     }
 
+    // Get Cookie Value
+    public function getCookie($cookie_key)
+    {
+        return isset($_COOKIE[$cookie_key]) ? $_COOKIE[$cookie_key] : false;
+    }
+
     // Get Request Method
     public function getRequestMethod()
     {
@@ -323,15 +329,15 @@ class BaseLb
     }
 
     // Check If Logged In
-    public function loginRequired()
+    public function loginRequired($redirect_url)
     {
-
+        User::loginRequired($redirect_url);
     }
 
     // Check If is Guest
     public function isGuest()
     {
-
+        return User::isGuest();
     }
 
     // Log In
@@ -418,6 +424,12 @@ class BaseLb
 
         // Start Session
         session_start();
+
+        // Login Required
+        $login_default_url = $config_container->get('login_default_url');
+        if ($config_container->get('login_required') && $login_default_url) {
+            Lb::app()->loginRequired($login_default_url);
+        }
 
         // Connect Mysql
         $containers['config'] = $config_container;

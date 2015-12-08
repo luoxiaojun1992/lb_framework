@@ -24,4 +24,16 @@ class User
             setcookie('remember_token', $remember_token, $timeout, null, null, null, true);
         }
     }
+
+    public static function loginRequired($redirect_url)
+    {
+        if (!Lb::app()->getSession('username') || !Lb::app()->getSession('user_id')) {
+            Lb::app()->redirect($redirect_url);
+        }
+    }
+
+    public static function isGuest()
+    {
+        return Lb::app()->getSession('username') && Lb::app()->getSession('user_id');
+    }
 }
