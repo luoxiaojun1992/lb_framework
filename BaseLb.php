@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
 use lb\components\cache\Memcache;
@@ -334,9 +335,9 @@ class BaseLb
     }
 
     // Log In
-    public function login()
+    public function login($username, $user_id, $remember_token = '', $timeout = 0)
     {
-
+        User::login($username, $user_id, $remember_token, $timeout);
     }
 
     // Autoloader
