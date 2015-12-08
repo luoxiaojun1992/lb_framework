@@ -384,6 +384,12 @@ class BaseLb
         User::login($username, $user_id, $remember_token, $timeout);
     }
 
+    // Log Out
+    public function logOut()
+    {
+        User::logOut();
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
