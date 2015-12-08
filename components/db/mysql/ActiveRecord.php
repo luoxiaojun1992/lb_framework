@@ -220,10 +220,7 @@ class ActiveRecord
 
     public function getPrimaryName()
     {
-        if ($this->is_single) {
-            return $this->_primary_key;
-        }
-        return false;
+        return $this->_primary_key;
     }
 
     public function getAttributes()
