@@ -36,4 +36,10 @@ class User
     {
         return Lb::app()->getSession('username') && Lb::app()->getSession('user_id');
     }
+
+    public static function logOut()
+    {
+        Lb::app()->delSessions(['username', 'user_id']);
+        Lb::app()->delCookies(['username', 'remember_token']);
+    }
 }

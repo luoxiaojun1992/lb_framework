@@ -230,10 +230,48 @@ class BaseLb
         $_SESSION[$session_key] = $session_value;
     }
 
+    // Delete Session
+    public function delSession($session_key)
+    {
+        if (isset($_SESSION[$session_key])) {
+            unset($_SESSION[$session_key]);
+        }
+    }
+
+    // Delete Multi Sessions
+    public function delSessions($session_keys)
+    {
+        foreach ($session_keys as $session_key) {
+            Lb::app()->delSession($session_key);
+        }
+    }
+
     // Get Cookie Value
     public function getCookie($cookie_key)
     {
         return isset($_COOKIE[$cookie_key]) ? $_COOKIE[$cookie_key] : false;
+    }
+
+    // Set Cookie Value
+    public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
+    {
+        setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
+    }
+
+    // Delete Cookie
+    public function delCookie($cookie_key)
+    {
+        if (isset($_COOKIE[$cookie_key])) {
+            unset($_COOKIE[$cookie_key]);
+        }
+    }
+
+    // Delete Multi Cookies
+    public function delCookies($cookie_keys)
+    {
+        foreach ($cookie_keys as $cookie_key) {
+            Lb::app()->delCookie($cookie_key);
+        }
     }
 
     // Get Request Method
