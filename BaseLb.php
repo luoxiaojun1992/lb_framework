@@ -395,11 +395,11 @@ class BaseLb
     {
         $is_action = false;
         if (Lb::app()->isPrettyUrl()) {
-            if (stripos(Lb::app()->getUri(), '/action/') !== false) {
+            if (!Lb::app()->getUri() || stripos(Lb::app()->getUri(), '/action/') !== false) {
                 $is_action = true;
             }
         } else {
-            if (stripos(Lb::app()->getQueryString(), 'action=') !== false) {
+            if (!Lb::app()->getUri() || stripos(Lb::app()->getQueryString(), 'action=') !== false) {
                 $is_action = true;
             }
         }
