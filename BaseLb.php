@@ -390,6 +390,22 @@ class BaseLb
         User::logOut();
     }
 
+    // Detect Action Exists
+    public function isAction()
+    {
+        $is_action = false;
+        if (Lb::app()->isPrettyUrl()) {
+            if (stripos(Lb::app()->getUri(), '/action/') !== false) {
+                $is_action = true;
+            }
+        } else {
+            if (stripos(Lb::app()->getQueryString(), 'action=') !== false) {
+                $is_action = true;
+            }
+        }
+        return $is_action;
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
@@ -494,12 +510,14 @@ class BaseLb
         // Route
         $this->route_info = Route::getInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
-            $this->route_info['controller'] = 'index';
-            $this->route_info['action'] = 'index';
+            if (Lb::app()->isAction()) {
+                $this->route_info['controller'] = 'index';
+                $this->route_info['action'] = 'index';
+            }
         }
 
         // Log
-        Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress(), $this->route_info);
+        Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(), $this->route_info);
 
         // Auto Load
         spl_autoload_register(['self', 'autoload'], true, false);

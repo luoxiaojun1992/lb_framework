@@ -80,6 +80,8 @@ class Route
             } else {
                 $controller->$action_name();
             }
+        } else {
+            Lb::app()->stop('Invalid Request');
         }
     }
 }
