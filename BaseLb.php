@@ -542,7 +542,22 @@ class BaseLb
     public function run()
     {
         if (!$this->is_single) {
-            Route::redirect($this->route_info);
+            if ($this->route_info['controller'] == 'index' && $this->route_info['action'] == 'index') {
+                $page_cache = Lb::app()->fileCacheGet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]));
+                if ($page_cache) {
+                    Lb::app()->stop($page_cache);
+                } else {
+                    ob_start();
+                    Route::redirect($this->route_info);
+                    $page_cache = ob_get_contents();
+                    ob_end_clean();
+                    Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
+                    Lb::app()->stop($page_cache);
+                }
+            } else {
+                Route::redirect($this->route_info);
+            }
         }
+        Lb::app()->stop();
     }
 }
