@@ -64,8 +64,10 @@ class BaseLb
     // Get App Root Directory
     public function getRootDir()
     {
-        if (isset($this->containers['config'])) {
-            return $this->containers['config']->get('root_dir');
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('root_dir');
+            }
         }
         return '';
     }
@@ -73,44 +75,64 @@ class BaseLb
     // Get Client IP Address
     public function getClientAddress()
     {
-        return Request::getClientAddress();
+        if ($this->is_single) {
+            return Request::getClientAddress();
+        }
+        return '';
     }
 
     // Get Host
     public function getHost()
     {
-        return Request::getHost();
+        if ($this->is_single) {
+            return Request::getHost();
+        }
+        return '';
     }
 
     // Get Request URI
     public function getUri()
     {
-        return Request::getUri();
+        if ($this->is_single) {
+            return Request::getUri();
+        }
+        return '';
     }
 
     // Ger Host IP Address
     public function getHostAddress()
     {
-        return Request::getHostAddress();
+        if ($this->is_single) {
+            return Request::getHostAddress();
+        }
+        return '';
     }
 
     // Get User Agent
     public function getUserAgent()
     {
-        return Request::getUserAgent();
+        if ($this->is_single) {
+            return Request::getUserAgent();
+        }
+        return '';
     }
 
     // Get Query String
     public function getQueryString()
     {
-        return Request::getQueryString();
+        if ($this->is_single) {
+            return Request::getQueryString();
+        }
+        return '';
     }
 
     // Get App Name
     public function getName()
     {
-        if (isset($this->containers['config'])) {
-            return $this->containers['config']->get('name');
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('name');
+            }
         }
         return '';
     }
@@ -118,8 +140,10 @@ class BaseLb
     // Get Time Zone
     public function getTimeZone()
     {
-        if (isset($this->containers['config'])) {
-            return $this->containers['config']->get('timeZone');
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('timeZone');
+            }
         }
         return '';
     }
@@ -127,8 +151,10 @@ class BaseLb
     // Get Cdn Host
     public function getCdnHost()
     {
-        if (isset($this->containers['config'])) {
-            return trim($this->containers['config']->get('cdn_host'), '/');
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return trim($this->containers['config']->get('cdn_host'), '/');
+            }
         }
         return '';
     }
@@ -137,10 +163,12 @@ class BaseLb
     public function isPrettyUrl()
     {
         $is_pretty_url = false;
-        if (isset($this->containers['config'])) {
-            $urlManager = $this->containers['config']->get('urlManager');
-            if (isset($urlManager['is_pretty_url'])) {
-                $is_pretty_url = $urlManager['is_pretty_url'];
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                $urlManager = $this->containers['config']->get('urlManager');
+                if (isset($urlManager['is_pretty_url'])) {
+                    $is_pretty_url = $urlManager['is_pretty_url'];
+                }
             }
         }
         return $is_pretty_url;
@@ -150,11 +178,13 @@ class BaseLb
     public function getJsFiles($controller_id, $template_id)
     {
         $js_files = [];
-        if (isset($this->containers['config'])) {
-            $asset_config = $this->containers['config']->get('assets');
-            if ($asset_config) {
-                if (isset($asset_config[$controller_id][$template_id]['js'])) {
-                    $js_files = $asset_config[$controller_id][$template_id]['js'];
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                $asset_config = $this->containers['config']->get('assets');
+                if ($asset_config) {
+                    if (isset($asset_config[$controller_id][$template_id]['js'])) {
+                        $js_files = $asset_config[$controller_id][$template_id]['js'];
+                    }
                 }
             }
         }
@@ -165,11 +195,13 @@ class BaseLb
     public function getCssFiles($controller_id, $template_id)
     {
         $css_files = [];
-        if (isset($this->containers['config'])) {
-            $asset_config = $this->containers['config']->get('assets');
-            if ($asset_config) {
-                if (isset($asset_config[$controller_id][$template_id]['css'])) {
-                    $css_files = $asset_config[$controller_id][$template_id]['css'];
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                $asset_config = $this->containers['config']->get('assets');
+                if ($asset_config) {
+                    if (isset($asset_config[$controller_id][$template_id]['css'])) {
+                        $css_files = $asset_config[$controller_id][$template_id]['css'];
+                    }
                 }
             }
         }
@@ -179,229 +211,307 @@ class BaseLb
     // Get Db Connection
     public function getDb($db_type, $node_type)
     {
-        switch ($db_type) {
-            case 'mysql':
-                switch ($node_type) {
-                    case 'master':
-                        return Connection::component()->write_conn;
-                    case 'slave':
-                        return Connection::component()->read_conn;
-                    default:
-                        return Connection::component()->write_conn;
-                }
-                break;
-            default:
-                return false;
+        if ($this->is_single) {
+            switch ($db_type) {
+                case 'mysql':
+                    switch ($node_type) {
+                        case 'master':
+                            return Connection::component()->write_conn;
+                        case 'slave':
+                            return Connection::component()->read_conn;
+                        default:
+                            return Connection::component()->write_conn;
+                    }
+                    break;
+                default:
+                    return false;
+            }
         }
+        return false;
     }
 
     // Request Redirect
     public function redirect($path, $replace = true, $http_response_code = null)
     {
-        UrlManager::redirect($path, $replace, $http_response_code);
+        if ($this->is_single) {
+            UrlManager::redirect($path, $replace, $http_response_code);
+        }
     }
 
     // Create Absolute Url
     public function createAbsoluteUrl($uri, $query_params = [])
     {
-        return UrlManager::createAbsoluteUrl($uri, $query_params);
+        if ($this->is_single) {
+            return UrlManager::createAbsoluteUrl($uri, $query_params);
+        }
+        return '';
     }
 
     // Get Http Request Param Value
     public function getParam($param_name)
     {
-        return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : false;
+        if ($this->is_single) {
+            return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : false;
+        }
+        return false;
     }
 
     // Get Csrf Token
     public function getCsrfToken()
     {
-        return Security::generateCsrfToken();
+        if ($this->is_single) {
+            return Security::generateCsrfToken();
+        }
+        return '';
     }
 
     // Get Session Value
     public function getSession($session_key)
     {
-        return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+        if ($this->is_single) {
+            return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+        }
+        return false;
     }
 
     // Set Session Value
     public function setSession($session_key, $session_value)
     {
-        $_SESSION[$session_key] = $session_value;
+        if ($this->is_single) {
+            $_SESSION[$session_key] = $session_value;
+        }
     }
 
     // Delete Session
     public function delSession($session_key)
     {
-        if (isset($_SESSION[$session_key])) {
-            unset($_SESSION[$session_key]);
+        if ($this->is_single) {
+            if (isset($_SESSION[$session_key])) {
+                unset($_SESSION[$session_key]);
+            }
         }
     }
 
     // Delete Multi Sessions
     public function delSessions($session_keys)
     {
-        foreach ($session_keys as $session_key) {
-            Lb::app()->delSession($session_key);
+        if ($this->is_single) {
+            foreach ($session_keys as $session_key) {
+                Lb::app()->delSession($session_key);
+            }
         }
     }
 
     // Get Cookie Value
     public function getCookie($cookie_key)
     {
-        return isset($_COOKIE[$cookie_key]) ? $_COOKIE[$cookie_key] : false;
+        if ($this->is_single) {
+            return isset($_COOKIE[$cookie_key]) ? $_COOKIE[$cookie_key] : false;
+        }
+        return false;
     }
 
     // Set Cookie Value
     public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
-        setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
+        if ($this->is_single) {
+            setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
+        }
     }
 
     // Delete Cookie
     public function delCookie($cookie_key)
     {
-        if (isset($_COOKIE[$cookie_key])) {
-            unset($_COOKIE[$cookie_key]);
+        if ($this->is_single) {
+            if (isset($_COOKIE[$cookie_key])) {
+                unset($_COOKIE[$cookie_key]);
+            }
         }
     }
 
     // Delete Multi Cookies
     public function delCookies($cookie_keys)
     {
-        foreach ($cookie_keys as $cookie_key) {
-            Lb::app()->delCookie($cookie_key);
+        if ($this->is_single) {
+            foreach ($cookie_keys as $cookie_key) {
+                Lb::app()->delCookie($cookie_key);
+            }
         }
     }
 
     // Get Request Method
     public function getRequestMethod()
     {
-        return Request::getRequestMethod();
+        if ($this->is_single) {
+            return Request::getRequestMethod();
+        }
+        return '';
     }
 
     // Memcache Get
     public function memcacheGet($key)
     {
-        return Memcache::component()->get($key);
+        if ($this->is_single) {
+            return Memcache::component()->get($key);
+        }
+        return '';
     }
 
     // Memcache Set
     public function memcacheSet($key, $value, $expiration = null)
     {
-        Memcache::component()->set($key, $value, $expiration);
+        if ($this->is_single) {
+            Memcache::component()->set($key, $value, $expiration);
+        }
     }
 
     // Memcache Delete
     public function memcacheDelete($key)
     {
-        Memcache::component()->delete($key);
+        if ($this->is_single) {
+            Memcache::component()->delete($key);
+        }
     }
 
     // Redis Get
     public function redisGet($key)
     {
-        return Redis::component()->get($key);
+        if ($this->is_single) {
+            return Redis::component()->get($key);
+        }
+        return '';
     }
 
     // Redis Set
     public function redisSet($key, $value, $expiration = 0)
     {
-        Redis::component()->set($key, $value, $expiration);
+        if ($this->is_single) {
+            Redis::component()->set($key, $value, $expiration);
+        }
     }
 
     // Redis Delete
     public function redisDelete($key)
     {
-        Redis::component()->delete($key);
+        if ($this->is_single) {
+            Redis::component()->delete($key);
+        }
     }
 
     // Import PHP File
     public function import($path)
     {
-        if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
-            include_once($path);
+        if ($this->is_single) {
+            if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
+                include_once($path);
+            }
         }
     }
 
     // Get environment variable
     public function getEnv($env_name)
     {
-        return Environment::getValue($env_name);
+        if ($this->is_single) {
+            return Environment::getValue($env_name);
+        }
+        return '';
     }
 
     // Send Swift Mail
     public function swiftSend($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
     {
-        Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
+        if ($this->is_single) {
+            Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
+        }
     }
 
     // File Cache Set
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
-        Filecache::component()->add($key, $value, $cache_time);
+        if ($this->is_single) {
+            Filecache::component()->add($key, $value, $cache_time);
+        }
     }
 
     // File Cache Get
     public function fileCacheGet($key)
     {
-        return Filecache::component()->get($key);
+        if ($this->is_single) {
+            return Filecache::component()->get($key);
+        }
+        return '';
     }
 
     // File Cache Delete
     public function fileCacheDelete($key)
     {
-        Filecache::component()->delete($key);
+        if ($this->is_single) {
+            Filecache::component()->delete($key);
+        }
     }
 
     // File Cache Flush
     public function fileCacheFlush()
     {
-        Filecache::component()->flush();
+        if ($this->is_single) {
+            Filecache::component()->flush();
+        }
     }
 
     // Log Route Info
     public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
     {
-        Log::component()->record($role, $level, $message, $context);
+        if ($this->is_single) {
+            Log::component()->record($role, $level, $message, $context);
+        }
     }
 
     // Check If Logged In
     public function loginRequired($redirect_url)
     {
-        User::loginRequired($redirect_url);
+        if ($this->is_single) {
+            User::loginRequired($redirect_url);
+        }
     }
 
     // Check If is Guest
     public function isGuest()
     {
-        return User::isGuest();
+        if ($this->is_single) {
+            return User::isGuest();
+        }
+        return false;
     }
 
     // Log In
     public function login($username, $user_id, $remember_token = '', $timeout = 0)
     {
-        User::login($username, $user_id, $remember_token, $timeout);
+        if ($this->is_single) {
+            User::login($username, $user_id, $remember_token, $timeout);
+        }
     }
 
     // Log Out
     public function logOut()
     {
-        User::logOut();
+        if ($this->is_single) {
+            User::logOut();
+        }
     }
 
     // Detect Action Exists
     public function isAction()
     {
         $is_action = false;
-        if (Lb::app()->isPrettyUrl()) {
-            if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getUri(), '/action/') !== false) {
-                $is_action = true;
-            }
-        } else {
-            if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getQueryString(), 'action=') !== false) {
-                $is_action = true;
+        if ($this->is_single) {
+            if (Lb::app()->isPrettyUrl()) {
+                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getUri(), '/action/') !== false) {
+                    $is_action = true;
+                }
+            } else {
+                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getQueryString(), 'action=') !== false) {
+                    $is_action = true;
+                }
             }
         }
         return $is_action;
