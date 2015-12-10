@@ -55,4 +55,11 @@ class HtmlHelper
         }
         return join('',$compressed);
     }
+
+    public static function setCache($cache_control, $offset)
+    {
+        Header("Cache-Control: {$cache_control}");
+        $ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+        Header($ExpStr);
+    }
 }

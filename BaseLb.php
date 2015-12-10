@@ -654,6 +654,10 @@ class BaseLb
     {
         if (!$this->is_single) {
             if (isset(Lb::app()->containers['config'])) {
+                $html_cache_config = Lb::app()->containers['config']->get('html_cache');
+                if (isset($html_cache_config['cache_control']) && isset($html_cache_config['offset'])) {
+                    HtmlHelper::setCache($html_cache_config['cache_control'], $html_cache_config['offset']);
+                }
                 $page_cache_config = Lb::app()->containers['config']->get('page_cache');
                 if (isset($page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']])) {
                     $cache_type = $page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']];
