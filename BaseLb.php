@@ -543,8 +543,8 @@ class BaseLb
     public function run()
     {
         if (!$this->is_single) {
-            if (isset($this->containers['config'])) {
-                $page_cache_config = $this->containers['config']->get('page_cache');
+            if (isset(Lb::app()->containers['config'])) {
+                $page_cache_config = Lb::app()->containers['config']->get('page_cache');
                 if (isset($page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']])) {
                     $cache_type = $page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']];
                     switch ($cache_type) {
