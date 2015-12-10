@@ -40,14 +40,15 @@
     "denissimon/prediction-builder": "*",
     "centraldesktop/protobuf-php": "*",
     "workerman/workerman": "*",
-    "linkorb/jsmin-php": "*"
+    "linkorb/jsmin-php": "*",
+    "nervo/yuicompressor": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.5.x-dev"
+      "dev-master": "1.6.x-dev"
     }
   }
 }
