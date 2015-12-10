@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\helpers\HtmlHelper;
 use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
@@ -549,7 +550,7 @@ class BaseLb
                 } else {
                     ob_start();
                     Route::redirect($this->route_info);
-                    $page_cache = ob_get_contents();
+                    $page_cache = HtmlHelper::compress(ob_get_contents());
                     ob_end_clean();
                     Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
                     Lb::app()->stop($page_cache);
