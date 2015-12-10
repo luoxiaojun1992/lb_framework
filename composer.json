@@ -41,14 +41,15 @@
     "centraldesktop/protobuf-php": "*",
     "workerman/workerman": "*",
     "linkorb/jsmin-php": "*",
-    "nervo/yuicompressor": "*"
+    "nervo/yuicompressor": "*",
+    "jalle19/php-yui-compressor": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.6.x-dev"
+      "dev-master": "1.7.x-dev"
     }
   }
 }

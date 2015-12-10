@@ -22,7 +22,7 @@ class Javascript
         foreach ($js_files as $js_file) {
             $js_assets[] = new FileAsset($js_file);
         }
-        $js = new AssetCollection($js_assets, [new Yui\CssCompressorFilter(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'yuicompressor.jar')]);
+        $js = new AssetCollection($js_assets, [new Yui\CssCompressorFilter(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'nervo' . DIRECTORY_SEPARATOR . 'yuicompressor' . DIRECTORY_SEPARATOR . 'yuicompressor.jar')]);
         $js_html = $js->dump();
         $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'assets/js';
         if (!is_dir($assets_cache_dir)) {
