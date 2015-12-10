@@ -11,7 +11,6 @@ namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
-use Assetic\Filter\CssMinFilter;
 use lb\Lb;
 
 class Css
@@ -22,7 +21,7 @@ class Css
         foreach ($css_files as $css_file) {
             $css_assets[] = new FileAsset($css_file);
         }
-        $css = new AssetCollection($css_assets, [new CssMinFilter()]);
+        $css = new AssetCollection($css_assets);
         $css_html = $css->dump();
         $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'assets/css';
         if (!is_dir($assets_cache_dir)) {
