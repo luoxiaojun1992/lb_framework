@@ -11,6 +11,11 @@ namespace lb\components\helpers;
 
 class HtmlHelper
 {
+    protected static function format_tag($tag)
+    {
+        return trim(strtolower($tag));
+    }
+
     public static function compress($html_code)
     {
         $segments = preg_split("/(<[^>]+?>)/si",$html_code, -1,PREG_SPLIT_NO_EMPTY| PREG_SPLIT_DELIM_CAPTURE);
@@ -25,17 +30,17 @@ class HtmlHelper
             }
             if (preg_match("!<([a-z0-9]+)[^>]*?/>!si",$seg, $match)) {
                 //$tag = self::format_tag($match[1]);
-                format_tag($match[1]);
+                static::format_tag($match[1]);
                 $compressed[] = $seg;
             } else if (preg_match("!</([a-z0-9]+)[^>]*?>!si",$seg,$match)) {
-                $tag = format_tag($match[1]);
+                $tag = static::format_tag($match[1]);
                 if (count($stack) > 0 && $stack[count($stack)-1] == $tag) {
                     array_pop($stack);
                     $compressed[] = $seg;
                 }
                 //这里再最好加一段判断，可以用于修复错误的html
             } else if (preg_match("!<([a-z0-9]+)[^>]*?>!si",$seg,$match)) {
-                $tag = format_tag($match[1]);
+                $tag = static::format_tag($match[1]);
                 //半闭合标签不需要入栈，如<br/>,<img/>
                 if (!in_array($tag, $half_open)) {
                     array_push($stack,$tag);
@@ -47,10 +52,6 @@ class HtmlHelper
             } else {
                 $compressed[] = in_array($tag, $cannot_compress) ? $seg : preg_replace('!\s!', '', $seg);
             }
-        }
-        function format_tag($tag)
-        {
-            return trim(strtolower($tag));
         }
         return join('',$compressed);
     }
