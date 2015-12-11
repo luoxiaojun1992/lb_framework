@@ -56,7 +56,11 @@ class Route
     public static function redirect($route_info)
     {
         $controller_id = $route_info['controller'];
-        $controller_name = 'app\controllers\\' . ucfirst($controller_id);
+        if ($controller_id == 'web') {
+            $controller_name = 'lb\controllers\WebController';
+        } else {
+            $controller_name = 'app\controllers\\' . ucfirst($controller_id);
+        }
         $action_name = $route_info['action'];
         $controller = new $controller_name();
         $controller->controller_id = $controller_id;
