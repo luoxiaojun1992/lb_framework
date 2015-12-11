@@ -18,7 +18,7 @@ class UrlManager
         header("Location: $path", $replace, $http_response_code);
     }
 
-    public static function createAbsoluteUrl($uri, $query_params = [])
+    public static function createAbsoluteUrl($uri, $query_params = [], $ssl = false)
     {
         if (strpos($uri, '?') !== false) {
             $tmpArr = [];
@@ -45,6 +45,10 @@ class UrlManager
                 $uri .= ('?' . implode('&', $tmpArr));
             }
         }
-        return Lb::app()->getHost() . $uri;
+        if ($ssl) {
+            return 'https' . Lb::app()->getHost() . $uri;
+        } else {
+            return 'http' . Lb::app()->getHost() . $uri;
+        }
     }
 }

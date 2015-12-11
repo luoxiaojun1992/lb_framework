@@ -240,10 +240,10 @@ class BaseLb
     }
 
     // Create Absolute Url
-    public function createAbsoluteUrl($uri, $query_params = [])
+    public function createAbsoluteUrl($uri, $query_params = [], $ssl = false)
     {
         if ($this->is_single) {
-            return UrlManager::createAbsoluteUrl($uri, $query_params);
+            return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl);
         }
         return '';
     }
