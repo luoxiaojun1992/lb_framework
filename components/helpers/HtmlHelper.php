@@ -28,7 +28,8 @@ class HtmlHelper
             if (trim($seg) === '') {
                 continue;
             }
-            if (preg_match("!<([a-z0-9]+)[^>]*?/>!si",$seg, $match)) {
+            if (preg_match("!<([a-z0-9]+)[^>]*?/>!si",$seg, $match) || preg_match("~<![^>]*>~", $seg)) {
+                //文档声明和注释，注释也不能删除，如<!--ie条件-->
                 $compressed[] = $seg;
             } else if (preg_match("!</([a-z0-9]+)[^>]*?>!si",$seg,$match)) {
                 $tag = static::format_tag($match[1]);
@@ -43,9 +44,6 @@ class HtmlHelper
                 if (!in_array($tag, $half_open)) {
                     array_push($stack,$tag);
                 }
-                $compressed[] = $seg;
-            } else if (preg_match("~<![^>]*>~", $seg)) {
-                //文档声明和注释，注释也不能删除，如<!--ie条件-->
                 $compressed[] = $seg;
             } else {
                 $compressed[] = in_array($tag, $cannot_compress) ? $seg : preg_replace('!\s!', '', $seg);
