@@ -21,6 +21,8 @@ class Lb extends \lb\BaseLb
                 parent::run();
             } catch (HttpException $httpException) {
                 Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+            } catch (\Exception $e) {
+                Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
             }
         } else {
             echo 'Unsupported running mode.';
