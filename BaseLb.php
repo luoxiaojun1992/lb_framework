@@ -616,7 +616,7 @@ class BaseLb
         if (Lb::app()->isAction()) {
             // Connect Mysql
             $mysql_config = $config_container->get('mysql');
-            if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+            if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']][strtolower(Lb::app()->getRequestMethod())]) {
                 Connection::component($containers);
             }
 
