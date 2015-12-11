@@ -29,8 +29,6 @@ class HtmlHelper
                 continue;
             }
             if (preg_match("!<([a-z0-9]+)[^>]*?/>!si",$seg, $match)) {
-                //$tag = self::format_tag($match[1]);
-                static::format_tag($match[1]);
                 $compressed[] = $seg;
             } else if (preg_match("!</([a-z0-9]+)[^>]*?>!si",$seg,$match)) {
                 $tag = static::format_tag($match[1]);
