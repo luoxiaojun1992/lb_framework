@@ -90,7 +90,6 @@ class Render
                         return $return_content;
                     } else {
                         include_once($layout_file_path);
-                        Lb::app()->stop();
                     }
                 }
                 if ($return) {
@@ -101,7 +100,6 @@ class Render
                     return $return_content;
                 } else {
                     include_once($view_file_path);
-                    Lb::app()->stop();
                 }
             }
         }

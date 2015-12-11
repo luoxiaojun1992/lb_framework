@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\error_handlers\HttpException;
 use lb\components\helpers\HtmlHelper;
 use lb\components\User;
 use Monolog\Logger;
@@ -659,6 +660,7 @@ class BaseLb
     public function run()
     {
         if (!$this->is_single) {
+            $is_to_redirect = true;
             if (isset(Lb::app()->containers['config'])) {
                 $html_cache_config = Lb::app()->containers['config']->get('html_cache');
                 if (isset($html_cache_config['cache_control']) && isset($html_cache_config['offset'])) {
@@ -681,7 +683,8 @@ class BaseLb
                             $page_cache = Lb::app()->fileCacheGet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]));
                     }
                     if ($page_cache) {
-                        Lb::app()->stop($page_cache);
+                        $is_to_redirect = false;
+                        echo $page_cache;
                     } else {
                         ob_start();
                         Route::redirect($this->route_info);
@@ -700,12 +703,16 @@ class BaseLb
                             default:
                                 Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
                         }
-                        Lb::app()->stop($page_cache);
+                        $is_to_redirect = false;
+                        echo $page_cache;
                     }
                 }
             }
-            Route::redirect($this->route_info);
+            if ($is_to_redirect) {
+                Route::redirect($this->route_info);
+            }
+        } else {
+            throw new HttpException('Single run is forbidden.', 500);
         }
-        Lb::app()->stop();
     }
 }

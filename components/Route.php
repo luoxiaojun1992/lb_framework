@@ -9,6 +9,7 @@
 
 namespace lb\components;
 
+use lb\components\error_handlers\HttpException;
 use lb\Lb;
 
 class Route
@@ -81,7 +82,7 @@ class Route
                 $controller->$action_name();
             }
         } else {
-            Lb::app()->stop('Invalid Request');
+            throw new HttpException('Page not found.', 404);
         }
     }
 }

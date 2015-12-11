@@ -9,6 +9,7 @@
 
 namespace lb\controllers;
 
+use lb\components\error_handlers\HttpException;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
 use lb\Lb;
@@ -50,7 +51,7 @@ class WebController extends BaseController
         if ($return) {
             return $json;
         } else {
-            Lb::app()->stop($json);
+            echo $json;
         }
     }
 
@@ -62,7 +63,7 @@ class WebController extends BaseController
             return $xml;
         } else {
             Header('Content-type:application/xml');
-            Lb::app()->stop($xml);
+            echo $xml;
         }
     }
 
@@ -108,7 +109,7 @@ class WebController extends BaseController
                 }
                 Lb::app()->redirect($forward_url, $replace, $http_response_code);
             }
-            Lb::app()->stop();
+            throw new HttpException('Path is empty.', 500);
         }
     }
 

@@ -28,6 +28,6 @@ class RestController extends BaseController
             default:
                 $response_content = '';
         }
-        Lb::app()->stop($response_content);
+        echo $response_content;
     }
 }

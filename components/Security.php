@@ -9,6 +9,7 @@
 
 namespace lb\components;
 
+use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\Lb;
 
@@ -147,10 +148,10 @@ class Security
             $request_csrf_token = Lb::app()->getParam('csrf_token');
             if ($session_csrf_token && $request_csrf_token) {
                 if ($session_csrf_token != $request_csrf_token) {
-                    Lb::app()->stop();
+                    throw new HttpException('Csrf token invalid.', 403);
                 }
             } else {
-                Lb::app()->stop();
+                throw new HttpException('Csrf token missing.', 403);
             }
         }
         Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
@@ -177,7 +178,7 @@ class Security
             if ($filter) {
                 if (isset($filter['ip'][$controller][$action]) && is_array($filter['ip'][$controller][$action]) && ArrayHelper::array_depth($filter['ip'][$controller][$action]) == 1) {
                     if (in_array(Lb::app()->getClientAddress(), $filter['ip'][$controller][$action])) {
-                        Lb::app()->stop('IP Forbidden');
+                        throw new HttpException('IP Forbidden', 403);
                     }
                 }
             }

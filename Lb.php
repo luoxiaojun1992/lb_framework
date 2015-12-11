@@ -9,13 +9,19 @@
 
 namespace lb;
 
+use lb\components\error_handlers\HttpException;
+
 class Lb extends \lb\BaseLb
 {
     public function run()
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
             // Start App
-            parent::run();
+            try {
+                parent::run();
+            } catch (HttpException $httpException) {
+                Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+            }
         } else {
             echo 'Unsupported running mode.';
             die();
