@@ -613,17 +613,19 @@ class BaseLb
 
         $containers['config'] = $config_container;
 
-        // Connect Mysql
-        $mysql_config = $config_container->get('mysql');
-        if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
-            Connection::component($containers);
+        if (Lb::app()->isAction()) {
+            // Connect Mysql
+            $mysql_config = $config_container->get('mysql');
+            if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+                Connection::component($containers);
+            }
+
+            // Connect Memcache
+            Memcache::component($containers);
+
+            // Connect Redis
+            Redis::component($containers);
         }
-
-        // Connect Memcache
-        Memcache::component($containers);
-
-        // Connect Redis
-        Redis::component($containers);
 
         // Init Swift Mailer
         Swift::component($containers);
