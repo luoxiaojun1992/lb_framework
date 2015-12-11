@@ -709,7 +709,17 @@ class BaseLb
                 }
             }
             if ($is_to_redirect) {
+                ob_start();
                 Route::redirect($this->route_info);
+                $page_content = ob_get_contents();
+                ob_end_clean();
+                if (isset(Lb::app()->containers['config'])) {
+                    $page_compress_config = Lb::app()->containers['config']->get('page_compress');
+                    if (isset($page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) && $page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+                        $page_content = HtmlHelper::compress($page_content);
+                    }
+                }
+                echo $page_content;
             }
         } else {
             throw new HttpException('Single run is forbidden.', 500);
