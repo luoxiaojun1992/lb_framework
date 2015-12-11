@@ -46,9 +46,9 @@ class UrlManager
             }
         }
         if ($ssl) {
-            return 'https' . Lb::app()->getHost() . $uri;
+            return 'https://' . Lb::app()->getHost() . $uri;
         } else {
-            return 'http' . Lb::app()->getHost() . $uri;
+            return 'http://' . Lb::app()->getHost() . $uri;
         }
     }
 }
