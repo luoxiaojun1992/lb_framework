@@ -9,17 +9,10 @@
 
 namespace lb\components\error_handlers;
 
-use lb\Lb;
-
 class HttpException extends \Exception
 {
     public function __construct($message = '', $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
-    }
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
     }
 }
