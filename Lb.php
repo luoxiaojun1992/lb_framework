@@ -17,12 +17,26 @@ class Lb extends \lb\BaseLb
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
             // Start App
-            try {
-                parent::run();
-            } catch (HttpException $httpException) {
-                Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
-            } catch (\Exception $e) {
-                Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
+            if (class_exists('\EngineException')) {
+                // PHP 7.0.0 +
+                try {
+                    parent::run();
+                } catch (HttpException $httpException) {
+                    Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+                } catch (\Exception $e) {
+                    Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
+                } catch (\EngineException $engineException) {
+                    Lb::app()->stop(implode(':', [$engineException->getCode(), $engineException->getMessage()]));
+                }
+            } else {
+                // PHP 7.0.0 -
+                try {
+                    parent::run();
+                } catch (HttpException $httpException) {
+                    Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+                } catch (\Exception $e) {
+                    Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
+                }
             }
         } else {
             echo 'Unsupported running mode.';
