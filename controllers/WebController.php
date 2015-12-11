@@ -108,8 +108,9 @@ class WebController extends BaseController
                     $forward_url = Lb::app()->createAbsoluteUrl("/index.php?{$this->controller_id}&action={$action_id}", $params);
                 }
                 Lb::app()->redirect($forward_url, $replace, $http_response_code);
+            } else {
+                throw new HttpException('Path is empty.', 500);
             }
-            throw new HttpException('Path is empty.', 500);
         }
     }
 
