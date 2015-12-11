@@ -22,20 +22,25 @@ class Lb extends \lb\BaseLb
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+                    $err_msg = implode(':', [$httpException->getCode(), $httpException->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 } catch (\Exception $e) {
-                    Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
+                    $err_msg = implode(':', [$e->getCode(), $e->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 } catch (\EngineException $engineException) {
-                    Lb::app()->stop(implode(':', [$engineException->getCode(), $engineException->getMessage()]));
+                    $err_msg = implode(':', [$engineException->getCode(), $engineException->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 }
             } else {
                 // PHP 7.0.0 -
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    Lb::app()->stop(implode(':', [$httpException->getCode(), $httpException->getMessage()]));
+                    $err_msg = implode(':', [$httpException->getCode(), $httpException->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 } catch (\Exception $e) {
-                    Lb::app()->stop(implode(':', [$e->getCode(), $e->getMessage()]));
+                    $err_msg = implode(':', [$e->getCode(), $e->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 }
             }
         } else {

@@ -11,6 +11,7 @@ namespace lb\components;
 
 use lb\components\assets\Javascript;
 use lb\components\assets\Css;
+use lb\components\error_handlers\HttpException;
 use lb\Lb;
 
 class Render
@@ -101,6 +102,8 @@ class Render
                 } else {
                     include_once($view_file_path);
                 }
+            } else {
+                throw new HttpException('Template not found.', 500);
             }
         }
     }

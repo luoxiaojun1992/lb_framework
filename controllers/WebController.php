@@ -117,4 +117,17 @@ class WebController extends BaseController
     {
         return strtolower(Lb::app()->getRequestMethod()) == 'post';
     }
+
+    public function error($err_msg, $tpl_name)
+    {
+        $viewPath = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . "{$tpl_name}.php";
+        if (file_exists($viewPath)) {
+            $this->render($tpl_name, [
+                'title' => 'Exception',
+                'err_msg' => $err_msg,
+            ]);
+        } else {
+            echo $err_msg;
+        }
+    }
 }
