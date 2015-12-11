@@ -602,9 +602,22 @@ class BaseLb
             Lb::app()->loginRequired($login_default_url);
         }
 
-        // Connect Mysql
+        // Route
+        $this->route_info = Route::getInfo();
+        if (!$this->route_info['controller'] || !$this->route_info['action']) {
+            if (Lb::app()->isAction()) {
+                $this->route_info['controller'] = 'index';
+                $this->route_info['action'] = 'index';
+            }
+        }
+
         $containers['config'] = $config_container;
-        Connection::component($containers);
+
+        // Connect Mysql
+        $mysql_config = $config_container->get('mysql');
+        if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+            Connection::component($containers);
+        }
 
         // Connect Memcache
         Memcache::component($containers);
@@ -617,15 +630,6 @@ class BaseLb
 
         // Init File Cache
         Filecache::component($containers);
-
-        // Route
-        $this->route_info = Route::getInfo();
-        if (!$this->route_info['controller'] || !$this->route_info['action']) {
-            if (Lb::app()->isAction()) {
-                $this->route_info['controller'] = 'index';
-                $this->route_info['action'] = 'index';
-            }
-        }
 
         // Log
         Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(), $this->route_info);
