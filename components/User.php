@@ -29,10 +29,9 @@ class User
     {
         if (!Lb::app()->getSession('username') || !Lb::app()->getSession('user_id')) {
             if (Lb::app()->isAction()) {
-                if (stripos('http://' . Lb::app()->getHost() . Lb::app()->getUri() . Lb::app()->getQueryString(), $redirect_url) === false) {
-                    if (stripos('https://' . Lb::app()->getHost() . Lb::app()->getUri() . Lb::app()->getQueryString(), $redirect_url) === false) {
-                        Lb::app()->redirect($redirect_url);
-                    }
+                $http_port = Lb::app()->getHttpPort();
+                if (stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], true, $http_port), $redirect_url) === false || stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], false, $http_port), $redirect_url) === false) {
+                    Lb::app()->redirect($redirect_url);
                 }
             }
         }

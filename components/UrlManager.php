@@ -57,4 +57,34 @@ class UrlManager
         }
         return $portal . '://' . Lb::app()->getHost() . $http_port . $uri;
     }
+
+    public static function createRelativeUrl($uri, $query_params = [])
+    {
+        if (strpos($uri, '?') !== false) {
+            $tmpArr = [];
+            foreach ($query_params as $query_param_name => $query_param_value) {
+                if (is_int($query_param_name)) {
+                    $tmpArr[] = $query_param_value;
+                } else {
+                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                }
+            }
+            if ($tmpArr) {
+                $uri .= ('&' . implode('&', $tmpArr));
+            }
+        } else {
+            $tmpArr = [];
+            foreach ($query_params as $query_param_name => $query_param_value) {
+                if (is_int($query_param_name)) {
+                    $tmpArr[] = $query_param_value;
+                } else {
+                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
+                }
+            }
+            if ($tmpArr) {
+                $uri .= ('?' . implode('&', $tmpArr));
+            }
+        }
+        return $uri;
+    }
 }

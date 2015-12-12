@@ -138,6 +138,17 @@ class BaseLb
         return '';
     }
 
+    // Get Http Port
+    public function getHttpPort()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('http_port');
+            }
+        }
+        return '';
+    }
+
     // Get Time Zone
     public function getTimeZone()
     {
@@ -240,10 +251,19 @@ class BaseLb
     }
 
     // Create Absolute Url
-    public function createAbsoluteUrl($uri, $query_params = [], $ssl = false)
+    public function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
     {
         if ($this->is_single) {
-            return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl);
+            return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl, $port);
+        }
+        return '';
+    }
+
+    // Create Relative Url
+    public function createRelativeUrl($uri, $query_params = [])
+    {
+        if ($this->is_single) {
+            return UrlManager::createRelativeUrl($uri, $query_params);
         }
         return '';
     }
