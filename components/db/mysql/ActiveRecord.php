@@ -331,6 +331,12 @@ class ActiveRecord
                                     $this->errors[] = "The {$attribute} is required.";
                                 }
                                 break;
+                            case 'email':
+                                if (!ValidationHelper::isEmail($attribute_value)) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is not a valid email.";
+                                }
+                                break;
                             default:
                                 $is_valid = true;
                         }

@@ -40,4 +40,10 @@ class ValidationHelper
         $validator = static::getValidator();
         return $validator->isRequired($value);
     }
+
+    public static function isEmail($value)
+    {
+        $validator = static::getValidator();
+        return $validator->isValidEmail($value);
+    }
 }
