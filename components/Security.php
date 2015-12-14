@@ -11,6 +11,7 @@ namespace lb\components;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
+use lb\components\helpers\HtmlHelper;
 use lb\Lb;
 
 class Security
@@ -92,7 +93,7 @@ class Security
                 }
             }
             $input_value = trim($input_value);
-            $input_value = htmlspecialchars($input_value);
+            $input_value = HtmlHelper::encode($input_value);
             $input_value = addslashes($input_value);
         } else {
             foreach ($input_value as $key => $value) {
@@ -104,7 +105,7 @@ class Security
                         }
                     }
                     $value = trim($value);
-                    $value = htmlspecialchars($value);
+                    $value = HtmlHelper::encode($value);
                     $value = addslashes($value);
                     $input_value[$key] = $value;
                 }

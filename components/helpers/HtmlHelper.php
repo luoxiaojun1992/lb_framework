@@ -58,4 +58,14 @@ class HtmlHelper
         $ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
         Header($ExpStr);
     }
+
+    public static function encode($html)
+    {
+        return htmlspecialchars($html);
+    }
+
+    public static function decode($html)
+    {
+        return htmlspecialchars_decode($html);
+    }
 }
