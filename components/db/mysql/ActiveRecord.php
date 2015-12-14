@@ -9,6 +9,8 @@
 
 namespace lb\components\db\mysql;
 
+use lb\components\helpers\ArrayHelper;
+
 class ActiveRecord
 {
     protected $_primary_key = '';
@@ -271,6 +273,50 @@ class ActiveRecord
                                             if (strlen($attribute_value) < $condition_value) {
                                                 $is_valid = false;
                                                 $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
+                                            }
+                                            break;
+                                        default:
+                                            $is_valid = true;
+                                    }
+                                }
+                                break;
+                            case 'mb_length':
+                                foreach ($condition as $op => $condition_value) {
+                                    switch ($op) {
+                                        case 'max':
+                                            if (!is_array($condition_value)) {
+                                                if (mb_strlen($attribute_value, 'utf8') > $condition_value) {
+                                                    $is_valid = false;
+                                                    $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
+                                                }
+                                            } else {
+                                                if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
+                                                    list($encoding, $value) = $condition_value;
+                                                    if (is_string($encoding) && is_int($value)) {
+                                                        if (mb_strlen($attribute_value, $encoding) > $value) {
+                                                            $is_valid = false;
+                                                            $this->errors[] = "The length of {$attribute} can't be more than {$value}.";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        case 'min':
+                                            if (!is_array($condition_value)) {
+                                                if (mb_strlen($attribute_value, 'utf8') < $condition_value) {
+                                                    $is_valid = false;
+                                                    $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
+                                                }
+                                            } else {
+                                                if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
+                                                    list($encoding, $value) = $condition_value;
+                                                    if (is_string($encoding) && is_int($value)) {
+                                                        if (mb_strlen($attribute_value, $encoding) < $value) {
+                                                            $is_valid = false;
+                                                            $this->errors[] = "The length of {$attribute} can't be less than {$value}.";
+                                                        }
+                                                    }
+                                                }
                                             }
                                             break;
                                         default:
