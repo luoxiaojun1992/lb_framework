@@ -269,10 +269,10 @@ class BaseLb
     }
 
     // Get Http Request Param Value
-    public function getParam($param_name)
+    public function getParam($param_name, $default_value = null)
     {
         if ($this->is_single) {
-            return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : false;
+            return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
         }
         return false;
     }
