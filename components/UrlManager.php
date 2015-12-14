@@ -16,6 +16,7 @@ class UrlManager
     public static function redirect($path, $replace = true, $http_response_code = null)
     {
         header("Location: $path", $replace, $http_response_code);
+        Lb::app()->stop();
     }
 
     public static function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
