@@ -44,7 +44,7 @@ class Security
         $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $search .= '1234567890!@#$%^&*()';
         $search .= '~`";:?+/={}[]-_|\'\\';
-        for ($i = 0; $i < strlen($search); $i++) {
+        for ($i = 0; $i < strlen($search); ++$i) {
             // ;? matches the ;, which is optional
             // 0{0,7} matches any padded zeros, which are optional and go up to 8 chars
             // @ @ search for the hex values
@@ -59,9 +59,9 @@ class Security
         $found = true; // keep replacing as long as the previous round replaced something
         while ($found == true) {
             $val_before = $val;
-            for ($i = 0; $i < sizeof($ra); $i++) {
+            for ($i = 0; $i < sizeof($ra); ++$i) {
                 $pattern = '/';
-                for ($j = 0; $j < strlen($ra[$i]); $j++) {
+                for ($j = 0; $j < strlen($ra[$i]); ++$j) {
                     if ($j > 0) {
                         $pattern .= '(';
                         $pattern .= '(&#[xX]0{0,8}([9ab]);)';
