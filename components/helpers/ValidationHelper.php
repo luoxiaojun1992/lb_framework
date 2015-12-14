@@ -34,4 +34,10 @@ class ValidationHelper
         $validator = static::getValidator();
         return $validator->isValidURL($url);
     }
+
+    public static function isRequired($value)
+    {
+        $validator = static::getValidator();
+        return $validator->isRequired($value);
+    }
 }

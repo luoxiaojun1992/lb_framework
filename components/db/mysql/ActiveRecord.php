@@ -10,6 +10,7 @@
 namespace lb\components\db\mysql;
 
 use lb\components\helpers\ArrayHelper;
+use lb\components\helpers\ValidationHelper;
 
 class ActiveRecord
 {
@@ -322,6 +323,12 @@ class ActiveRecord
                                         default:
                                             $is_valid = true;
                                     }
+                                }
+                                break;
+                            case 'required':
+                                if (!ValidationHelper::isRequired($attribute_value)) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is required.";
                                 }
                                 break;
                             default:
