@@ -39,7 +39,7 @@ class User
 
     public static function isGuest()
     {
-        return Lb::app()->getSession('username') && Lb::app()->getSession('user_id');
+        return !Lb::app()->getSession('username') || !Lb::app()->getSession('user_id');
     }
 
     public static function logOut()
