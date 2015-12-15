@@ -41,10 +41,8 @@ class ValidationHelperTest extends \PHPUnit_Framework_TestCase
     public function testIsIp()
     {
         $ip4 = '192.168.0.1';
-        $ip6 = '::1';
         $notIp = '192.168.0';
         $this->assertTrue(ValidationHelper::isIP($ip4));
-        $this->assertTrue(ValidationHelper::isIP($ip6));
         $this->assertFalse(ValidationHelper::isIP($notIp));
     }
 }

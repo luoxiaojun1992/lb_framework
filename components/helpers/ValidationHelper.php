@@ -37,8 +37,7 @@ class ValidationHelper
 
     public static function isRequired($value)
     {
-        $validator = static::getValidator();
-        return $validator->isRequired($value);
+        return (bool)$value;
     }
 
     public static function isEmail($email_address)
