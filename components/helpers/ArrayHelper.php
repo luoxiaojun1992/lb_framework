@@ -38,4 +38,13 @@ class ArrayHelper
         }
         return $result;
     }
+
+    public static function toString($array)
+    {
+        $string = '';
+        if (is_array($array)) {
+            $string = print_r($array, true);
+        }
+        return $string;
+    }
 }
