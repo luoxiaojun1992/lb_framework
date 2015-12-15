@@ -75,7 +75,6 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
         $oneDimensionalArrayExpectedString = print_r($oneDimensionalArray, true);
         $twoDimensionalArrayExpectedString = print_r($twoDimensionalArray, true);
         $threeDimensionalArrayExpectedString = print_r($threeDimensionalArray, true);
-        $notArrayExpectedString = print_r($notArray, true);
 
         $oneDimensionalArrayString = ArrayHelper::toString($oneDimensionalArray);
         $twoDimensionalArrayString = ArrayHelper::toString($twoDimensionalArray);
@@ -84,6 +83,6 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($oneDimensionalArrayString, $oneDimensionalArrayExpectedString);
         $this->assertEquals($twoDimensionalArrayString, $twoDimensionalArrayExpectedString);
         $this->assertEquals($threeDimensionalArrayString, $threeDimensionalArrayExpectedString);
-        $this->assertEquals($notArrayString, $notArrayExpectedString);
+        $this->assertEquals($notArrayString, $notArray);
     }
 }

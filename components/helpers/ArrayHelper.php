@@ -41,9 +41,10 @@ class ArrayHelper
 
     public static function toString($array)
     {
-        $string = '';
         if (is_array($array)) {
             $string = print_r($array, true);
+        } else {
+            $string = $array;
         }
         return $string;
     }
