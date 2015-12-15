@@ -19,7 +19,34 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
             ['name' => 'a', 'age' => 23],
             ['name' => 'b', 'age' => 24],
         ];
-        var_dump(ArrayHelper::toString($oneDimensionalArray));
-        var_dump(ArrayHelper::toString($twoDimensionalArray));
+        $oneDimensionalArrayExpectedString = <<<oneDimensionalArrayExpectedString
+Array
+(
+    [name] => a
+    [age] => 23
+)
+oneDimensionalArrayExpectedString;
+        $twoDimensionalArrayExpectedString = <<<twoDimensionalArrayExpectedString
+Array
+(
+    [0] => Array
+        (
+            [name] => a
+            [age] => 23
+        )
+
+    [1] => Array
+        (
+            [name] => b
+            [age] => 24
+        )
+
+)
+twoDimensionalArrayExpectedString;
+
+        $oneDimensionalArrayString = ArrayHelper::toString($oneDimensionalArray);
+        $twoDimensionalArrayString = ArrayHelper::toString($twoDimensionalArray);
+        $this->assertEquals($oneDimensionalArrayString, $oneDimensionalArrayExpectedString);
+        $this->assertEquals($twoDimensionalArrayString, $twoDimensionalArrayExpectedString);
     }
 }
