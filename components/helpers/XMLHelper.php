@@ -26,12 +26,12 @@ class XMLHelper
         return $xml;
     }
 
-    public static function arrToXMLString($array)
+    protected static function arrToXMLString($array)
     {
         return static::XML_TPL . static::arrToXMLContent($array);
     }
 
-    public static function arrToXMLContent($array)
+    protected static function arrToXMLContent($array)
     {
         $xml_content = '';
         foreach ($array as $key => $val) {
