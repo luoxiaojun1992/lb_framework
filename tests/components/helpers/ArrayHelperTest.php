@@ -80,9 +80,9 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
         $twoDimensionalArrayString = ArrayHelper::toString($twoDimensionalArray);
         $threeDimensionalArrayString = ArrayHelper::toString($threeDimensionalArray);
         $notArrayString = ArrayHelper::toString($notArray);
-        $this->assertEquals($oneDimensionalArrayString, $oneDimensionalArrayExpectedString);
-        $this->assertEquals($twoDimensionalArrayString, $twoDimensionalArrayExpectedString);
-        $this->assertEquals($threeDimensionalArrayString, $threeDimensionalArrayExpectedString);
-        $this->assertEquals($notArrayString, $notArray);
+        $this->assertEquals($oneDimensionalArrayExpectedString, $oneDimensionalArrayString);
+        $this->assertEquals($twoDimensionalArrayExpectedString, $twoDimensionalArrayString);
+        $this->assertEquals($threeDimensionalArrayExpectedString, $threeDimensionalArrayString);
+        $this->assertEquals($notArray, $notArrayString);
     }
 }
