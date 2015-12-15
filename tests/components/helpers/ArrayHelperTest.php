@@ -19,12 +19,21 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
             ['name' => 'a', 'age' => 23],
             ['name' => 'b', 'age' => 24],
         ];
+        $threeDimensionalArray = [
+            [
+                ['name' => 'a', 'age' => 23],
+                ['name' => 'b', 'age' => 24],
+            ],
+        ];
         $oneDimensionalArrayExpectedString = print_r($oneDimensionalArray, true);
         $twoDimensionalArrayExpectedString = print_r($twoDimensionalArray, true);
+        $threeDimensionalArrayExpectedString = print_r($threeDimensionalArray, true);
 
         $oneDimensionalArrayString = ArrayHelper::toString($oneDimensionalArray);
         $twoDimensionalArrayString = ArrayHelper::toString($twoDimensionalArray);
+        $threeDimensionalArrayString = ArrayHelper::toString($threeDimensionalArray);
         $this->assertEquals($oneDimensionalArrayString, $oneDimensionalArrayExpectedString);
         $this->assertEquals($twoDimensionalArrayString, $twoDimensionalArrayExpectedString);
+        $this->assertEquals($threeDimensionalArrayString, $threeDimensionalArrayExpectedString);
     }
 }
