@@ -337,6 +337,12 @@ class ActiveRecord
                                     $this->errors[] = "The {$attribute} is not a valid email.";
                                 }
                                 break;
+                            case 'ip':
+                                if (!ValidationHelper::isIP($attribute_value)) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is not a valid ip.";
+                                }
+                                break;
                             default:
                                 $is_valid = true;
                         }

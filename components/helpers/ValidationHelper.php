@@ -41,9 +41,15 @@ class ValidationHelper
         return $validator->isRequired($value);
     }
 
-    public static function isEmail($value)
+    public static function isEmail($email_address)
     {
         $validator = static::getValidator();
-        return $validator->isValidEmail($value);
+        return $validator->isValidEmail($email_address);
+    }
+
+    public static function isIP($ip_address)
+    {
+        $validator = static::getValidator();
+        return $validator->isValidIP($ip_address);
     }
 }
