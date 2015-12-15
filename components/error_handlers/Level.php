@@ -11,12 +11,25 @@ namespace lb\components\error_handlers;
 
 class Level
 {
-    public static function set($env = 'dev')
+    public static $env = 'dev';
+
+    public static function set()
     {
         if (defined('LB_ENV')) {
-            $env = strtolower(LB_ENV);
+            static::$env = strtolower(LB_ENV);
         }
-        switch ($env) {
+        static::error_reporting();
+    }
+
+    public static function change($env = 'dev')
+    {
+        static::$env = $env;
+        static::error_reporting();
+    }
+
+    protected static function error_reporting()
+    {
+        switch (static::$env) {
             case 'production':
                 //报告运行时错误
                 error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -29,5 +42,10 @@ class Level
                 //报告所有错误
                 error_reporting(E_ALL);
         }
+    }
+
+    public static function get()
+    {
+        return static::$env;
     }
 }
