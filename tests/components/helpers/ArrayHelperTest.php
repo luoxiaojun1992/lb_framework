@@ -19,30 +19,8 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
             ['name' => 'a', 'age' => 23],
             ['name' => 'b', 'age' => 24],
         ];
-        $oneDimensionalArrayExpectedString = <<<oneDimensionalArrayExpectedString
-Array
-(
-    [name] => a
-    [age] => 23
-)
-oneDimensionalArrayExpectedString;
-        $twoDimensionalArrayExpectedString = <<<twoDimensionalArrayExpectedString
-Array
-(
-    [0] => Array
-        (
-            [name] => a
-            [age] => 23
-        )
-
-    [1] => Array
-        (
-            [name] => b
-            [age] => 24
-        )
-
-)
-twoDimensionalArrayExpectedString;
+        $oneDimensionalArrayExpectedString = print_r($oneDimensionalArray, true);
+        $twoDimensionalArrayExpectedString = print_r($twoDimensionalArray, true);
 
         $oneDimensionalArrayString = ArrayHelper::toString($oneDimensionalArray);
         $twoDimensionalArrayString = ArrayHelper::toString($twoDimensionalArray);
