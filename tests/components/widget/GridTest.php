@@ -21,12 +21,10 @@ class GridTest extends \PHPUnit_Framework_TestCase
     <tbody>%s</tbody>
 </table>
 Grid;
-        $thead_tpl = '<tr>%s</tr>';
-        $theadContent = '<td>ID</td><td>Name</td><td>Not Set</td><td>Only Label</td><td>Not Set</td><td>Label & Value</td><td>Not Set</td>';
-        $thead = sprintf($thead_tpl, $theadContent);
-        $tbody[] = '<tr><td>1</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
-        $tbody[] = '<tr><td>2</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
-        $tbody[] = '<tr><td>3</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
+        $thead = '<tr><td>ID</td><td>Name</td><td>Not Set</td><td>Only Label</td><td>Not Set</td><td>Label & Value</td><td>Not Set</td></tr>';
+        $tbody[] = '<tr><td>1</td><td>b</td><td>24</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>24</td></tr>';
+        $tbody[] = '<tr><td>2</td><td>c</td><td>25</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>25</td></tr>';
+        $tbody[] = '<tr><td>3</td><td>d</td><td>26</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>26</td></tr>';
         $expectedGrid = sprintf($grid_tpl, 'class="test"', $thead, implode('', $tbody));
 
         $dataProvider = [];
@@ -38,8 +36,8 @@ Grid;
         for ($i = 1; $i <= 3; ++$i) {
             $attributes = [
                 'id' => $i,
-                'name' => 'a',
-                'age' => 23,
+                'name' => chr(ord('a') + $i),
+                'age' => 23 + $i,
             ];
             $testModel = new DynamicModel();
             $testModel->defineTableName('people');
