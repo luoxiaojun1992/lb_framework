@@ -8,10 +8,13 @@
 
 namespace lb\tests\components;
 
+use lb\components\Environment;
+
 class EnvironmentTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetValue()
     {
-
+        $env_name = 'PATH';
+        $this->assertThat($this->logicalNot($this->assertEmpty(Environment::getValue($env_name))));
     }
 }
