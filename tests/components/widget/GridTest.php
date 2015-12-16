@@ -24,9 +24,9 @@ Grid;
         $thead_tpl = '<tr>%s</tr>';
         $theadContent = '<td>ID</td><td>Name</td><td>Not Set</td><td>Only Label</td><td>Not Set</td><td>Label & Value</td><td>Not Set</td>';
         $thead = sprintf($thead_tpl, $theadContent);
-        $tbody[] = '<tr><td>1</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td></td>23</tr>';
-        $tbody[] = '<tr><td>2</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td></td>23</tr>';
-        $tbody[] = '<tr><td>3</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td></td>23</tr>';
+        $tbody[] = '<tr><td>1</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
+        $tbody[] = '<tr><td>2</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
+        $tbody[] = '<tr><td>3</td><td>a</td><td>23</td><td>Not Set</td><td>Only Value</td><td>Label & Value</td><td>23</td></tr>';
         $expectedGrid = sprintf($grid_tpl, 'class="test"', $thead, implode('', $tbody));
 
         $dataProvider = [];
