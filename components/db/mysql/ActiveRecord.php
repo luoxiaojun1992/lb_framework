@@ -22,6 +22,8 @@ class ActiveRecord
     public $labels = [];
     public $is_new_record = true;
 
+    protected static $_instance = false;
+
     public function __clone()
     {
         // TODO: Implement __clone() method.
