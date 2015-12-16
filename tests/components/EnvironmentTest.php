@@ -15,6 +15,6 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
     public function testGetValue()
     {
         $env_name = 'PATH';
-        $this->assertThat($this->logicalNot($this->assertEmpty(Environment::getValue($env_name))));
+        $this->assertNotEmpty(Environment::getValue($env_name));
     }
 }
