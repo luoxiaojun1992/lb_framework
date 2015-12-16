@@ -13,6 +13,19 @@ class DynamicModel extends ActiveRecord
 {
     protected $table_name = '';
 
+    public function __construct($table_name = '', $attributes = [], $labels = [])
+    {
+        if ($table_name) {
+            $this->defineTableName($table_name);
+        }
+        if ($attributes) {
+            $this->defineAttributes($attributes);
+        }
+        if ($labels) {
+            $this->defineLabels($labels);
+        }
+    }
+
     public function defineTableName($table_name)
     {
         $this->table_name = $table_name;
