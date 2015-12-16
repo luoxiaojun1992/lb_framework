@@ -11,7 +11,7 @@ namespace lb\components\db\mysql;
 
 class DynamicModel extends ActiveRecord
 {
-    protected $table_name = '';
+    public $table_name = '';
 
     public function __construct($table_name = '', $attributes = [], $labels = [])
     {
@@ -29,6 +29,11 @@ class DynamicModel extends ActiveRecord
     public function defineTableName($table_name)
     {
         $this->table_name = $table_name;
+    }
+
+    public function undefineTableName()
+    {
+        $this->table_name = '';
     }
 
     public function defineAttribute($attribute, $value)
