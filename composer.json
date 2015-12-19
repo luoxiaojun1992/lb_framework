@@ -41,14 +41,15 @@
     "centraldesktop/protobuf-php": "*",
     "workerman/workerman": "*",
     "nervo/yuicompressor": "*",
-    "ucsdmath/validation": "*"
+    "ucsdmath/validation": "*",
+    "gregwar/captcha": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.3.x-dev"
+      "dev-master": "1.5.x-dev"
     }
   }
 }
