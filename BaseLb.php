@@ -11,6 +11,7 @@ namespace lb;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\HtmlHelper;
+use lb\components\helpers\ImageHelper;
 use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
@@ -536,6 +537,14 @@ class BaseLb
             }
         }
         return $is_action;
+    }
+
+    // Output Captcha
+    public function captcha()
+    {
+        if ($this->is_single) {
+            ImageHelper::captcha();
+        }
     }
 
     // Autoloader
