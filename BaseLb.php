@@ -626,18 +626,21 @@ class BaseLb
         // Start Session
         session_start();
 
-        // Login Required
-        $login_default_url = $config_container->get('login_default_url');
-        if ($config_container->get('login_required') && $login_default_url) {
-            Lb::app()->loginRequired($login_default_url);
-        }
-
         // Route
         $this->route_info = Route::getInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             if (Lb::app()->isAction()) {
                 $this->route_info['controller'] = 'index';
                 $this->route_info['action'] = 'index';
+            }
+        }
+
+        // Login Required
+        $login_required_filter = $config_container->get('login_required_filter');
+        if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+            $login_default_url = $config_container->get('login_default_url');
+            if ($config_container->get('login_required') && $login_default_url) {
+                Lb::app()->loginRequired($login_default_url);
             }
         }
 
