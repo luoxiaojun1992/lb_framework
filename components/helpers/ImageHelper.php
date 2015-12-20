@@ -10,6 +10,7 @@
 namespace lb\components\helpers;
 
 use Gregwar\Captcha\CaptchaBuilder;
+use lb\Lb;
 
 class ImageHelper
 {
@@ -17,6 +18,10 @@ class ImageHelper
     {
         $builder = new CaptchaBuilder;
         $builder->build();
+
+        $phrase = $builder->getPhrase();
+        Lb::app()->setSession('verify_code', $phrase);
+
         header('Content-type: image/jpeg');
         $builder->output();
     }
