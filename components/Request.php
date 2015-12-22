@@ -62,4 +62,9 @@ class Request
     {
         return isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
     }
+
+    public static function getReferer()
+    {
+        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+    }
 }

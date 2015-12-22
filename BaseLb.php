@@ -370,6 +370,15 @@ class BaseLb
         return '';
     }
 
+    // Get Referer
+    public function getReferer()
+    {
+        if ($this->is_single) {
+            return Request::getReferer();
+        }
+        return '';
+    }
+
     // Memcache Get
     public function memcacheGet($key)
     {
