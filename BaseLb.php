@@ -341,6 +341,30 @@ class BaseLb
         }
     }
 
+    // Set Cookie Value By Header
+    public function setHeaderCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
+    {
+        if ($this->is_single) {
+            $cookie_str[] = $cookie_key . '=' . $cookie_value;
+            if ($expire) {
+                $cookie_str[] = 'expires=' . gmstrftime("%A, %d-%b-%Y %H:%M:%S GMT", time() + $expire);
+            }
+            if ($path) {
+                $cookie_str[] = 'path=' . $path;
+            }
+            if ($domain) {
+                $cookie_str[] = 'domain=' . $domain;
+            }
+            if ($secure) {
+                $cookie_str[] = 'secure';
+            }
+            if ($httpOnly) {
+                $cookie_str[] = 'HttpOnly';
+            }
+            header("Set-Cookie: " . implode('; ', $cookie_str));
+        }
+    }
+
     // Delete Cookie
     public function delCookie($cookie_key)
     {
