@@ -50,13 +50,16 @@ class WebController extends BaseController
 
     }
 
-    protected function renderJson($array, $return = false)
+    protected function renderJson($array, $is_string = true, $return = false)
     {
         $this->beforeRenderJson();
         $json = JsonHelper::encode($array);
         if ($return) {
             return $json;
         } else {
+            if (!$is_string) {
+                header('Content-type:application/json');
+            }
             echo $json;
         }
     }
