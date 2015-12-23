@@ -33,4 +33,50 @@ class FileHelper
             fclose($fp);
         }
     }
+
+    public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null)
+    {
+        $storage = new \Upload\Storage\FileSystem($saved_file_path);
+        $file = new \Upload\File($file_name, $storage);
+
+        // Optionally you can rename the file on upload
+        $new_filename = uniqid();
+        $file->setName($new_filename);
+
+        // Validate file upload
+        // MimeType List => http://www.iana.org/assignments/media-types/media-types.xhtml
+        $validations = [];
+        if ($uploaded_file_type_limit) {
+            //You can also add multi mimetype validation
+            $validations[] = new \Upload\Validation\Mimetype($uploaded_file_type_limit);
+        }
+        if ($uploaded_file_size_limit) {
+            // Ensure file is no larger than 5M (use "B", "K", M", or "G")
+            $validations[] = new \Upload\Validation\Size($uploaded_file_size_limit);
+        }
+        if ($validations) {
+            $file->addValidations($validations);
+        }
+
+        // Access data about the file that has been uploaded
+        $data = array(
+            'name'       => $file->getNameWithExtension(),
+            'extension'  => $file->getExtension(),
+            'mime'       => $file->getMimetype(),
+            'size'       => $file->getSize(),
+            'md5'        => $file->getMd5(),
+            'dimensions' => $file->getDimensions()
+        );
+
+        // Try to upload file
+        try {
+            // Success!
+            $file->upload();
+            return ['result' => 'success', 'new_name' => $new_filename, 'data' => $data];
+        } catch (\Exception $e) {
+            // Fail!
+            $errors = $file->getErrors();
+            return ['result' => 'failed', 'errors' => $errors];
+        }
+    }
 }
