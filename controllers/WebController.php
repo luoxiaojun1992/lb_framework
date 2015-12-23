@@ -30,6 +30,11 @@ class WebController extends BaseController
 
     }
 
+    protected function beforeRenderJsAlert()
+    {
+
+    }
+
     protected function beforeRender()
     {
 
@@ -70,6 +75,7 @@ class WebController extends BaseController
 
     protected function renderJsAlert($content, $return = false)
     {
+        $this->beforeRenderJsAlert();
         if (is_array($content)) {
             if (!ArrayHelper::is_multi_array($content)) {
                 $alert = implode(PHP_EOL, $content);
