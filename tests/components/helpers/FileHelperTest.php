@@ -34,9 +34,4 @@ class FileHelperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected_content, $actual_content);
     }
-
-    public function testUpload()
-    {
-
-    }
 }
