@@ -319,7 +319,7 @@ class BaseLb
     {
         if ($this->is_single) {
             foreach ($session_keys as $session_key) {
-                Lb::app()->delSession($session_key);
+                $this->delSession($session_key);
             }
         }
     }
@@ -370,7 +370,7 @@ class BaseLb
     {
         if ($this->is_single) {
             if (isset($_COOKIE[$cookie_key])) {
-                unset($_COOKIE[$cookie_key]);
+                setcookie($cookie_key);
             }
         }
     }
@@ -380,7 +380,27 @@ class BaseLb
     {
         if ($this->is_single) {
             foreach ($cookie_keys as $cookie_key) {
-                Lb::app()->delCookie($cookie_key);
+                $this->delCookie($cookie_key);
+            }
+        }
+    }
+
+    // Delete Cookie By Header
+    public function delHeaderCookie($cookie_key)
+    {
+        if ($this->is_single) {
+            if (isset($_COOKIE[$cookie_key])) {
+                $this->setHeaderCookie($cookie_key, $_COOKIE[$cookie_key], -1);
+            }
+        }
+    }
+
+    // Delete Multi Cookies By Header
+    public function delHeaderCookies($cookie_keys)
+    {
+        if ($this->is_single) {
+            foreach ($cookie_keys as $cookie_key) {
+                $this->delHeaderCookie($cookie_key);
             }
         }
     }
