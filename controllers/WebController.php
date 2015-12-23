@@ -10,6 +10,7 @@
 namespace lb\controllers;
 
 use lb\components\error_handlers\HttpException;
+use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
 use lb\Lb;
@@ -64,6 +65,26 @@ class WebController extends BaseController
         } else {
             Header('Content-type:application/xml');
             echo $xml;
+        }
+    }
+
+    protected function renderJsAlert($content, $return = false)
+    {
+        if (is_array($content)) {
+            if (!ArrayHelper::is_multi_array($content)) {
+                $alert = implode(PHP_EOL, $content);
+            } else {
+                $alert = print_r($content, true);
+            }
+        } else {
+            $alert = $content;
+        }
+        $js_alert_tpl = '<script>alert(\'%s\')</script>';
+        $js_alert_code = sprintf($js_alert_tpl, $alert);
+        if ($return) {
+            return $js_alert_code;
+        } else {
+            echo $js_alert_code;
         }
     }
 
