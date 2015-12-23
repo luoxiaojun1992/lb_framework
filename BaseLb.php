@@ -654,7 +654,7 @@ class BaseLb
     {
         // Init Config
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include(CONFIG_FILE);
+            $this->config = include_once(CONFIG_FILE);
         }
 
         // Container Register
