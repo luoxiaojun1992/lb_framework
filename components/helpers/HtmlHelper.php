@@ -91,7 +91,7 @@ class HtmlHelper
             if (stripos($src, 'http') === false && stripos($src, 'https') === false) {
                 $src = $cdnHost . $src;
             } else {
-                $src = preg_replace('/^(http|https)://.+?//', $cdnHost . '/', $src);
+                $src = preg_replace('/^(http|https):\/\/.+?\//i', $cdnHost . '/', $src);
             }
         }
         return sprintf($image_tag_tpl, $src, $alt, $option_str);
