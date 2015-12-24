@@ -12,6 +12,7 @@ namespace lb;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
+use lb\components\helpers\SystemHelper;
 use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
@@ -31,6 +32,8 @@ use lb\components\helpers\FileHelper;
 
 class BaseLb
 {
+    const VERSION = '1.0.0'; // Framework Version
+
     protected static $app;
 
     public $config = []; // App Configuration
@@ -598,6 +601,15 @@ class BaseLb
         if ($this->is_single) {
             ImageHelper::captcha();
         }
+    }
+
+    // Get System Version
+    public function getVersion()
+    {
+        if ($this->is_single) {
+            return SystemHelper::getVersion();
+        }
+        return '';
     }
 
     // Autoloader
