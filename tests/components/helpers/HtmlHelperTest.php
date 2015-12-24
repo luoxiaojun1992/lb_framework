@@ -53,4 +53,17 @@ html;
         $encodedHtml = htmlspecialchars($html);
         $this->assertEquals($html, HtmlHelper::decode($encodedHtml));
     }
+
+    public function testImage()
+    {
+        $src = 'http://www.baidu.com/test';
+        $alt = 'test';
+        $options = [
+            'id' => 'test',
+            'class' => 'test',
+        ];
+        $expectedImageTag = '<img src="' . $src . '" alt="' . $alt . '" id="test" class="test" />';
+        $actualImageTag = HtmlHelper::image($src, $alt, $options);
+        $this->assertEquals($expectedImageTag, $actualImageTag);
+    }
 }

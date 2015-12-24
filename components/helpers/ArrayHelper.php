@@ -48,4 +48,15 @@ class ArrayHelper
         }
         return $string;
     }
+
+    public static function listData($array, $key, $value)
+    {
+        $listData = [];
+        if (static::array_depth($array) == 2) {
+            foreach ($array as $child_array) {
+                $listData[$child_array[$key]] = $child_array[$value];
+            }
+        }
+        return $listData;
+    }
 }

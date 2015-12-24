@@ -85,4 +85,25 @@ class ArrayHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($threeDimensionalArrayExpectedString, $threeDimensionalArrayString);
         $this->assertEquals($notArray, $notArrayString);
     }
+
+    public function testListData()
+    {
+        $oneDimensionalArray = ['name' => 'a', 'age' => 23];
+        $twoDimensionalArray = [
+            ['name' => 'a', 'age' => 23],
+            ['name' => 'b', 'age' => 24],
+        ];
+
+        $expectedOneDimensionalListData = [];
+        $expectedTwoDimensionalListData = [
+            'a' => '23',
+            'b' => '24',
+        ];
+
+        $actualOneDimensionalListData = ArrayHelper::listData($oneDimensionalArray, 'name', 'age');
+        $actualTwoDimensionalListData = ArrayHelper::listData($twoDimensionalArray, 'name', 'age');
+
+        $this->assertEquals($expectedOneDimensionalListData, $actualOneDimensionalListData);
+        $this->assertEquals($expectedTwoDimensionalListData, $actualTwoDimensionalListData);
+    }
 }
