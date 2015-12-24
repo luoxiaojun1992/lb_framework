@@ -9,6 +9,8 @@
 
 namespace lb\components\helpers;
 
+use lb\Lb;
+
 class HtmlHelper
 {
     protected static function format_tag($tag)
@@ -67,5 +69,31 @@ class HtmlHelper
     public static function decode($html)
     {
         return htmlspecialchars_decode($html);
+    }
+
+    public static function image($src, $alt = '', $options = [])
+    {
+        $image_tag_tpl = '<img src="%s" alt="%s"%s />';
+        $option_str = '';
+        if ($options) {
+            $option_arr = [];
+            foreach ($options as $key => $value) {
+                if (is_string($key)) {
+                    $option_arr[] = implode('=', [$key, '"' . $value . '"']);
+                } else {
+                    $option_arr[] = $value;
+                }
+            }
+            $option_str = ' ' . implode(' ', $option_arr);
+        }
+        $cdnHost = Lb::app()->getCdnHost();
+        if ($cdnHost) {
+            if (stripos($src, 'http') === false && stripos($src, 'https') === false) {
+                $src = $cdnHost . $src;
+            } else {
+                $src = preg_replace('/^(http|https)://.+?//', $cdnHost . '/', $src);
+            }
+        }
+        return sprintf($image_tag_tpl, $src, $alt, $option_str);
     }
 }
