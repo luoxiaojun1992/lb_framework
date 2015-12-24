@@ -96,4 +96,22 @@ class HtmlHelper
         }
         return sprintf($image_tag_tpl, $src, $alt, $option_str);
     }
+
+    public static function a($href, $content = '', $title = '', $target = '', $options)
+    {
+        $a_tag_tpl = '<a href="%s" title="%s" target="%s"%s>%s</a>';
+        $option_str = '';
+        if ($options) {
+            $option_arr = [];
+            foreach ($options as $key => $value) {
+                if (is_string($key)) {
+                    $option_arr[] = implode('=', [$key, '"' . $value . '"']);
+                } else {
+                    $option_arr[] = $value;
+                }
+            }
+            $option_str = ' ' . implode(' ', $option_arr);
+        }
+        return sprintf($a_tag_tpl, $href, $title, $target, $option_str, $content);
+    }
 }

@@ -66,4 +66,19 @@ html;
         $actualImageTag = HtmlHelper::image($src, $alt, $options);
         $this->assertEquals($expectedImageTag, $actualImageTag);
     }
+
+    public function testA()
+    {
+        $href = 'http://www.baidu.com/test';
+        $content = 'test';
+        $title = 'test';
+        $target = '_blank';
+        $options = [
+            'id' => 'test',
+            'class' => 'test',
+        ];
+        $expectedATag = '<a href="' . $href . '" title="' . $title . '" target="' . $target . '" id="test" class="test">' . $content . '</a>';
+        $actualATag = HtmlHelper::a($href, $content, $title, $target, $options);
+        $this->assertEquals($expectedATag, $actualATag);
+    }
 }
