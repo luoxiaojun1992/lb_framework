@@ -97,7 +97,7 @@ class HtmlHelper
         return sprintf($image_tag_tpl, $src, $alt, $option_str);
     }
 
-    public static function a($href, $content = '', $title = '', $target = '', $options)
+    public static function a($href, $content = '', $title = '', $target = '', $options = [])
     {
         $a_tag_tpl = '<a href="%s" title="%s" target="%s"%s>%s</a>';
         $option_str = '';
