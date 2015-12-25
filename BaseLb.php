@@ -406,7 +406,7 @@ class BaseLb
             if ($httpOnly) {
                 $cookie_str[] = 'HttpOnly';
             }
-            header("Set-Cookie: " . implode('; ', $cookie_str));
+            header("Set-Cookie: " . implode('; ', $cookie_str), false);
         }
     }
 
