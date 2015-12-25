@@ -186,6 +186,27 @@ class BaseLb
         return [];
     }
 
+    // Get Home Uri
+    public function getHomeUri()
+    {
+        $homeUri = '';
+        if ($this->is_single) {
+            $controller = 'index';
+            $action = 'index';
+            $home = $this->getHome();
+            if (isset($home['controller']) && isset($home['action'])) {
+                $controller = $home['controller'];
+                $action = $home['action'];
+            }
+            if ($this->isPrettyUrl()) {
+                $homeUri = $this->createRelativeUrl("/{$controller}/action/{$action}");
+            } else {
+                $homeUri = $this->createRelativeUrl('/index.php', [$controller, 'action' => $action]);
+            }
+        }
+        return $homeUri;
+    }
+
     // Go Home
     public function goHome()
     {
