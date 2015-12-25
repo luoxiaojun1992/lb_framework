@@ -175,6 +175,48 @@ class BaseLb
         return '';
     }
 
+    // Get Home Controller & Action
+    public function getHome()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('home');
+            }
+        }
+        return [];
+    }
+
+    // Go Home
+    public function goHome()
+    {
+        if ($this->is_single) {
+            $controller = 'index';
+            $action = 'index';
+            $home = $this->getHome();
+            if (isset($home['controller']) && isset($home['action'])) {
+                $controller = $home['controller'];
+                $action = $home['action'];
+            }
+            if ($this->isPrettyUrl()) {
+                $home_url = $this->createRelativeUrl("/{$controller}/action/{$action}");
+            } else {
+                $home_url = $this->createRelativeUrl("/index.php?{$controller}&action={$action}");
+            }
+            $this->redirect($home_url);
+        }
+    }
+
+    // Go Back
+    public function goBack()
+    {
+        if ($this->is_single) {
+            $referer = $this->getReferer();
+            if ($referer) {
+                $this->redirect($referer);
+            }
+        }
+    }
+
     // Is Pretty Url
     public function isPrettyUrl()
     {
@@ -697,6 +739,11 @@ class BaseLb
             if (Lb::app()->isAction()) {
                 $this->route_info['controller'] = 'index';
                 $this->route_info['action'] = 'index';
+                $home = Lb::app()->getHome();
+                if (isset($home['controller']) && isset($home['action'])) {
+                    $this->route_info['controller'] = $home['controller'];
+                    $this->route_info['action'] = $home['action'];
+                }
             }
         }
 
