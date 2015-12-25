@@ -21,31 +21,7 @@ class UrlManager
 
     public static function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
     {
-        if (strpos($uri, '?') !== false) {
-            $tmpArr = [];
-            foreach ($query_params as $query_param_name => $query_param_value) {
-                if (is_int($query_param_name)) {
-                    $tmpArr[] = $query_param_value;
-                } else {
-                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
-                }
-            }
-            if ($tmpArr) {
-                $uri .= ('&' . implode('&', $tmpArr));
-            }
-        } else {
-            $tmpArr = [];
-            foreach ($query_params as $query_param_name => $query_param_value) {
-                if (is_int($query_param_name)) {
-                    $tmpArr[] = $query_param_value;
-                } else {
-                    $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
-                }
-            }
-            if ($tmpArr) {
-                $uri .= ('?' . implode('&', $tmpArr));
-            }
-        }
+        $uri = static::createRelativeUrl($uri, $query_params);
         if ($ssl) {
             $portal = 'https';
         } else {
