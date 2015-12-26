@@ -42,14 +42,15 @@
     "workerman/workerman": "*",
     "nervo/yuicompressor": "*",
     "ucsdmath/validation": "*",
-    "gregwar/captcha": "*"
+    "gregwar/captcha": "*",
+    "ckeditor/ckeditor": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.3.x-dev"
+      "dev-master": "1.5.x-dev"
     }
   }
 }
