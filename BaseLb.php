@@ -175,6 +175,17 @@ class BaseLb
         return '';
     }
 
+    // Get Seo Settings
+    public function getSeo()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('seo');
+            }
+        }
+        return [];
+    }
+
     // Get Home Controller & Action
     public function getHome()
     {
