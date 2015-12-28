@@ -88,7 +88,7 @@ class HtmlHelper
         }
         $cdnHost = Lb::app()->getCdnHost();
         if ($cdnHost) {
-            if (stripos($src, 'http') === false && stripos($src, 'https') === false) {
+            if (!ValidationHelper::isUrl($src)) {
                 $src = $cdnHost . $src;
             } else {
                 $src = preg_replace('/^(http|https):\/\/.+?\//i', $cdnHost . '/', $src);
