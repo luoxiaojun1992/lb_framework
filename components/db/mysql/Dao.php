@@ -207,7 +207,17 @@ class Dao
                 $insert_sql_statement = sprintf(static::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
                 $statement = static::prepare($insert_sql_statement, 'master');
                 if ($statement) {
-                    $result = $statement->execute();
+                    try {
+                        $result = $statement->execute();
+                    } catch(\PDOException $e) {
+                        if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
+                            Connection::component(Connection::component()->containers, true);
+                            $statement = static::prepare($insert_sql_statement, 'master');
+                            if ($statement) {
+                                $result = $statement->execute();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -237,7 +247,17 @@ class Dao
                 $insert_sql_statement = sprintf(static::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
                 $statement = static::prepare($insert_sql_statement, 'master');
                 if ($statement) {
-                    $result = $statement->execute();
+                    try {
+                        $result = $statement->execute();
+                    } catch(\PDOException $e) {
+                        if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
+                            Connection::component(Connection::component()->containers, true);
+                            $statement = static::prepare($insert_sql_statement, 'master');
+                            if ($statement) {
+                                $result = $statement->execute();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -277,7 +297,17 @@ class Dao
                 $update_sql_statement = sprintf(static::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
                 $statement = static::prepare($update_sql_statement, 'master');
                 if ($statement) {
-                    $result = $statement->execute();
+                    try {
+                        $result = $statement->execute();
+                    } catch(\PDOException $e) {
+                        if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
+                            Connection::component(Connection::component()->containers, true);
+                            $statement = static::prepare($update_sql_statement, 'master');
+                            if ($statement) {
+                                $result = $statement->execute();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -309,7 +339,17 @@ class Dao
                 $delete_sql_statement = sprintf(static::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
                 $statement = static::prepare($delete_sql_statement, 'master');
                 if ($statement) {
-                    $result = $statement->execute();
+                    try {
+                        $result = $statement->execute();
+                    } catch(\PDOException $e) {
+                        if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
+                            Connection::component(Connection::component()->containers, true);
+                            $statement = static::prepare($delete_sql_statement, 'master');
+                            if ($statement) {
+                                $result = $statement->execute();
+                            }
+                        }
+                    }
                 }
             }
         }
