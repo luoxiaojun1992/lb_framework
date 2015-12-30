@@ -391,7 +391,7 @@ class Dao
                         $join_conditions[] = implode('=', [$key, $value]);
                     }
                     $condition_str = implode(' AND ', $join_conditions);
-                    $statement .= sprintf(static::JOIN_SQL_TPL, $this->_join_type, $this->_joined_table, $condition_str);
+                    $statement .= (' ' . sprintf(static::JOIN_SQL_TPL, $this->_join_type, $this->_joined_table, $condition_str));
                 }
 
                 // WHERE
