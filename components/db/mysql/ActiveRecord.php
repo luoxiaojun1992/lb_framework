@@ -81,11 +81,28 @@ class ActiveRecord
     public function findAll()
     {
         if ($this->is_single) {
-            $result = Dao::component()->select(['*'])->from(static::TABLE_NAME)->findAll();
+            $dao = Dao::component()->select(['*'])
+                ->from(static::TABLE_NAME);
+            $is_related_model_exists = false;
+            if ($this->relations && count($this->relations) >= 3) {
+                list($self_field, $joined_table, $joined_table_field) = $this->relations;
+                $related_model_class = 'app\models\\' . ucfirst($joined_table);
+                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+                    $is_related_model_exists = true;
+                    $dao->join($joined_table, [$self_field => $joined_table_field]);
+                }
+            }
+            $result = $dao->findAll();
             if ($result) {
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
+                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+                        $related_model = new $related_model_class();
+                        $related_model->setAttributes($attributes);
+                        $related_model->is_new_record = false;
+                        $attributes[$self_field] = $related_model;
+                    }
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
