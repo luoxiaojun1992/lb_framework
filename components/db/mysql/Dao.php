@@ -23,6 +23,10 @@ class Dao
     protected $_limit = '';
     protected $_group_fields = [];
 
+    protected $_joined_table = '';
+    protected $_join_condition = [];
+    protected $_join_type = 'LEFT';
+
     // Create
     const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
     const MULTI_INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES %s";
@@ -34,6 +38,7 @@ class Dao
     const GROUP_SQL_TPL = "GROUP BY %s";
     const ORDER_SQL_TPL = "ORDER BY %s";
     const LIMIT_SQL_TPL = "LIMIT %s";
+    const JOIN_SQL_TPL = "%s JOIN %s ON %s";
 
     // Update
     const UPDATE_SQL_TPL = "UPDATE %s SET %s WHERE %s";
@@ -102,6 +107,17 @@ class Dao
     {
         if ($this->_table && is_array($group_fields) && $group_fields) {
             $this->_group_fields = $group_fields;
+            return static::$instance;
+        }
+        return false;
+    }
+
+    public function join($joined_table, $condition, $type = 'LEFT')
+    {
+        if ($this->_table && $joined_table && is_array($condition) && $condition) {
+            $this->_joined_table = $joined_table;
+            $this->_join_condition = $condition;
+            $this->_join_type = $type;
             return static::$instance;
         }
         return false;
@@ -367,6 +383,16 @@ class Dao
                     $select_from_sql_statement = sprintf(static::SELECT_FROM_SQL_TPL, implode(', ', $this->_fields), $this->_table);
                 }
                 $statement .= $select_from_sql_statement;
+
+                // JOIN
+                if ($this->_joined_table && $this->_join_condition) {
+                    $join_conditions = [];
+                    foreach ($this->_join_condition as $key => $value) {
+                        $join_conditions[] = implode('=', [$key, $value]);
+                    }
+                    $condition_str = implode(' AND ', $join_conditions);
+                    $statement .= sprintf(static::JOIN_SQL_TPL, $this->_join_type, $this->_joined_table, $condition_str);
+                }
 
                 // WHERE
                 if ($this->_conditions) {
