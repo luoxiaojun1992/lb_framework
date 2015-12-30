@@ -19,6 +19,7 @@ class ActiveRecord
     protected $is_single = false;
     protected $rules = [];
     protected $errors = [];
+    protected $relations = [];
     public $labels = [];
     public $is_new_record = true;
 
