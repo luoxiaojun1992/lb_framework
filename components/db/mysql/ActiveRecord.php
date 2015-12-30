@@ -57,6 +57,11 @@ class ActiveRecord
                 if (array_key_exists($attribute_name, $this->_attributes)) {
                     settype($attribute_value, gettype($this->_attributes[$attribute_name]));
                     $this->_attributes[$attribute_name] = $attribute_value;
+                } else {
+                    if ((stripos($attribute_name, static::TABLE_NAME . '_') === 0 && array_key_exists(str_replace(static::TABLE_NAME . '_', '', $attribute_name), $this->_attributes))) {
+                        settype($attribute_value, gettype($this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)]));
+                        $this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)] = $attribute_value;
+                    }
                 }
             }
         }
@@ -89,7 +94,20 @@ class ActiveRecord
                 $related_model_class = 'app\models\\' . ucfirst($joined_table);
                 if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
                     $is_related_model_exists = true;
-                    $dao->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+                    $related_model_attributes = (new $related_model_class())->getAttributes();
+                    $related_model_fields = array_keys($related_model_attributes);
+                    foreach ($related_model_fields as $key => $related_model_field) {
+                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+                    }
+                    $self_attributes = $this->getAttributes();
+                    $self_fields = array_keys($self_attributes);
+                    foreach ($self_fields as $key => $field) {
+                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+                    }
+                    $fields = array_merge($related_model_fields, $self_fields);
+                    $dao->select($fields)
+                        ->from(static::TABLE_NAME)
+                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
                 }
             }
             $result = $dao->findAll();
