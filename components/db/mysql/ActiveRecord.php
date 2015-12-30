@@ -98,13 +98,11 @@ class ActiveRecord
                 $related_model_class = 'app\models\\' . ucfirst($joined_table);
                 if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
                     $is_related_model_exists = true;
-                    $related_model_attributes = (new $related_model_class())->getAttributes();
-                    $related_model_fields = array_keys($related_model_attributes);
+                    $related_model_fields = (new $related_model_class())->getFields();
                     foreach ($related_model_fields as $key => $related_model_field) {
                         $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
                     }
-                    $self_attributes = $this->getAttributes();
-                    $self_fields = array_keys($self_attributes);
+                    $self_fields = $this->getFields();
                     foreach ($self_fields as $key => $field) {
                         $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
                     }
@@ -272,6 +270,14 @@ class ActiveRecord
     {
         if (!$this->is_single) {
             return $this->_attributes;
+        }
+        return [];
+    }
+
+    public function getFields()
+    {
+        if (!$this->is_single) {
+            return array_keys($this->_attributes);
         }
         return [];
     }
