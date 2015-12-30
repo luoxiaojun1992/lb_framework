@@ -89,7 +89,7 @@ class ActiveRecord
                 $related_model_class = 'app\models\\' . ucfirst($joined_table);
                 if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
                     $is_related_model_exists = true;
-                    $dao->join($joined_table, [$self_field => $joined_table_field]);
+                    $dao->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
                 }
             }
             $result = $dao->findAll();
