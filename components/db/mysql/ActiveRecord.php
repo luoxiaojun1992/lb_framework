@@ -55,11 +55,15 @@ class ActiveRecord
         if (!$this->is_single) {
             foreach ($attributes as $attribute_name => $attribute_value) {
                 if (array_key_exists($attribute_name, $this->_attributes)) {
-                    settype($attribute_value, gettype($this->_attributes[$attribute_name]));
+                    if (!is_object($attribute_value)) {
+                        settype($attribute_value, gettype($this->_attributes[$attribute_name]));
+                    }
                     $this->_attributes[$attribute_name] = $attribute_value;
                 } else {
                     if ((stripos($attribute_name, static::TABLE_NAME . '_') === 0 && array_key_exists(str_replace(static::TABLE_NAME . '_', '', $attribute_name), $this->_attributes))) {
-                        settype($attribute_value, gettype($this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)]));
+                        if (!is_object($attribute_value)) {
+                            settype($attribute_value, gettype($this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)]));
+                        }
                         $this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)] = $attribute_value;
                     }
                 }
