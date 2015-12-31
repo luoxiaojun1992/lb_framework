@@ -50,6 +50,9 @@ class ActiveRecord
         return false;
     }
 
+    /**
+     * @param array $attributes
+     */
     public function setAttributes($attributes = [])
     {
         if (!$this->is_single) {

@@ -46,6 +46,9 @@ class Dao
     // Delete
     const DELETE_SQL_TPL = "DELETE FROM %s WHERE %s";
 
+    /**
+     * @return bool|static
+     */
     public static function component()
     {
         if (static::$instance instanceof static) {
@@ -60,6 +63,10 @@ class Dao
         // TODO: Implement __clone() method.
     }
 
+    /**
+     * @param $fields
+     * @return bool
+     */
     public function select($fields)
     {
         $this->is_query = true;
@@ -70,12 +77,20 @@ class Dao
         return false;
     }
 
+    /**
+     * @param $table
+     * @return bool
+     */
     public function from($table)
     {
         $this->_table = $table;
         return static::$instance;
     }
 
+    /**
+     * @param $conditions
+     * @return bool
+     */
     public function where($conditions)
     {
         if ($this->_table && is_array($conditions) && $conditions) {
@@ -85,6 +100,10 @@ class Dao
         return false;
     }
 
+    /**
+     * @param $orders
+     * @return bool
+     */
     public function order($orders)
     {
         if ($this->_table && is_array($orders) && $orders) {
@@ -94,6 +113,10 @@ class Dao
         return false;
     }
 
+    /**
+     * @param $limit
+     * @return bool
+     */
     public function limit($limit)
     {
         if ($this->_table && $limit) {
@@ -103,6 +126,10 @@ class Dao
         return false;
     }
 
+    /**
+     * @param $group_fields
+     * @return bool
+     */
     public function group($group_fields)
     {
         if ($this->_table && is_array($group_fields) && $group_fields) {
@@ -112,6 +139,12 @@ class Dao
         return false;
     }
 
+    /**
+     * @param $joined_table
+     * @param $condition
+     * @param string $type
+     * @return bool
+     */
     public function join($joined_table, $condition, $type = 'LEFT')
     {
         if ($this->_table && $joined_table && is_array($condition) && $condition) {
@@ -123,6 +156,9 @@ class Dao
         return false;
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
         $count = 0;
@@ -136,6 +172,9 @@ class Dao
         return $count;
     }
 
+    /**
+     * @return array
+     */
     public function find()
     {
         $result = [];
@@ -146,6 +185,9 @@ class Dao
         return $result;
     }
 
+    /**
+     * @return array
+     */
     public function findAll()
     {
         $result = [];
@@ -156,6 +198,10 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param bool $count
+     * @return bool
+     */
     protected function query($count = false)
     {
         $result = false;
@@ -187,6 +233,11 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param $sql_statement
+     * @param $node_type
+     * @return bool
+     */
     public static function prepare($sql_statement, $node_type)
     {
         $statement = false;
@@ -206,6 +257,12 @@ class Dao
         return $statement;
     }
 
+    /**
+     * @param $table
+     * @param $fields
+     * @param $values
+     * @return bool
+     */
     public function insertOne($table, $fields, $values)
     {
         $result = false;
@@ -240,6 +297,12 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param $table
+     * @param $fields
+     * @param $multi_values
+     * @return bool
+     */
     public function insertAll($table, $fields, $multi_values)
     {
         $result = false;
@@ -280,6 +343,12 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param $table
+     * @param $values
+     * @param bool $conditions
+     * @return bool
+     */
     public function update($table, $values, $conditions = true)
     {
         $result = false;
@@ -330,6 +399,11 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param $table
+     * @param bool $conditions
+     * @return bool
+     */
     public function delete($table, $conditions = true)
     {
         $result = false;
@@ -372,6 +446,10 @@ class Dao
         return $result;
     }
 
+    /**
+     * @param bool $count
+     * @return string
+     */
     protected function createQueryStatement($count = false)
     {
         $statement = '';

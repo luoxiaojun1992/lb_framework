@@ -97,6 +97,11 @@ class Connection
         }
     }
 
+    /**
+     * @param array $containers
+     * @param bool $reset
+     * @return bool|static
+     */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {
