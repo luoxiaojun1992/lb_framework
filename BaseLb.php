@@ -9,6 +9,7 @@
 
 namespace lb;
 
+use lb\components\containers\RouteInfo;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
@@ -197,6 +198,26 @@ class BaseLb
         return [];
     }
 
+    // If is home
+    public function isHome()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['route_info']['controller']) && isset($this->containers['route_info']['action'])) {
+                $home_controller = 'index';
+                $home_action = 'index';
+                $home = $this->getHome();
+                if ($home && isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
+                    $home_controller = $home['controller'];
+                    $home_action = $home['action'];
+                }
+                if ($this->containers['route_info']['controller'] == $home_controller && $this->containers['route_info']['action'] == $home_action) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Get Home Uri
     public function getHomeUri()
     {
@@ -205,7 +226,7 @@ class BaseLb
             $controller = 'index';
             $action = 'index';
             $home = $this->getHome();
-            if (isset($home['controller']) && isset($home['action'])) {
+            if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
                 $controller = $home['controller'];
                 $action = $home['action'];
             }
@@ -225,7 +246,7 @@ class BaseLb
             $controller = 'index';
             $action = 'index';
             $home = $this->getHome();
-            if (isset($home['controller']) && isset($home['action'])) {
+            if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
                 $controller = $home['controller'];
                 $action = $home['action'];
             }
@@ -751,8 +772,15 @@ class BaseLb
         }
         $this->config = [];
 
+        // Register Route Info
+        $route_info_container = RouteInfo::component();
+        foreach ($this->route_info as $item_name => $item_value) {
+            $route_info_container->set($item_name, $item_value);
+        }
+
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
+        Lb::app()->containers['route_info'] = $route_info_container;
 
         // Set Timezone
         $config_time_zone = Lb::app()->getTimeZone();
@@ -772,7 +800,7 @@ class BaseLb
                 $this->route_info['controller'] = 'index';
                 $this->route_info['action'] = 'index';
                 $home = Lb::app()->getHome();
-                if (isset($home['controller']) && isset($home['action'])) {
+                if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
                     $this->route_info['controller'] = $home['controller'];
                     $this->route_info['action'] = $home['action'];
                 }
