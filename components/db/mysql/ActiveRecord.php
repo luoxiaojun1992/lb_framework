@@ -109,7 +109,6 @@ class ActiveRecord
                     }
                     $fields = array_merge($related_model_fields, $self_fields);
                     $dao->select($fields)
-                        ->from(static::TABLE_NAME)
                         ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
                 }
             }
@@ -168,9 +167,7 @@ class ActiveRecord
                     }
                     $fields = array_merge($related_model_fields, $self_fields);
                     $dao->select($fields)
-                        ->from(static::TABLE_NAME)
-                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])])
-                        ->where([$this->_primary_key => $primary_key]);
+                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
                 }
             }
 
@@ -241,11 +238,38 @@ class ActiveRecord
             if ($limit) {
                 $dao->limit($limit);
             }
+
+            $is_related_model_exists = false;
+            if ($this->relations && count($this->relations) >= 3) {
+                list($self_field, $joined_table, $joined_table_field) = $this->relations;
+                $related_model_class = 'app\models\\' . ucfirst($joined_table);
+                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+                    $is_related_model_exists = true;
+                    $related_model_fields = (new $related_model_class())->getFields();
+                    foreach ($related_model_fields as $key => $related_model_field) {
+                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+                    }
+                    $self_fields = $this->getFields();
+                    foreach ($self_fields as $key => $field) {
+                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+                    }
+                    $fields = array_merge($related_model_fields, $self_fields);
+                    $dao->select($fields)
+                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+                }
+            }
+
             $result = $dao->findAll();
             if ($result) {
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
+                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+                        $related_model = new $related_model_class();
+                        $related_model->setAttributes($attributes);
+                        $related_model->is_new_record = false;
+                        $attributes[$self_field] = $related_model;
+                    }
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
