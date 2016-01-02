@@ -9,11 +9,12 @@
 
 namespace lb\components;
 
+use lb\BaseClass;
 use lb\Lb;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class Log
+class Log extends BaseClass
 {
     protected $loggers = [];
     protected static $instance = false;

@@ -9,7 +9,9 @@
 
 namespace lb\components;
 
-class Pagination
+use lb\BaseClass;
+
+class Pagination extends BaseClass
 {
     public static function getParams($total, $page_size, $page = 1)
     {
@@ -18,11 +20,7 @@ class Pagination
         if ($page != $pageTotal) {
             $limit = $page_size;
         } else {
-            if ($pageTotal % $page_size) {
-                $limit = $total % $page_size;
-            } else {
-                $limit = $page_size;
-            }
+            $limit = $total % $page_size ? : $page_size;
         }
         return [$offset, $limit];
     }

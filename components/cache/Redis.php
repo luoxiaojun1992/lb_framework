@@ -9,7 +9,9 @@
 
 namespace lb\components\cache;
 
-class Redis
+use lb\BaseClass;
+
+class Redis extends BaseClass
 {
     public $conn = false;
     protected $_host = '';

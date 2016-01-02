@@ -9,9 +9,10 @@
 
 namespace lb\components\helpers;
 
+use lb\BaseClass;
 use UCSDMath\Validation\Validation;
 
-class ValidationHelper
+class ValidationHelper extends BaseClass
 {
     protected static $validator = false;
 

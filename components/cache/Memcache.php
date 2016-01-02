@@ -9,7 +9,9 @@
 
 namespace lb\components\cache;
 
-class Memcache
+use lb\BaseClass;
+
+class Memcache extends BaseClass
 {
     public $conn = false;
     protected $_servers = [];

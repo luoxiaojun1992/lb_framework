@@ -9,7 +9,9 @@
 
 namespace lb\controllers;
 
-class BaseController
+use lb\BaseClass;
+
+class BaseController extends BaseClass
 {
     public $controller_id = '';
 

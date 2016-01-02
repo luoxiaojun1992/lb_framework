@@ -9,10 +9,11 @@
 
 namespace lb\components\db\mysql;
 
+use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\ValidationHelper;
 
-class ActiveRecord
+class ActiveRecord extends BaseClass
 {
     protected $_primary_key = '';
     protected $_attributes = [];

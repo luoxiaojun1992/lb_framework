@@ -10,9 +10,10 @@
 namespace lb\components\helpers;
 
 use Gregwar\Captcha\CaptchaBuilder;
+use lb\BaseClass;
 use lb\Lb;
 
-class ImageHelper
+class ImageHelper extends BaseClass
 {
     public static function captcha()
     {

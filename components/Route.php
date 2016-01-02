@@ -9,10 +9,11 @@
 
 namespace lb\components;
 
+use lb\BaseClass;
 use lb\components\error_handlers\HttpException;
 use lb\Lb;
 
-class Route
+class Route extends BaseClass
 {
     public static function getInfo()
     {

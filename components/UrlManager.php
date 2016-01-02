@@ -9,9 +9,10 @@
 
 namespace lb\components;
 
+use lb\BaseClass;
 use lb\Lb;
 
-class UrlManager
+class UrlManager extends BaseClass
 {
     public static function redirect($path, $replace = true, $http_response_code = null)
     {

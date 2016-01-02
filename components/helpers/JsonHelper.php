@@ -9,7 +9,9 @@
 
 namespace lb\components\helpers;
 
-class JsonHelper
+use lb\BaseClass;
+
+class JsonHelper extends BaseClass
 {
     public static function encode($data)
     {

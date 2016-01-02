@@ -9,7 +9,9 @@
 
 namespace lb\components\helpers;
 
-class ArrayHelper
+use lb\BaseClass;
+
+class ArrayHelper extends BaseClass
 {
     public static function array_depth($array)
     {

@@ -9,9 +9,10 @@
 
 namespace lb\components\helpers;
 
+use lb\BaseClass;
 use lb\Lb;
 
-class SystemHelper
+class SystemHelper extends BaseClass
 {
     public static function getVersion()
     {

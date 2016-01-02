@@ -11,9 +11,10 @@ namespace lb\components\assets;
 
 use Assetic\Asset\AssetCollection;
 use Assetic\Asset\FileAsset;
+use lb\BaseClass;
 use lb\Lb;
 
-class Javascript
+class Javascript extends BaseClass
 {
     public static function dump($js_files)
     {

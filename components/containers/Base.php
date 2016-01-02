@@ -9,7 +9,9 @@
 
 namespace lb\components\containers;
 
-class Base
+use lb\BaseClass;
+
+class Base extends BaseClass
 {
     protected $components = [];
     protected static $instance = false;

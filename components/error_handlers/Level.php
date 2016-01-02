@@ -9,7 +9,9 @@
 
 namespace lb\components\error_handlers;
 
-class Level
+use lb\BaseClass;
+
+class Level extends BaseClass
 {
     public static $env = 'dev';
 

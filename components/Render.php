@@ -9,12 +9,13 @@
 
 namespace lb\components;
 
+use lb\BaseClass;
 use lb\components\assets\Javascript;
 use lb\components\assets\Css;
 use lb\components\error_handlers\HttpException;
 use lb\Lb;
 
-class Render
+class Render extends BaseClass
 {
     protected static $root_dir = '';
 

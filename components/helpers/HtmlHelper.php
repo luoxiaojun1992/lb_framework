@@ -9,9 +9,10 @@
 
 namespace lb\components\helpers;
 
+use lb\BaseClass;
 use lb\Lb;
 
-class HtmlHelper
+class HtmlHelper extends BaseClass
 {
     protected static function format_tag($tag)
     {

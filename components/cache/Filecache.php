@@ -9,9 +9,11 @@
 
 namespace lb\components\cache;
 
+use lb\BaseClass;
 use lb\Lb;
 
-class Filecache {
+class Filecache extends BaseClass
+{
     //Path to cache folder
     public $cache_path = '';
     //Length of time to cache a file, default 1 day (in seconds)

@@ -9,7 +9,9 @@
 
 namespace lb\components\mailer;
 
-class Swift
+use lb\BaseClass;
+
+class Swift extends BaseClass
 {
     public $containers = [];
     public $transport = false;

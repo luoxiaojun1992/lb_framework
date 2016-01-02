@@ -9,7 +9,9 @@
 
 namespace lb\components\helpers;
 
-class FileHelper
+use lb\BaseClass;
+
+class FileHelper extends BaseClass
 {
     public static function getExtensionName($file_path)
     {

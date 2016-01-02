@@ -32,7 +32,7 @@ use lb\components\UrlManager;
 use lb\components\Security;
 use lb\components\helpers\FileHelper;
 
-class BaseLb
+class BaseLb extends BaseClass
 {
     const VERSION = '1.0.0'; // Framework Version
 

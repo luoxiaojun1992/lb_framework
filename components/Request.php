@@ -9,7 +9,9 @@
 
 namespace lb\components;
 
-class Request
+use lb\BaseClass;
+
+class Request extends BaseClass
 {
     public static function getClientAddress()
     {

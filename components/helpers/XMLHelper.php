@@ -9,7 +9,9 @@
 
 namespace lb\components\helpers;
 
-class XMLHelper
+use lb\BaseClass;
+
+class XMLHelper extends BaseClass
 {
     const XML_TPL = '<?xml version="1.0" encoding="UTF-8" ?>';
 

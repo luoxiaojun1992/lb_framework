@@ -9,7 +9,9 @@
 
 namespace lb\components\widget;
 
-class Base
+use lb\BaseClass;
+
+class Base extends BaseClass
 {
     public function __clone()
     {

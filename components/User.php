@@ -9,9 +9,10 @@
 
 namespace lb\components;
 
+use lb\BaseClass;
 use lb\Lb;
 
-class User
+class User extends BaseClass
 {
     public static function login($username, $user_id, $remember_token = '', $timeout = 0)
     {

@@ -9,7 +9,9 @@
 
 namespace lb\components\db\mysql;
 
-class Connection
+use lb\BaseClass;
+
+class Connection extends BaseClass
 {
     public $write_conn = false;
     public $read_conn = false;

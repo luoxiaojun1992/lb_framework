@@ -9,9 +9,10 @@
 
 namespace lb\components\db\mysql;
 
+use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
 
-class Dao
+class Dao extends BaseClass
 {
     protected static $instance = false;
     protected $_table = '';
