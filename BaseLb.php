@@ -14,6 +14,7 @@ use lb\components\error_handlers\HttpException;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
 use lb\components\helpers\SystemHelper;
+use lb\components\Pagination;
 use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
@@ -196,6 +197,17 @@ class BaseLb
             }
         }
         return [];
+    }
+
+    // Get Route Info
+    public function getRouteInfo()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['route_info']['controller']) && isset($this->containers['route_info']['action']) && $this->containers['route_info']['controller'] && $this->containers['route_info']['action']) {
+                return $this->containers['route_info'];
+            }
+        }
+        return ['controller' => 'index', 'action' => 'index'];
     }
 
     // If is home
@@ -705,6 +717,15 @@ class BaseLb
             return SystemHelper::getVersion();
         }
         return '';
+    }
+
+    // Get Pagination
+    public function getPagination($total, $page_size, $page = 1)
+    {
+        if ($this->is_single) {
+            return Pagination::getParams($total, $page_size, $page);
+        }
+        return [];
     }
 
     // Autoloader
