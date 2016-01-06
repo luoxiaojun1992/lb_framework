@@ -253,7 +253,7 @@ class Dao extends BaseClass
                 $conn = false;
         }
         if ($conn) {
-            $statement = $conn->prepare(stripslashes($sql_statement));
+            $statement = $conn->prepare($sql_statement);
         }
         return $statement;
     }
