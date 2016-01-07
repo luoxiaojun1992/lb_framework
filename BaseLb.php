@@ -188,6 +188,17 @@ class BaseLb extends BaseClass
         return [];
     }
 
+    // Get Custom Configuration
+    public function getCustomConfig()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('custom');
+            }
+        }
+        return [];
+    }
+
     // Get Home Controller & Action
     public function getHome()
     {
