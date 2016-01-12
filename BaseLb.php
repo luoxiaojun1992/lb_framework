@@ -188,17 +188,6 @@ class BaseLb extends BaseClass
         return [];
     }
 
-    // Get Custom Configuration
-    public function getCustomConfig()
-    {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('custom');
-            }
-        }
-        return [];
-    }
-
     // Get Home Controller & Action
     public function getHome()
     {
@@ -739,6 +728,15 @@ class BaseLb extends BaseClass
         return [];
     }
 
+    // Is Ajax
+    public function isAjax()
+    {
+        if ($this->is_single) {
+            return Request::isAjax();
+        }
+        return false;
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
@@ -890,19 +888,6 @@ class BaseLb extends BaseClass
 
         // CORS
         Security::cors($this->route_info['controller'], $this->route_info['action']);
-
-        // Set Triggers
-        $triggers_config = $config_container->get('triggers');
-        if ($triggers_config) {
-            foreach ($triggers_config as $item) {
-                if (isset($item['observer']) && isset($item['event']['type']) && isset($item['event']['class'])) {
-                    $eventClassNamespace = 'app\\' . $item['event']['type'] . 's\\' . $item['event']['class'];
-                    if (method_exists($eventClassNamespace, 'setObserver')) {
-                        $eventClassNamespace::setObserver($item['event'], $item['observer']);
-                    }
-                }
-            }
-        }
     }
 
     // Start App

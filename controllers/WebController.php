@@ -149,6 +149,11 @@ class WebController extends BaseController
         return strtolower(Lb::app()->getRequestMethod()) == 'post';
     }
 
+    protected function isAjax()
+    {
+        return Lb::app()->isAjax();
+    }
+
     public function error($err_msg, $tpl_name)
     {
         $viewPath = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . "{$tpl_name}.php";
