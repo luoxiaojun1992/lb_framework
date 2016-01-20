@@ -758,8 +758,8 @@ class BaseLb extends BaseClass
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
                 if (is_dir($controllers_dir)) {
                     $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . str_replace('app\controllers\\', '', $className) . 'Controller.php';
-                    if (file_exists($class_file_path)) {
-                        include_once($class_file_path);
+                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
+                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                     }
                 }
             }
@@ -769,8 +769,8 @@ class BaseLb extends BaseClass
                 $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
                 if (is_dir($models_dir)) {
                     $class_file_path = $models_dir . DIRECTORY_SEPARATOR . str_replace('app\models\\', '', $className) . '.php';
-                    if (file_exists($class_file_path)) {
-                        include_once($class_file_path);
+                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
+                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                     }
                 }
             }
@@ -780,8 +780,8 @@ class BaseLb extends BaseClass
                 $components_dir = $root_dir . DIRECTORY_SEPARATOR . 'components';
                 if (is_dir($components_dir)) {
                     $class_file_path = $components_dir . DIRECTORY_SEPARATOR . str_replace('app\components\\', '', $className) . '.php';
-                    if (file_exists($class_file_path)) {
-                        include_once($class_file_path);
+                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
+                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                     }
                 }
             }
