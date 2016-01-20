@@ -44,7 +44,8 @@
     "ucsdmath/validation": "*",
     "gregwar/captcha": "*",
     "ckeditor/ckeditor": "*",
-    "tinymce/tinymce": "*"
+    "tinymce/tinymce": "*",
+    "gee-team/gt-php-sdk": "dev-master"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
