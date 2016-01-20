@@ -45,14 +45,14 @@
     "gregwar/captcha": "*",
     "ckeditor/ckeditor": "*",
     "tinymce/tinymce": "*",
-    "gee-team/gt-php-sdk": "dev-master"
+    "gee-team/gt-php-sdk": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.2.x-dev"
+      "dev-master": "1.3.x-dev"
     }
   }
 }
