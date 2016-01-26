@@ -17,10 +17,10 @@ class JsonHelper extends BaseClass
     {
         $json = '';
         if (is_array($data)) {
-            $json = json_encode($data);
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE);
         } else {
             if (!is_object($data) && !is_resource($data)) {
-                $json = json_encode([$data]);
+                $json = json_encode([$data], JSON_UNESCAPED_UNICODE);
             }
         }
         return $json;

@@ -24,8 +24,8 @@ class JsonHelperTest extends \PHPUnit_Framework_TestCase
             ],
         ];
         $notArray = 'name a age 23';
-        $arrayExpectedJson = json_encode($array);
-        $notArrayExpectedJson = json_encode([$notArray]);
+        $arrayExpectedJson = json_encode($array, JSON_UNESCAPED_UNICODE);
+        $notArrayExpectedJson = json_encode([$notArray], JSON_UNESCAPED_UNICODE);
 
         $this->assertEquals($arrayExpectedJson, JsonHelper::encode($array));
         $this->assertEquals($notArrayExpectedJson, JsonHelper::encode($notArray));
@@ -42,7 +42,7 @@ class JsonHelperTest extends \PHPUnit_Framework_TestCase
                 ['name' => 'b', 'age' => 24],
             ],
         ];
-        $arrayJson = json_encode($array);
+        $arrayJson = json_encode($array, JSON_UNESCAPED_UNICODE);
         $notArray = 'name a age 23';
 
         $this->assertEquals($array, JsonHelper::decode($arrayJson));
@@ -60,7 +60,7 @@ class JsonHelperTest extends \PHPUnit_Framework_TestCase
                 ['name' => 'b', 'age' => 24],
             ],
         ];
-        $arrayJson = json_encode($array);
+        $arrayJson = json_encode($array, JSON_UNESCAPED_UNICODE);
         $notArray = 'name a age 23';
 
         $this->assertTrue(JsonHelper::is_json($arrayJson));
