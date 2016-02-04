@@ -153,7 +153,8 @@ class ActiveRecord extends BaseClass
             $dao = Dao::component()
                 ->select(['*'])
                 ->from(static::TABLE_NAME)
-                ->where([$this->_primary_key => $primary_key]);
+                ->where([$this->_primary_key => $primary_key])
+                ->limit(1);
 
             $is_related_model_exists = false;
             if ($this->relations && count($this->relations) >= 3) {
