@@ -64,7 +64,7 @@ class Dao extends BaseClass
             $instance->_joined_table = '';
             $instance->_join_condition = [];
             $instance->_join_type = 'LEFT';
-            return static::$instance;
+            return $instance;
         } else {
             return (static::$instance = new static());
         }
