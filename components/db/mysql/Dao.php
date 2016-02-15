@@ -53,6 +53,17 @@ class Dao extends BaseClass
     public static function component()
     {
         if (static::$instance instanceof static) {
+            $instance = static::$instance;
+            $instance->_table = '';
+            $instance->_fields = [];
+            $instance->_conditions = [];
+            $instance->is_query = false;
+            $instance->_orders = [];
+            $instance->_limit = '';
+            $instance->_group_fields = [];
+            $instance->_joined_table = '';
+            $instance->_join_condition = [];
+            $instance->_join_type = 'LEFT';
             return static::$instance;
         } else {
             return (static::$instance = new static());
