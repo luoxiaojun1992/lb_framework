@@ -22,6 +22,15 @@ class FileHelper extends BaseClass
         return $file_extension_name;
     }
 
+    public static function getSize($file_path)
+    {
+        $file_size = '';
+        if (file_exists($file_path)) {
+            $file_size = filesize($file_path);
+        }
+        return $file_size;
+    }
+
     public static function download($file_path, $file_name)
     {
         if (file_exists($file_path)) {
