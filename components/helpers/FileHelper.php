@@ -13,6 +13,15 @@ use lb\BaseClass;
 
 class FileHelper extends BaseClass
 {
+    public static function delete($file_path)
+    {
+        $result = false;
+        if (file_exists($file_path)) {
+            $result = unlink($file_path);
+        }
+        return $result;
+    }
+
     public static function getExtensionName($file_path)
     {
         $file_extension_name = '';
