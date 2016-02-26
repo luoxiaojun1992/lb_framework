@@ -358,9 +358,18 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
+    public function getErrors()
+    {
+        if (!$this->is_single) {
+            return $this->errors;
+        }
+        return false;
+    }
+
     protected function valid()
     {
         $is_valid = true;
+        $this->errors = [];
         $rules = $this->rules;
         if ($rules) {
             foreach ($rules as $rule) {
@@ -384,8 +393,6 @@ class ActiveRecord extends BaseClass
                                                 $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
                                             }
                                             break;
-                                        default:
-                                            $is_valid = true;
                                     }
                                 }
                                 break;
@@ -428,8 +435,6 @@ class ActiveRecord extends BaseClass
                                                 }
                                             }
                                             break;
-                                        default:
-                                            $is_valid = true;
                                     }
                                 }
                                 break;
@@ -451,8 +456,12 @@ class ActiveRecord extends BaseClass
                                     $this->errors[] = "The {$attribute} is not a valid ip.";
                                 }
                                 break;
-                            default:
-                                $is_valid = true;
+                            case 'unique':
+                                if (static::findByConditions([$attribute => $attribute_value])) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is not unique.";
+                                }
+                                break;
                         }
                     }
                 }
