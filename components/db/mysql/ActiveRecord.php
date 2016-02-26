@@ -458,12 +458,12 @@ class ActiveRecord extends BaseClass
                                 break;
                             case 'unique':
                                 if ($this->is_new_record) {
-                                    if (static::findByConditions([$attribute => $attribute_value])) {
+                                    if (static::model()->findByConditions([$attribute => $attribute_value])) {
                                         $is_valid = false;
                                         $this->errors[] = "The {$attribute} is not unique.";
                                     }
                                 } else {
-                                    if (static::findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
+                                    if (static::model()->findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
                                         $is_valid = false;
                                         $this->errors[] = "The {$attribute} is not unique.";
                                     }
