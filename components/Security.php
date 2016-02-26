@@ -156,7 +156,7 @@ class Security extends BaseClass
                 throw new HttpException('Csrf token missing.', 403);
             }
         }
-        if (!Lb::app()->isAjax()) {
+        if (!(Lb::app()->isAjax() && strtolower(Lb::app()->getRequestMethod()) == 'post')) {
             Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
         }
     }
