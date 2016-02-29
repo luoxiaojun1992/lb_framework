@@ -860,11 +860,14 @@ class BaseLb extends BaseClass
         $containers['config'] = $config_container;
 
         if (Lb::app()->isAction()) {
-            // Connect Mysql
+            // Connect MySql
             $mysql_config = $config_container->get('mysql');
             if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']][strtolower(Lb::app()->getRequestMethod())]) {
                 Connection::component($containers);
             }
+
+            // Connect MongoDB
+            \lb\components\db\mongodb\Connection::component($containers);
 
             // Connect Memcache
             Memcache::component($containers);
