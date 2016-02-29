@@ -17,6 +17,7 @@ class Redis extends BaseClass
     protected $_host = '';
     protected $_port = 6379;
     protected $_timeout = 0.0;
+    protected $_password = null;
     public $containers = [];
     protected static $instance = false;
 
@@ -31,6 +32,7 @@ class Redis extends BaseClass
                 $this->_host = isset($cache_config['host']) ? $cache_config['host'] : '';
                 $this->_port = isset($cache_config['port']) ? $cache_config['port'] : $this->_port;
                 $this->_timeout = isset($cache_config['timeout']) ? $cache_config['timeout'] : $this->_timeout;
+                $this->_password = isset($cache_config['password']) ? $cache_config['password'] : $this->_password;
                 $this->getConnection();
             }
         }
@@ -45,6 +47,9 @@ class Redis extends BaseClass
     {
         $this->conn = new \Redis();
         $this->conn->connect($this->_host, $this->_port, $this->_timeout);
+        if ($this->_password) {
+            $this->conn->auth($this->_password);
+        }
     }
 
     public static function component($containers = [], $reset = false)
