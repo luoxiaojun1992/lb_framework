@@ -15,12 +15,11 @@ use lb\components\helpers\ValidationHelper;
 
 class ActiveRecord extends BaseClass
 {
-    protected $_primary_key = '';
+    protected $_primary_key = '_id';
     protected $_attributes = [];
     protected $is_single = false;
     protected $rules = [];
     protected $errors = [];
-    protected $relations = [];
     public $labels = [];
     public $is_new_record = true;
 
@@ -63,13 +62,6 @@ class ActiveRecord extends BaseClass
                         settype($attribute_value, gettype($this->_attributes[$attribute_name]));
                     }
                     $this->_attributes[$attribute_name] = $attribute_value;
-                } else {
-                    if ((stripos($attribute_name, static::TABLE_NAME . '_') === 0 && array_key_exists(str_replace(static::TABLE_NAME . '_', '', $attribute_name), $this->_attributes))) {
-                        if (!is_object($attribute_value)) {
-                            settype($attribute_value, gettype($this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)]));
-                        }
-                        $this->_attributes[str_replace(static::TABLE_NAME . '_', '', $attribute_name)] = $attribute_value;
-                    }
                 }
             }
         }
@@ -91,225 +83,225 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
-    public function findAll()
-    {
-        if ($this->is_single) {
-            $dao = Dao::component()->select(['*'])
-                ->from(static::TABLE_NAME);
-
-            $is_related_model_exists = false;
-            if ($this->relations && count($this->relations) >= 3) {
-                list($self_field, $joined_table, $joined_table_field) = $this->relations;
-                $related_model_class = 'app\models\\' . ucfirst($joined_table);
-                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
-                    $is_related_model_exists = true;
-                    $related_model_fields = (new $related_model_class())->getFields();
-                    foreach ($related_model_fields as $key => $related_model_field) {
-                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
-                    }
-                    $self_fields = $this->getFields();
-                    foreach ($self_fields as $key => $field) {
-                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
-                    }
-                    $fields = array_merge($related_model_fields, $self_fields);
-                    $dao->select($fields)
-                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
-                }
-            }
-
-            $result = $dao->findAll();
-            if ($result) {
-                $models = [];
-                foreach ($result as $attributes) {
-                    $model_class = get_class($this);
-                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        $related_model = new $related_model_class();
-                        $related_model->setAttributes($attributes);
-                        $related_model->is_new_record = false;
-                        $attributes[$self_field] = $related_model;
-                    }
-                    $model = new $model_class();
-                    $model->setAttributes($attributes);
-                    $model->is_new_record = false;
-                    $models[] = $model;
-                }
-                return $models;
-            }
-        }
-        return [];
-    }
-
-    public function countAll()
-    {
-        if ($this->is_single) {
-            return Dao::component()->select(['*'])->from(static::TABLE_NAME)->count();
-        }
-        return 0;
-    }
-
-    public function findByPk($primary_key)
-    {
-        if ($this->is_single) {
-            $dao = Dao::component()
-                ->select(['*'])
-                ->from(static::TABLE_NAME)
-                ->where([$this->_primary_key => $primary_key])
-                ->limit(1);
-
-            $is_related_model_exists = false;
-            if ($this->relations && count($this->relations) >= 3) {
-                list($self_field, $joined_table, $joined_table_field) = $this->relations;
-                $related_model_class = 'app\models\\' . ucfirst($joined_table);
-                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
-                    $is_related_model_exists = true;
-                    $related_model_fields = (new $related_model_class())->getFields();
-                    foreach ($related_model_fields as $key => $related_model_field) {
-                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
-                    }
-                    $self_fields = $this->getFields();
-                    foreach ($self_fields as $key => $field) {
-                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
-                    }
-                    $fields = array_merge($related_model_fields, $self_fields);
-                    $dao->select($fields)
-                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
-                }
-            }
-
-            $attributes = $dao->find();
-            if ($attributes) {
-                $model_class = get_class($this);
-                if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                    $related_model = new $related_model_class();
-                    $related_model->setAttributes($attributes);
-                    $related_model->is_new_record = false;
-                    $attributes[$self_field] = $related_model;
-                }
-                $model = new $model_class();
-                $model->setAttributes($attributes);
-                $model->is_new_record = false;
-                return $model;
-            }
-        }
-        return false;
-    }
-
-    public function deleteByPk($primary_key)
-    {
-        if ($this->is_single) {
-            return Dao::component()
-                ->delete(static::TABLE_NAME, [
-                    $this->_primary_key => $primary_key,
-                ]);
-        }
-        return false;
-    }
-
-    public function deleteByConditions($conditions)
-    {
-        if ($this->is_single) {
-            return Dao::component()
-                ->delete(static::TABLE_NAME, $conditions);
-        }
-        return false;
-    }
-
-    public function deleteBySql($sql)
-    {
-        if ($this->is_single) {
-            $res = false;
-            $statement = Dao::component()->prepare($sql, 'master');
-            if ($statement) {
-                $res = $statement->execute();
-            }
-            return $res;
-        }
-        return false;
-    }
-
-    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
-    {
-        if ($this->is_single) {
-            $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
-            if (is_array($conditions) && $conditions) {
-                $dao->where($conditions);
-            }
-            if (is_array($group_fields) && $group_fields) {
-                $dao->group($group_fields);
-            }
-            if (is_array($orders) && $orders) {
-                $dao->order($orders);
-            }
-            if ($limit) {
-                $dao->limit($limit);
-            }
-
-            $is_related_model_exists = false;
-            if ($this->relations && count($this->relations) >= 3) {
-                list($self_field, $joined_table, $joined_table_field) = $this->relations;
-                $related_model_class = 'app\models\\' . ucfirst($joined_table);
-                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
-                    $is_related_model_exists = true;
-                    $related_model_fields = (new $related_model_class())->getFields();
-                    foreach ($related_model_fields as $key => $related_model_field) {
-                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
-                    }
-                    $self_fields = $this->getFields();
-                    foreach ($self_fields as $key => $field) {
-                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
-                    }
-                    $fields = array_merge($related_model_fields, $self_fields);
-                    $dao->select($fields)
-                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
-                }
-            }
-
-            $result = $dao->findAll();
-            if ($result) {
-                $models = [];
-                foreach ($result as $attributes) {
-                    $model_class = get_class($this);
-                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        $related_model = new $related_model_class();
-                        $related_model->setAttributes($attributes);
-                        $related_model->is_new_record = false;
-                        $attributes[$self_field] = $related_model;
-                    }
-                    $model = new $model_class();
-                    $model->setAttributes($attributes);
-                    $model->is_new_record = false;
-                    $models[] = $model;
-                }
-                return $models;
-            }
-        }
-        return [];
-    }
-
-    public function findBySql($sql)
-    {
-        if ($this->is_single) {
-            $statement = Dao::component()->prepare($sql, 'slave');
-            if ($statement) {
-                $res = $statement->execute();
-                if ($res) {
-                    $result = $statement->fetchAll();
-                    if ($result) {
-                        $models = [];
-                        foreach ($result as $attributes) {
-                            $model_class = get_class($this);
-                            $model = new $model_class();
-                            $model->setAttributes($attributes);
-                            $model->is_new_record = false;
-                            $models[] = $model;
-                        }
-                        return $models;
-                    }
-                }
-            }
-        }
-        return [];
-    }
+//    public function findAll()
+//    {
+//        if ($this->is_single) {
+//            $dao = Dao::component()->select(['*'])
+//                ->from(static::TABLE_NAME);
+//
+//            $is_related_model_exists = false;
+//            if ($this->relations && count($this->relations) >= 3) {
+//                list($self_field, $joined_table, $joined_table_field) = $this->relations;
+//                $related_model_class = 'app\models\\' . ucfirst($joined_table);
+//                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+//                    $is_related_model_exists = true;
+//                    $related_model_fields = (new $related_model_class())->getFields();
+//                    foreach ($related_model_fields as $key => $related_model_field) {
+//                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+//                    }
+//                    $self_fields = $this->getFields();
+//                    foreach ($self_fields as $key => $field) {
+//                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+//                    }
+//                    $fields = array_merge($related_model_fields, $self_fields);
+//                    $dao->select($fields)
+//                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+//                }
+//            }
+//
+//            $result = $dao->findAll();
+//            if ($result) {
+//                $models = [];
+//                foreach ($result as $attributes) {
+//                    $model_class = get_class($this);
+//                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+//                        $related_model = new $related_model_class();
+//                        $related_model->setAttributes($attributes);
+//                        $related_model->is_new_record = false;
+//                        $attributes[$self_field] = $related_model;
+//                    }
+//                    $model = new $model_class();
+//                    $model->setAttributes($attributes);
+//                    $model->is_new_record = false;
+//                    $models[] = $model;
+//                }
+//                return $models;
+//            }
+//        }
+//        return [];
+//    }
+//
+//    public function countAll()
+//    {
+//        if ($this->is_single) {
+//            return Dao::component()->select(['*'])->from(static::TABLE_NAME)->count();
+//        }
+//        return 0;
+//    }
+//
+//    public function findByPk($primary_key)
+//    {
+//        if ($this->is_single) {
+//            $dao = Dao::component()
+//                ->select(['*'])
+//                ->from(static::TABLE_NAME)
+//                ->where([$this->_primary_key => $primary_key])
+//                ->limit(1);
+//
+//            $is_related_model_exists = false;
+//            if ($this->relations && count($this->relations) >= 3) {
+//                list($self_field, $joined_table, $joined_table_field) = $this->relations;
+//                $related_model_class = 'app\models\\' . ucfirst($joined_table);
+//                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+//                    $is_related_model_exists = true;
+//                    $related_model_fields = (new $related_model_class())->getFields();
+//                    foreach ($related_model_fields as $key => $related_model_field) {
+//                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+//                    }
+//                    $self_fields = $this->getFields();
+//                    foreach ($self_fields as $key => $field) {
+//                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+//                    }
+//                    $fields = array_merge($related_model_fields, $self_fields);
+//                    $dao->select($fields)
+//                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+//                }
+//            }
+//
+//            $attributes = $dao->find();
+//            if ($attributes) {
+//                $model_class = get_class($this);
+//                if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+//                    $related_model = new $related_model_class();
+//                    $related_model->setAttributes($attributes);
+//                    $related_model->is_new_record = false;
+//                    $attributes[$self_field] = $related_model;
+//                }
+//                $model = new $model_class();
+//                $model->setAttributes($attributes);
+//                $model->is_new_record = false;
+//                return $model;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    public function deleteByPk($primary_key)
+//    {
+//        if ($this->is_single) {
+//            return Dao::component()
+//                ->delete(static::TABLE_NAME, [
+//                    $this->_primary_key => $primary_key,
+//                ]);
+//        }
+//        return false;
+//    }
+//
+//    public function deleteByConditions($conditions)
+//    {
+//        if ($this->is_single) {
+//            return Dao::component()
+//                ->delete(static::TABLE_NAME, $conditions);
+//        }
+//        return false;
+//    }
+//
+//    public function deleteBySql($sql)
+//    {
+//        if ($this->is_single) {
+//            $res = false;
+//            $statement = Dao::component()->prepare($sql, 'master');
+//            if ($statement) {
+//                $res = $statement->execute();
+//            }
+//            return $res;
+//        }
+//        return false;
+//    }
+//
+//    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+//    {
+//        if ($this->is_single) {
+//            $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
+//            if (is_array($conditions) && $conditions) {
+//                $dao->where($conditions);
+//            }
+//            if (is_array($group_fields) && $group_fields) {
+//                $dao->group($group_fields);
+//            }
+//            if (is_array($orders) && $orders) {
+//                $dao->order($orders);
+//            }
+//            if ($limit) {
+//                $dao->limit($limit);
+//            }
+//
+//            $is_related_model_exists = false;
+//            if ($this->relations && count($this->relations) >= 3) {
+//                list($self_field, $joined_table, $joined_table_field) = $this->relations;
+//                $related_model_class = 'app\models\\' . ucfirst($joined_table);
+//                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+//                    $is_related_model_exists = true;
+//                    $related_model_fields = (new $related_model_class())->getFields();
+//                    foreach ($related_model_fields as $key => $related_model_field) {
+//                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+//                    }
+//                    $self_fields = $this->getFields();
+//                    foreach ($self_fields as $key => $field) {
+//                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+//                    }
+//                    $fields = array_merge($related_model_fields, $self_fields);
+//                    $dao->select($fields)
+//                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+//                }
+//            }
+//
+//            $result = $dao->findAll();
+//            if ($result) {
+//                $models = [];
+//                foreach ($result as $attributes) {
+//                    $model_class = get_class($this);
+//                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+//                        $related_model = new $related_model_class();
+//                        $related_model->setAttributes($attributes);
+//                        $related_model->is_new_record = false;
+//                        $attributes[$self_field] = $related_model;
+//                    }
+//                    $model = new $model_class();
+//                    $model->setAttributes($attributes);
+//                    $model->is_new_record = false;
+//                    $models[] = $model;
+//                }
+//                return $models;
+//            }
+//        }
+//        return [];
+//    }
+//
+//    public function findBySql($sql)
+//    {
+//        if ($this->is_single) {
+//            $statement = Dao::component()->prepare($sql, 'slave');
+//            if ($statement) {
+//                $res = $statement->execute();
+//                if ($res) {
+//                    $result = $statement->fetchAll();
+//                    if ($result) {
+//                        $models = [];
+//                        foreach ($result as $attributes) {
+//                            $model_class = get_class($this);
+//                            $model = new $model_class();
+//                            $model->setAttributes($attributes);
+//                            $model->is_new_record = false;
+//                            $models[] = $model;
+//                        }
+//                        return $models;
+//                    }
+//                }
+//            }
+//        }
+//        return [];
+//    }
 
     public function getPrimaryKey()
     {
@@ -456,19 +448,19 @@ class ActiveRecord extends BaseClass
                                     $this->errors[] = "The {$attribute} is not a valid ip.";
                                 }
                                 break;
-                            case 'unique':
-                                if ($this->is_new_record) {
-                                    if (static::model()->findByConditions([$attribute => $attribute_value])) {
-                                        $is_valid = false;
-                                        $this->errors[] = "The {$attribute} is not unique.";
-                                    }
-                                } else {
-                                    if (static::model()->findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
-                                        $is_valid = false;
-                                        $this->errors[] = "The {$attribute} is not unique.";
-                                    }
-                                }
-                                break;
+//                            case 'unique':
+//                                if ($this->is_new_record) {
+//                                    if (static::model()->findByConditions([$attribute => $attribute_value])) {
+//                                        $is_valid = false;
+//                                        $this->errors[] = "The {$attribute} is not unique.";
+//                                    }
+//                                } else {
+//                                    if (static::model()->findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
+//                                        $is_valid = false;
+//                                        $this->errors[] = "The {$attribute} is not unique.";
+//                                    }
+//                                }
+//                                break;
                         }
                     }
                 }
@@ -502,19 +494,20 @@ class ActiveRecord extends BaseClass
                         $this->{$this->_primary_key} = 0;
                         unset($values[$this->_primary_key]);
                     }
-                    $res = Dao::component()->insertOne(static::TABLE_NAME, array_keys($values), array_values($values));
+                    $res = Dao::component()->create(static::TABLE_NAME, $values);
                     if ($res) {
-                        $this->{$this->_primary_key} = Connection::component()->write_conn->lastInsertId();
+                        $this->{$this->_primary_key} = $res;
                         $this->is_new_record = false;
                     }
                 } else {
-                    $values = $this->_attributes;
-                    $primary_key = 0;
-                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
-                        $primary_key = $this->_attributes[$this->_primary_key];
-                        unset($values[$this->_primary_key]);
-                    }
-                    $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
+                    $res = false;
+//                    $values = $this->_attributes;
+//                    $primary_key = 0;
+//                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
+//                        $primary_key = $this->_attributes[$this->_primary_key];
+//                        unset($values[$this->_primary_key]);
+//                    }
+//                    $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
                 }
                 if ($res) {
                     $this->afterSave();

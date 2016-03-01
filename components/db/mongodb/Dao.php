@@ -38,7 +38,7 @@ class Dao extends BaseClass
     {
         // Create a bulk write object and add our insert operation
         $bulk = new \MongoDB\Driver\BulkWrite;
-        $bulk->insert($document);
+        $oid = $bulk->insert($document);
 
         // Construct a write concern
         $wc = new \MongoDB\Driver\WriteConcern(
@@ -61,10 +61,16 @@ class Dao extends BaseClass
              * write object and an optional write concern. MongoDB\Driver\WriteResult is
              * returned on success; otherwise, an exception is thrown. */
             $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$db_name, $collection]), $bulk, $wc);
-            var_dump($result);
+            if ($result->nInserted) {
+                return $oid;
+            }
+            return false;
         } catch (\MongoDB\Driver\Exception\Exception $e) {
             $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$db_name, $collection]), $bulk, $wc);
-            var_dump($result);
+            if ($result->nInserted) {
+                return $oid;
+            }
+            return false;
         }
     }
 }
