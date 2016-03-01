@@ -196,16 +196,16 @@ class ActiveRecord extends BaseClass
 //        }
 //        return false;
 //    }
-//
-//    public function deleteByConditions($conditions)
-//    {
-//        if ($this->is_single) {
-//            return Dao::component()
-//                ->delete(static::TABLE_NAME, $conditions);
-//        }
-//        return false;
-//    }
-//
+
+    public function deleteByConditions($conditions)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->delete(static::TABLE_NAME, $conditions, 0);
+        }
+        return false;
+    }
+
 //    public function deleteBySql($sql)
 //    {
 //        if ($this->is_single) {
