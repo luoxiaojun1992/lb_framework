@@ -10,6 +10,7 @@
 namespace lb\components\db\mongodb;
 
 use lb\BaseClass;
+use lb\Lb;
 
 class Dao extends BaseClass
 {
@@ -48,14 +49,21 @@ class Dao extends BaseClass
             true
         );
 
+        // Get DB Name
+        $db_name = 'db';
+        $mongoDbConfig = Lb::app()->getDbConfig(Connection::DB_TYPE);
+        if ($mongoDbConfig) {
+            $db_name = $mongoDbConfig['dbname'];
+        }
+
         try {
             /* Specify the full namespace as the first argument, followed by the bulk
              * write object and an optional write concern. MongoDB\Driver\WriteResult is
              * returned on success; otherwise, an exception is thrown. */
-            $result = Connection::component()->_conn->executeBulkWrite("db.{$collection}", $bulk, $wc);
+            $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$db_name, $collection]), $bulk, $wc);
             var_dump($result);
         } catch (\MongoDB\Driver\Exception\Exception $e) {
-            $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite("db.collection", $bulk, $wc);
+            $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$db_name, $collection]), $bulk, $wc);
             var_dump($result);
         }
     }

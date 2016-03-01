@@ -210,6 +210,17 @@ class BaseLb extends BaseClass
         return [];
     }
 
+    // Get DB Config
+    public function getDbConfig($db_type)
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get($db_type);
+            }
+        }
+        return [];
+    }
+
     // Get Route Info
     public function getRouteInfo()
     {
@@ -347,7 +358,7 @@ class BaseLb extends BaseClass
     {
         if ($this->is_single) {
             switch ($db_type) {
-                case 'mysql':
+                case Connection::DB_TYPE:
                     switch ($node_type) {
                         case 'master':
                             return Connection::component()->write_conn;
@@ -356,6 +367,9 @@ class BaseLb extends BaseClass
                         default:
                             return Connection::component()->write_conn;
                     }
+                    break;
+                case \lb\components\db\mongodb\Connection::DB_TYPE :
+                    return \lb\components\db\mongodb\Connection::component()->_conn;
                     break;
                 default:
                     return false;
