@@ -192,18 +192,20 @@ class Dao extends BaseClass
              * object and an optional read preference. MongoDB\Driver\Cursor is returned
              * success; otherwise, an exception is thrown. */
             $cursor = Connection::component()->_conn->executeQuery(implode('.', [$this->_db_name, $collection]), $query, $this->_rp);
-
+            $result = [];
             // Iterate over all matched documents
             foreach ($cursor as $document) {
-                var_dump($document);
+                $result[] = $document;
             }
+            return $result;
         } catch (\MongoDB\Driver\Exception\Exception $e) {
             $cursor = Connection::component(Connection::component()->containers, true)->_conn->executeQuery(implode('.', [$this->_db_name, $collection]), $query, $this->_rp);
-
+            $result = [];
             // Iterate over all matched documents
             foreach ($cursor as $document) {
-                var_dump($document);
+                $result[] = $document;
             }
+            return $result;
         }
     }
 }
