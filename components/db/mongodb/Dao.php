@@ -18,6 +18,7 @@ class Dao extends BaseClass
     protected static $instance = false;
     protected $_db_name = 'db';
     protected $_wc = null;
+    protected $_rp = null;
 
     /**
      * @return bool|static
@@ -47,6 +48,22 @@ class Dao extends BaseClass
             // But only wait 1000ms because we have an application to run!
             1000,
             true
+        );
+
+        // Construct a read preference
+        $this->_rp = new \MongoDB\Driver\ReadPreference(
+        /* We prefer to read from a secondary, but are OK with reading from the
+         * primary if necessary (e.g. secondaries are offline) */
+            \MongoDB\Driver\ReadPreference::RP_SECONDARY_PREFERRED,
+            // Specify some tag sets for our preferred nodes
+            [
+                // Prefer reading from our west coast datacenter in Iceland
+//                ["country" => "iceland", "datacenter" => "west"],
+//                // Fall back to any datacenter in Iceland
+//                ["country" => "iceland"],
+                // If Iceland is offline, read from whatever is available
+                [],
+            ]
         );
     }
 
@@ -162,6 +179,31 @@ class Dao extends BaseClass
                 return true;
             }
             return false;
+        }
+    }
+
+    public function read($collection, $filter)
+    {
+        /* Construct a query with an empty filter (i.e. "select all") */
+        $query = new \MongoDB\Driver\Query($filter);
+
+        try {
+            /* Specify the full namespace as the first argument, followed by the query
+             * object and an optional read preference. MongoDB\Driver\Cursor is returned
+             * success; otherwise, an exception is thrown. */
+            $cursor = Connection::component()->_conn->executeQuery(implode('.', [$this->_db_name, $collection]), $query, $this->_rp);
+
+            // Iterate over all matched documents
+            foreach ($cursor as $document) {
+                var_dump($document);
+            }
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
+            $cursor = Connection::component(Connection::component()->containers, true)->_conn->executeQuery(implode('.', [$this->_db_name, $collection]), $query, $this->_rp);
+
+            // Iterate over all matched documents
+            foreach ($cursor as $document) {
+                var_dump($document);
+            }
         }
     }
 }
