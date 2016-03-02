@@ -483,7 +483,7 @@ class ActiveRecord extends BaseClass
                     }
                     $res = Dao::component()->create(static::TABLE_NAME, $values);
                     if ($res) {
-                        $this->{$this->_primary_key} = $res->__toString;
+                        $this->{$this->_primary_key} = $res->__toString();
                         $this->is_new_record = false;
                     }
                 } else {
