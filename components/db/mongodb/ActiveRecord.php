@@ -487,14 +487,13 @@ class ActiveRecord extends BaseClass
                         $this->is_new_record = false;
                     }
                 } else {
-                    $res = false;
-//                    $values = $this->_attributes;
-//                    $primary_key = 0;
-//                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
-//                        $primary_key = $this->_attributes[$this->_primary_key];
-//                        unset($values[$this->_primary_key]);
-//                    }
-//                    $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
+                    $values = $this->_attributes;
+                    $primary_key = 0;
+                    if (array_key_exists($this->_primary_key, $this->_attributes)) {
+                        $primary_key = $this->_attributes[$this->_primary_key];
+                        unset($values[$this->_primary_key]);
+                    }
+                    $res = Dao::component()->update(static::TABLE_NAME, [$this->_primary_key => $primary_key], ['$set' => $values]);
                 }
                 if ($res) {
                     $this->afterSave();

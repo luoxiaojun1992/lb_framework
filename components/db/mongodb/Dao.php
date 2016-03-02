@@ -127,4 +127,37 @@ class Dao extends BaseClass
             return false;
         }
     }
+
+    public function update($collection, $filter, $newObj, $multi = true, $upsert = false)
+    {
+        // Specify the search criteria and update operations (or replacement document)
+//        $filter = ["hello" => "world"];
+//        $newObj = ['$set' => ["hello" => "wonderful world"]];
+
+        /* Specify some command options for the update:
+         *
+         *  * multi (boolean): Updates all matching documents when true; otherwise, only
+         *    the first matching document is updated. Defaults to false.
+         *  * upsert (boolean): If there is no matching document, create a new document
+         *    from $filter and $newObj. Defaults to false.
+         */
+        $options = ["multi" => $multi, "upsert" => $upsert];
+
+        // Create a bulk write object and add our update operation
+        $bulk = new \MongoDB\Driver\BulkWrite;
+        $bulk->update($filter, $newObj, $options);
+
+        try {
+            /* Specify the full namespace as the first argument, followed by the bulk
+             * write object and an optional write concern. MongoDB\Driver\WriteResult is
+             * returned on success; otherwise, an exception is thrown. */
+            $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
+            var_dump($result);
+            return false;
+        } catch (\MongoDB\Driver\Exception\Exception $e) {
+            $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
+            var_dump($result);
+            return false;
+        }
+    }
 }
