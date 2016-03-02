@@ -191,7 +191,7 @@ class ActiveRecord extends BaseClass
         if ($this->is_single) {
             return Dao::component()
                 ->delete(static::TABLE_NAME, [
-                    $this->_primary_key => $primary_key,
+                    $this->_primary_key => new \MongoDB\BSON\ObjectID($primary_key),
                 ]);
         }
         return false;
@@ -483,7 +483,7 @@ class ActiveRecord extends BaseClass
                     }
                     $res = Dao::component()->create(static::TABLE_NAME, $values);
                     if ($res) {
-                        $this->{$this->_primary_key} = $res;
+                        $this->{$this->_primary_key} = $res->__toString;
                         $this->is_new_record = false;
                     }
                 } else {
@@ -493,7 +493,7 @@ class ActiveRecord extends BaseClass
                         $primary_key = $this->_attributes[$this->_primary_key];
                         unset($values[$this->_primary_key]);
                     }
-                    $res = Dao::component()->update(static::TABLE_NAME, [$this->_primary_key => $primary_key], ['$set' => $values]);
+                    $res = Dao::component()->update(static::TABLE_NAME, [$this->_primary_key => new \MongoDB\BSON\ObjectID($primary_key)], ['$set' => $values]);
                 }
                 if ($res) {
                     $this->afterSave();

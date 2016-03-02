@@ -74,11 +74,11 @@ class Dao extends BaseClass
              * returned on success; otherwise, an exception is thrown. */
             $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
             if (is_array($oid)) {
-                if ($result->nInserted == count($oid)) {
+                if ($result->getInsertedCount() == count($oid)) {
                     return $oid;
                 }
             } else {
-                if ($result->nInserted) {
+                if ($result->getInsertedCount()) {
                     return $oid;
                 }
             }
@@ -86,11 +86,11 @@ class Dao extends BaseClass
         } catch (\MongoDB\Driver\Exception\Exception $e) {
             $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
             if (is_array($oid)) {
-                if ($result->nInserted == count($oid)) {
+                if ($result->getInsertedCount() == count($oid)) {
                     return $oid;
                 }
             } else {
-                if ($result->nInserted) {
+                if ($result->getInsertedCount()) {
                     return $oid;
                 }
             }
@@ -115,13 +115,13 @@ class Dao extends BaseClass
              * write object and an optional write concern. MongoDB\Driver\WriteResult is
              * returned on success; otherwise, an exception is thrown. */
             $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
-            if ($result->nRemoved) {
+            if ($result->getDeletedCount()) {
                 return true;
             }
             return false;
         } catch (\MongoDB\Driver\Exception\Exception $e) {
             $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
-            if ($result->nRemoved) {
+            if ($result->getDeletedCount()) {
                 return true;
             }
             return false;
@@ -152,11 +152,15 @@ class Dao extends BaseClass
              * write object and an optional write concern. MongoDB\Driver\WriteResult is
              * returned on success; otherwise, an exception is thrown. */
             $result = Connection::component()->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
-            var_dump($result);
+            if ($result->getModifiedCount()) {
+                return true;
+            }
             return false;
         } catch (\MongoDB\Driver\Exception\Exception $e) {
             $result = Connection::component(Connection::component()->containers, true)->_conn->executeBulkWrite(implode('.', [$this->_db_name, $collection]), $bulk, $this->_wc);
-            var_dump($result);
+            if ($result->getModifiedCount()) {
+                return true;
+            }
             return false;
         }
     }
