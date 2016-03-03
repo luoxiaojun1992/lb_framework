@@ -17,22 +17,19 @@ class Lb extends \lb\BaseLb
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
             // Start App
-            if (class_exists('\EngineException')) {
-                // PHP 7.0.0 +
+            if (class_exists('\Throwable')) {
+                // >= PHP 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
                     $err_msg = implode(':', [$httpException->getCode(), $httpException->getMessage()]);
                     Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
-                } catch (\Exception $e) {
-                    $err_msg = implode(':', [$e->getCode(), $e->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
-                } catch (\EngineException $engineException) {
-                    $err_msg = implode(':', [$engineException->getCode(), $engineException->getMessage()]);
+                } catch (\Throwable $throwable) {
+                    $err_msg = implode(':', [$throwable->getCode(), $throwable->getMessage()]);
                     Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
                 }
             } else {
-                // PHP 7.0.0 -
+                // < PHP 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
