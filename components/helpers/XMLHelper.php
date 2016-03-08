@@ -45,4 +45,15 @@ class XMLHelper extends BaseClass
         }
         return $xml_content;
     }
+
+    public static function decode($xml_data)
+    {
+        if (file_exists($xml_data)) {
+            return simplexml_load_file($xml_data, 'SimpleXMLElement', LIBXML_NOCDATA);
+        }
+        if (is_string($xml_data)) {
+            return simplexml_load_string($xml_data, 'SimpleXMLElement', LIBXML_NOCDATA);
+        }
+        return null;
+    }
 }
