@@ -194,6 +194,17 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
+    public function updateByPk($primary_key)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->update(static::TABLE_NAME, [
+                    $this->_primary_key => $primary_key,
+                ]);
+        }
+        return false;
+    }
+
     public function deleteByPk($primary_key)
     {
         if ($this->is_single) {
