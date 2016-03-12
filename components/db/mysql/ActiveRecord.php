@@ -194,11 +194,11 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
-    public function updateByPk($primary_key)
+    public function updateByPk($primary_key, $values = [])
     {
         if ($this->is_single) {
             return Dao::component()
-                ->update(static::TABLE_NAME, [
+                ->update(static::TABLE_NAME, $values, [
                     $this->_primary_key => $primary_key,
                 ]);
         }
