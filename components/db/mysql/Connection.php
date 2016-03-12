@@ -60,7 +60,7 @@ class Connection extends BaseClass
                     $flexihash = FlexiHash::component();
                     $flexihash->addServers($server_hosts);
                     $time = time();
-                    $target_host = @$flexihash->lookup($time);
+                    $target_host = $flexihash->lookup($time);
                     $slave_target_num = 0;
                     foreach ($server_hosts as $key => $server_host) {
                         if ($server_host == $target_host) {

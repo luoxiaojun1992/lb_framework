@@ -88,7 +88,10 @@ class FlexiHash extends BaseClass
             }
         }
         //没有找到则返回顺时针方向最后一台服务器
-        return $this->serverList[count($this->serverList) - 1];
+        foreach ($this->serverList as $server) {
+            return $server;
+        }
+        return false;
     }
 
     //Hash函数
