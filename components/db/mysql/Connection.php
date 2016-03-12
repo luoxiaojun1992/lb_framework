@@ -10,6 +10,7 @@
 namespace lb\components\db\mysql;
 
 use lb\BaseClass;
+use lb\components\distribution\FlexiHash;
 
 class Connection extends BaseClass
 {
@@ -51,8 +52,21 @@ class Connection extends BaseClass
                 }
                 if (isset($db_config['slaves'])) {
                     $slave_config = $db_config['slaves'];
-                    $slave_count = count($slave_config);
-                    $slave_target_num = mt_rand(0, $slave_count - 1);
+                    $server_hosts = [];
+                    foreach ($slave_config as $key => $config) {
+                        $server_hosts[$key] = $config['host'];
+                    }
+                    // 一致性HASH
+                    $flexihash = FlexiHash::component();
+                    $flexihash->addServers($server_hosts);
+                    $time = time();
+                    $target_host = $flexihash->lookup($time);
+                    $slave_target_num = 0;
+                    foreach ($server_hosts as $key => $server_host) {
+                        if ($server_host == $target_host) {
+                            $slave_target_num = $key;
+                        }
+                    }
                     $slave_db_config = $slave_config[$slave_target_num];
                     $this->_slave_db = isset($slave_db_config['dbname']) ? $slave_db_config['dbname'] : '';
                     $this->_slave_host = isset($slave_db_config['host']) ? $slave_db_config['host'] : '';
