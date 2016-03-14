@@ -693,6 +693,28 @@ class BaseLb extends BaseClass
         return false;
     }
 
+    // Get User ID
+    public function getUserId()
+    {
+        if ($this->is_single) {
+            if (!$this->isGuest()) {
+                return $this->getSession('user_id');
+            }
+        }
+        return 0;
+    }
+
+    // Get User Name
+    public function getUsername()
+    {
+        if ($this->is_single) {
+            if (!$this->isGuest()) {
+                return $this->getSession('username');
+            }
+        }
+        return '';
+    }
+
     // Log In
     public function login($username, $user_id, $remember_token = '', $timeout = 0)
     {
