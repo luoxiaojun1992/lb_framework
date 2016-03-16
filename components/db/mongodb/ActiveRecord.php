@@ -87,18 +87,25 @@ class ActiveRecord extends BaseClass
     {
         if ($this->is_single) {
             $result = Dao::component()->read(static::TABLE_NAME);
-            var_dump($result);die();
-//            if ($result) {
-//                $models = [];
-//                foreach ($result as $attributes) {
-//                    $model_class = static::className();
-//                    $model = new $model_class();
-//                    $model->setAttributes($attributes);
-//                    $model->is_new_record = false;
-//                    $models[] = $model;
-//                }
-//                return $models;
-//            }
+            if ($result) {
+                $models = [];
+                foreach ($result as $attributes) {
+                    $model_class = static::className();
+                    $model = new $model_class();
+                    $attributes_array = [];
+                    foreach ($attributes as $key => $attribute) {
+                        if ($key != $this->getPrimaryName()) {
+                            $attributes_array[$key] = $attribute;
+                        } else {
+                            $attributes_array[$key] = $attribute->__toString();
+                        }
+                    }
+                    $model->setAttributes($attributes_array);
+                    $model->is_new_record = false;
+                    $models[] = $model;
+                }
+                return $models;
+            }
         }
         return [];
     }
