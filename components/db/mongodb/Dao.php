@@ -182,7 +182,7 @@ class Dao extends BaseClass
         }
     }
 
-    public function read($collection, $filter)
+    public function read($collection, $filter = [])
     {
         /* Construct a query with an empty filter (i.e. "select all") */
         $query = new \MongoDB\Driver\Query($filter);
