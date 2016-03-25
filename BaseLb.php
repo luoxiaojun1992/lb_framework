@@ -225,8 +225,8 @@ class BaseLb extends BaseClass
     public function getRouteInfo()
     {
         if ($this->is_single) {
-            if (isset($this->containers['route_info']['controller']) && isset($this->containers['route_info']['action']) && $this->containers['route_info']['controller'] && $this->containers['route_info']['action']) {
-                return $this->containers['route_info'];
+            if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) && ($action = $this->containers['route_info']->get('action'))) {
+                return ['controller' => $controller, 'action' => $action];
             }
         }
         return ['controller' => 'index', 'action' => 'index'];
@@ -236,7 +236,7 @@ class BaseLb extends BaseClass
     public function isHome()
     {
         if ($this->is_single) {
-            if (isset($this->containers['route_info']['controller']) && isset($this->containers['route_info']['action'])) {
+            if (isset($this->containers['route_info'])) {
                 $home_controller = 'index';
                 $home_action = 'index';
                 $home = $this->getHome();
@@ -244,7 +244,7 @@ class BaseLb extends BaseClass
                     $home_controller = $home['controller'];
                     $home_action = $home['action'];
                 }
-                if ($this->containers['route_info']['controller'] == $home_controller && $this->containers['route_info']['action'] == $home_action) {
+                if ($this->containers['route_info']->get('controller') == $home_controller && $this->containers['route_info']->get('action') == $home_action) {
                     return true;
                 }
             }
