@@ -849,15 +849,8 @@ class BaseLb extends BaseClass
         }
         $this->config = [];
 
-        // Register Route Info
-        $route_info_container = RouteInfo::component();
-        foreach ($this->route_info as $item_name => $item_value) {
-            $route_info_container->set($item_name, $item_value);
-        }
-
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
-        Lb::app()->containers['route_info'] = $route_info_container;
 
         // Set Timezone
         $config_time_zone = Lb::app()->getTimeZone();
@@ -883,6 +876,15 @@ class BaseLb extends BaseClass
                 }
             }
         }
+
+        // Register Route Info
+        $route_info_container = RouteInfo::component();
+        foreach ($this->route_info as $item_name => $item_value) {
+            $route_info_container->set($item_name, $item_value);
+        }
+
+        // Inject Config Container
+        Lb::app()->containers['route_info'] = $route_info_container;
 
         // Login Required
         $login_required_filter = $config_container->get('login_required_filter');
