@@ -97,7 +97,7 @@ class WebController extends BaseController
         }
     }
 
-    protected function render($template_name, $params, $return = false)
+    protected function render($template_name, $params = [], $return = false)
     {
         $this->beforeRender();
         $params += ['controller' => $this];
@@ -110,7 +110,7 @@ class WebController extends BaseController
         }
     }
 
-    public function renderPartial($template_name, $params, $return = false)
+    public function renderPartial($template_name, $params = [], $return = false)
     {
         $this->beforeRenderPartial();
         $params += ['controller' => $this];
