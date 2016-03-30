@@ -24,7 +24,7 @@ class Css extends BaseClass
         }
         $css = new AssetCollection($css_assets);
         $css_html = $css->dump();
-        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'assets/css';
+        $assets_cache_dir = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'assets/css';
         if (!is_dir($assets_cache_dir)) {
             mkdir($assets_cache_dir, 0777, true);
         }
