@@ -489,18 +489,10 @@ class Dao extends BaseClass
                     $conditions = [];
                     foreach ($this->_conditions as $key => $val) {
                         if (!is_array($val)) {
-                            if (is_string($val)) {
-                                $conditions[] = implode('=', [$key, '"' . $val . '"']);
-                            } else {
-                                $conditions[] = implode('=', [$key, $val]);
-                            }
+                            $conditions[] = implode('=', [$key, '"' . $val . '"']);
                         } else {
                             foreach ($val as $op => $value) {
-                                if (is_string($value)) {
-                                    $conditions[] = implode($op, [$key, '"' . $value . '"']);
-                                } else {
-                                    $conditions[] = implode($op, [$key, $value]);
-                                }
+                                $conditions[] = implode(' ' . $op . ' ', [$key, $value]);
                             }
                         }
                     }
