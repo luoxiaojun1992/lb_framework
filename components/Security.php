@@ -31,6 +31,15 @@ class Security extends BaseClass
         foreach ($_REQUEST as $request_name => $request_value) {
             $_REQUEST[$request_name] = static::getFilteredInput($request_value);
         }
+        foreach ($_GET as $request_name => $request_value) {
+            $_GET[$request_name] = static::getFilteredInput($request_value);
+        }
+        foreach ($_POST as $request_name => $request_value) {
+            $_POST[$request_name] = static::getFilteredInput($request_value);
+        }
+        foreach ($_COOKIE as $request_name => $request_value) {
+            $_COOKIE[$request_name] = static::getFilteredInput($request_value);
+        }
     }
 
     //Remove the exploer'bug XSS
