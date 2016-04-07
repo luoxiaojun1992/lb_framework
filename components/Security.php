@@ -174,6 +174,23 @@ class Security extends BaseClass
         }
     }
 
+    public static function x_frame_options($controller, $action)
+    {
+        if (isset(Lb::app()->containers['config'])) {
+            $config = Lb::app()->containers['config'];
+            $x_frame_options = $config->get('x_frame_options');
+            if ($x_frame_options) {
+                if (isset($x_frame_options[$controller][$action])) {
+                    header("X-Frame-Options: {$x_frame_options[$controller][$action]}");
+                } else if (isset($x_frame_options['common'])) {
+                    header("X-Frame-Options: {$x_frame_options['common']}");
+                } else {
+                    header("X-Frame-Options: DENY");
+                }
+            }
+        }
+    }
+
     public static function ipFilter($controller, $action)
     {
         if (isset(Lb::app()->containers['config'])) {

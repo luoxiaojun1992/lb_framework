@@ -883,7 +883,7 @@ class BaseLb extends BaseClass
             $route_info_container->set($item_name, $item_value);
         }
 
-        // Inject Config Container
+        // Inject Route Info Container
         Lb::app()->containers['route_info'] = $route_info_container;
 
         // Login Required
@@ -940,6 +940,9 @@ class BaseLb extends BaseClass
 
         // CORS
         Security::cors($this->route_info['controller'], $this->route_info['action']);
+
+        // X-Frame-Options
+        Security::x_frame_options($this->route_info['controller'], $this->route_info['action']);
 
         // Set Triggers
         $triggers_config = $config_container->get('triggers');
