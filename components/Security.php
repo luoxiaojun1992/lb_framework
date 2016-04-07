@@ -26,19 +26,36 @@ class Security extends BaseClass
         "/(<[^>]*)on[a-zA-Z]+\s*=([^>]*>g)/isU",
     ];
 
-    public static function inputFilter()
+    public static function inputFilter(&$params = [])
     {
-        foreach ($_REQUEST as $request_name => $request_value) {
-            $_REQUEST[$request_name] = static::getFilteredInput($request_value);
-        }
-        foreach ($_GET as $request_name => $request_value) {
-            $_GET[$request_name] = static::getFilteredInput($request_value);
-        }
-        foreach ($_POST as $request_name => $request_value) {
-            $_POST[$request_name] = static::getFilteredInput($request_value);
-        }
-        foreach ($_COOKIE as $request_name => $request_value) {
-            $_COOKIE[$request_name] = static::getFilteredInput($request_value);
+        $expected_request_names = [];
+        if ($params) {
+            foreach ($params as $request_name => $request_value) {
+                if (!in_array($request_name, $expected_request_names)) {
+                    $params[$request_name] = static::getFilteredInput($request_value);
+                }
+            }
+        } else {
+            foreach ($_REQUEST as $request_name => $request_value) {
+                if (!in_array($request_name, $expected_request_names)) {
+                    $_REQUEST[$request_name] = static::getFilteredInput($request_value);
+                }
+            }
+            foreach ($_GET as $request_name => $request_value) {
+                if (!in_array($request_name, $expected_request_names)) {
+                    $_GET[$request_name] = static::getFilteredInput($request_value);
+                }
+            }
+            foreach ($_POST as $request_name => $request_value) {
+                if (!in_array($request_name, $expected_request_names)) {
+                    $_POST[$request_name] = static::getFilteredInput($request_value);
+                }
+            }
+            foreach ($_COOKIE as $request_name => $request_value) {
+                if (!in_array($request_name, $expected_request_names)) {
+                    $_COOKIE[$request_name] = static::getFilteredInput($request_value);
+                }
+            }
         }
     }
 
