@@ -29,31 +29,52 @@ class Security extends BaseClass
     public static function inputFilter(&$params = [])
     {
         $expected_request_names = [];
+        $html_decode_names = [];
         if ($params) {
             foreach ($params as $request_name => $request_value) {
                 if (!in_array($request_name, $expected_request_names)) {
-                    $params[$request_name] = static::getFilteredInput($request_value);
+                    $value = static::getFilteredInput($request_value);
+                    if (in_array($request_name, $html_decode_names)) {
+                        $value = HtmlHelper::decode($value);
+                    }
+                    $params[$request_name] = $value;
                 }
             }
         } else {
             foreach ($_REQUEST as $request_name => $request_value) {
                 if (!in_array($request_name, $expected_request_names)) {
-                    $_REQUEST[$request_name] = static::getFilteredInput($request_value);
+                    $value = static::getFilteredInput($request_value);
+                    if (in_array($request_name, $html_decode_names)) {
+                        $value = HtmlHelper::decode($value);
+                    }
+                    $_REQUEST[$request_name] = $value;
                 }
             }
             foreach ($_GET as $request_name => $request_value) {
                 if (!in_array($request_name, $expected_request_names)) {
-                    $_GET[$request_name] = static::getFilteredInput($request_value);
+                    $value = static::getFilteredInput($request_value);
+                    if (in_array($request_name, $html_decode_names)) {
+                        $value = HtmlHelper::decode($value);
+                    }
+                    $_GET[$request_name] = $value;
                 }
             }
             foreach ($_POST as $request_name => $request_value) {
                 if (!in_array($request_name, $expected_request_names)) {
-                    $_POST[$request_name] = static::getFilteredInput($request_value);
+                    $value = static::getFilteredInput($request_value);
+                    if (in_array($request_name, $html_decode_names)) {
+                        $value = HtmlHelper::decode($value);
+                    }
+                    $_POST[$request_name] = $value;
                 }
             }
             foreach ($_COOKIE as $request_name => $request_value) {
                 if (!in_array($request_name, $expected_request_names)) {
-                    $_COOKIE[$request_name] = static::getFilteredInput($request_value);
+                    $value = static::getFilteredInput($request_value);
+                    if (in_array($request_name, $html_decode_names)) {
+                        $value = HtmlHelper::decode($value);
+                    }
+                    $_COOKIE[$request_name] = $value;
                 }
             }
         }
@@ -138,11 +159,7 @@ class Security extends BaseClass
                 }
             }
         }
-        $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
-        if (property_exists(get_called_class(), $filter_name)) {
-            $filter = static::$$filter_name;
-            $input_value = static::filter($input_value, $filter);
-        }
+        $input_value = static::removeSqlInjection($input_value);
         return $input_value;
     }
 
@@ -162,6 +179,16 @@ class Security extends BaseClass
             }
         }
         return $input_value;
+    }
+
+    public static function removeSqlInjection($value)
+    {
+        $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter';
+        if (property_exists(get_called_class(), $filter_name)) {
+            $filter = static::$$filter_name;
+            $value = static::filter($value, $filter);
+        }
+        return $value;
     }
 
     public static function generateCsrfToken()
