@@ -147,6 +147,28 @@ class ActiveRecord extends BaseClass
         return 0;
     }
 
+    public function countByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    {
+        if ($this->is_single) {
+            $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
+            if (is_array($conditions) && $conditions) {
+                $dao->where($conditions);
+            }
+            if (is_array($group_fields) && $group_fields) {
+                $dao->group($group_fields);
+            }
+            if (is_array($orders) && $orders) {
+                $dao->order($orders);
+            }
+            if ($limit) {
+                $dao->limit($limit);
+            }
+
+            return $dao->count();
+        }
+        return 0;
+    }
+
     public function findByPk($primary_key)
     {
         if ($this->is_single) {
