@@ -91,6 +91,9 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function findAll()
     {
         if ($this->is_single) {
@@ -139,36 +142,10 @@ class ActiveRecord extends BaseClass
         return [];
     }
 
-    public function countAll()
-    {
-        if ($this->is_single) {
-            return Dao::component()->select(['*'])->from(static::TABLE_NAME)->count();
-        }
-        return 0;
-    }
-
-    public function countByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
-    {
-        if ($this->is_single) {
-            $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
-            if (is_array($conditions) && $conditions) {
-                $dao->where($conditions);
-            }
-            if (is_array($group_fields) && $group_fields) {
-                $dao->group($group_fields);
-            }
-            if (is_array($orders) && $orders) {
-                $dao->order($orders);
-            }
-            if ($limit) {
-                $dao->limit($limit);
-            }
-
-            return $dao->count();
-        }
-        return 0;
-    }
-
+    /**
+     * @param $primary_key
+     * @return bool
+     */
     public function findByPk($primary_key)
     {
         if ($this->is_single) {
@@ -216,50 +193,13 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
-    public function updateByPk($primary_key, $values = [])
-    {
-        if ($this->is_single) {
-            return Dao::component()
-                ->update(static::TABLE_NAME, $values, [
-                    $this->_primary_key => $primary_key,
-                ]);
-        }
-        return false;
-    }
-
-    public function deleteByPk($primary_key)
-    {
-        if ($this->is_single) {
-            return Dao::component()
-                ->delete(static::TABLE_NAME, [
-                    $this->_primary_key => $primary_key,
-                ]);
-        }
-        return false;
-    }
-
-    public function deleteByConditions($conditions)
-    {
-        if ($this->is_single) {
-            return Dao::component()
-                ->delete(static::TABLE_NAME, $conditions);
-        }
-        return false;
-    }
-
-    public function deleteBySql($sql)
-    {
-        if ($this->is_single) {
-            $res = false;
-            $statement = Dao::component()->prepare($sql, 'master');
-            if ($statement) {
-                $res = $statement->execute();
-            }
-            return $res;
-        }
-        return false;
-    }
-
+    /**
+     * @param array $conditions
+     * @param array $group_fields
+     * @param array $orders
+     * @param string $limit
+     * @return array
+     */
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
@@ -319,6 +259,10 @@ class ActiveRecord extends BaseClass
         return [];
     }
 
+    /**
+     * @param $sql
+     * @return array
+     */
     public function findBySql($sql)
     {
         if ($this->is_single) {
@@ -342,6 +286,129 @@ class ActiveRecord extends BaseClass
             }
         }
         return [];
+    }
+
+    /**
+     * @return int
+     */
+    public function countAll()
+    {
+        if ($this->is_single) {
+            return Dao::component()->select(['*'])->from(static::TABLE_NAME)->count();
+        }
+        return 0;
+    }
+
+    /**
+     * @param array $conditions
+     * @param array $group_fields
+     * @param array $orders
+     * @param string $limit
+     * @return int
+     */
+    public function countByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    {
+        if ($this->is_single) {
+            $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
+            if (is_array($conditions) && $conditions) {
+                $dao->where($conditions);
+            }
+            if (is_array($group_fields) && $group_fields) {
+                $dao->group($group_fields);
+            }
+            if (is_array($orders) && $orders) {
+                $dao->order($orders);
+            }
+            if ($limit) {
+                $dao->limit($limit);
+            }
+
+            return $dao->count();
+        }
+        return 0;
+    }
+
+    /**
+     * @param $sql
+     * @param $count_field
+     * @return int
+     */
+    public function countBySql($sql, $count_field)
+    {
+        if ($this->is_single) {
+            $statement = Dao::component()->prepare($sql, 'slave');
+            if ($statement) {
+                $res = $statement->execute();
+                if ($res) {
+                    $result = $statement->fetch();
+                    if (isset($result[$count_field])) {
+                        return $result[$count_field];
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param $primary_key
+     * @param array $values
+     * @return bool
+     */
+    public function updateByPk($primary_key, $values = [])
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->update(static::TABLE_NAME, $values, [
+                    $this->_primary_key => $primary_key,
+                ]);
+        }
+        return false;
+    }
+
+    /**
+     * @param $primary_key
+     * @return bool
+     */
+    public function deleteByPk($primary_key)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->delete(static::TABLE_NAME, [
+                    $this->_primary_key => $primary_key,
+                ]);
+        }
+        return false;
+    }
+
+    /**
+     * @param $conditions
+     * @return bool
+     */
+    public function deleteByConditions($conditions)
+    {
+        if ($this->is_single) {
+            return Dao::component()
+                ->delete(static::TABLE_NAME, $conditions);
+        }
+        return false;
+    }
+
+    /**
+     * @param $sql
+     * @return bool
+     */
+    public function deleteBySql($sql)
+    {
+        if ($this->is_single) {
+            $res = false;
+            $statement = Dao::component()->prepare($sql, 'master');
+            if ($statement) {
+                $res = $statement->execute();
+            }
+            return $res;
+        }
+        return false;
     }
 
     public function getPrimaryKey()
