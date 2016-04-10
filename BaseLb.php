@@ -623,7 +623,6 @@ class BaseLb extends BaseClass
                     '%af',
                     '%c1',
                     '%9c',
-                    '..',
                 ];
                 include_once(str_replace($insecure_codes, '', $path));
             }
@@ -801,6 +800,8 @@ class BaseLb extends BaseClass
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
+            $className = str_replace('..', '', $className);
+
             // Auto Load Controllers
             if (strpos($className, 'app\controllers\\') === 0) {
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
