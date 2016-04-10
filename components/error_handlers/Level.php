@@ -34,7 +34,7 @@ class Level extends BaseClass
         switch (static::$env) {
             case 'production':
                 //报告运行时错误
-                error_reporting(E_ERROR | E_WARNING | E_PARSE);
+                error_reporting(0);
                 break;
             case 'dev':
                 //报告所有错误

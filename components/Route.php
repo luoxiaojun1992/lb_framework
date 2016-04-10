@@ -62,29 +62,33 @@ class Route extends BaseClass
         } else {
             $controller_name = 'app\controllers\\' . ucfirst($controller_id);
         }
-        $action_name = $route_info['action'];
-        $controller = new $controller_name();
-        $controller->controller_id = $controller_id;
-        if (method_exists($controller, $action_name)) {
-            $method = new \ReflectionMethod($controller_name, $action_name);
-            $params = $method->getParameters();
-            $param_values = [];
-            foreach ($params as $param) {
-                $param_name = $param->getName();
-                if (array_key_exists($param_name, $_REQUEST)) {
-                    $param_values[] = $_REQUEST[$param_name];
-                } else {
-                    try {
-                        $param_values[] = $param->getDefaultValue();
-                    } catch (\Exception $e) {
-                        $param_values[] = null;
+        if (class_exists($controller_name)) {
+            $action_name = $route_info['action'];
+            $controller = new $controller_name();
+            $controller->controller_id = $controller_id;
+            if (method_exists($controller, $action_name)) {
+                $method = new \ReflectionMethod($controller_name, $action_name);
+                $params = $method->getParameters();
+                $param_values = [];
+                foreach ($params as $param) {
+                    $param_name = $param->getName();
+                    if (array_key_exists($param_name, $_REQUEST)) {
+                        $param_values[] = $_REQUEST[$param_name];
+                    } else {
+                        try {
+                            $param_values[] = $param->getDefaultValue();
+                        } catch (\Exception $e) {
+                            $param_values[] = null;
+                        }
                     }
                 }
-            }
-            if ($param_values) {
-                $method->invokeArgs($controller, $param_values);
+                if ($param_values) {
+                    $method->invokeArgs($controller, $param_values);
+                } else {
+                    $controller->$action_name();
+                }
             } else {
-                $controller->$action_name();
+                throw new HttpException('Page not found.', 404);
             }
         } else {
             throw new HttpException('Page not found.', 404);
