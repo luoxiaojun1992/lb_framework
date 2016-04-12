@@ -613,7 +613,18 @@ class BaseLb extends BaseClass
     {
         if ($this->is_single) {
             if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
-                include_once($path);
+                $insecure_codes = [
+                    '2f',
+                    '2e',
+                    '%5c',
+                    '%252e',
+                    '%255c',
+                    '%c0',
+                    '%af',
+                    '%c1',
+                    '%9c',
+                ];
+                include_once(str_replace($insecure_codes, '', $path));
             }
         }
     }
@@ -789,14 +800,14 @@ class BaseLb extends BaseClass
     {
         $root_dir = Lb::app()->getRootDir();
         if ($root_dir) {
+            $className = str_replace('..', '', $className);
+
             // Auto Load Controllers
             if (strpos($className, 'app\controllers\\') === 0) {
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
                 if (is_dir($controllers_dir)) {
                     $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . str_replace('app\controllers\\', '', $className) . 'Controller.php';
-                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
-                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
-                    }
+                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
 
@@ -805,9 +816,7 @@ class BaseLb extends BaseClass
                 $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
                 if (is_dir($models_dir)) {
                     $class_file_path = $models_dir . DIRECTORY_SEPARATOR . str_replace('app\models\\', '', $className) . '.php';
-                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
-                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
-                    }
+                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
 
@@ -816,9 +825,7 @@ class BaseLb extends BaseClass
                 $components_dir = $root_dir . DIRECTORY_SEPARATOR . 'components';
                 if (is_dir($components_dir)) {
                     $class_file_path = $components_dir . DIRECTORY_SEPARATOR . str_replace('app\components\\', '', $className) . '.php';
-                    if (file_exists(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path))) {
-                        include_once(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
-                    }
+                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
         }
