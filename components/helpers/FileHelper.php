@@ -49,6 +49,9 @@ class FileHelper extends BaseClass
             Header('Accept-Ranges: bytes');
             Header('Accept-Length: ' . $file_size);
             Header('Content-Disposition: attachment; filename=' . $file_name);
+            Header("Expires:-1");
+            Header("Cache-Control:no_cache");
+            Header("Pragma:no-cache");
             echo fread($fp, $file_size);
             fclose($fp);
         }
