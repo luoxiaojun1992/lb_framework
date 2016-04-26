@@ -46,14 +46,15 @@
     "ckeditor/ckeditor": "*",
     "tinymce/tinymce": "*",
     "gee-team/gt-php-sdk": "*",
-    "scws/pscws4":"*"
+    "scws/pscws4":"*",
+    "imagine/imagine":"*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.9.x-dev"
+      "dev-master": "1.1.x-dev"
     }
   }
 }
