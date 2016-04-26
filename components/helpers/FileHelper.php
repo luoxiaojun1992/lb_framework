@@ -10,6 +10,7 @@
 namespace lb\components\helpers;
 
 use lb\BaseClass;
+use lb\Lb;
 
 class FileHelper extends BaseClass
 {
@@ -52,8 +53,19 @@ class FileHelper extends BaseClass
             Header("Expires:-1");
             Header("Cache-Control:no_cache");
             Header("Pragma:no-cache");
+            //兼容IE11
+            $ua = Lb::app()->getUserAgent();
+            $encoded_filename = urlencode($file_name);
+            if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)){
+                header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+            } else if (preg_match("/Firefox/", $ua)) {
+                header('Content-Disposition: attachment; filename*="utf8\'\'' . $file_name . '"');
+            } else {
+                header('Content-Disposition: attachment; filename="' . $file_name . '"');
+            }
             echo fread($fp, $file_size);
             fclose($fp);
+            exit;
         }
     }
 
