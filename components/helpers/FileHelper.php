@@ -43,7 +43,7 @@ class FileHelper extends BaseClass
 
     public static function download($file_path, $file_name)
     {
-        if (file_exists($file_path)) {
+        if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
             $file_size = filesize($file_path);
             $fp = fopen($file_path, 'r');
             Header('Content-type: application/octet-stream');
