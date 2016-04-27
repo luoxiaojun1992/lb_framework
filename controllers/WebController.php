@@ -19,6 +19,7 @@ use lb\components\Render;
 class WebController extends BaseController
 {
     protected $layout = 'default';
+    protected $public_params = [];
 
     protected function beforeRenderJson()
     {
@@ -101,6 +102,7 @@ class WebController extends BaseController
     {
         $this->beforeRender();
         $params += ['controller' => $this];
+        $params += $this->public_params;
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
