@@ -11,6 +11,8 @@ namespace lb\components\db\mysql;
 
 use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
+use lb\Lb;
+use Monolog\Logger;
 
 class Dao extends BaseClass
 {
@@ -529,6 +531,7 @@ class Dao extends BaseClass
                 }
             }
         }
+        Lb::app()->log('system', Logger::NOTICE, 'sql:'.$statement);
         return $statement;
     }
 }
