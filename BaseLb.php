@@ -155,6 +155,24 @@ class BaseLb extends BaseClass
         return false;
     }
 
+    // Get Http Basic Auth User
+    public function getBasicAuthUser()
+    {
+        if ($this->is_single) {
+            return Request::getBasicAuthUser();
+        }
+        return '';
+    }
+
+    // Get Http Basic Auth Password
+    public function getBasicAuthPassword()
+    {
+        if ($this->is_single) {
+            return Request::getBasicAuthPassword();
+        }
+        return '';
+    }
+
     // Get Http Port
     public function getHttpPort()
     {

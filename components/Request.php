@@ -74,4 +74,14 @@ class Request extends BaseClass
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
+
+    public static function getBasicAuthUser()
+    {
+        return isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
+    }
+
+    public static function getBasicAuthPassword()
+    {
+        return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+    }
 }
