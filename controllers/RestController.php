@@ -11,10 +11,12 @@ namespace lb\controllers;
 
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
-use lb\Lb;
 
 class RestController extends BaseController
 {
+    const RESPONSE_TYPE_JSON  = 1;
+    const RESPONSE_TYPE_XML = 2;
+
     protected function beforeAction()
     {
         parent::beforeAction();
@@ -32,13 +34,21 @@ class RestController extends BaseController
 
     }
 
-    protected function response($data, $format)
+    protected function response($data, $format, $is_success=true)
     {
+        if ($is_success) {
+            $data['status'] = 1;
+        } else {
+            $data['status'] = 0;
+        }
         switch ($format) {
-            case 'json':
+            // Response JSON
+            case 1:
                 $response_content = JsonHelper::encode($data);
                 break;
-            case 'xml':
+            // Response XML
+            case 2:
+                Header('Content-type:application/xml');
                 $response_content = XMLHelper::encode($data);
                 break;
             default:
