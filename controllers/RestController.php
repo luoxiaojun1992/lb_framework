@@ -10,10 +10,23 @@
 namespace lb\controllers;
 
 use lb\components\helpers\JsonHelper;
+use lb\components\helpers\XMLHelper;
 use lb\Lb;
 
 class RestController extends BaseController
 {
+    protected function beforeAction()
+    {
+        parent::beforeAction();
+
+        $this->authentication();
+    }
+
+    protected function authentication()
+    {
+
+    }
+
     protected function beforeResponse()
     {
 
@@ -24,6 +37,9 @@ class RestController extends BaseController
         switch ($format) {
             case 'json':
                 $response_content = JsonHelper::encode($data);
+                break;
+            case 'xml':
+                $response_content = XMLHelper::encode($data);
                 break;
             default:
                 $response_content = '';

@@ -144,6 +144,17 @@ class BaseLb extends BaseClass
         return '';
     }
 
+    // Get Restful Api Config
+    public function getRest()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('rest');
+            }
+        }
+        return false;
+    }
+
     // Get Http Port
     public function getHttpPort()
     {
