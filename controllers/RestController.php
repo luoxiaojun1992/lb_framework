@@ -22,6 +22,7 @@ class RestController extends BaseController
     // Authentication Type
     const AUTH_TYPE_BASIC = 1;
     const AUTH_TYPE_OAUTH = 2;
+    const AUTH_TYPE_QUERY_STRING = 3;
 
     public $auth_type = 1;
     protected $rest_config = [];
@@ -43,10 +44,10 @@ class RestController extends BaseController
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($request_method, $this->auth_type) = $this->self_rest_config;
             if (strtolower($request_method) != strtolower(Lb::app()->getRequestMethod())) {
-                $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false);
+                $this->response_invalid_request();
             }
         } else {
-            $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false);
+            $this->response_invalid_request();
         }
     }
 
@@ -57,10 +58,17 @@ class RestController extends BaseController
                 $auth_user = Lb::app()->getBasicAuthUser();
                 $auth_pwd = Lb::app()->getBasicAuthPassword();
                 if ($auth_user != $this->self_rest_config[2][0] || md5($auth_pwd) != $this->self_rest_config[2][1]) {
-                    $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false);
+                    $this->response_unauthorized();
                 }
                 break;
             case 2:
+                break;
+            case 3:
+                $auth_key = $this->self_rest_config[2][0];
+                $auth_value = Lb::app()->getParam($auth_key);
+                if ($auth_value != $this->self_rest_config[2][1]) {
+                    $this->response_unauthorized();
+                }
                 break;
             default:
         }
@@ -69,6 +77,16 @@ class RestController extends BaseController
     protected function beforeResponse()
     {
 
+    }
+
+    protected function response_invalid_request()
+    {
+        $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false);
+    }
+
+    protected function response_unauthorized()
+    {
+        $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false);
     }
 
     protected function response($data, $format, $is_success=true)
