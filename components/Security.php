@@ -198,19 +198,22 @@ class Security extends BaseClass
 
     public static function validCsrfToken($controller, $action)
     {
-        if (strtolower(Lb::app()->getRequestMethod()) == 'post') {
-            $session_csrf_token = Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
-            $request_csrf_token = Lb::app()->getParam('csrf_token');
-            if ($session_csrf_token && $request_csrf_token) {
-                if ($session_csrf_token != $request_csrf_token) {
-                    throw new HttpException('Csrf token invalid.', 403);
+        $csrf_config = Lb::app()->getCsrfConfig();
+        if (!isset($csrf_config['filter']['controllers'][$controller][$action]) || !$csrf_config['filter']['controllers'][$controller][$action]) {
+            if (strtolower(Lb::app()->getRequestMethod()) == 'post') {
+                $session_csrf_token = Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
+                $request_csrf_token = Lb::app()->getParam('csrf_token');
+                if ($session_csrf_token && $request_csrf_token) {
+                    if ($session_csrf_token != $request_csrf_token) {
+                        throw new HttpException('Csrf token invalid.', 403);
+                    }
+                } else {
+                    throw new HttpException('Csrf token missing.', 403);
                 }
-            } else {
-                throw new HttpException('Csrf token missing.', 403);
             }
-        }
-        if (!(Lb::app()->isAjax() && strtolower(Lb::app()->getRequestMethod()) == 'post')) {
-            Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
+            if (!(Lb::app()->isAjax() && strtolower(Lb::app()->getRequestMethod()) == 'post')) {
+                Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
+            }
         }
     }
 

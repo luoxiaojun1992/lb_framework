@@ -261,6 +261,17 @@ class BaseLb extends BaseClass
         return ['controller' => 'index', 'action' => 'index'];
     }
 
+    // Get Csrf Config
+    public function getCsrfConfig()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('csrf');
+            }
+        }
+        return [];
+    }
+
     // If is home
     public function isHome()
     {
