@@ -66,7 +66,7 @@ class RestController extends BaseController
             case 3:
                 $auth_key = $this->self_rest_config[2][0];
                 $auth_value = Lb::app()->getParam($auth_key);
-                if ($auth_value != $this->self_rest_config[2][1]) {
+                if (md5($auth_value) != $this->self_rest_config[2][1]) {
                     $this->response_unauthorized();
                 }
                 break;
