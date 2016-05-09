@@ -24,7 +24,8 @@ class RestController extends BaseController
     const AUTH_TYPE_OAUTH = 2;
     const AUTH_TYPE_QUERY_STRING = 3;
 
-    public $auth_type = 1;
+    protected $auth_type = 1;
+    protected $request_method = '';
     protected $rest_config = [];
     protected $self_rest_config = [];
 
@@ -33,20 +34,21 @@ class RestController extends BaseController
         parent::beforeAction();
 
         $this->rest_config = Lb::app()->getRest();
+        $route_info = Lb::app()->getRouteInfo();
+        if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
+            $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
+            list($this->request_method, $this->auth_type) = $this->self_rest_config;
+        } else {
+            $this->response_invalid_request();
+        }
+
         $this->validRequestMethod();
         $this->authentication();
     }
 
     protected function validRequestMethod()
     {
-        $route_info = Lb::app()->getRouteInfo();
-        if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
-            $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
-            list($request_method, $this->auth_type) = $this->self_rest_config;
-            if (strtolower($request_method) != strtolower(Lb::app()->getRequestMethod())) {
-                $this->response_invalid_request();
-            }
-        } else {
+        if (strtolower($this->request_method) != strtolower(Lb::app()->getRequestMethod())) {
             $this->response_invalid_request();
         }
     }
@@ -66,7 +68,7 @@ class RestController extends BaseController
             case 3:
                 $auth_key = $this->self_rest_config[2][0];
                 $auth_value = Lb::app()->getParam($auth_key);
-                if ($auth_value != $this->self_rest_config[2][1]) {
+                if (md5($auth_value) != $this->self_rest_config[2][1]) {
                     $this->response_unauthorized();
                 }
                 break;
