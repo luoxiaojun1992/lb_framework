@@ -89,6 +89,16 @@ class RestController extends BaseController
         $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false);
     }
 
+    protected function response_success()
+    {
+        $this->response(['msg' => 'success'], static::RESPONSE_TYPE_JSON);
+    }
+
+    protected function response_failed()
+    {
+        $this->response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false);
+    }
+
     protected function response($data, $format, $is_success=true)
     {
         if ($is_success) {
