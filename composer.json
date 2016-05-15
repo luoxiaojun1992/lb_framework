@@ -47,14 +47,15 @@
     "tinymce/tinymce": "*",
     "gee-team/gt-php-sdk": "*",
     "scws/pscws4":"*",
-    "imagine/imagine":"*"
+    "imagine/imagine":"*",
+    "hprose/hprose": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.5.x-dev"
+      "dev-master": "1.6.x-dev"
     }
   }
 }
