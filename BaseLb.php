@@ -1055,38 +1055,37 @@ class BaseLb extends BaseClass
                             $page_cache = Lb::app()->fileCacheGet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]));
                     }
                     if ($page_cache) {
-                        $is_to_redirect = false;
                         echo $page_cache;
                     } else {
-                        if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']])) {
-
+                        if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) && $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
+                            Route::rpc($this->route_info);
                         } else {
                             ob_start();
                             Route::redirect($this->route_info);
                             $page_cache = HtmlHelper::compress(ob_get_contents());
                             ob_end_clean();
+                            switch ($cache_type) {
+                                case 'file':
+                                    Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
+                                    break;
+                                case 'memcache':
+                                    Lb::app()->memcacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
+                                    break;
+                                case 'redis':
+                                    Lb::app()->redisSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
+                                    break;
+                                default:
+                                    Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
+                            }
                             echo $page_cache;
                         }
-                        switch ($cache_type) {
-                            case 'file':
-                                Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
-                                break;
-                            case 'memcache':
-                                Lb::app()->memcacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
-                                break;
-                            case 'redis':
-                                Lb::app()->redisSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
-                                break;
-                            default:
-                                Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
-                        }
-                        $is_to_redirect = false;
                     }
+                    $is_to_redirect = false;
                 }
             }
             if ($is_to_redirect) {
-                if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']])) {
-
+                if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) && $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
+                    Route::rpc($this->route_info);
                 } else {
                     ob_start();
                     Route::redirect($this->route_info);

@@ -54,6 +54,29 @@ class Route extends BaseClass
         return $route_info;
     }
 
+    public static function rpc($route_info)
+    {
+        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'Hprose.php');
+        $controller_id = $route_info['controller'];
+        if ($controller_id == 'web') {
+            $controller_name = 'lb\controllers\WebController';
+        } else {
+            $controller_name = 'app\controllers\\' . ucfirst($controller_id);
+        }
+        if (class_exists($controller_name)) {
+            $action_name = $route_info['action'];
+            if (method_exists($controller_name, $action_name)) {
+                $server = new HproseHttpServer();
+                $server->addMethod($action_name, $controller_name);
+                $server->start();
+            } else {
+                throw new HttpException('Page not found.', 404);
+            }
+        } else {
+            throw new HttpException('Page not found.', 404);
+        }
+    }
+
     public static function redirect($route_info)
     {
         $controller_id = $route_info['controller'];
