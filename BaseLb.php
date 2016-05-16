@@ -272,6 +272,28 @@ class BaseLb extends BaseClass
         return [];
     }
 
+    // Get RPC Config
+    public function getRpcConfig()
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get('rpc');
+            }
+        }
+        return [];
+    }
+
+    // Get Configuration By Name
+    public function getConfigByName($config_name)
+    {
+        if ($this->is_single) {
+            if (isset($this->containers['config'])) {
+                return $this->containers['config']->get($config_name);
+            }
+        }
+        return [];
+    }
+    
     // If is home
     public function isHome()
     {
