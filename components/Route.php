@@ -56,7 +56,7 @@ class Route extends BaseClass
 
     public static function rpc($route_info)
     {
-        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'Hprose.php');
+        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {
             $controller_name = 'lb\controllers\WebController';
