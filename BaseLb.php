@@ -857,6 +857,13 @@ class BaseLb extends BaseClass
         return false;
     }
 
+    // Get RPC Client
+    public function get_rpc_client($url)
+    {
+        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
+        return new \Hprose\Http\Client($url);
+    }
+
     // Autoloader
     protected static function autoload($className)
     {

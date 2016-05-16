@@ -66,8 +66,8 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                $server = new HproseHttpServer();
-                $server->addMethod($action_name, $controller_name);
+                $server = new \Hprose\Http\Server();
+                $server->addMethod($action_name, new $controller_name());
                 $server->start();
             } else {
                 throw new HttpException('Page not found.', 404);
