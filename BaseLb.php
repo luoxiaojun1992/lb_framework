@@ -1031,6 +1031,7 @@ class BaseLb extends BaseClass
     public function run()
     {
         if (!$this->is_single) {
+            $rpc_config = Lb::app()->getRpcConfig();
             $is_to_redirect = true;
             if (isset(Lb::app()->containers['config'])) {
                 $html_cache_config = Lb::app()->containers['config']->get('html_cache');
@@ -1057,10 +1058,15 @@ class BaseLb extends BaseClass
                         $is_to_redirect = false;
                         echo $page_cache;
                     } else {
-                        ob_start();
-                        Route::redirect($this->route_info);
-                        $page_cache = HtmlHelper::compress(ob_get_contents());
-                        ob_end_clean();
+                        if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']])) {
+
+                        } else {
+                            ob_start();
+                            Route::redirect($this->route_info);
+                            $page_cache = HtmlHelper::compress(ob_get_contents());
+                            ob_end_clean();
+                            echo $page_cache;
+                        }
                         switch ($cache_type) {
                             case 'file':
                                 Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
@@ -1075,22 +1081,25 @@ class BaseLb extends BaseClass
                                 Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
                         }
                         $is_to_redirect = false;
-                        echo $page_cache;
                     }
                 }
             }
             if ($is_to_redirect) {
-                ob_start();
-                Route::redirect($this->route_info);
-                $page_content = ob_get_contents();
-                ob_end_clean();
-                if (isset(Lb::app()->containers['config'])) {
-                    $page_compress_config = Lb::app()->containers['config']->get('page_compress');
-                    if (isset($page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) && $page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
-                        $page_content = HtmlHelper::compress($page_content);
+                if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']])) {
+
+                } else {
+                    ob_start();
+                    Route::redirect($this->route_info);
+                    $page_content = ob_get_contents();
+                    ob_end_clean();
+                    if (isset(Lb::app()->containers['config'])) {
+                        $page_compress_config = Lb::app()->containers['config']->get('page_compress');
+                        if (isset($page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) && $page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+                            $page_content = HtmlHelper::compress($page_content);
+                        }
                     }
+                    echo $page_content;
                 }
-                echo $page_content;
             }
         } else {
             throw new HttpException('Single run is forbidden.', 500);
