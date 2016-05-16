@@ -293,7 +293,7 @@ class BaseLb extends BaseClass
         }
         return [];
     }
-    
+
     // If is home
     public function isHome()
     {
