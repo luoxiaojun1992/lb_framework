@@ -112,10 +112,11 @@ class WebController extends BaseController
         }
     }
 
-    public function renderPartial($template_name, $params = [], $return = false)
+    protected function renderPartial($template_name, $params = [], $return = false)
     {
         $this->beforeRenderPartial();
         $params += ['controller' => $this];
+        $params += $this->public_params;
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
@@ -123,6 +124,18 @@ class WebController extends BaseController
         } else {
             Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
         }
+    }
+
+    protected function assign($param_name, $param_value)
+    {
+        $this->public_params[$param_name] = $param_value;
+    }
+
+    protected function get($param_name) {
+        if (array_key_exists($param_name, $this->public_params)) {
+            return $this->public_params[$param_name];
+        }
+        return '';
     }
 
     protected function redirect($path, $replace = true, $http_response_code = null)
