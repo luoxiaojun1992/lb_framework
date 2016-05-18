@@ -103,6 +103,7 @@ class WebController extends BaseController
         $this->beforeRender();
         $params += ['controller' => $this];
         $params += $this->public_params;
+        $this->public_params = $params;
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
@@ -117,6 +118,7 @@ class WebController extends BaseController
         $this->beforeRenderPartial();
         $params += ['controller' => $this];
         $params += $this->public_params;
+        $this->public_params = $params;
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
