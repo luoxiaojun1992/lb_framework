@@ -61,4 +61,12 @@ class ArrayHelper extends BaseClass
         }
         return $listData;
     }
+
+    public static function debug($array, $func = 'var_dump')
+    {
+        echo '<pre>';
+        $func($array);
+        echo '</pre>';
+        die();
+    }
 }
