@@ -937,6 +937,7 @@ class BaseLb extends BaseClass
         }
 
         // Start Session
+        // todo session_set_save_handler() 支持 DB Session
         session_start();
 
         // Route
