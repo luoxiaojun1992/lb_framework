@@ -48,7 +48,8 @@
     "gee-team/gt-php-sdk": "*",
     "scws/pscws4":"*",
     "imagine/imagine":"*",
-    "hprose/hprose": "*"
+    "hprose/hprose": "*",
+    "textalk/websocket": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
