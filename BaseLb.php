@@ -960,15 +960,6 @@ class BaseLb extends BaseClass
         // Inject Route Info Container
         Lb::app()->containers['route_info'] = $route_info_container;
 
-        // Login Required
-        $login_required_filter = $config_container->get('login_required_filter');
-        if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
-            $login_default_url = $config_container->get('login_default_url');
-            if ($config_container->get('login_required') && $login_default_url) {
-                Lb::app()->loginRequired($login_default_url);
-            }
-        }
-
         $containers['config'] = $config_container;
 
         if (Lb::app()->isAction()) {
@@ -1003,6 +994,15 @@ class BaseLb extends BaseClass
 
         // Start Session
         session_start();
+
+        // Login Required
+        $login_required_filter = $config_container->get('login_required_filter');
+        if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+            $login_default_url = $config_container->get('login_default_url');
+            if ($config_container->get('login_required') && $login_default_url) {
+                Lb::app()->loginRequired($login_default_url);
+            }
+        }
 
         // Init Swift Mailer
         Swift::component($containers);
