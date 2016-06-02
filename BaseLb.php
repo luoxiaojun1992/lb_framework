@@ -15,6 +15,7 @@ use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
 use lb\components\helpers\SystemHelper;
 use lb\components\Pagination;
+use lb\components\session\Session;
 use lb\components\User;
 use Monolog\Logger;
 use lb\components\cache\Filecache;
@@ -936,10 +937,6 @@ class BaseLb extends BaseClass
             }
         }
 
-        // Start Session
-        // todo session_set_save_handler() 支持 DB Session
-        session_start();
-
         // Route
         $this->route_info = Route::getInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
@@ -975,10 +972,17 @@ class BaseLb extends BaseClass
         $containers['config'] = $config_container;
 
         if (Lb::app()->isAction()) {
+            $session_config = $config_container->get('session');
+
             // Connect MySql
             $mysql_config = $config_container->get('mysql');
             if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']][strtolower(Lb::app()->getRequestMethod())]) {
                 Connection::component($containers);
+                if ($session_config) {
+                    if (isset($session_config['type']) && $session_config['type'] == 'mysql') {
+                        Session::set_session($session_config['type']);
+                    }
+                }
             }
 
             // Connect MongoDB
@@ -989,7 +993,16 @@ class BaseLb extends BaseClass
 
             // Connect Redis
             Redis::component($containers);
+
+            if ($session_config) {
+                if (isset($session_config['type']) && $session_config['type'] != 'mysql') {
+                    Session::set_session($session_config['type']);
+                }
+            }
         }
+
+        // Start Session
+        session_start();
 
         // Init Swift Mailer
         Swift::component($containers);
