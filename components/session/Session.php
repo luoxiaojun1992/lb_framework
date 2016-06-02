@@ -28,6 +28,8 @@ class Session extends BaseClass
                     array($mysql_session, 'destroy'),
                     array($mysql_session, 'gc')
                 );
+                // 下面这行代码可以防止使用对象作为会话保存管理器时可能引发的非预期行为
+                register_shutdown_function('session_write_close');
                 break;
             default:
                 return;
