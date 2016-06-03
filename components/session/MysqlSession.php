@@ -9,10 +9,10 @@
 
 namespace lb\components\session;
 
-use lb\BaseClass;
+use lb\components\db\mysql\Dao;
 use lb\models\LbSession;
 
-class MysqlSession extends BaseClass
+class MysqlSession extends \SessionHandler
 {
     protected static $_instance = false;
 
@@ -47,14 +47,28 @@ class MysqlSession extends BaseClass
 
     public function write($id, $sess_data)
     {
-        $lb_session = LbSession::model()->findByPk($id);
-        if ($lb_session) {
-            $lb_session->setAttributes([
-                'data' => $sess_data,
-                'expire' => time(),
-            ]);
-            if ($lb_session->save()) {
-                return true;
+        if ($sess_data) {
+            $sess_data = addslashes($sess_data);
+            $lb_session = LbSession::model()->findByPk($id);
+            $now_time = time();
+            $expire_time = $now_time + intval(get_cfg_var('session.gc_maxlifetime'));
+            if ($lb_session) {
+                $lb_session->setAttributes([
+                    'expire' => $expire_time,
+                    'data' => $sess_data,
+                ]);
+                if ($lb_session->save()) {
+                    return true;
+                }
+            } else {
+                $sql = 'INSERT INTO `lb_session` (`id`,`expire`,`data`) VALUES("' . $id . '", ' . $expire_time . ', "' . $sess_data . '")';
+                $statement = Dao::component()->prepare($sql, 'master');
+                if ($statement) {
+                    $res = $statement->execute();
+                    if ($res) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -70,9 +84,7 @@ class MysqlSession extends BaseClass
 
     public function gc($maxlifetime)
     {
-        $now_time = time();
-        $expire_time = $now_time - $maxlifetime;
-        if (LbSession::model()->deleteByConditions(['expire' => ['<' => $expire_time]])) {
+        if (LbSession::model()->deleteByConditions(['expire' => ['<' => $maxlifetime]])) {
             return true;
         }
         return false;

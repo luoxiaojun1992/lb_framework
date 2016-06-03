@@ -20,16 +20,7 @@ class Session extends BaseClass
                 return;
             case 'mysql':
                 $mysql_session = MysqlSession::component();
-                session_set_save_handler(
-                    array($mysql_session, 'open'),
-                    array($mysql_session, 'close'),
-                    array($mysql_session, 'read'),
-                    array($mysql_session, 'write'),
-                    array($mysql_session, 'destroy'),
-                    array($mysql_session, 'gc')
-                );
-                // 下面这行代码可以防止使用对象作为会话保存管理器时可能引发的非预期行为
-                register_shutdown_function('session_write_close');
+                session_set_save_handler($mysql_session, true);
                 break;
             default:
                 return;
