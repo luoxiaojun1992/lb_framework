@@ -69,7 +69,7 @@ class FileHelper extends BaseClass
         }
     }
 
-    public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null)
+    public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null, $uploaded_file_ext_limit = null)
     {
         $storage = new \Upload\Storage\FileSystem($saved_file_path);
         $file = new \Upload\File($file_name, $storage);
@@ -88,6 +88,9 @@ class FileHelper extends BaseClass
         if ($uploaded_file_size_limit) {
             // Ensure file is no larger than 5M (use "B", "K", M", or "G")
             $validations[] = new \Upload\Validation\Size($uploaded_file_size_limit);
+        }
+        if ($uploaded_file_ext_limit) {
+            $validations[] = new \Upload\Validation\Extension($uploaded_file_ext_limit);
         }
         if ($validations) {
             $file->addValidations($validations);
