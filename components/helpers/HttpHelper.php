@@ -43,6 +43,7 @@ class HttpHelper extends  BaseClass
             'cpt'     => 'application/mac-compactpro',
             'csh'     => 'application/x-csh',
             'css'     => 'text/css',
+            'csv'     => 'text/comma-separated-values',
             'dcr'     => 'application/x-director',
             'dif'     => 'video/x-dv',
             'dir'     => 'application/x-director',
