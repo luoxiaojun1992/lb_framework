@@ -72,6 +72,11 @@ class Dao extends BaseClass
         }
     }
 
+    private function __construct()
+    {
+
+    }
+
     public function __clone()
     {
         // TODO: Implement __clone() method.
@@ -533,5 +538,20 @@ class Dao extends BaseClass
         }
         Lb::app()->log('system', Logger::NOTICE, 'sql:'.$statement);
         return $statement;
+    }
+
+    public static function beginTransaction()
+    {
+        Connection::component()->write_conn->beginTransaction();
+    }
+
+    public static function commit()
+    {
+        Connection::component()->write_conn->commit();
+    }
+
+    public static function rollBack()
+    {
+        Connection::component()->write_conn->rollBack();
     }
 }
