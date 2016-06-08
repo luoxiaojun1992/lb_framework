@@ -49,14 +49,15 @@
     "scws/pscws4":"*",
     "imagine/imagine":"*",
     "hprose/hprose": "*",
-    "textalk/websocket": "*"
+    "textalk/websocket": "*",
+    "zircote/swagger-php": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.7.x-dev"
+      "dev-master": "1.8.x-dev"
     }
   }
 }
