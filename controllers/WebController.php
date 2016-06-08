@@ -183,4 +183,16 @@ class WebController extends BaseController
             echo $err_msg;
         }
     }
+
+    /**
+     * API文档
+     */
+    public function api()
+    {
+        header('Content-Type: application/json');
+        $swagger = \Swagger\scan(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'controllers', [
+            'exclude' => [],
+        ]);
+        echo $swagger;
+    }
 }
