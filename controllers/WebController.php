@@ -189,9 +189,20 @@ class WebController extends BaseController
      */
     public function api()
     {
+        $scan = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'controllers';
+        $exclude = [];
+        $api_doc_config = Lb::app()->getApiDocConfig();
+        if ($api_doc_config) {
+            if (isset($api_doc_config['scan']) && $api_doc_config['scan']) {
+                $scan = $api_doc_config['scan'];
+            }
+            if (isset($api_doc_config['exclude']) && $api_doc_config['exclude']) {
+                $exclude = $api_doc_config['exclude'];
+            }
+        }
         header('Content-Type: application/json');
-        $swagger = \Swagger\scan(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'controllers', [
-            'exclude' => [],
+        $swagger = \Swagger\scan($scan, [
+            'exclude' => $exclude,
         ]);
         echo $swagger;
     }

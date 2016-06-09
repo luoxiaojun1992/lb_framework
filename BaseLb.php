@@ -177,23 +177,13 @@ class BaseLb extends BaseClass
     // Get Http Port
     public function getHttpPort()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('http_port');
-            }
-        }
-        return '';
+        return $this->getConfigByName('http_port');
     }
 
     // Get Time Zone
     public function getTimeZone()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('timeZone');
-            }
-        }
-        return '';
+        return $this->getConfigByName('timeZone');
     }
 
     // Get Cdn Host
@@ -210,45 +200,25 @@ class BaseLb extends BaseClass
     // Get Seo Settings
     public function getSeo()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('seo');
-            }
-        }
-        return [];
+        return $this->getConfigByName('seo');
     }
 
     // Get Custom Configuration
     public function getCustomConfig()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('custom');
-            }
-        }
-        return [];
+        return $this->getConfigByName('custom');
     }
 
     // Get Home Controller & Action
     public function getHome()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('home');
-            }
-        }
-        return [];
+        return $this->getConfigByName('home');
     }
 
     // Get DB Config
     public function getDbConfig($db_type)
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get($db_type);
-            }
-        }
-        return [];
+        return $this->getConfigByName($db_type);
     }
 
     // Get Route Info
@@ -265,23 +235,19 @@ class BaseLb extends BaseClass
     // Get Csrf Config
     public function getCsrfConfig()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('csrf');
-            }
-        }
-        return [];
+        return $this->getConfigByName('csrf');
     }
 
     // Get RPC Config
     public function getRpcConfig()
     {
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('rpc');
-            }
-        }
-        return [];
+        return $this->getConfigByName('rpc');
+    }
+
+    // Get Api Doc Config
+    public function getApiDocConfig()
+    {
+        return $this->getConfigByName('api_doc');
     }
 
     // Get Configuration By Name
