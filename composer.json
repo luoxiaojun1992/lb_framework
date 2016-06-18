@@ -50,14 +50,15 @@
     "imagine/imagine":"*",
     "hprose/hprose": "*",
     "textalk/websocket": "*",
-    "zircote/swagger-php": "*"
+    "zircote/swagger-php": "*",
+    "emanueleminotto/simple-html-dom": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.1.x-dev"
+      "dev-master": "1.2.x-dev"
     }
   }
 }
