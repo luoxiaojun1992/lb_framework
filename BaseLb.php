@@ -250,6 +250,12 @@ class BaseLb extends BaseClass
         return $this->getConfigByName('api_doc');
     }
 
+    // Get Log Config
+    public function getLogConfig()
+    {
+        return $this->getConfigByName('log');
+    }
+
     // Get Configuration By Name
     public function getConfigByName($config_name)
     {
