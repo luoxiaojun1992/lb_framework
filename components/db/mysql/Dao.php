@@ -542,16 +542,22 @@ class Dao extends BaseClass
 
     public static function beginTransaction()
     {
-        Connection::component()->write_conn->beginTransaction();
+        $write_conn = Connection::component()->write_conn;
+        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
+        $write_conn->beginTransaction();
     }
 
     public static function commit()
     {
-        Connection::component()->write_conn->commit();
+        $write_conn = Connection::component()->write_conn;
+        $write_conn->commit();
+        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }
 
     public static function rollBack()
     {
-        Connection::component()->write_conn->rollBack();
+        $write_conn = Connection::component()->write_conn;
+        $write_conn->rollBack();
+        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }
 }
