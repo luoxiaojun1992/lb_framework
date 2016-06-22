@@ -41,41 +41,10 @@ class Connection extends BaseClass
             $db_config = $this->containers['config']->get('mysql');
             if ($db_config) {
                 if (isset($db_config['master'])) {
-                    $master_db_config = $db_config['master'];
-                    $this->_master_db = isset($master_db_config['dbname']) ? $master_db_config['dbname'] : '';
-                    $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
-                    $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
-                    $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
-                    $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
-                    $this->getDsn('master');
-                    $this->getConnection('master');
+                    $this->getMasterConnection();
                 }
                 if (isset($db_config['slaves'])) {
-                    $slave_config = $db_config['slaves'];
-                    $server_hosts = [];
-                    foreach ($slave_config as $key => $config) {
-                        $server_hosts[$key] = $config['host'];
-                    }
-                    // 一致性HASH
-                    $flexihash = FlexiHash::component();
-                    $flexihash->addServers($server_hosts);
-                    $time = time();
-                    $target_host = $flexihash->lookup($time);
-                    $slave_target_num = 0;
-                    foreach ($server_hosts as $key => $server_host) {
-                        if ($server_host == $target_host) {
-                            $slave_target_num = $key;
-                            break;
-                        }
-                    }
-                    $slave_db_config = $slave_config[$slave_target_num];
-                    $this->_slave_db = isset($slave_db_config['dbname']) ? $slave_db_config['dbname'] : '';
-                    $this->_slave_host = isset($slave_db_config['host']) ? $slave_db_config['host'] : '';
-                    $this->_slave_username = isset($slave_db_config['username']) ? $slave_db_config['username'] : '';
-                    $this->_slave_password = isset($slave_db_config['password']) ? $slave_db_config['password'] : '';
-                    $this->_slave_options = isset($slave_db_config['options']) ? $slave_db_config['options'] : [];
-                    $this->getDsn('slave');
-                    $this->getConnection('slave');
+                    $this->getSlaveConnection();
                 }
             }
         }
@@ -84,6 +53,56 @@ class Connection extends BaseClass
     public function __clone()
     {
         // TODO: Implement __clone() method.
+    }
+
+    protected function getMasterConnection()
+    {
+        $db_config = $this->containers['config']->get('mysql');
+        $master_db_config = $db_config['master'];
+        $this->_master_db = isset($master_db_config['dbname']) ? $master_db_config['dbname'] : '';
+        $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
+        $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
+        $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
+        $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
+        $this->getDsn('master');
+        $this->getConnection('master');
+    }
+
+    protected function getSlaveConnection($server_hosts = [])
+    {
+        $db_config = $this->containers['config']->get('mysql');
+        $slave_config = $db_config['slaves'];
+        if (!$server_hosts) {
+            foreach ($slave_config as $key => $config) {
+                $server_hosts[$key] = $config['host'];
+            }
+        }
+        if ($server_hosts) {
+            // 一致性HASH
+            $flexihash = FlexiHash::component();
+            $flexihash->addServers($server_hosts);
+            $time = time();
+            $target_host = $flexihash->lookup($time);
+            foreach ($server_hosts as $key => $server_host) {
+                if ($server_host == $target_host) {
+                    $slave_target_num = $key;
+                    $slave_db_config = $slave_config[$slave_target_num];
+                    $this->_slave_db = isset($slave_db_config['dbname']) ? $slave_db_config['dbname'] : '';
+                    $this->_slave_host = isset($slave_db_config['host']) ? $slave_db_config['host'] : '';
+                    $this->_slave_username = isset($slave_db_config['username']) ? $slave_db_config['username'] : '';
+                    $this->_slave_password = isset($slave_db_config['password']) ? $slave_db_config['password'] : '';
+                    $this->_slave_options = isset($slave_db_config['options']) ? $slave_db_config['options'] : [];
+                    $this->getDsn('slave');
+                    try {
+                        $this->getConnection('slave');
+                    } catch (\PDOException $e) {
+                        unset($server_hosts[$slave_target_num]);
+                        $this->getSlaveConnection($server_hosts);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     protected function getDsn($node_type)
