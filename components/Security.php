@@ -141,8 +141,8 @@ class Security extends BaseClass
                 }
             }
             $input_value = trim($input_value);
-            $input_value = HtmlHelper::encode($input_value);
             $input_value = addslashes($input_value);
+            $input_value = HtmlHelper::encode($input_value);
         } else {
             foreach ($input_value as $key => $value) {
                 if (!is_array($value)) {
@@ -153,8 +153,8 @@ class Security extends BaseClass
                         }
                     }
                     $value = trim($value);
-                    $value = HtmlHelper::encode($value);
                     $value = addslashes($value);
+                    $value = HtmlHelper::encode($value);
                     $input_value[$key] = $value;
                 }
             }
