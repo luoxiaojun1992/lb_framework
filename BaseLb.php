@@ -339,19 +339,26 @@ class BaseLb extends BaseClass
         }
     }
 
+    // Get Url Manager Config By Item Name
+    public function getUrlManagerConfig($item)
+    {
+        $urlManager = $this->getConfigByName('urlManager');
+        if (isset($urlManager[$item])) {
+            return $urlManager[$item];
+        }
+        return false;
+    }
+
     // Is Pretty Url
     public function isPrettyUrl()
     {
-        $is_pretty_url = false;
-        if ($this->is_single) {
-            if (isset($this->containers['config'])) {
-                $urlManager = $this->containers['config']->get('urlManager');
-                if (isset($urlManager['is_pretty_url'])) {
-                    $is_pretty_url = $urlManager['is_pretty_url'];
-                }
-            }
-        }
-        return $is_pretty_url;
+        return $this->getUrlManagerConfig('is_pretty_url');
+    }
+
+    // Get Custom Url Suffix
+    public function getUrlSuffix()
+    {
+        return $this->getUrlManagerConfig('suffix') ? : '';
     }
 
     // Get Js Files
