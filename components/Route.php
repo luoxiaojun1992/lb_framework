@@ -25,7 +25,7 @@ class Route extends BaseClass
         $request_uri = Lb::app()->getUri();
         $url_suffix = Lb::app()->getUrlSuffix();
         if ($url_suffix) {
-            str_replace($url_suffix, '', $request_uri);
+            $request_uri = str_replace($url_suffix, '', $request_uri);
         }
         $query_string = Lb::app()->getQueryString();
         if (Lb::app()->isPrettyUrl()) {
