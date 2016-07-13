@@ -23,17 +23,16 @@ class Route extends BaseClass
             'id' => '',
         ];
         $request_uri = Lb::app()->getUri();
-        $url_suffix = Lb::app()->getUrlSuffix();
-        if ($url_suffix) {
-            $request_uri = str_replace($url_suffix, '', $request_uri);
-        }
         $query_string = Lb::app()->getQueryString();
         if (Lb::app()->isPrettyUrl()) {
             if ($query_string) {
-                $query_params = explode('/', trim(str_replace('?' . $query_string, '', $request_uri), '/'));
-            } else {
-                $query_params = explode('/', trim($request_uri, '/'));
+                $request_uri = str_replace('?' . $query_string, '', $request_uri);
             }
+            $url_suffix = Lb::app()->getUrlSuffix();
+            if ($url_suffix) {
+                $request_uri = str_replace($url_suffix, '', $request_uri);
+            }
+            $query_params = explode('/', trim($request_uri, '/'));
             $route_info['controller'] = array_shift($query_params);
             foreach ($query_params as $key => $query_param) {
                 if (array_key_exists($query_param, $route_info) && $query_param != 'controller') {
