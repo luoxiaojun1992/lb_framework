@@ -243,8 +243,29 @@ class Security extends BaseClass
                 } else {
                     header("X-Frame-Options: DENY");
                 }
+                return;
             }
         }
+        header("X-Frame-Options: DENY");
+    }
+
+    public static function x_xss_protection($controller, $action)
+    {
+        if (isset(Lb::app()->containers['config'])) {
+            $config = Lb::app()->containers['config'];
+            $x_xss_protection = $config->get('x_xss_protection');
+            if ($x_xss_protection) {
+                if (isset($x_xss_protection[$controller][$action])) {
+                    header("X-XSS-Protection: {$x_xss_protection[$controller][$action]}");
+                } else if (isset($x_xss_protection['common'])) {
+                    header("X-XSS-Protection: {$x_xss_protection['common']}");
+                } else {
+                    header("X-XSS-Protection: 1");
+                }
+                return;
+            }
+        }
+        header("X-XSS-Protection: 1");
     }
 
     public static function ipFilter($controller, $action)

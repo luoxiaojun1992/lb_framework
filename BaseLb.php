@@ -1015,6 +1015,9 @@ class BaseLb extends BaseClass
         // X-Frame-Options
         Security::x_frame_options($this->route_info['controller'], $this->route_info['action']);
 
+        // X-XSS-Protection
+        Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
+
         // Set Triggers
         $triggers_config = $config_container->get('triggers');
         if ($triggers_config) {
