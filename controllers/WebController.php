@@ -11,6 +11,7 @@ namespace lb\controllers;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
+use lb\components\helpers\HttpHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
 use lb\Lb;
@@ -171,8 +172,13 @@ class WebController extends BaseController
         return Lb::app()->isAjax();
     }
 
-    public function error($err_msg, $tpl_name)
+    public function error($err_msg, $tpl_name, $status_code)
     {
+        $status_code = intval($status_code);
+        $status_str = HttpHelper::get_status_code_message($status_code);
+        if ($status_str) {
+            header('HTTP/1.1 ' . $status_code . ' ' . $status_str);
+        }
         $viewPath = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . "{$tpl_name}.php";
         if (file_exists($viewPath)) {
             $this->render($tpl_name, [

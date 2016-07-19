@@ -22,22 +22,26 @@ class Lb extends \lb\BaseLb
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $err_msg = implode(':', [$httpException->getCode(), $httpException->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
+                    $status_code = $httpException->getCode();
+                    $err_msg = implode(':', [$status_code, $httpException->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
                 } catch (\Throwable $throwable) {
-                    $err_msg = implode(':', [$throwable->getCode(), $throwable->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
+                    $status_code = $throwable->getCode();
+                    $err_msg = implode(':', [$status_code, $throwable->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
                 }
             } else {
                 // < PHP 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $err_msg = implode(':', [$httpException->getCode(), $httpException->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
+                    $status_code = $httpException->getCode();
+                    $err_msg = implode(':', [$status_code, $httpException->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
                 } catch (\Exception $e) {
-                    $err_msg = implode(':', [$e->getCode(), $e->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error']));
+                    $status_code = $e->getCode();
+                    $err_msg = implode(':', [$status_code, $e->getMessage()]);
+                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
                 }
             }
         } else {
