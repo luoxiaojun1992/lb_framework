@@ -54,12 +54,15 @@
     "emanueleminotto/simple-html-dom": "*",
     "snoopy/snoopy": "*"
   },
+  "require-dev": {
+    "ronnylt/redlock-php": "dev-master"
+  },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.7.x-dev"
+      "dev-master": "1.8.x-dev"
     }
   }
 }
