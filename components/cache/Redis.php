@@ -49,7 +49,9 @@ class Redis extends BaseClass
     {
         $this->conn = new \Redis();
         $this->conn->connect($this->_host, $this->_port, $this->_timeout);
-        $this->conn->select($this->_database);
+        if ($this->_database) {
+            $this->conn->select($this->_database);
+        }
         if ($this->_password) {
             $this->conn->auth($this->_password);
         }
