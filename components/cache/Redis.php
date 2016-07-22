@@ -14,10 +14,11 @@ use lb\BaseClass;
 class Redis extends BaseClass
 {
     public $conn = false;
-    protected $_host = '';
+    protected $_host = '127.0.0.1';
     protected $_port = 6379;
-    protected $_timeout = 0.0;
+    protected $_timeout = 0.01;
     protected $_password = null;
+    protected $_database = 0;
     public $containers = [];
     protected static $instance = false;
 
@@ -29,10 +30,11 @@ class Redis extends BaseClass
         if (isset($this->containers['config'])) {
             $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
             if ($cache_config) {
-                $this->_host = isset($cache_config['host']) ? $cache_config['host'] : '';
+                $this->_host = isset($cache_config['host']) ? $cache_config['host'] : $this->_host;
                 $this->_port = isset($cache_config['port']) ? $cache_config['port'] : $this->_port;
                 $this->_timeout = isset($cache_config['timeout']) ? $cache_config['timeout'] : $this->_timeout;
                 $this->_password = isset($cache_config['password']) ? $cache_config['password'] : $this->_password;
+                $this->_database = isset($cache_config['database']) ? $cache_config['database'] : $this->_database;
                 $this->getConnection();
             }
         }
@@ -47,6 +49,7 @@ class Redis extends BaseClass
     {
         $this->conn = new \Redis();
         $this->conn->connect($this->_host, $this->_port, $this->_timeout);
+        $this->conn->select($this->_database);
         if ($this->_password) {
             $this->conn->auth($this->_password);
         }
