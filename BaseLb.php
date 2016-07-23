@@ -11,6 +11,7 @@ namespace lb;
 
 use lb\components\containers\RouteInfo;
 use lb\components\error_handlers\HttpException;
+use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
 use lb\components\helpers\SystemHelper;
@@ -842,6 +843,20 @@ class BaseLb extends BaseClass
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         return new \Hprose\Http\Client($url);
+    }
+
+    // Encrype
+    public function encrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
+    {
+        $encrypt_method = CryptHelper::get_encrypt_method($cryptor);
+        return call_user_func_array([CryptHelper::className(), $encrypt_method], [$str, $key, $algo]);
+    }
+
+    // Decrypt
+    public function decrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
+    {
+        $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
+        return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
     }
 
     // Autoloader

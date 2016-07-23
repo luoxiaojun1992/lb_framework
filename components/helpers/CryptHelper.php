@@ -15,6 +15,9 @@ use Zend\Crypt\Symmetric\Mcrypt;
 
 class CryptHelper extends BaseClass
 {
+    const ENCRYPT_METHOD_SUFFIX = 'encrypt';
+    const DECRYPT_METHOD_SUFFIX = 'decrypt';
+
     protected static $block_cipher_instance = [];
 
     /**
@@ -96,5 +99,23 @@ class CryptHelper extends BaseClass
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
         return $blockCipher->encrypt($str);
+    }
+
+    /**
+     * @param string $cryptor
+     * @return string
+     */
+    public static function get_encrypt_method($cryptor = 'zend')
+    {
+        return implode('_', [$cryptor, static::ENCRYPT_METHOD_SUFFIX]);
+    }
+
+    /**
+     * @param string $cryptor
+     * @return string
+     */
+    public static function get_decrypt_method($cryptor = 'zend')
+    {
+        return implode('_', [$cryptor, static::DECRYPT_METHOD_SUFFIX]);
     }
 }
