@@ -506,7 +506,7 @@ class BaseLb extends BaseClass
     public function getCookie($cookie_key)
     {
         if ($this->is_single) {
-            return isset($_COOKIE[$cookie_key]) ? $_COOKIE[$cookie_key] : false;
+            return isset($_COOKIE[$cookie_key]) ? $this->decrypt_by_config($_COOKIE[$cookie_key]) : false;
         }
         return false;
     }
@@ -515,6 +515,7 @@ class BaseLb extends BaseClass
     public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
         if ($this->is_single) {
+            $cookie_value = $this->encrypt_by_config($cookie_value);
             setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
         }
     }
@@ -523,6 +524,7 @@ class BaseLb extends BaseClass
     public function setHeaderCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
         if ($this->is_single) {
+            $cookie_value = $this->encrypt_by_config($cookie_value);
             $cookie_str[] = $cookie_key . '=' . $cookie_value;
             if ($expire) {
                 $cookie_str[] = 'expires=' . gmstrftime("%A, %d-%b-%Y %H:%M:%S GMT", time() + $expire);
@@ -857,6 +859,34 @@ class BaseLb extends BaseClass
     {
         $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
         return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
+    }
+
+    // Encrypt By Config
+    public function encrypt_by_config($str)
+    {
+        $security_key = $this->getConfigByName('security_key');
+        if ($security_key) {
+            $cryptor = $this->getConfigByName('cryptor');
+            if (!$cryptor) {
+                $cryptor = 'zend';
+            }
+            $str = $this->encrypt($str, $security_key, $cryptor);
+        }
+        return $str;
+    }
+
+    // Decrypt By Config
+    public function decrypt_by_config($str)
+    {
+        $security_key = $this->getConfigByName('security_key');
+        if ($security_key) {
+            $cryptor = $this->getConfigByName('cryptor');
+            if (!$cryptor) {
+                $cryptor = 'zend';
+            }
+            $str = $this->decrypt($str, $security_key, $cryptor);
+        }
+        return $str;
     }
 
     // Autoloader
