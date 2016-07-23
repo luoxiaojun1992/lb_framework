@@ -15,6 +15,8 @@ use Zend\Crypt\Symmetric\Mcrypt;
 
 class CryptHelper extends BaseClass
 {
+    protected static $block_cipher_instance = [];
+
     protected static function mcrypt_get_iv()
     {
         //指定初始化向量iv的大小：
@@ -56,8 +58,16 @@ class CryptHelper extends BaseClass
      */
     protected static function zend_get_block_cipher($key, $algo = 'aes')
     {
+        $instance_id = implode('@', [$key, $algo]);
+        if (isset(static::$block_cipher_instance[$instance_id])) {
+            $instance = static::$block_cipher_instance[$instance_id];
+            if ($instance instanceof BlockCipher) {
+                return $instance;
+            }
+        }
         $blockCipher = new BlockCipher(new Mcrypt(array('algo' => $algo)));
         $blockCipher->setKey($key);
+        static::$block_cipher_instance[$instance_id] = $blockCipher;
         return $blockCipher;
     }
 
