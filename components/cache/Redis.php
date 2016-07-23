@@ -24,7 +24,7 @@ class Redis extends BaseClass
 
     const CACHE_TYPE = 'redis';
 
-    public function __construct($containers)
+    private function __construct($containers)
     {
         $this->containers = $containers;
         if (isset($this->containers['config'])) {
