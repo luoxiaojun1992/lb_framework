@@ -1,0 +1,87 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: luoxiaojun
+ * Date: 16/7/23
+ * Time: 下午3:49
+ * Lb framework crypt helper component file
+ */
+
+namespace lb\components\helpers;
+
+use lb\BaseClass;
+use Zend\Crypt\BlockCipher;
+use Zend\Crypt\Symmetric\Mcrypt;
+
+class CryptHelper extends BaseClass
+{
+    protected static function mcrypt_get_iv()
+    {
+        //指定初始化向量iv的大小：
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+
+        //创建初始化向量：
+        return mcrypt_create_iv($iv_size, MCRYPT_RAND);
+    }
+
+    /**
+     * @param $str
+     * @param $key
+     * @return string
+     */
+    public static function mcrypt_encrypt($str, $key)
+    {
+        $iv = static::mcrypt_get_iv();
+
+        //加密后的内容：
+        return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv);
+    }
+
+    /**
+     * @param $str
+     * @param $key
+     * @return string
+     */
+    public static function mcrypt_decrypt($str, $key)
+    {
+        $iv = static::mcrypt_get_iv();
+
+        return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv);
+    }
+
+    /**
+     * @param $key
+     * @param string $algo
+     * @return BlockCipher
+     */
+    protected static function zend_get_block_cipher($key, $algo = 'aes')
+    {
+        $blockCipher = new BlockCipher(new Mcrypt(array('algo' => $algo)));
+        $blockCipher->setKey($key);
+        return $blockCipher;
+    }
+
+    /**
+     * @param $str
+     * @param $key
+     * @param string $algo
+     * @return mixed
+     */
+    public static function zend_encrypt($str, $key, $algo = 'aes')
+    {
+        $blockCipher = static::zend_get_block_cipher($key, $algo);
+        return $blockCipher->encrypt($str);
+    }
+
+    /**
+     * @param $str
+     * @param $key
+     * @param string $algo
+     * @return mixed
+     */
+    public static function zend_decrypt($str, $key, $algo = 'res')
+    {
+        $blockCipher = static::zend_get_block_cipher($key, $algo);
+        return $blockCipher->encrypt($str);
+    }
+}
