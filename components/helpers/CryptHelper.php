@@ -17,6 +17,9 @@ class CryptHelper extends BaseClass
 {
     protected static $block_cipher_instance = [];
 
+    /**
+     * @return string
+     */
     protected static function mcrypt_get_iv()
     {
         //指定初始化向量iv的大小：
