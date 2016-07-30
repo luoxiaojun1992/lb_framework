@@ -42,7 +42,7 @@ class CryptHelper extends BaseClass
         $iv = static::mcrypt_get_iv();
 
         //加密后的内容：
-        return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv);
+        return trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv));
     }
 
     /**
@@ -54,7 +54,7 @@ class CryptHelper extends BaseClass
     {
         $iv = static::mcrypt_get_iv();
 
-        return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv);
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv));
     }
 
     /**
