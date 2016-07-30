@@ -12,14 +12,16 @@ use lb\components\helpers\CryptHelper;
 
 class CryptHelperTest extends \PHPUnit_Framework_TestCase
 {
-    protected $str;
+    protected $str1;
+    protected $str2;
     protected $key;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->str = 'test string';
+        $this->str1 = 'test string 1';
+        $this->str2 = 'test str 2';
         $this->key = 'q@e5c8%zM3LDb$4l';
     }
 
@@ -30,7 +32,12 @@ class CryptHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testMcryptCryptor()
     {
-        $expectedStr = $this->str;
+        $expectedStr = $this->str1;
+        $encrypted_str = CryptHelper::mcrypt_encrypt($expectedStr, $this->key);
+        $actualStr = CryptHelper::mcrypt_decrypt($encrypted_str, $this->key);
+        $this->assertEquals($expectedStr, $actualStr);
+
+        $expectedStr = $this->str2;
         $encrypted_str = CryptHelper::mcrypt_encrypt($expectedStr, $this->key);
         $actualStr = CryptHelper::mcrypt_decrypt($encrypted_str, $this->key);
         $this->assertEquals($expectedStr, $actualStr);
