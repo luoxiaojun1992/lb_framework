@@ -53,14 +53,15 @@
     "zircote/swagger-php": "*",
     "emanueleminotto/simple-html-dom": "*",
     "snoopy/snoopy": "*",
-    "zendframework/zend-crypt": "*"
+    "zendframework/zend-crypt": "*",
+    "mockery/mockery": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.7.x-dev"
+      "dev-master": "1.8.x-dev"
     }
   }
 }
