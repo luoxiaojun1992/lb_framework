@@ -54,6 +54,7 @@ class CryptHelper extends BaseClass
     {
         $iv = static::mcrypt_get_iv();
 
+        //解密后的内容：
         return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv));
     }
 
@@ -86,7 +87,7 @@ class CryptHelper extends BaseClass
     public static function zend_encrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return $blockCipher->encrypt($str);
+        return trim($blockCipher->encrypt($str));
     }
 
     /**
@@ -98,7 +99,7 @@ class CryptHelper extends BaseClass
     public static function zend_decrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return $blockCipher->decrypt($str);
+        return trim($blockCipher->decrypt($str));
     }
 
     /**
