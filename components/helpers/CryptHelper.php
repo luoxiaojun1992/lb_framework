@@ -95,10 +95,10 @@ class CryptHelper extends BaseClass
      * @param string $algo
      * @return mixed
      */
-    public static function zend_decrypt($str, $key, $algo = 'res')
+    public static function zend_decrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return $blockCipher->encrypt($str);
+        return $blockCipher->decrypt($str);
     }
 
     /**

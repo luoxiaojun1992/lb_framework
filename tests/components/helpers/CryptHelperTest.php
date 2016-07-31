@@ -43,11 +43,16 @@ class CryptHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedStr, $actualStr);
     }
 
-//    public function testZendCryptor()
-//    {
-//        $expectedStr = $this->str;
-//        $encrypted_str = CryptHelper::zend_encrypt($expectedStr, $this->key);
-//        $actualStr = CryptHelper::zend_decrypt($encrypted_str, $this->key);
-//        $this->assertEquals($expectedStr, $actualStr);
-//    }
+    public function testZendCryptor()
+    {
+        $expectedStr = $this->str1;
+        $encrypted_str = CryptHelper::zend_encrypt($expectedStr, $this->key);
+        $actualStr = CryptHelper::zend_decrypt($encrypted_str, $this->key);
+        $this->assertEquals($expectedStr, $actualStr);
+
+        $expectedStr = $this->str2;
+        $encrypted_str = CryptHelper::zend_encrypt($expectedStr, $this->key);
+        $actualStr = CryptHelper::zend_decrypt($encrypted_str, $this->key);
+        $this->assertEquals($expectedStr, $actualStr);
+    }
 }
