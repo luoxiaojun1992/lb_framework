@@ -1077,7 +1077,7 @@ class BaseLb extends BaseClass
         }
 
         // Include Helper Functions
-        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php';
+        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
     }
 
     // Start App
