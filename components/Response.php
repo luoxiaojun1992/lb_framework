@@ -10,6 +10,7 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\helpers\HttpHelper;
 
 class Response extends BaseClass
 {
@@ -22,4 +23,3 @@ class Response extends BaseClass
         }
     }
 }
-
