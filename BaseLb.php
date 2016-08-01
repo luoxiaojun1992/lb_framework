@@ -1075,6 +1075,9 @@ class BaseLb extends BaseClass
                 }
             }
         }
+
+        // Include Helper Functions
+        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php';
     }
 
     // Start App
@@ -1105,7 +1108,7 @@ class BaseLb extends BaseClass
                             $page_cache = Lb::app()->fileCacheGet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]));
                     }
                     if ($page_cache) {
-                        echo $page_cache;
+                        @_echo($page_cache);
                     } else {
                         if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) && $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
                             Route::rpc($this->route_info);
@@ -1127,7 +1130,7 @@ class BaseLb extends BaseClass
                                 default:
                                     Lb::app()->fileCacheSet(implode('_', ['page_cache', $this->route_info['controller'], $this->route_info['action']]), $page_cache, 60);
                             }
-                            echo $page_cache;
+                            @_echo($page_cache);
                         }
                     }
                     $is_to_redirect = false;
@@ -1147,7 +1150,7 @@ class BaseLb extends BaseClass
                             $page_content = HtmlHelper::compress($page_content);
                         }
                     }
-                    echo $page_content;
+                    @_echo($page_content);
                 }
             }
         } else {
