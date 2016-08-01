@@ -16,6 +16,7 @@ use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
 use lb\Lb;
 use lb\components\Render;
+use lb\components\Response;
 
 class WebController extends BaseController
 {
@@ -52,9 +53,10 @@ class WebController extends BaseController
 
     }
 
-    protected function renderJson($array, $is_string = true, $return = false)
+    protected function renderJson($array, $is_string = true, $return = false, $status_code = 200)
     {
         $this->beforeRenderJson();
+        Response::httpCode($status_code);
         $json = JsonHelper::encode($array);
         if ($return) {
             return $json;
@@ -66,9 +68,10 @@ class WebController extends BaseController
         }
     }
 
-    protected function renderXML($array, $return = false)
+    protected function renderXML($array, $return = false, $status_code = 200)
     {
         $this->beforeRenderXML();
+        Response::httpCode($status_code);
         $xml = XMLHelper::encode($array);
         if ($return) {
             return $xml;
@@ -78,9 +81,10 @@ class WebController extends BaseController
         }
     }
 
-    protected function renderJsAlert($content, $return = false)
+    protected function renderJsAlert($content, $return = false, $status_code = 200)
     {
         $this->beforeRenderJsAlert();
+        Response::httpCode($status_code);
         if (is_array($content)) {
             if (!ArrayHelper::is_multi_array($content)) {
                 $alert = implode(PHP_EOL, $content);
@@ -99,9 +103,10 @@ class WebController extends BaseController
         }
     }
 
-    protected function render($template_name, $params = [], $return = false)
+    protected function render($template_name, $params = [], $return = false, $status_code = 200)
     {
         $this->beforeRender();
+        Response::httpCode($status_code);
         $params += ['controller' => $this];
         $params += $this->public_params;
         $this->public_params = $params;
@@ -114,9 +119,10 @@ class WebController extends BaseController
         }
     }
 
-    protected function renderPartial($template_name, $params = [], $return = false)
+    protected function renderPartial($template_name, $params = [], $return = false, $status_code = 200)
     {
         $this->beforeRenderPartial();
+        Response::httpCode($status_code);
         $params += ['controller' => $this];
         $params += $this->public_params;
         $this->public_params = $params;
@@ -174,11 +180,9 @@ class WebController extends BaseController
 
     public function error($err_msg, $tpl_name, $status_code)
     {
-        $status_code = intval($status_code);
-        $status_str = HttpHelper::get_status_code_message($status_code);
-        if ($status_str) {
-            header('HTTP/1.1 ' . $status_code . ' ' . $status_str);
-        }
+        // Declare Http Code
+        Response::httpCode($status_code);
+
         $viewPath = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . "{$tpl_name}.php";
         if (file_exists($viewPath)) {
             $this->render($tpl_name, [

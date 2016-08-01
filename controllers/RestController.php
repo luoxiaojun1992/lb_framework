@@ -9,6 +9,7 @@
 
 namespace lb\controllers;
 
+use lb\components\Response;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
 use lb\Lb;
@@ -81,14 +82,14 @@ class RestController extends BaseController
 
     }
 
-    protected function response_invalid_request()
+    protected function response_invalid_request($status_code = 200)
     {
-        $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false);
+        $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
-    protected function response_unauthorized()
+    protected function response_unauthorized($status_code = 200)
     {
-        $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false);
+        $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
     protected function response_success()
@@ -96,13 +97,14 @@ class RestController extends BaseController
         $this->response(['msg' => 'success'], static::RESPONSE_TYPE_JSON);
     }
 
-    protected function response_failed()
+    protected function response_failed($status_code = 200)
     {
-        $this->response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false);
+        $this->response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
-    protected function response($data, $format, $is_success=true)
+    protected function response($data, $format, $is_success=true, $status_code = 200)
     {
+        Response::httpCode($status_code);
         if ($is_success) {
             $data['status'] = 1;
         } else {
