@@ -24,4 +24,9 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
 
         @_echo($var_not_exists);
     }
+
+    public function testEnv()
+    {
+        $this->assertNotEmpty(env('PATH'));
+    }
 }
