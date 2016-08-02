@@ -38,9 +38,13 @@ if (!function_exists('file_cache')) {
     /**
      * File Cache Operations
      */
-    function file_cache($key, $value = null)
+    function file_cache($key, $value = null, $cache_time = 86400)
     {
-
+        if (!$value) {
+            return Lb::app()->fileCacheGet($key);
+        } else {
+            Lb::app()->fileCacheSet($key, $value, $cache_time);
+        }
     }
 }
 
@@ -48,9 +52,13 @@ if (!function_exists('redis_cache')) {
     /**
      * Redis Cache Operations
      */
-    function redis_cache($key, $value = null)
+    function redis_cache($key, $value = null, $expiration = 0)
     {
-
+        if (!$value) {
+            return Lb::app()->redisGet($key);
+        } else {
+            Lb::app()->redisSet($key, $value, $expiration);
+        }
     }
 }
 
@@ -58,9 +66,13 @@ if (!function_exists('memcache')) {
     /**
      * Memcache Operations
      */
-    function memcache($key, $value = null)
+    function memcache($key, $value = null, $expiration = null)
     {
-
+        if (!$value) {
+            return Lb::app()->memcacheGet($key);
+        } else {
+            Lb::app()->memcacheSet($key, $value, $expiration);
+        }
     }
 }
 
