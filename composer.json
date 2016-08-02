@@ -54,14 +54,15 @@
     "emanueleminotto/simple-html-dom": "*",
     "snoopy/snoopy": "*",
     "zendframework/zend-crypt": "*",
-    "mockery/mockery": "*"
+    "mockery/mockery": "*",
+    "pbweb/xhprof": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.2.x-dev"
+      "dev-master": "1.3.x-dev"
     }
   }
 }
