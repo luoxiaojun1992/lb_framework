@@ -12,16 +12,23 @@ use lb\components\db\mysql\DynamicModel;
 
 class DynamicModelTest extends \PHPUnit_Framework_TestCase
 {
+    protected $dynamicModel;
+
+    public function setUp()
+    {
+        $this->dynamicModel = new DynamicModel();
+    }
+
     public function testDefineTableName()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineTableName('test');
         $this->assertEquals('test', $testModel->table_name);
     }
 
     public function testUndefineTableName()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineTableName('test');
         $this->assertEquals('test', $testModel->table_name);
         $testModel->undefineTableName();
@@ -30,14 +37,14 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
 
     public function testDefineAttribute()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineAttribute('name', 'a');
         $this->assertEquals('a', $testModel->name);
     }
 
     public function testUndefineAttribute()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineAttribute('name', 'a');
         $this->assertEquals('a', $testModel->name);
         $testModel->undefineAttribute('name');
@@ -50,7 +57,7 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
             'name' => 'a',
             'age' => 23,
         ];
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineAttributes($attributes);
         $this->assertEquals($attributes, $testModel->getAttributes());
     }
@@ -61,7 +68,7 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
             'name' => 'a',
             'age' => 23,
         ];
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineAttributes($attributes);
         $this->assertEquals($attributes, $testModel->getAttributes());
         $attributes = array_keys($attributes);
@@ -81,14 +88,14 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
 
     public function testDefineLabel()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineLabel('name', 'Name');
         $this->assertEquals(['name' => 'Name'], $testModel->getLabels());
     }
 
     public function testUndefineLabel()
     {
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineLabel('name', 'Name');
         $this->assertEquals(['name' => 'Name'], $testModel->getLabels());
         $testModel->undefineLabel('name');
@@ -101,7 +108,7 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
             'id' => 'ID',
             'name' => 'Name',
         ];
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineLabels($labels);
         $this->assertEquals($labels, $testModel->getLabels());
     }
@@ -112,7 +119,7 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
             'id' => 'ID',
             'name' => 'Name',
         ];
-        $testModel = new DynamicModel();
+        $testModel = $this->dynamicModel;
         $testModel->defineLabels($labels);
         $this->assertEquals($labels, $testModel->getLabels());
         $labels = array_keys($labels);
