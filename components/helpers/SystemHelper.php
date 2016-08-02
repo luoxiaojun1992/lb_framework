@@ -16,9 +16,6 @@ class SystemHelper extends BaseClass
 {
     public static function getVersion()
     {
-        if (isset(Lb::app()->containers['config'])) {
-            return Lb::app()->containers['config']->get('version') ? : Lb::VERSION;
-        }
-        return Lb::VERSION;
+        return Lb::app()->getConfigByName('version') ? : Lb::VERSION;
     }
 }

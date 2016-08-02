@@ -1,6 +1,6 @@
 <?php
 
-use \lb\Lb;
+use lb\Lb;
 
 /**
  * No Exception Echo
