@@ -16,6 +16,8 @@ class DynamicModelTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         $this->dynamicModel = new DynamicModel();
     }
 
