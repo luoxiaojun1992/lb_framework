@@ -30,7 +30,25 @@ class DI extends Base
                 case static::SERVICE_TYPE_INTERFACE:
                     return $this->get($service);
                 case static::SERVICE_TYPE_CLASS:
-                    break;
+                    $reflectionClass = new \ReflectionClass($service);
+                    $reflectionMethod = $reflectionClass->getConstructor();
+                    $parameters = $reflectionMethod->getParameters();
+                    $arguments = [];
+                    foreach($parameters as $parameter) {
+                        $dependencyClass = $parameter->getClass();
+                        if ($dependencyClass) {
+                            $dependencyClassName = $dependencyClass->getName();
+                            if ($dependencyClass->isInstantiable()) {
+                                $arguments[] = new $dependencyClassName();
+                            } else {
+                                $arguments[] = $this->get($dependencyClassName);
+                            }
+                        } else {
+                            $parameterName = $parameter->getName();
+                            $arguments[] = $this->get($parameterName);
+                        }
+                    }
+                    return $reflectionClass->newInstanceArgs($arguments);
                 case static::SERVICE_TYPE_ABSTRACT:
                     return $this->get($service);
                 case static::SERVICE_TYPE_STRING:
