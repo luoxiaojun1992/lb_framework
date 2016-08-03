@@ -27,8 +27,6 @@ class DI extends Base
         if ($service) {
             $service_type = $this->get_service_type($service);
             switch($service_type) {
-                case static::SERVICE_TYPE_INTERFACE:
-                    return $this->get($service);
                 case static::SERVICE_TYPE_CLASS:
                     $reflectionClass = new \ReflectionClass($service);
                     $reflectionMethod = $reflectionClass->getConstructor();
@@ -49,8 +47,8 @@ class DI extends Base
                         }
                     }
                     return $reflectionClass->newInstanceArgs($arguments);
+                case static::SERVICE_TYPE_INTERFACE:
                 case static::SERVICE_TYPE_ABSTRACT:
-                    return $this->get($service);
                 case static::SERVICE_TYPE_STRING:
                     return $this->get($service);
                 default:
