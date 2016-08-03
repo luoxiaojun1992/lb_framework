@@ -16,6 +16,11 @@ class Base extends BaseClass
     protected $components = [];
     protected static $instance = false;
 
+    private function __construct()
+    {
+
+    }
+
     public function __clone()
     {
         // TODO: Implement __clone() method.
