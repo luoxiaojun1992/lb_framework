@@ -11,13 +11,13 @@ namespace lb\components\containers;
 
 class DI extends Base
 {
-    public function set($config_name, $config_content)
+    public function set($service_name, $service_impl)
     {
-        $this->$config_name = $config_content;
+        $this->{$service_name} = $service_impl;
     }
 
-    public function get($config_name)
+    public function get($service_name)
     {
-        return $this->$config_name;
+        return $this->{$service_name};
     }
 }
