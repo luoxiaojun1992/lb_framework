@@ -11,6 +11,7 @@ namespace lb\components\containers;
 
 class DI extends Base
 {
+    const SERVICE_TYPE_INTERFACE = 'interface';
     const SERVICE_TYPE_CLASS = 'class';
     const SERVICE_TYPE_ABSTRACT = 'abstract';
     const SERVICE_TYPE_STRING = 'string';
@@ -22,13 +23,15 @@ class DI extends Base
 
     public function get($service_name)
     {
-        return $this->{$service_name};
+        $service = $this->{$service_name};
+        $service_type = $this->get_service_type($service);
+        return;
     }
 
     protected function get_service_type($service_impl) {
         if (is_string($service_impl)) {
             if (interface_exists($service_impl)) {
-                return 'interface';
+                return static::SERVICE_TYPE_INTERFACE;
             }
 
             if (class_exists($service_impl)) {
