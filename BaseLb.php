@@ -843,50 +843,74 @@ class BaseLb extends BaseClass
     // Get RPC Client
     public function get_rpc_client($url)
     {
-        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
-        return new \Hprose\Http\Client($url);
+        if ($this->is_single) {
+            include_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
+            return new \Hprose\Http\Client($url);
+        }
+        return false;
     }
 
     // Encrype
     public function encrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
-        $encrypt_method = CryptHelper::get_encrypt_method($cryptor);
-        return call_user_func_array([CryptHelper::className(), $encrypt_method], [$str, $key, $algo]);
+        if ($this->is_single) {
+            $encrypt_method = CryptHelper::get_encrypt_method($cryptor);
+            return call_user_func_array([CryptHelper::className(), $encrypt_method], [$str, $key, $algo]);
+        }
+        return '';
     }
 
     // Decrypt
     public function decrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
-        $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
-        return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
+        if ($this->is_single) {
+            $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
+            return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
+        }
+        return '';
     }
 
     // Encrypt By Config
     public function encrypt_by_config($str)
     {
-        $security_key = $this->getConfigByName('security_key');
-        if ($security_key) {
-            $cryptor = $this->getConfigByName('cryptor');
-            if (!$cryptor) {
-                $cryptor = 'zend';
+        if ($this->is_single) {
+            $security_key = $this->getConfigByName('security_key');
+            if ($security_key) {
+                $cryptor = $this->getConfigByName('cryptor');
+                if (!$cryptor) {
+                    $cryptor = 'zend';
+                }
+                $str = $this->encrypt($str, $security_key, $cryptor);
             }
-            $str = $this->encrypt($str, $security_key, $cryptor);
+            return $str;
         }
-        return $str;
+        return '';
     }
 
     // Decrypt By Config
     public function decrypt_by_config($str)
     {
-        $security_key = $this->getConfigByName('security_key');
-        if ($security_key) {
-            $cryptor = $this->getConfigByName('cryptor');
-            if (!$cryptor) {
-                $cryptor = 'zend';
+        if ($this->is_single) {
+            $security_key = $this->getConfigByName('security_key');
+            if ($security_key) {
+                $cryptor = $this->getConfigByName('cryptor');
+                if (!$cryptor) {
+                    $cryptor = 'zend';
+                }
+                $str = $this->decrypt($str, $security_key, $cryptor);
             }
-            $str = $this->decrypt($str, $security_key, $cryptor);
+            return $str;
         }
-        return $str;
+        return '';
+    }
+
+    // Get DI Container
+    public function getDIContainer()
+    {
+        if ($this->is_single) {
+            return DI::component();
+        }
+        return false;
     }
 
     // Autoloader
