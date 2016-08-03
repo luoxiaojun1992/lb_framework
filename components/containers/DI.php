@@ -24,8 +24,22 @@ class DI extends Base
     public function get($service_name)
     {
         $service = $this->{$service_name};
-        $service_type = $this->get_service_type($service);
-        return;
+        if ($service) {
+            $service_type = $this->get_service_type($service);
+            switch($service_type) {
+                case static::SERVICE_TYPE_INTERFACE:
+                    return $this->get($service);
+                case static::SERVICE_TYPE_CLASS:
+                    break;
+                case static::SERVICE_TYPE_ABSTRACT:
+                    return $this->get($service);
+                case static::SERVICE_TYPE_STRING:
+                    return $this->get($service);
+                default:
+                    return $service;
+            }
+        }
+        return $service_name;
     }
 
     protected function get_service_type($service_impl) {
