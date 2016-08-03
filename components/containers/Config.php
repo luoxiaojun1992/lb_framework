@@ -20,16 +20,4 @@ class Config extends Base
     {
         return $this->$config_name;
     }
-
-    /**
-     * @return bool|Base
-     */
-    public static function component()
-    {
-        if (static::$instance instanceof static) {
-            return static::$instance;
-        } else {
-            return (static::$instance = new static());
-        }
-    }
 }

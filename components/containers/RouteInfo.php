@@ -20,16 +20,4 @@ class RouteInfo extends Base
     {
         return $this->$item_name;
     }
-
-    /**
-     * @return bool|Base
-     */
-    public static function component()
-    {
-        if (static::$instance instanceof static) {
-            return static::$instance;
-        } else {
-            return (static::$instance = new static());
-        }
-    }
 }

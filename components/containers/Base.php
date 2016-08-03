@@ -37,4 +37,16 @@ class Base extends BaseClass
         }
         return false;
     }
+
+    /**
+     * @return bool|Base
+     */
+    public static function component()
+    {
+        if (static::$instance instanceof static) {
+            return static::$instance;
+        } else {
+            return (static::$instance = new static());
+        }
+    }
 }
