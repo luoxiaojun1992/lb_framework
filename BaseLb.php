@@ -10,6 +10,7 @@
 namespace lb;
 
 use lb\components\containers\RouteInfo;
+use lb\components\containers\DI;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;

@@ -9,7 +9,6 @@
 namespace lb\tests\components\containers;
 
 use Mockery as M;
-use lb\components\containers\DI;
 
 class DITest extends \PHPUnit_Framework_TestCase
 {
@@ -25,7 +24,7 @@ class DITest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('test')
             ->with(1)
             ->andReturn(1);
-        $this->container = DI::component();
+        $this->container = Lb::app()->getDIContainer();
     }
 
     public function testSetGet()
