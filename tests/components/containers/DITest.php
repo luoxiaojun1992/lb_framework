@@ -22,7 +22,7 @@ class DITest extends \PHPUnit_Framework_TestCase
 
         $this->service = M::mock('service');
         $this->service
-            ->shoudReceive('test')
+            ->shouldReceive('test')
             ->with(1)
             ->andReturn(1);
         $this->container = DI::component();
@@ -32,7 +32,7 @@ class DITest extends \PHPUnit_Framework_TestCase
     {
         $this->container->set('service', $this->service);
         $service = $this->container->get('service');
-        $this->assertEquals(1, $service->test(1);
+        $this->assertEquals(1, $service->test(1));
     }
 
     public function tearDown()

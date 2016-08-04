@@ -30,7 +30,7 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         @_echo($var_not_exists);
         $content = ob_get_contents();
         ob_end_clean();
-        $this-assertEmpty($content);
+        $this->assertEmpty($content);
     }
 
     public function testEnv()

@@ -11,7 +11,7 @@ namespace lb\components\containers;
 
 use lb\BaseClass;
 
-class Base extends BaseClass implements ArrayAccess
+class Base extends BaseClass implements \ArrayAccess
 {
     protected $components = [];
     protected static $instance = false;
