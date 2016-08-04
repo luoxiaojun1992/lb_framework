@@ -39,6 +39,9 @@ class DI extends Base
             }
         } else {
             $obj = $this->cretae_obj($service_name);
+            if ($obj) {
+                return $obj;
+            }
         }
 
         return $service_name;
