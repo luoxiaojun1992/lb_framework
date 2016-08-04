@@ -29,24 +29,7 @@ class DI extends Base
             switch($service_type) {
                 case static::SERVICE_TYPE_CLASS:
                     $reflectionClass = new \ReflectionClass($service);
-                    $reflectionMethod = $reflectionClass->getConstructor();
-                    $parameters = $reflectionMethod->getParameters();
-                    $arguments = [];
-                    foreach($parameters as $parameter) {
-                        $dependencyClass = $parameter->getClass();
-                        if ($dependencyClass) {
-                            $dependencyClassName = $dependencyClass->getName();
-                            if ($dependencyClass->isInstantiable()) {
-                                $arguments[] = new $dependencyClassName();
-                            } else {
-                                $arguments[] = $this->get($dependencyClassName);
-                            }
-                        } else {
-                            $parameterName = $parameter->getName();
-                            $arguments[] = $this->get($parameterName);
-                        }
-                    }
-                    return $reflectionClass->newInstanceArgs($arguments);
+                    return $this->create_obj_by_reflection_class($reflectionClass);
                 case static::SERVICE_TYPE_INTERFACE:
                 case static::SERVICE_TYPE_ABSTRACT:
                 case static::SERVICE_TYPE_STRING:
@@ -54,11 +37,43 @@ class DI extends Base
                 default:
                     return $service;
             }
+        } else {
+            $obj = $this->cretae_obj($service_name);
         }
+
         return $service_name;
     }
 
-    protected function get_service_type($service_impl) {
+    public function create_obj_by_reflection_class(ReflectionClass $reflectionClass)
+    {
+        $reflectionMethod = $reflectionClass->getConstructor();
+        $parameters = $reflectionMethod->getParameters();
+        $arguments = [];
+        foreach($parameters as $parameter) {
+            $dependencyClass = $parameter->getClass();
+            if ($dependencyClass) {
+                $dependencyClassName = $dependencyClass->getName();
+                $arguments[] = $this->get($dependencyClassName);
+            } else {
+                $parameterName = $parameter->getName();
+                $arguments[] = $this->get($parameterName);
+            }
+        }
+        return $reflectionClass->newInstanceArgs($arguments);
+    }
+
+    public function cretae_obj($className)
+    {
+        if (class_exists($className)) {
+            $reflectionClass = new \ReflectionClass($className);
+            if ($reflectionClass->isInstantiable()) {
+                return $this->create_obj_by_reflection_class($reflectionClass);
+            }
+        }
+        return null;
+    }
+
+    public function get_service_type($service_impl) {
         if (is_string($service_impl)) {
             if (interface_exists($service_impl)) {
                 return static::SERVICE_TYPE_INTERFACE;
