@@ -8,6 +8,7 @@
 
 namespace lb\tests\components\containers;
 
+use lb\Lb;
 use Mockery as M;
 
 class DITest extends \PHPUnit_Framework_TestCase
