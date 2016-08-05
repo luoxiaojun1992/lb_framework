@@ -7,7 +7,7 @@
  * Lb framework Base Event component file
  */
 
-use lb\components\events\EventInterface;
+namespace lb\components\events;
 
 class Base implements EventInterface
 {

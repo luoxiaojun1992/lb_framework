@@ -7,6 +7,8 @@
  * Lb framework Event Interface component file
  */
 
+namespace lb\components\events;
+
 interface EventInterface
 {
     public $data;

@@ -7,8 +7,12 @@
  * Lb framework Listener Interface component file
  */
 
+namespace lb\components\listeners;
+
+use lb\components\events\Base;
+
 interface ListenerInterface
 {
-
+    public function handler(Base $event);
 }
 
