@@ -32,6 +32,7 @@ class Level extends BaseClass
     protected static function error_reporting()
     {
         switch (static::$env) {
+            case 'stage':
             case 'production':
                 //报告运行时错误
                 error_reporting(0);
