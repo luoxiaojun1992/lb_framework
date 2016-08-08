@@ -15,4 +15,3 @@ interface ListenerInterface
 {
     public function handler(Base $event);
 }
-

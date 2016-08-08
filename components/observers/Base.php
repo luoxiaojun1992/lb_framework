@@ -9,20 +9,29 @@
 
 namespace lb\components\observers;
 
-use lb\components\listeners\Base;
-use lb\components\events\Base;
-
-class Observer implements ObserverInterface
+class Base implements ObserverInterface
 {
     protected static $event_listeners = [];
 
-    public static function on($event_name, Base $listener, $data = null)
+    public static function on($event_name, lb\components\listeners\Base $listener, $data = null)
     {
-        static::$event_listeners[] = [$event_name, $listener, $da];
+        static::$event_listeners[] = [$event_name, $listener, $data];
     }
 
-    public static function trigger($event_name, Base $event);
+    public static function trigger($event_name, $event = null);
     {
-
+        foreach(static::$event_listeners as $event_listener) {
+            if ($event_listener[0] == $event_name) {
+                $listener = $event_name[1];
+                $data = $event_name[2];
+                if (!$event) {
+                    $event = new lb\components\events\Base();
+                }
+                if ($data) {
+                    $event->data = $data;
+                }
+                $listener->handler($event);
+            }
+        }
     }
 }

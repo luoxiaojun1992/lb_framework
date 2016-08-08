@@ -9,13 +9,10 @@
 
 namespace lb\components\listeners;
 
-use lb\components\events\Base;
-
 class Base implements ListenerInterface
 {
-    public function handler(Base $event)
+    public function handler(lb\components\events\Base $event)
     {
 
     }
 }
-

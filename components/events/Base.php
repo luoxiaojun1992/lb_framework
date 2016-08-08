@@ -13,4 +13,3 @@ class Base implements EventInterface
 {
     public $data;
 }
-

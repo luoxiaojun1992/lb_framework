@@ -10,7 +10,6 @@
 namespace lb\components\observers;
 
 use lb\components\listeners\Base;
-use lb\components\events\Base;
 
 interface ObserverInterface
 {
@@ -18,5 +17,5 @@ interface ObserverInterface
 
     public static function on($event_name, Base $listener, $data = null);
 
-    public static function trigger($event_name, Base $event);
+    public static function trigger($event_name, $event = null);
 }
