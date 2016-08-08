@@ -16,6 +16,8 @@ use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
 use lb\components\helpers\SystemHelper;
+use lb\components\listeners\BaseListener;
+use lb\components\observers\BaseObserver;
 use lb\components\Pagination;
 use lb\components\session\Session;
 use lb\components\User;
@@ -912,6 +914,22 @@ class BaseLb extends BaseClass
             return DI::component();
         }
         return false;
+    }
+
+    // Register Event Listener
+    public function on($event_name, BaseListener $listener, $data = null)
+    {
+        if ($this->is_single) {
+            BaseObserver::on($event_name, $listener, $data);
+        }
+    }
+
+    // Trigger Event
+    public function trigger($event_name, $event = null)
+    {
+        if ($this->is_single) {
+            BaseObserver::trigger($event_name, $event);
+        }
     }
 
     // Autoloader

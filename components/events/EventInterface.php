@@ -11,6 +11,6 @@ namespace lb\components\events;
 
 interface EventInterface
 {
-    public $data;
+
 }
 

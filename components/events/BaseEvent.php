@@ -9,7 +9,7 @@
 
 namespace lb\components\events;
 
-class Base implements EventInterface
+class BaseEvent implements EventInterface
 {
     public $data;
 }
