@@ -25,8 +25,8 @@ class BaseObserver implements ObserverInterface
     {
         foreach(static::$event_listeners as $event_listener) {
             if ($event_listener[0] == $event_name) {
-                $listener = $event_name[1];
-                $data = $event_name[2];
+                $listener = $event_listener[1];
+                $data = $event_listener[2];
                 if (!$event) {
                     $event = new BaseEvent();
                 }
