@@ -980,6 +980,16 @@ class BaseLb extends BaseClass
     // Init
     public function init()
     {
+        // Load Environment Variables
+        if (defined('ENV_DIR') && file_exists(ENV_DIR)) {
+            if (defined('ENV_FILE') && file_exists(ENV_FILE)) {
+                $dotenv = new Dotenv\Dotenv(ENV_DIR, ENV_FILE);
+            } else {
+                $dotenv = new Dotenv\Dotenv(ENV_DIR);
+            }
+            $dotenv->load();
+        }
+
         // Init Config
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
             $this->config = include_once(CONFIG_FILE);
