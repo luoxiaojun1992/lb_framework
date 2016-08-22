@@ -990,6 +990,9 @@ class BaseLb extends BaseClass
             $dotenv->load();
         }
 
+        // Include Helper Functions
+        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
+
         // Init Config
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
             $this->config = include_once(CONFIG_FILE);
@@ -1128,9 +1131,6 @@ class BaseLb extends BaseClass
                 }
             }
         }
-
-        // Include Helper Functions
-        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
     }
 
     // Start App
