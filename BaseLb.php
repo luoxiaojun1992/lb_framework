@@ -190,6 +190,12 @@ class BaseLb extends BaseClass
         return $this->getConfigByName('timeZone');
     }
 
+    // Get mb internal encoding configuration
+    public function getMbInternalEncoding()
+    {
+        return $this->getConfigByName('mb_internal_encoding');
+    }
+
     // Get Cdn Host
     public function getCdnHost()
     {
@@ -1008,6 +1014,9 @@ class BaseLb extends BaseClass
 
         // Inject Config Container
         Lb::app()->containers['config'] = $config_container;
+
+        // Set mb internal encoding
+        mb_internal_encoding(Lb::app()->getMbInternalEncoding() ? : 'UTF-8');
 
         // Set Timezone
         $config_time_zone = Lb::app()->getTimeZone();
