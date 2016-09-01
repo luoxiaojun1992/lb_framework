@@ -18,9 +18,9 @@ if (!function_exists('config')) {
     /**
      * Get Configuration By Name
      */
-    function config($config_name)
+    function config($config_name, $default = null)
     {
-        return Lb::app()->getConfigByName($config_name);
+        return Lb::app()->getConfigByName($config_name) ? : $default;
     }
 }
 
@@ -28,9 +28,9 @@ if (!function_exists('env')) {
     /**
      * Get Environment Value By Name
      */
-    function env($env_name)
+    function env($env_name, $default = null)
     {
-        return Lb::app()->getEnv($env_name);
+        return Lb::app()->getEnv($env_name) ? : $default;
     }
 }
 

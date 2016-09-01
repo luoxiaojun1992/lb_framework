@@ -57,14 +57,15 @@
     "mockery/mockery": "*",
     "pbweb/xhprof": "*",
     "nesbot/carbon": "*",
-    "fzaninotto/faker": "*"
+    "fzaninotto/faker": "*",
+    "vlucas/phpdotenv": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.8.x-dev"
+      "dev-master": "1.1.x-dev"
     }
   }
 }
