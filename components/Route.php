@@ -58,7 +58,7 @@ class Route extends BaseClass
         return $route_info;
     }
 
-    public static function rpc($route_info)
+    public static function rpc(Array $route_info)
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
@@ -81,7 +81,7 @@ class Route extends BaseClass
         }
     }
 
-    public static function redirect($route_info)
+    public static function redirect(Array $route_info)
     {
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {
