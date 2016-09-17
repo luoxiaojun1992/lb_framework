@@ -989,9 +989,9 @@ class BaseLb extends BaseClass
         // Load Environment Variables
         if (defined('ENV_DIR') && file_exists(ENV_DIR)) {
             if (defined('ENV_FILE') && file_exists(ENV_FILE)) {
-                $dotenv = new Dotenv\Dotenv(ENV_DIR, ENV_FILE);
+                $dotenv = new \Dotenv\Dotenv(ENV_DIR, ENV_FILE);
             } else {
-                $dotenv = new Dotenv\Dotenv(ENV_DIR);
+                $dotenv = new \Dotenv\Dotenv(ENV_DIR);
             }
             $dotenv->load();
         }
