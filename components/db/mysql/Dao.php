@@ -378,7 +378,18 @@ class Dao extends BaseClass
                 if (is_string($value)) {
                     $new_values[] = implode('=', [$key, '"' . $value . '"']);
                 } else {
-                    $new_values[] = implode('=', [$key, $value]);
+                    if (is_array($value)) {
+                        $op_value_info = each($value);
+                        $new_values[] = implode(
+                            '=',
+                            [
+                                $key,
+                                implode($op_value_info['key'], [$key, $op_value_info['value']])
+                            ]
+                        );
+                    } else {
+                        $new_values[] = implode('=', [$key, $value]);
+                    }
                 }
             }
             if (is_array($conditions)) {

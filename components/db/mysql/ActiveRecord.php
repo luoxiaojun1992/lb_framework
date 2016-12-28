@@ -15,6 +15,9 @@ use lb\components\helpers\ValidationHelper;
 
 class ActiveRecord extends BaseClass
 {
+    const PLUS_NOTIFICATION = '+';
+    const MINUS_NOTIFICATION = '-';
+
     protected $_primary_key = '';
     protected $_attributes = [];
     protected $is_single = false;
@@ -358,6 +361,71 @@ class ActiveRecord extends BaseClass
     public function updateByPk($primary_key, $values = [])
     {
         if ($this->is_single) {
+            return Dao::component()
+                ->update(static::TABLE_NAME, $values, [
+                    $this->_primary_key => $primary_key,
+                ]);
+        }
+        return false;
+    }
+
+    /**
+     * Increase key or keys by primary key
+     *
+     * @param $primary_key
+     * @param $keys
+     * @param int $step
+     * @return bool
+     */
+    public function incrementByPk($primary_key, $keys, $step = 1)
+    {
+        if ($this->is_single) {
+            return $this->incrementOrDecrementByPk($primary_key, $keys, $step);
+        }
+        return false;
+    }
+
+    /**
+     * Decrease key or keys by primary key
+     *
+     * @param $primary_key
+     * @param $keys
+     * @param int $step
+     * @return bool
+     */
+    public function decrementByPk($primary_key, $keys, $step = 1)
+    {
+        if ($this->is_single) {
+            return $this->incrementOrDecrementByPk($primary_key, $keys, $step, self::MINUS_NOTIFICATION);
+        }
+        return false;
+    }
+
+    /**
+     * Increase or decrease key or keys by primary key
+     *
+     * @param $primary_key
+     * @param $keys
+     * @param int $steps
+     * @param string $op
+     * @return bool
+     */
+    public function incrementOrDecrementByPk($primary_key, $keys, $steps = 1, $op = self::PLUS_NOTIFICATION)
+    {
+        if ($this->is_single) {
+            $values = [];
+            if (is_array($keys)) {
+                foreach ($keys as $k => $key) {
+                    if (is_array($steps) && isset($steps[$k])) {
+                        $values[$key] = [$op => $steps[$k]];
+                    } else {
+                        $values[$key] = [$op => $steps];
+                    }
+                }
+            } else {
+                $values[$keys] = [$op => $steps];
+            }
+
             return Dao::component()
                 ->update(static::TABLE_NAME, $values, [
                     $this->_primary_key => $primary_key,
