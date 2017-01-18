@@ -58,14 +58,15 @@
     "nesbot/carbon": "*",
     "fzaninotto/faker": "*",
     "vlucas/phpdotenv": "*",
-    "guzzlehttp/guzzle": "*"
+    "guzzlehttp/guzzle": "*",
+    "symfony/var-dumper": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.6.x-dev"
+      "dev-master": "1.7.x-dev"
     }
   }
 }

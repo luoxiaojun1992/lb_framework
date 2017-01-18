@@ -975,12 +975,12 @@ class BaseLb extends BaseClass
     }
 
     // Stop App
-    public function stop($content = '')
+    public function stop($content = '', $exit_code = 1)
     {
         if ($content) {
             echo $content;
         }
-        die();
+        die($exit_code);
     }
 
     // Init

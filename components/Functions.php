@@ -76,3 +76,15 @@ if (!function_exists('memcache')) {
     }
 }
 
+if (!function_exists('dd')) {
+    function dd()
+    {
+        array_map(function($x)
+        {
+            (new Dumper)->dump($x);
+        }, func_get_args());
+
+        Lb::app()->stop();
+    }
+}
+
