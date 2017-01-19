@@ -81,7 +81,7 @@ if (!function_exists('dd')) {
     {
         array_map(function($x)
         {
-            (new Dumper)->dump($x);
+            (new Symfony\Component\Yaml\Dumper())->dump($x);
         }, func_get_args());
 
         Lb::app()->stop();
