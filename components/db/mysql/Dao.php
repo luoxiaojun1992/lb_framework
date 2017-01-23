@@ -21,6 +21,7 @@ class Dao extends BaseClass
     protected $_fields = [];
     protected $_conditions = [];
     protected $is_query = false;
+    protected $is_lock_for_update = false;
 
     protected $_orders = [];
     protected $_limit = '';
@@ -91,6 +92,18 @@ class Dao extends BaseClass
         $this->is_query = true;
         if (is_array($fields) && $fields) {
             $this->_fields = $fields;
+            return static::$instance;
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function lockForUpdate()
+    {
+        if ($this->is_query) {
+            $this->is_lock_for_update = true;
             return static::$instance;
         }
         return false;
@@ -519,6 +532,11 @@ class Dao extends BaseClass
                         $where_sql_statement = sprintf(static::WHERE_SQL_TPL, $condition_statement);
                         $statement .= (' ' . $where_sql_statement);
                     }
+                }
+
+                // Lock For Update
+                if ($this->is_lock_for_update) {
+                    $statement .= ' FOR UPDATE';
                 }
 
                 // GROUP
