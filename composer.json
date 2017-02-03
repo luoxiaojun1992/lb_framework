@@ -47,7 +47,7 @@
     "gee-team/gt-php-sdk": "*",
     "scws/pscws4":"*",
     "imagine/imagine":"*",
-    "hprose/hprose": "*",
+    "hprose/hprose": "^1.x",
     "textalk/websocket": "*",
     "zircote/swagger-php": "*",
     "emanueleminotto/simple-html-dom": "*",
