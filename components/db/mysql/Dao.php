@@ -272,13 +272,14 @@ class Dao extends BaseClass
      */
     public static function prepare($sql_statement, $node_type)
     {
+        $connection_component = Connection::component();
         $statement = false;
         switch ($node_type) {
             case 'master':
-                $conn = Connection::component()->write_conn;
+                $conn = $connection_component->write_conn;
                 break;
             case 'slave':
-                $conn = Connection::component()->read_conn;
+                $conn = $connection_component->read_conn ? : $connection_component->write_conn;
                 break;
             default:
                 $conn = false;
