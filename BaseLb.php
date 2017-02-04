@@ -214,9 +214,10 @@ class BaseLb extends BaseClass
     }
 
     // Get Custom Configuration
-    public function getCustomConfig()
+    public function getCustomConfig($name = '')
     {
-        return $this->getConfigByName('custom');
+        $custom_config = $this->getConfigByName('custom');
+        return $name ? ($custom_config[$name] ?? null) : $custom_config;
     }
 
     // Get Home Controller & Action
