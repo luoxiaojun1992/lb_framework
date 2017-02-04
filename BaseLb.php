@@ -1114,7 +1114,7 @@ class BaseLb extends BaseClass
         Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
 
         // Input Filter
-        Security::inputFilter();
+//        Security::inputFilter();
 
         // Csrf Token Validation
         Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
