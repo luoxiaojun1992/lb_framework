@@ -69,7 +69,7 @@ class Redis extends BaseClass
         return $this->conn ? $this->conn->get($key) : '';
     }
 
-    public function set($key, $value, $expiration = 0)
+    public function set($key, $value, $expiration = null)
     {
         if ($this->conn) {
             $this->conn->set($key, $value, $expiration);

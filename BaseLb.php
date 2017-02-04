@@ -647,7 +647,7 @@ class BaseLb extends BaseClass
     }
 
     // Redis Set
-    public function redisSet($key, $value, $expiration = 0)
+    public function redisSet($key, $value, $expiration = null)
     {
         if ($this->is_single) {
             Redis::component()->set($key, $value, $expiration);
