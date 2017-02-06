@@ -60,7 +60,7 @@ class BaseLb extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     // Singleton App
@@ -236,7 +236,8 @@ class BaseLb extends BaseClass
     public function getRouteInfo()
     {
         if ($this->is_single) {
-            if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) && ($action = $this->containers['route_info']->get('action'))) {
+            if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) &&
+                ($action = $this->containers['route_info']->get('action'))) {
                 return ['controller' => $controller, 'action' => $action];
             }
         }
