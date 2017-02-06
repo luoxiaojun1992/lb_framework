@@ -1054,29 +1054,8 @@ class BaseLb extends BaseClass
 
         if (Lb::app()->isAction()) {
             $session_config = $config_container->get('session');
-
-            // Connect MySql
-            $mysql_config = $config_container->get('mysql');
-            if (!isset($mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$mysql_config['filter']['controllers'][$this->route_info['controller']][$this->route_info['action']][strtolower(Lb::app()->getRequestMethod())]) {
-                Connection::component($containers);
-                if ($session_config) {
-                    if (isset($session_config['type']) && $session_config['type'] == 'mysql') {
-                        Session::set_session($session_config['type']);
-                    }
-                }
-            }
-
-            // Connect MongoDB
-//            \lb\components\db\mongodb\Connection::component($containers);
-
-            // Connect Memcache
-//            Memcache::component($containers);
-
-            // Connect Redis
-//            Redis::component($containers);
-
             if ($session_config) {
-                if (isset($session_config['type']) && $session_config['type'] != 'mysql') {
+                if (isset($session_config['type'])) {
                     Session::set_session($session_config['type']);
                 }
             }
@@ -1096,12 +1075,6 @@ class BaseLb extends BaseClass
             }
         }
 
-        // Init Swift Mailer
-//        Swift::component($containers);
-
-        // Init File Cache
-//        Filecache::component($containers);
-
         // Log
         Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(), $this->route_info);
 
@@ -1114,9 +1087,6 @@ class BaseLb extends BaseClass
         // IP Filter
         Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
 
-        // Input Filter
-//        Security::inputFilter();
-
         // Csrf Token Validation
         Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
 
@@ -1128,19 +1098,6 @@ class BaseLb extends BaseClass
 
         // X-XSS-Protection
         Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
-
-        // Set Triggers
-//        $triggers_config = $config_container->get('triggers');
-//        if ($triggers_config) {
-//            foreach ($triggers_config as $item) {
-//                if (isset($item['observer']) && isset($item['event']['type']) && isset($item['event']['class'])) {
-//                    $eventClassNamespace = 'app\\' . $item['event']['type'] . 's\\' . $item['event']['class'];
-//                    if (method_exists($eventClassNamespace, 'setObserver')) {
-//                        $eventClassNamespace::setObserver($item['event'], $item['observer']);
-//                    }
-//                }
-//            }
-//        }
     }
 
     // Start App

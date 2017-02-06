@@ -11,6 +11,7 @@ namespace lb\components\db\mysql;
 
 use lb\BaseClass;
 use lb\components\distribution\FlexiHash;
+use lb\Lb;
 
 class Connection extends BaseClass
 {
@@ -29,7 +30,7 @@ class Connection extends BaseClass
     protected $_slave_options = [];
     protected $_slave_dsn = '';
     public $containers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     const DB_TYPE = 'mysql';
     protected $dsn_format = '%s:host=%s;dbname=%s;charset=utf8';
@@ -136,14 +137,14 @@ class Connection extends BaseClass
     /**
      * @param array $containers
      * @param bool $reset
-     * @return bool|static
+     * @return object
      */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {
-            return $reset ? (static::$instance = new static($containers)) : static::$instance;
+            return $reset ? (static::$instance = new static($containers ? : Lb::app()->containers)) : static::$instance;
         } else {
-            return (static::$instance = new static($containers));
+            return (static::$instance = new static($containers ? : Lb::app()->containers));
         }
     }
 }
