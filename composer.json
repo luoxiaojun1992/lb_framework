@@ -58,7 +58,7 @@
     "nesbot/carbon": "*",
     "fzaninotto/faker": "*",
     "vlucas/phpdotenv": "*",
-    "guzzlehttp/guzzle": "6.2.2",
+    "guzzlehttp/guzzle": "*",
     "symfony/var-dumper": "*",
     "psy/psysh": "*"
   },
