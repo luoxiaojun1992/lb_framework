@@ -1041,7 +1041,8 @@ class BaseLb extends BaseClass
         if ($this->route_info['controller'] != 'web' || !in_array($this->route_info['action'], ['error', 'api'])) {
             $config_container = Lb::app()->containers['config'];
             $login_required_filter = $config_container->get('login_required_filter');
-            if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+            if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) ||
+                !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
                 $login_default_url = $config_container->get('login_default_url');
                 if ($config_container->get('login_required') && $login_default_url) {
                     Lb::app()->loginRequired($login_default_url);
