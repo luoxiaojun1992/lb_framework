@@ -10,6 +10,7 @@
 namespace lb\components\mailer;
 
 use lb\BaseClass;
+use lb\Lb;
 
 class Swift extends BaseClass
 {
@@ -51,9 +52,9 @@ class Swift extends BaseClass
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {
-            return $reset ? (static::$instance = new static($containers)) : static::$instance;
+            return $reset ? (static::$instance = new static($containers ? : Lb::app()->containers)) : static::$instance;
         } else {
-            return (static::$instance = new static($containers));
+            return (static::$instance = new static($containers ? : Lb::app()->containers));
         }
     }
 

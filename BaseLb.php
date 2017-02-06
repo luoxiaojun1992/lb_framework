@@ -1067,13 +1067,13 @@ class BaseLb extends BaseClass
             }
 
             // Connect MongoDB
-            \lb\components\db\mongodb\Connection::component($containers);
+//            \lb\components\db\mongodb\Connection::component($containers);
 
             // Connect Memcache
-            Memcache::component($containers);
+//            Memcache::component($containers);
 
             // Connect Redis
-            Redis::component($containers);
+//            Redis::component($containers);
 
             if ($session_config) {
                 if (isset($session_config['type']) && $session_config['type'] != 'mysql') {
@@ -1097,10 +1097,10 @@ class BaseLb extends BaseClass
         }
 
         // Init Swift Mailer
-        Swift::component($containers);
+//        Swift::component($containers);
 
         // Init File Cache
-        Filecache::component($containers);
+//        Filecache::component($containers);
 
         // Log
         Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(), $this->route_info);
