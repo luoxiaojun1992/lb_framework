@@ -1119,7 +1119,7 @@ class BaseLb extends BaseClass
         $this->initConfig();
 
         if (!Lb::app()->isAction()) {
-            throw new HttpException('Page not found.', 404);
+            throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
 
         $this->actionInit();

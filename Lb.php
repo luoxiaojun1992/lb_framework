@@ -1,47 +1,52 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/6
- * Time: 上午11:31
- * Lb framework bootstrap file
- */
 
 namespace lb;
 
 use lb\components\error_handlers\HttpException;
+use lb\components\error_handlers\VariableException;
 
 class Lb extends \lb\BaseLb
 {
+    protected function handleException($exception)
+    {
+        $status_code = $exception->getCode();
+        Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
+            'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
+            'tpl_name' => 'error',
+            'status_code' => $status_code
+        ]));
+    }
+
+    protected function exitException(\Exception $exception)
+    {
+        Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
+    }
+
     public function run()
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
             // Start App
             if (class_exists('\Throwable')) {
-                // >= PHP 7.0.0
+                // if php version >= 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $status_code = $httpException->getCode();
-                    $err_msg = implode(':', [$status_code, $httpException->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
+                    $this->handleException($httpException);
+                } catch (VariableException $variableException) {
+                    $this->exitException($variableException);
                 } catch (\Throwable $throwable) {
-                    $status_code = $throwable->getCode();
-                    $err_msg = implode(':', [$status_code, $throwable->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
+                    $this->handleException($throwable);
                 }
             } else {
-                // < PHP 7.0.0
+                // if php version < 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $status_code = $httpException->getCode();
-                    $err_msg = implode(':', [$status_code, $httpException->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
+                    $this->handleException($httpException);
+                } catch (VariableException $variableException) {
+                    $this->exitException($variableException);
                 } catch (\Exception $e) {
-                    $status_code = $e->getCode();
-                    $err_msg = implode(':', [$status_code, $e->getMessage()]);
-                    Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', ['err_msg' => $err_msg, 'tpl_name' => 'error', 'status_code' => $status_code]));
+                    $this->handleException($e);
                 }
             }
         } else {

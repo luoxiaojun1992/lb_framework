@@ -10,6 +10,8 @@ if (!function_exists('_echo')) {
     {
         if (isset($var)) {
             echo $var;
+        } else {
+            throw new \lb\components\error_handlers\VariableException(\lb\components\consts\ErrorMsg::VARIABLE_NOT_DEFINED);
         }
     }
 }

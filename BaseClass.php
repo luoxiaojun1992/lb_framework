@@ -9,7 +9,9 @@
 
 namespace lb;
 
-class BaseClass
+use lb\components\consts\ErrorMsg;
+
+class BaseClass implements ErrorMsg
 {
     public static function className()
     {

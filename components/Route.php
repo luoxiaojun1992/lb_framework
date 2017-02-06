@@ -74,10 +74,10 @@ class Route extends BaseClass
                 $server->addMethod($action_name, new $controller_name());
                 $server->start();
             } else {
-                throw new HttpException('Page not found.', 404);
+                throw new HttpException(self::PAGE_NOT_FOUND, 404);
             }
         } else {
-            throw new HttpException('Page not found.', 404);
+            throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
     }
 
@@ -115,10 +115,10 @@ class Route extends BaseClass
                     $controller->$action_name();
                 }
             } else {
-                throw new HttpException('Page not found.', 404);
+                throw new HttpException(self::PAGE_NOT_FOUND, 404);
             }
         } else {
-            throw new HttpException('Page not found.', 404);
+            throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
     }
 }
