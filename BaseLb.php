@@ -1130,17 +1130,17 @@ class BaseLb extends BaseClass
         Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
 
         // Set Triggers
-        $triggers_config = $config_container->get('triggers');
-        if ($triggers_config) {
-            foreach ($triggers_config as $item) {
-                if (isset($item['observer']) && isset($item['event']['type']) && isset($item['event']['class'])) {
-                    $eventClassNamespace = 'app\\' . $item['event']['type'] . 's\\' . $item['event']['class'];
-                    if (method_exists($eventClassNamespace, 'setObserver')) {
-                        $eventClassNamespace::setObserver($item['event'], $item['observer']);
-                    }
-                }
-            }
-        }
+//        $triggers_config = $config_container->get('triggers');
+//        if ($triggers_config) {
+//            foreach ($triggers_config as $item) {
+//                if (isset($item['observer']) && isset($item['event']['type']) && isset($item['event']['class'])) {
+//                    $eventClassNamespace = 'app\\' . $item['event']['type'] . 's\\' . $item['event']['class'];
+//                    if (method_exists($eventClassNamespace, 'setObserver')) {
+//                        $eventClassNamespace::setObserver($item['event'], $item['observer']);
+//                    }
+//                }
+//            }
+//        }
     }
 
     // Start App
