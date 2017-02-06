@@ -1032,38 +1032,28 @@ class BaseLb extends BaseClass
         Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
     }
 
-    // Init
-    public function init()
+    /**
+     * Init Login Required
+     */
+    protected function initLoginRequired()
     {
-        // Load Environment Variables
-        $this->loadEnv();
-
-        // Include Helper Functions
-        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
-
-        // Init Config
-        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include_once(CONFIG_FILE);
+        if ($this->route_info['controller'] != 'web' || !in_array($this->route_info['action'], ['error', 'api'])) {
+            $config_container = Lb::app()->containers['config'];
+            $login_required_filter = $config_container->get('login_required_filter');
+            if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+                $login_default_url = $config_container->get('login_default_url');
+                if ($config_container->get('login_required') && $login_default_url) {
+                    Lb::app()->loginRequired($login_default_url);
+                }
+            }
         }
+    }
 
-        // Container Register
-        // Register Configuration
-        $config_container = Config::component();
-        foreach ($this->config as $config_name => $config_content) {
-            $config_container->set($config_name, $config_content);
-        }
-        $this->config = [];
-
-        // Inject Config Container
-        Lb::app()->containers['config'] = $config_container;
-
-        // Set mb internal encoding
-        mb_internal_encoding(Lb::app()->getMbInternalEncoding() ? : 'UTF-8');
-
-        // Set Timezone
-        $this->setDefaultTimeZone();
-
-        // Route
+    /**
+     * Set Route Info
+     */
+    protected function setRouteInfo()
+    {
         $this->route_info = Route::getInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             if (Lb::app()->isAction()) {
@@ -1076,45 +1066,81 @@ class BaseLb extends BaseClass
                 }
             }
         }
-
-        // Register Route Info
         $route_info_container = RouteInfo::component();
         foreach ($this->route_info as $item_name => $item_value) {
             $route_info_container->set($item_name, $item_value);
         }
-
-        // Inject Route Info Container
         Lb::app()->containers['route_info'] = $route_info_container;
+    }
 
-        $containers['config'] = $config_container;
-
-        if (Lb::app()->isAction()) {
-            $session_config = $config_container->get('session');
-            if ($session_config) {
-                if (isset($session_config['type'])) {
-                    Session::set_session($session_config['type']);
-                }
+    /**
+     * Init Session
+     */
+    protected function initSession()
+    {
+        if ($session_config = Lb::app()->containers['config']->get('session')) {
+            if (isset($session_config['type'])) {
+                Session::set_session($session_config['type']);
             }
         }
-
-        // Start Session
         session_start();
+    }
+
+    /**
+     * Init Configuration
+     */
+    protected function initConfig()
+    {
+        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
+            $this->config = include_once(CONFIG_FILE);
+        }
+
+        // Inject Config Container
+        $config_container = Config::component();
+        foreach ($this->config as $config_name => $config_content) {
+            $config_container->set($config_name, $config_content);
+        }
+        $this->config = [];
+        Lb::app()->containers['config'] = $config_container;
+    }
+
+    // Init
+    public function init()
+    {
+        // Load Environment Variables
+        $this->loadEnv();
+
+        // Include Helper Functions
+        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
+
+        // Init Config
+        $this->initConfig();
+
+        if (!Lb::app()->isAction()) {
+            throw new HttpException('Page not found.', 404);
+        }
+
+        // Set mb internal encoding
+        mb_internal_encoding(Lb::app()->getMbInternalEncoding() ?: 'UTF-8');
+
+        // Set Timezone
+        $this->setDefaultTimeZone();
+
+        // Route
+        $this->setRouteInfo();
+
+        // Init Session
+        $this->initSession();
 
         // Login Required
-        if ($this->route_info['controller'] != 'web' || !in_array($this->route_info['action'], ['error', 'api'])) {
-            $login_required_filter = $config_container->get('login_required_filter');
-            if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) || !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
-                $login_default_url = $config_container->get('login_default_url');
-                if ($config_container->get('login_required') && $login_default_url) {
-                    Lb::app()->loginRequired($login_default_url);
-                }
-            }
-        }
+        $this->initLoginRequired();
 
         // Log
-        Lb::app()->log('system', Logger::NOTICE, Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(), $this->route_info);
+        Lb::app()->log('system', Logger::NOTICE,
+            Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(),
+            $this->route_info);
 
-        // Auto Load
+        // Autoload
         spl_autoload_register(['self', 'autoload'], true, false);
 
         // Set Error Level
