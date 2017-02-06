@@ -21,7 +21,6 @@ use lb\components\observers\BaseObserver;
 use lb\components\Pagination;
 use lb\components\session\Session;
 use lb\components\User;
-use Monolog\Logger;
 use lb\components\cache\Filecache;
 use lb\components\cache\Memcache;
 use lb\components\cache\Redis;
@@ -36,6 +35,7 @@ use lb\components\containers\Config;
 use lb\components\UrlManager;
 use lb\components\Security;
 use lb\components\helpers\FileHelper;
+use Monolog\Logger;
 
 class BaseLb extends BaseClass
 {
