@@ -14,14 +14,14 @@ use lb\Lb;
 
 class Redis extends BaseClass
 {
-    public $conn = false;
+    public $conn;
     protected $_host = '127.0.0.1';
     protected $_port = 6379;
     protected $_timeout = 0.01;
     protected $_password = null;
     protected $_database = 0;
     public $containers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     const CACHE_TYPE = 'redis';
 
@@ -43,7 +43,7 @@ class Redis extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     protected function getConnection()
@@ -56,6 +56,11 @@ class Redis extends BaseClass
         $this->conn->select($this->_database);
     }
 
+    /**
+     * @param array $containers
+     * @param bool $reset
+     * @return Redis
+     */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {

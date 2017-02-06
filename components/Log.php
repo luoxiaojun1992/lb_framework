@@ -19,7 +19,7 @@ use Monolog\Handler\StreamHandler;
 class Log extends BaseClass
 {
     protected $loggers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     public function __construct()
     {
@@ -47,6 +47,9 @@ class Log extends BaseClass
         // TODO: Implement __clone() method.
     }
 
+    /**
+     * @return Log
+     */
     public static function component()
     {
         if (static::$instance instanceof static) {

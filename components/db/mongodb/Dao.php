@@ -15,13 +15,13 @@ use lb\Lb;
 
 class Dao extends BaseClass
 {
-    protected static $instance = false;
+    protected static $instance;
     protected $_db_name = 'db';
     protected $_wc = null;
     protected $_rp = null;
 
     /**
-     * @return bool|static
+     * @return Dao
      */
     public static function component()
     {

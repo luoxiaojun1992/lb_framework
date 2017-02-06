@@ -14,7 +14,7 @@ use lb\models\LbSession;
 
 class MysqlSession extends \SessionHandler
 {
-    protected static $_instance = false;
+    protected static $_instance;
 
     private function __construct()
     {
@@ -90,6 +90,9 @@ class MysqlSession extends \SessionHandler
         return false;
     }
 
+    /**
+     * @return bool|MysqlSession
+     */
     public static function component()
     {
         if (property_exists(get_called_class(), '_instance')) {

@@ -14,7 +14,7 @@ use lb\BaseClass;
 class Base extends BaseClass implements \ArrayAccess
 {
     protected $components = [];
-    protected static $instance = false;
+    protected static $instance;
 
     private function __construct()
     {
@@ -75,7 +75,7 @@ class Base extends BaseClass implements \ArrayAccess
     }
 
     /**
-     * @return bool|Base
+     * @return Base
      */
     public static function component()
     {

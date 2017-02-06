@@ -14,14 +14,14 @@ use lb\Lb;
 
 class Connection extends BaseClass
 {
-    public $_conn = false;
+    public $_conn;
     protected $_db = '';
     protected $_host = '';
     protected $_username = '';
     protected $_password = '';
     protected $_dsn = '';
     public $containers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     const DB_TYPE = 'mongodb';
     protected $dsn_format = '%s://%s%s/%s';
@@ -44,7 +44,7 @@ class Connection extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     protected function getDsn()
@@ -65,7 +65,7 @@ class Connection extends BaseClass
     /**
      * @param array $containers
      * @param bool $reset
-     * @return bool|static
+     * @return Connection
      */
     public static function component($containers = [], $reset = false)
     {

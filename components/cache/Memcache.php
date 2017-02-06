@@ -17,7 +17,7 @@ class Memcache extends BaseClass
     public $conn = false;
     protected $_servers = [];
     public $containers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     const CACHE_TYPE = 'memcache';
 
@@ -35,7 +35,7 @@ class Memcache extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     protected function getConnection()
@@ -44,6 +44,11 @@ class Memcache extends BaseClass
         $this->conn->addServers($this->_servers);
     }
 
+    /**
+     * @param array $containers
+     * @param bool $reset
+     * @return Memcache
+     */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {

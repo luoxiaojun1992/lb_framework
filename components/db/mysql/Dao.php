@@ -16,7 +16,7 @@ use Monolog\Logger;
 
 class Dao extends BaseClass
 {
-    protected static $instance = false;
+    protected static $instance;
     protected $_table = '';
     protected $_fields = [];
     protected $_conditions = [];
@@ -51,7 +51,7 @@ class Dao extends BaseClass
     const DELETE_SQL_TPL = "DELETE FROM %s WHERE %s";
 
     /**
-     * @return bool|static
+     * @return Dao
      */
     public static function component()
     {

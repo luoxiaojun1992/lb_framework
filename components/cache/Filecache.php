@@ -22,7 +22,7 @@ class Filecache extends BaseClass
     public $cache_extension = '.cache';
 
     public $containers = [];
-    protected static $instance = false;
+    protected static $instance;
 
     const CACHE_TYPE = 'filecache';
 
@@ -47,7 +47,7 @@ class Filecache extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     //增加一对缓存数据
@@ -135,6 +135,11 @@ class Filecache extends BaseClass
         return $this->cache_path . DIRECTORY_SEPARATOR . $this->_safe_filename($key) . $this->cache_extension;
     }
 
+    /**
+     * @param array $containers
+     * @param bool $reset
+     * @return Filecache
+     */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {

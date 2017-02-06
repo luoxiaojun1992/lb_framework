@@ -15,12 +15,12 @@ use lb\Lb;
 class Swift extends BaseClass
 {
     public $containers = [];
-    public $transport = false;
+    public $transport;
     protected $_smtp = '';
     protected $_smtp_port = 25;
     protected $_username = '';
     protected $_password = '';
-    protected static $instance = false;
+    protected static $instance;
 
     public function __construct($containers)
     {
@@ -49,6 +49,11 @@ class Swift extends BaseClass
         $this->transport->setPassword($this->_password);
     }
 
+    /**
+     * @param array $containers
+     * @param bool $reset
+     * @return Swift
+     */
     public static function component($containers = [], $reset = false)
     {
         if (static::$instance instanceof static) {

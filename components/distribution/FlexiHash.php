@@ -13,7 +13,7 @@ use lb\BaseClass;
 
 class FlexiHash extends BaseClass
 {
-    protected static $instance = false;
+    protected static $instance;
 
     public function __clone()
     {
@@ -21,7 +21,7 @@ class FlexiHash extends BaseClass
     }
 
     /**
-     * @return bool|static
+     * @return FlexiHash
      */
     public static function component()
     {

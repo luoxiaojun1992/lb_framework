@@ -15,8 +15,8 @@ use lb\Lb;
 
 class Connection extends BaseClass
 {
-    public $write_conn = false;
-    public $read_conn = false;
+    public $write_conn;
+    public $read_conn;
     protected $_master_db = '';
     protected $_master_host = '';
     protected $_master_username = '';
@@ -53,7 +53,7 @@ class Connection extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     protected function getMasterConnection()
@@ -137,7 +137,7 @@ class Connection extends BaseClass
     /**
      * @param array $containers
      * @param bool $reset
-     * @return object
+     * @return Connection
      */
     public static function component($containers = [], $reset = false)
     {
