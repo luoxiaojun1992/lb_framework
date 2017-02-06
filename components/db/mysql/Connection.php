@@ -88,11 +88,11 @@ class Connection extends BaseClass
                 if ($server_host == $target_host) {
                     $slave_target_num = $key;
                     $slave_db_config = $slave_config[$slave_target_num];
-                    $this->_slave_db = isset($slave_db_config['dbname']) ? $slave_db_config['dbname'] : '';
-                    $this->_slave_host = isset($slave_db_config['host']) ? $slave_db_config['host'] : '';
-                    $this->_slave_username = isset($slave_db_config['username']) ? $slave_db_config['username'] : '';
-                    $this->_slave_password = isset($slave_db_config['password']) ? $slave_db_config['password'] : '';
-                    $this->_slave_options = isset($slave_db_config['options']) ? $slave_db_config['options'] : [];
+                    $this->_slave_db = $slave_db_config['dbname'] ?? '';
+                    $this->_slave_host = $slave_db_config['host'] ?? '';
+                    $this->_slave_username = $slave_db_config['username'] ?? '';
+                    $this->_slave_password = $slave_db_config['password'] ?? '';
+                    $this->_slave_options = $slave_db_config['options'] ?? [];
                     $this->getDsn('slave');
                     try {
                         $this->getConnection('slave');

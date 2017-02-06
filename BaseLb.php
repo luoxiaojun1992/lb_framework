@@ -1174,11 +1174,11 @@ class BaseLb extends BaseClass
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
-            case 'file':
+            case Filecache::CACHE_TYPE:
                 return Lb::app()->fileCacheGet($page_cache_key);
-            case 'memcache':
+            case Memcache::CACHE_TYPE:
                 return Lb::app()->memcacheGet($page_cache_key);
-            case 'redis':
+            case Redis::CACHE_TYPE:
                 return Lb::app()->redisGet($page_cache_key);
             default:
                 return Lb::app()->fileCacheGet($page_cache_key);
@@ -1197,13 +1197,13 @@ class BaseLb extends BaseClass
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
-            case 'file':
+            case Filecache::CACHE_TYPE:
                 Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
                 break;
-            case 'memcache':
+            case Memcache::CACHE_TYPE:
                 Lb::app()->memcacheSet($page_cache_key, $page_cache, $expire);
                 break;
-            case 'redis':
+            case Redis::CACHE_TYPE:
                 Lb::app()->redisSet($page_cache_key, $page_cache, $expire);
                 break;
             default:
