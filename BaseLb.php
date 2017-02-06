@@ -48,14 +48,9 @@ class BaseLb extends BaseClass
     protected $route_info = [];
     public $containers = [];
 
-    public function __construct($is_single = false)
+    public function __construct()
     {
-        if ($is_single) {
-            $this->is_single = $is_single;
-        } else {
-            // Init
-            $this->init();
-        }
+        $this->init();
     }
 
     public function __clone()
@@ -69,7 +64,9 @@ class BaseLb extends BaseClass
         if (static::$app instanceof self) {
             return static::$app;
         } else {
-            return (static::$app = new static(true));
+            $app = new static();
+            $app->is_single = true;
+            return (static::$app = $app);
         }
     }
 
