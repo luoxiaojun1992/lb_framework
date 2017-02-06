@@ -58,16 +58,16 @@ class RestController extends BaseController
     protected function authentication()
     {
         switch($this->auth_type) {
-            case 1:
+            case self::AUTH_TYPE_BASIC:
                 $auth_user = Lb::app()->getBasicAuthUser();
                 $auth_pwd = Lb::app()->getBasicAuthPassword();
                 if ($auth_user != $this->self_rest_config[2][0] || md5($auth_pwd) != $this->self_rest_config[2][1]) {
                     $this->response_unauthorized();
                 }
                 break;
-            case 2:
+            case self::AUTH_TYPE_OAUTH:
                 break;
-            case 3:
+            case self::AUTH_TYPE_QUERY_STRING:
                 $auth_key = $this->self_rest_config[2][0];
                 $auth_value = Lb::app()->getParam($auth_key);
                 if (md5($auth_value) != $this->self_rest_config[2][1]) {
@@ -112,12 +112,10 @@ class RestController extends BaseController
             $data['status'] = 0;
         }
         switch ($format) {
-            // Response JSON
-            case 1:
+            case self::RESPONSE_TYPE_JSON:
                 $response_content = JsonHelper::encode($data);
                 break;
-            // Response XML
-            case 2:
+            case self::RESPONSE_TYPE_XML:
                 Header('Content-type:application/xml');
                 $response_content = XMLHelper::encode($data);
                 break;
