@@ -1056,14 +1056,12 @@ class BaseLb extends BaseClass
     {
         $this->route_info = Route::getInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
-            if (Lb::app()->isAction()) {
-                $this->route_info['controller'] = 'index';
-                $this->route_info['action'] = 'index';
-                $home = Lb::app()->getHome();
-                if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
-                    $this->route_info['controller'] = $home['controller'];
-                    $this->route_info['action'] = $home['action'];
-                }
+            $this->route_info['controller'] = 'index';
+            $this->route_info['action'] = 'index';
+            $home = Lb::app()->getHome();
+            if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
+                $this->route_info['controller'] = $home['controller'];
+                $this->route_info['action'] = $home['action'];
             }
         }
         $route_info_container = RouteInfo::component();
