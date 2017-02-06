@@ -984,10 +984,11 @@ class BaseLb extends BaseClass
         die($exit_code);
     }
 
-    // Init
-    public function init()
+    /**
+     * Load Environment Variables
+     */
+    protected function loadEnv()
     {
-        // Load Environment Variables
         if (defined('ENV_DIR') && file_exists(ENV_DIR)) {
             if (defined('ENV_FILE') && file_exists(ENV_FILE)) {
                 $dotenv = new \Dotenv\Dotenv(ENV_DIR, ENV_FILE);
@@ -996,6 +997,46 @@ class BaseLb extends BaseClass
             }
             $dotenv->load();
         }
+    }
+
+    /**
+     * Set Default Timezone
+     */
+    protected function setDefaultTimeZone()
+    {
+        if ($config_time_zone = Lb::app()->getTimeZone()) {
+            if (date_default_timezone_get() != $config_time_zone) {
+                date_default_timezone_set($config_time_zone);
+            }
+        }
+    }
+
+    /**
+     * Security Handler
+     */
+    protected function securityHandler()
+    {
+        // IP Filter
+        Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
+
+        // Csrf Token Validation
+        Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
+
+        // CORS
+        Security::cors($this->route_info['controller'], $this->route_info['action']);
+
+        // X-Frame-Options
+        Security::x_frame_options($this->route_info['controller'], $this->route_info['action']);
+
+        // X-XSS-Protection
+        Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
+    }
+
+    // Init
+    public function init()
+    {
+        // Load Environment Variables
+        $this->loadEnv();
 
         // Include Helper Functions
         require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
@@ -1020,12 +1061,7 @@ class BaseLb extends BaseClass
         mb_internal_encoding(Lb::app()->getMbInternalEncoding() ? : 'UTF-8');
 
         // Set Timezone
-        $config_time_zone = Lb::app()->getTimeZone();
-        if ($config_time_zone) {
-            if (date_default_timezone_get() != $config_time_zone) {
-                date_default_timezone_set($config_time_zone);
-            }
-        }
+        $this->setDefaultTimeZone();
 
         // Route
         $this->route_info = Route::getInfo();
@@ -1084,20 +1120,8 @@ class BaseLb extends BaseClass
         // Set Error Level
         Level::set();
 
-        // IP Filter
-        Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
-
-        // Csrf Token Validation
-        Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
-
-        // CORS
-        Security::cors($this->route_info['controller'], $this->route_info['action']);
-
-        // X-Frame-Options
-        Security::x_frame_options($this->route_info['controller'], $this->route_info['action']);
-
-        // X-XSS-Protection
-        Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
+        // Security Handler
+        $this->securityHandler();
     }
 
     // Start App
