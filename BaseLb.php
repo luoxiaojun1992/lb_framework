@@ -1102,7 +1102,11 @@ class BaseLb extends BaseClass
         Lb::app()->containers['config'] = $config_container;
     }
 
-    // Init
+    /**
+     * Init Application
+     *
+     * @throws HttpException
+     */
     public function init()
     {
         // Load Environment Variables
@@ -1118,6 +1122,14 @@ class BaseLb extends BaseClass
             throw new HttpException('Page not found.', 404);
         }
 
+        $this->actionInit();
+    }
+
+    /**
+     * Action Init
+     */
+    protected function actionInit()
+    {
         // Set mb internal encoding
         mb_internal_encoding(Lb::app()->getMbInternalEncoding() ?: 'UTF-8');
 
@@ -1148,7 +1160,11 @@ class BaseLb extends BaseClass
         $this->securityHandler();
     }
 
-    // Start App
+    /**
+     * Run Application
+     *
+     * @throws HttpException
+     */
     public function run()
     {
         if (!$this->is_single) {
