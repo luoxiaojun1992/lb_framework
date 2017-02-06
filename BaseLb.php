@@ -1261,7 +1261,8 @@ class BaseLb extends BaseClass
 
             // Route
             $rpc_config = Lb::app()->getRpcConfig();
-            if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) && $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
+            if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) &&
+                $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
                 Route::rpc($this->route_info);
             } else {
                 ob_start();
