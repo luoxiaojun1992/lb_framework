@@ -107,7 +107,7 @@ class ActiveRecord extends BaseClass
     }
 
     /**
-     * @return array
+     * @return array|ActiveRecord[]
      */
     public function findAll()
     {
@@ -213,7 +213,7 @@ class ActiveRecord extends BaseClass
      * @param array $group_fields
      * @param array $orders
      * @param string $limit
-     * @return array
+     * @return array|ActiveRecord[]
      */
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
