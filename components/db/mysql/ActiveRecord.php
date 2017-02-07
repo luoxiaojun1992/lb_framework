@@ -159,7 +159,7 @@ class ActiveRecord extends BaseClass
 
     /**
      * @param $primary_key
-     * @return bool
+     * @return bool|ActiveRecord
      */
     public function findByPk($primary_key)
     {
@@ -213,7 +213,7 @@ class ActiveRecord extends BaseClass
      * @param array $group_fields
      * @param array $orders
      * @param string $limit
-     * @return array|ActiveRecord[]
+     * @return array|ActiveRecord[]|ActiveRecord
      */
     public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
@@ -268,7 +268,7 @@ class ActiveRecord extends BaseClass
                     $model->is_new_record = false;
                     $models[] = $model;
                 }
-                return $models;
+                return !$models || count($models) > 1 ? $models : $models[0];
             }
         }
         return [];
@@ -276,7 +276,7 @@ class ActiveRecord extends BaseClass
 
     /**
      * @param $sql
-     * @return array
+     * @return array|ActiveRecord[]|ActiveRecord
      */
     public function findBySql($sql)
     {
@@ -295,7 +295,7 @@ class ActiveRecord extends BaseClass
                             $model->is_new_record = false;
                             $models[] = $model;
                         }
-                        return $models;
+                        return !$models || count($models) > 1 ? $models : $models[0];
                     }
                 }
             }
@@ -709,6 +709,9 @@ class ActiveRecord extends BaseClass
         }
     }
 
+    /**
+     * @return bool
+     */
     public function save()
     {
         if (!$this->is_single) {
