@@ -1109,7 +1109,7 @@ class BaseLb extends BaseClass
 
             $this->initWebApp();
         } else {
-            //
+            $this->initConsoleApp();
         }
     }
 
