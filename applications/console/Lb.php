@@ -1,52 +1,42 @@
 <?php
 
-namespace lb;
+namespace lb\applications\console;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\VariableException;
 
 class Lb extends \lb\BaseLb
 {
-    protected function handleException($exception)
+    protected function exitException($exception)
     {
-        $status_code = $exception->getCode();
-        Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
-            'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
-            'tpl_name' => 'error',
-            'status_code' => $status_code
-        ]));
-    }
-
-    protected function exitException(\Exception $exception)
-    {
-        Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        dd(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
     public function run()
     {
-        if (strtolower(php_sapi_name()) !== 'cli') {
+        if (strtolower(php_sapi_name()) === 'cli') {
             // Start App
             if (class_exists('\Throwable')) {
                 // if php version >= 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
+                    $this->exitException($httpException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
                 } catch (\Throwable $throwable) {
-                    $this->handleException($throwable);
+                    $this->exitException($throwable);
                 }
             } else {
                 // if php version < 7.0.0
                 try {
                     parent::run();
                 } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
+                    $this->exitException($httpException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
                 } catch (\Exception $e) {
-                    $this->handleException($e);
+                    $this->exitException($e);
                 }
             }
         } else {
