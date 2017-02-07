@@ -497,7 +497,7 @@ class ActiveRecord extends BaseClass
     public function delete()
     {
         if (!$this->is_single) {
-            $this->deleteByPk($this->getPrimaryKey());
+            self::model()->deleteByPk($this->getPrimaryKey());
         }
 
         return false;
