@@ -672,15 +672,40 @@ class ActiveRecord extends BaseClass
     protected function beforeSave()
     {
         if (!$this->is_single) {
+            if ($this->isNewRecord()) {
+                $this->beforeCreate();
+            } else {
+                $this->beforeUpdate();
+            }
+
             return $this->valid();
         }
+
+        return false;
+    }
+
+    protected function beforeCreate()
+    {
+        if (!$this->is_single) {
+            //
+        }
+
+        return false;
+    }
+
+    protected function beforeUpdate()
+    {
+        if (!$this->is_single) {
+            //
+        }
+
         return false;
     }
 
     protected function afterSave()
     {
         if (!$this->is_single) {
-            // TODO
+            //
         }
     }
 
