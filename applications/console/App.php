@@ -4,8 +4,9 @@ namespace lb\applications\console;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\VariableException;
+use lb\Lb;
 
-class Lb extends \lb\BaseLb
+class App extends Lb
 {
     protected function exitException($exception)
     {

@@ -4,13 +4,14 @@ namespace lb\applications\web;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\VariableException;
+use lb\Lb;
 
-class Lb extends \lb\BaseLb
+class App extends Lb
 {
     protected function handleException($exception)
     {
         $status_code = $exception->getCode();
-        self::app()->redirect(self::app()->createAbsoluteUrl('/web/action/error', [
+        Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
             'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
             'tpl_name' => 'error',
             'status_code' => $status_code
@@ -19,7 +20,7 @@ class Lb extends \lb\BaseLb
 
     protected function exitException(\Exception $exception)
     {
-        self::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
     public function run()
