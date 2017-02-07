@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/6
- * Time: 下午9:24
- * Lb framework render component file
- */
 
 namespace lb\components;
 

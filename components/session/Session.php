@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/6/2
- * Time: 下午8:31
- * Lb framework session component file
- */
 
 namespace lb\components\session;
 

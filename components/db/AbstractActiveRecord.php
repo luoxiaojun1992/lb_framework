@@ -5,6 +5,7 @@ namespace lb\components\db;
 use lb\BaseClass;
 use lb\components\db\mysql\ActiveRecord as MysqlActiveRecord;
 use lb\components\db\mongodb\ActiveRecord as MongodbActiveRecord;
+use lb\components\traits\Singleton;
 
 /**
  * Class AbstractActiveRecord
@@ -12,19 +13,14 @@ use lb\components\db\mongodb\ActiveRecord as MongodbActiveRecord;
  */
 abstract class AbstractActiveRecord extends BaseClass
 {
+    use Singleton;
+
     protected $_attributes = [];
     protected $is_single = false;
     protected $rules = [];
     protected $errors = [];
     public $labels = [];
     public $is_new_record = true;
-
-    protected static $_instance;
-
-    public function __clone()
-    {
-        //
-    }
 
     /**
      * @param $name
@@ -59,15 +55,15 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public static function model()
     {
-        if (property_exists(get_called_class(), '_instance')) {
-            if (static::$_instance instanceof static) {
-                return static::$_instance;
+        if (property_exists(get_called_class(), 'instance')) {
+            if (static::$instance instanceof static) {
+                return static::$instance;
             } else {
                 $new_model = new static();
                 $new_model->is_new_record = false;
                 $new_model->is_single = true;
-                static::$_instance = $new_model;
-                return static::$_instance;
+                static::$instance = $new_model;
+                return static::$instance;
             }
         }
         return false;

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/11
- * Time: 14:26
- * Lb framework array helper component file
- */
 
 namespace lb\components\helpers;
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/11
- * Time: 15:05
- * Lb framework file helper component file
- */
 
 namespace lb\components\helpers;
 

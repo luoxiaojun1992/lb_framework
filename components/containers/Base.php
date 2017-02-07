@@ -1,29 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/7
- * Time: 下午3:27
- * Lb framework base container file
- */
 
 namespace lb\components\containers;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 
 class Base extends BaseClass implements \ArrayAccess
 {
+    use Singleton;
+
     protected $components = [];
-    protected static $instance;
 
     private function __construct()
     {
-
-    }
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
+        //
     }
 
     public function __set($component_name, $component_content)

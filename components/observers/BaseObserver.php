@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/08/08
- * Time: 9:38
- * Lb framework observer component file
- */
 
 namespace lb\components\observers;
 

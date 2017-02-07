@@ -1,19 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/12
- * Time: 15:26
- * Lb framework redis cache component file
- */
 
 namespace lb\components\cache;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Redis extends BaseClass
 {
+    use Singleton;
+
     public $conn;
     protected $_host = '127.0.0.1';
     protected $_port = 6379;
@@ -21,7 +17,6 @@ class Redis extends BaseClass
     protected $_password = null;
     protected $_database = 0;
     public $containers = [];
-    protected static $instance;
 
     const CACHE_TYPE = 'redis';
 
@@ -39,11 +34,6 @@ class Redis extends BaseClass
                 $this->getConnection();
             }
         }
-    }
-
-    public function __clone()
-    {
-        //
     }
 
     protected function getConnection()

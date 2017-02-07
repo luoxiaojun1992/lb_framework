@@ -1,19 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/13
- * Time: 11:25
- * Lb framework file cache component file
- */
 
 namespace lb\components\cache;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Filecache extends BaseClass
 {
+    use Singleton;
+
     //Path to cache folder
     public $cache_path = '';
     //Length of time to cache a file, default 1 day (in seconds)
@@ -22,7 +18,6 @@ class Filecache extends BaseClass
     public $cache_extension = '.cache';
 
     public $containers = [];
-    protected static $instance;
 
     const CACHE_TYPE = 'filecache';
 
@@ -43,11 +38,6 @@ class Filecache extends BaseClass
                 }
             }
         }
-    }
-
-    public function __clone()
-    {
-        //
     }
 
     //增加一对缓存数据

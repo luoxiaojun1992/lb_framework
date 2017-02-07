@@ -1,23 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/10
- * Time: 15:12
- * Lb framework memcache cache component file
- */
 
 namespace lb\components\cache;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Memcache extends BaseClass
 {
+    use Singleton;
+
     public $conn = false;
     protected $_servers = [];
     public $containers = [];
-    protected static $instance;
 
     const CACHE_TYPE = 'memcache';
 
@@ -31,11 +26,6 @@ class Memcache extends BaseClass
                 $this->getConnection();
             }
         }
-    }
-
-    public function __clone()
-    {
-        //
     }
 
     protected function getConnection()

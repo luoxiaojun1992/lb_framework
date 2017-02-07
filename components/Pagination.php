@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/1/2
- * Time: 下午3:42
- * Lb framework pagination component file
- */
 
 namespace lb\components;
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/7/23
- * Time: 下午3:49
- * Lb framework crypt helper component file
- */
 
 namespace lb\components\helpers;
 

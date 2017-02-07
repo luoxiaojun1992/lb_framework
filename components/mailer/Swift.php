@@ -1,26 +1,21 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/13
- * Time: 9:25
- * Lb framework swift mailer component file
- */
 
 namespace lb\components\mailer;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Swift extends BaseClass
 {
+    use Singleton;
+
     public $containers = [];
     public $transport;
     protected $_smtp = '';
     protected $_smtp_port = 25;
     protected $_username = '';
     protected $_password = '';
-    protected static $instance;
 
     public function __construct($containers)
     {
@@ -35,11 +30,6 @@ class Swift extends BaseClass
                 $this->getConnection();
             }
         }
-    }
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
     }
 
     protected function getConnection()

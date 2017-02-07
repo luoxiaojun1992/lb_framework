@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/3/12
- * Time: 上午11:15
- */
 
 namespace lb\models;
 

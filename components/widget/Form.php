@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/26
- * Time: 15:28
- * Lb framework form widget file
- */
 
 namespace lb\components\widget;
 

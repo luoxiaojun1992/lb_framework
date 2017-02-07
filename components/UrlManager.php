@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/8
- * Time: 上午9:59
- * Lb framework url manager component file
- */
 
 namespace lb\components;
 

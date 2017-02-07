@@ -1,24 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/3/12
- * Time: 下午5:50
- * 一致性Hash分布
- */
 
 namespace lb\components\distribution;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 
 class FlexiHash extends BaseClass
 {
-    protected static $instance;
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
-    }
+    use Singleton;
 
     /**
      * @return FlexiHash

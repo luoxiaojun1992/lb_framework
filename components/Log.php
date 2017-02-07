@@ -1,25 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/18
- * Time: 9:38
- * Lb framework log component file
- */
 
 namespace lb\components;
 
 use lb\BaseClass;
 use lb\components\db\mysql\Connection;
 use lb\components\log_handlers\PDOHandler;
+use lb\components\traits\Singleton;
 use lb\Lb;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 class Log extends BaseClass
 {
+    use Singleton;
+
     protected $loggers = [];
-    protected static $instance;
 
     public function __construct()
     {
@@ -40,11 +35,6 @@ class Log extends BaseClass
         $user_logger = new Logger('user');
         $user_logger->pushHandler($handler);
         $this->loggers['user'] = $user_logger;
-    }
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
     }
 
     /**

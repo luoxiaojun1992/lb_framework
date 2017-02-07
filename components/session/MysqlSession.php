@@ -1,29 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/6/2
- * Time: 下午8:37
- * Lb framework mysql session component file
- */
 
 namespace lb\components\session;
 
 use lb\components\db\mysql\Dao;
+use lb\components\traits\Singleton;
 use lb\models\LbSession;
 
 class MysqlSession extends \SessionHandler
 {
-    protected static $_instance;
+    use Singleton;
 
     private function __construct()
     {
 
-    }
-
-    public function __clone()
-    {
-        // TODO: Implement __clone() method.
     }
 
     public function open($save_path, $session_name)

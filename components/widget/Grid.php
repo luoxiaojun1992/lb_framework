@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/21
- * Time: 下午2:28
- * Lb framework grid widget file
- */
 
 namespace lb\components\widget;
 

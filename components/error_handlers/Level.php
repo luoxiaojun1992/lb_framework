@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/7
- * Time: 下午7:50
- * Lb framework error level file
- */
 
 namespace lb\components\error_handlers;
 

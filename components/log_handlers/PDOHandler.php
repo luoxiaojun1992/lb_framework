@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/6/21
- * Time: 下午2:08
- * Lb framework log handlers component file
- */
 
 namespace lb\components\log_handlers;
 
