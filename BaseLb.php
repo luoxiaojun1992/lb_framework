@@ -791,12 +791,12 @@ class BaseLb extends BaseClass
     {
         $is_action = false;
         if ($this->is_single) {
-            if (Lb::app()->isPrettyUrl()) {
-                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getUri(), '/action/') !== false) {
+            if (self::app()->isPrettyUrl()) {
+                if (!trim(self::app()->getUri(), '/') || stripos(self::app()->getUri(), '/action/') !== false) {
                     $is_action = true;
                 }
             } else {
-                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getQueryString(), 'action=') !== false) {
+                if (!trim(self::app()->getUri(), '/') || stripos(self::app()->getQueryString(), 'action=') !== false) {
                     $is_action = true;
                 }
             }
@@ -843,7 +843,7 @@ class BaseLb extends BaseClass
     public function get_rpc_client($url)
     {
         if ($this->is_single) {
-            include_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' .
+            include_once(self::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' .
                 DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
             return new \Hprose\Http\Client($url);
         }
@@ -932,7 +932,7 @@ class BaseLb extends BaseClass
     // Autoloader
     protected static function autoload($className)
     {
-        $root_dir = Lb::app()->getRootDir();
+        $root_dir = self::app()->getRootDir();
         if ($root_dir) {
             $className = str_replace('..', '', $className);
 
@@ -941,7 +941,7 @@ class BaseLb extends BaseClass
                 $controllers_dir = $root_dir . DIRECTORY_SEPARATOR . 'controllers';
                 if (is_dir($controllers_dir)) {
                     $class_file_path = $controllers_dir . DIRECTORY_SEPARATOR . str_replace('app\controllers\\', '', $className) . 'Controller.php';
-                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
+                    self::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
 
@@ -950,7 +950,7 @@ class BaseLb extends BaseClass
                 $models_dir = $root_dir . DIRECTORY_SEPARATOR . 'models';
                 if (is_dir($models_dir)) {
                     $class_file_path = $models_dir . DIRECTORY_SEPARATOR . str_replace('app\models\\', '', $className) . '.php';
-                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
+                    self::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
 
@@ -959,7 +959,7 @@ class BaseLb extends BaseClass
                 $components_dir = $root_dir . DIRECTORY_SEPARATOR . 'components';
                 if (is_dir($components_dir)) {
                     $class_file_path = $components_dir . DIRECTORY_SEPARATOR . str_replace('app\components\\', '', $className) . '.php';
-                    Lb::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
+                    self::app()->import(str_replace('\\', DIRECTORY_SEPARATOR, $class_file_path));
                 }
             }
         }
@@ -994,7 +994,7 @@ class BaseLb extends BaseClass
      */
     protected function setDefaultTimeZone()
     {
-        if ($config_time_zone = Lb::app()->getTimeZone()) {
+        if ($config_time_zone = self::app()->getTimeZone()) {
             if (date_default_timezone_get() != $config_time_zone) {
                 date_default_timezone_set($config_time_zone);
             }
@@ -1028,13 +1028,13 @@ class BaseLb extends BaseClass
     protected function initLoginRequired()
     {
         if ($this->route_info['controller'] != 'web' || !in_array($this->route_info['action'], ['error', 'api'])) {
-            $config_container = Lb::app()->containers['config'];
+            $config_container = self::app()->containers['config'];
             $login_required_filter = $config_container->get('login_required_filter');
             if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) ||
                 !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
                 $login_default_url = $config_container->get('login_default_url');
                 if ($config_container->get('login_required') && $login_default_url) {
-                    Lb::app()->loginRequired($login_default_url);
+                    self::app()->loginRequired($login_default_url);
                 }
             }
         }
@@ -1049,7 +1049,7 @@ class BaseLb extends BaseClass
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
-            $home = Lb::app()->getHome();
+            $home = self::app()->getHome();
             if (isset($home['controller']) && isset($home['action']) && $home['controller'] && $home['action']) {
                 $this->route_info['controller'] = $home['controller'];
                 $this->route_info['action'] = $home['action'];
@@ -1059,7 +1059,7 @@ class BaseLb extends BaseClass
         foreach ($this->route_info as $item_name => $item_value) {
             $route_info_container->set($item_name, $item_value);
         }
-        Lb::app()->containers['route_info'] = $route_info_container;
+        self::app()->containers['route_info'] = $route_info_container;
     }
 
     /**
@@ -1067,7 +1067,7 @@ class BaseLb extends BaseClass
      */
     protected function initSession()
     {
-        if ($session_config = Lb::app()->containers['config']->get('session')) {
+        if ($session_config = self::app()->containers['config']->get('session')) {
             if (isset($session_config['type'])) {
                 Session::set_session($session_config['type']);
             }
@@ -1090,7 +1090,7 @@ class BaseLb extends BaseClass
             $config_container->set($config_name, $config_content);
         }
         $this->config = [];
-        Lb::app()->containers['config'] = $config_container;
+        self::app()->containers['config'] = $config_container;
     }
 
     /**
@@ -1099,6 +1099,24 @@ class BaseLb extends BaseClass
      * @throws HttpException
      */
     public function init()
+    {
+        $this->initCommon();
+
+        if (php_sapi_name() !== 'cli') {
+            if (!self::app()->isAction()) {
+                throw new HttpException(self::PAGE_NOT_FOUND, 404);
+            }
+
+            $this->initWebApp();
+        } else {
+            //
+        }
+    }
+
+    /**
+     * Common init
+     */
+    protected function initCommon()
     {
         // Load Environment Variables
         $this->loadEnv();
@@ -1109,24 +1127,24 @@ class BaseLb extends BaseClass
         // Init Config
         $this->initConfig();
 
-        if (!Lb::app()->isAction()) {
-            throw new HttpException(self::PAGE_NOT_FOUND, 404);
-        }
-
-        $this->actionInit();
-    }
-
-    /**
-     * Action Init
-     */
-    protected function actionInit()
-    {
         // Set mb internal encoding
-        mb_internal_encoding(Lb::app()->getMbInternalEncoding() ?: 'UTF-8');
+        mb_internal_encoding(self::app()->getMbInternalEncoding() ?: 'UTF-8');
 
         // Set Timezone
         $this->setDefaultTimeZone();
 
+        // Autoload
+        spl_autoload_register(['self', 'autoload'], true, false);
+
+        // Set Error Level
+        Level::set();
+    }
+
+    /**
+     * Init Web Application
+     */
+    protected function initWebApp()
+    {
         // Route
         $this->setRouteInfo();
 
@@ -1137,21 +1155,23 @@ class BaseLb extends BaseClass
         $this->initLoginRequired();
 
         // Log
-        Lb::app()->log('system', Logger::NOTICE,
-            Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(),
+        self::app()->log('system', Logger::NOTICE,
+            self::app()->getHostAddress() . ' visit ' . self::app()->getUri() . self::app()->getQueryString(),
             $this->route_info);
-
-        // Autoload
-        spl_autoload_register(['self', 'autoload'], true, false);
-
-        // Set Error Level
-        Level::set();
 
         // Security Handler
         $this->securityHandler();
 
         // Set Http Cache
         $this->setHttpCache();
+    }
+
+    /**
+     * Run Console Application
+     */
+    protected function initConsoleApp()
+    {
+        //
     }
 
     /**
@@ -1166,13 +1186,13 @@ class BaseLb extends BaseClass
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
             case Filecache::CACHE_TYPE:
-                return Lb::app()->fileCacheGet($page_cache_key);
+                return self::app()->fileCacheGet($page_cache_key);
             case Memcache::CACHE_TYPE:
-                return Lb::app()->memcacheGet($page_cache_key);
+                return self::app()->memcacheGet($page_cache_key);
             case Redis::CACHE_TYPE:
-                return Lb::app()->redisGet($page_cache_key);
+                return self::app()->redisGet($page_cache_key);
             default:
-                return Lb::app()->fileCacheGet($page_cache_key);
+                return self::app()->fileCacheGet($page_cache_key);
         }
     }
 
@@ -1189,16 +1209,16 @@ class BaseLb extends BaseClass
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
             case Filecache::CACHE_TYPE:
-                Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
+                self::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
                 break;
             case Memcache::CACHE_TYPE:
-                Lb::app()->memcacheSet($page_cache_key, $page_cache, $expire);
+                self::app()->memcacheSet($page_cache_key, $page_cache, $expire);
                 break;
             case Redis::CACHE_TYPE:
-                Lb::app()->redisSet($page_cache_key, $page_cache, $expire);
+                self::app()->redisSet($page_cache_key, $page_cache, $expire);
                 break;
             default:
-                Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
+                self::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
         }
     }
 
@@ -1207,7 +1227,7 @@ class BaseLb extends BaseClass
      */
     protected function setHttpCache()
     {
-        $html_cache_config = Lb::app()->containers['config']->get('html_cache');
+        $html_cache_config = self::app()->containers['config']->get('html_cache');
         if (isset($html_cache_config['cache_control']) && isset($html_cache_config['offset'])) {
             HtmlHelper::setCache($html_cache_config['cache_control'], $html_cache_config['offset']);
         }
@@ -1221,7 +1241,7 @@ class BaseLb extends BaseClass
      */
     protected function compressPage($page_content)
     {
-        $page_compress_config = Lb::app()->containers['config']->get('page_compress');
+        $page_compress_config = self::app()->containers['config']->get('page_compress');
         if (isset($page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) &&
             $page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
             return HtmlHelper::compress($page_content);
@@ -1237,35 +1257,55 @@ class BaseLb extends BaseClass
     public function run()
     {
         if (!$this->is_single) {
-            // Response cache content
-            $is_cache = false;
-            $cache_type = null;
-            $page_cache_config = Lb::app()->containers['config']->get('page_cache');
-            if (isset($page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']])) {
-                $is_cache = true;
-                $cache_type = $page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']];
-                if ($page_cache = $this->getPageCache($cache_type)) {
-                    @_echo($page_cache);
-                    return;
-                }
-            }
-
-            // Route
-            $rpc_config = Lb::app()->getRpcConfig();
-            if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) &&
-                $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
-                Route::rpc($this->route_info);
+            if (php_sapi_name() !== 'cli') {
+                $this->runWebApp();
             } else {
-                ob_start();
-                Route::redirect($this->route_info);
-                $page_content = ob_get_contents();
-                ob_end_clean();
-                $page_content = $this->compressPage($page_content);
-                $is_cache && $this->setPageCache($cache_type, $page_content);
-                @_echo($page_content);
+                $this->runConsoleApp();
             }
         } else {
             throw new HttpException('Single run is forbidden.', 500);
         }
+    }
+
+    /**
+     * Run web application
+     */
+    protected function runWebApp()
+    {
+        // Response cache content
+        $is_cache = false;
+        $cache_type = null;
+        $page_cache_config = self::app()->containers['config']->get('page_cache');
+        if (isset($page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']])) {
+            $is_cache = true;
+            $cache_type = $page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']];
+            if ($page_cache = $this->getPageCache($cache_type)) {
+                @_echo($page_cache);
+                return;
+            }
+        }
+
+        // Route
+        $rpc_config = self::app()->getRpcConfig();
+        if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) &&
+            $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
+            Route::rpc($this->route_info);
+        } else {
+            ob_start();
+            Route::redirect($this->route_info);
+            $page_content = ob_get_contents();
+            ob_end_clean();
+            $page_content = $this->compressPage($page_content);
+            $is_cache && $this->setPageCache($cache_type, $page_content);
+            @_echo($page_content);
+        }
+    }
+
+    /**
+     * Run console application
+     */
+    protected function runConsoleApp()
+    {
+        //
     }
 }

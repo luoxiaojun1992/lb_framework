@@ -10,7 +10,7 @@ class Lb extends \lb\BaseLb
     protected function handleException($exception)
     {
         $status_code = $exception->getCode();
-        Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
+        self::app()->redirect(self::app()->createAbsoluteUrl('/web/action/error', [
             'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
             'tpl_name' => 'error',
             'status_code' => $status_code
@@ -19,7 +19,7 @@ class Lb extends \lb\BaseLb
 
     protected function exitException(\Exception $exception)
     {
-        Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        self::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
     public function run()
