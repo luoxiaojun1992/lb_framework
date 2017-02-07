@@ -78,6 +78,9 @@ class ActiveRecord extends BaseClass
         }
     }
 
+    /**
+     * @return bool|ActiveRecord
+     */
     public static function model()
     {
         if (property_exists(get_called_class(), '_instance')) {
