@@ -163,6 +163,10 @@ class ActiveRecord extends AbstractActiveRecord
         return false;
     }
 
+    /**
+     * @param $conditions
+     * @return bool
+     */
     public function deleteByConditions($conditions)
     {
         if ($this->is_single) {
