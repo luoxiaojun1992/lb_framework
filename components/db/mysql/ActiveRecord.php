@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/12
- * Time: 17:40
- * Lb framework mysql db active record file
- */
 
 namespace lb\components\db\mysql;
 
-use lb\BaseClass;
+use lb\components\db\AbstractActiveRecord;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\ValidationHelper;
 
@@ -18,46 +11,13 @@ use lb\components\helpers\ValidationHelper;
  * @inheritdoc
  * @package lb\components\db\mysql
  */
-class ActiveRecord extends BaseClass
+class ActiveRecord extends AbstractActiveRecord
 {
     const PLUS_NOTIFICATION = '+';
     const MINUS_NOTIFICATION = '-';
 
     protected $_primary_key = '';
-    protected $_attributes = [];
-    protected $is_single = false;
-    protected $rules = [];
-    protected $errors = [];
     protected $relations = [];
-    public $labels = [];
-    public $is_new_record = true;
-
-    protected static $_instance = false;
-
-    public function __clone()
-    {
-        //
-    }
-
-    public function __set($name, $value)
-    {
-        if (!$this->is_single) {
-            if (array_key_exists($name, $this->_attributes)) {
-                settype($value, gettype($this->_attributes[$name]));
-                $this->_attributes[$name] = $value;
-            }
-        }
-    }
-
-    public function __get($name)
-    {
-        if (!$this->is_single) {
-            if (array_key_exists($name, $this->_attributes)) {
-                return $this->_attributes[$name];
-            }
-        }
-        return false;
-    }
 
     /**
      * @param array $attributes
@@ -88,26 +48,7 @@ class ActiveRecord extends BaseClass
     }
 
     /**
-     * @return bool|ActiveRecord
-     */
-    public static function model()
-    {
-        if (property_exists(get_called_class(), '_instance')) {
-            if (static::$_instance instanceof static) {
-                return static::$_instance;
-            } else {
-                $new_model = new static();
-                $new_model->is_new_record = false;
-                $new_model->is_single = true;
-                static::$_instance = $new_model;
-                return static::$_instance;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @return array|ActiveRecord[]
+     * @return array|ActiveRecord|ActiveRecord[]
      */
     public function findAll()
     {
@@ -151,7 +92,7 @@ class ActiveRecord extends BaseClass
                     $model->is_new_record = false;
                     $models[] = $model;
                 }
-                return $models;
+                return !$models || count($models) > 1 ? $models : $models[0];
             }
         }
         return [];
@@ -494,70 +435,6 @@ class ActiveRecord extends BaseClass
     /**
      * @return bool
      */
-    public function delete()
-    {
-        if (!$this->is_single) {
-            self::model()->deleteByPk($this->getPrimaryKey());
-        }
-
-        return false;
-    }
-
-    public function getPrimaryKey()
-    {
-        if (!$this->is_single) {
-            if (array_key_exists($this->_primary_key, $this->_attributes)) {
-                return $this->_attributes[$this->_primary_key];
-            }
-        }
-        return 0;
-    }
-
-    public function getPrimaryName()
-    {
-        return $this->_primary_key;
-    }
-
-    public function getAttributes()
-    {
-        if (!$this->is_single) {
-            return $this->_attributes;
-        }
-        return [];
-    }
-
-    public function getFields()
-    {
-        if (!$this->is_single) {
-            return array_keys($this->_attributes);
-        }
-        return [];
-    }
-
-    public function getLabels()
-    {
-        if (!$this->is_single) {
-            return $this->labels;
-        }
-        return [];
-    }
-
-    public function isNewRecord()
-    {
-        if (!$this->is_single) {
-            return $this->is_new_record;
-        }
-        return false;
-    }
-
-    public function getErrors()
-    {
-        if (!$this->is_single) {
-            return $this->errors;
-        }
-        return false;
-    }
-
     protected function valid()
     {
         $is_valid = true;
@@ -667,46 +544,6 @@ class ActiveRecord extends BaseClass
             }
         }
         return $is_valid;
-    }
-
-    protected function beforeSave()
-    {
-        if (!$this->is_single) {
-            if ($this->isNewRecord()) {
-                $this->beforeCreate();
-            } else {
-                $this->beforeUpdate();
-            }
-
-            return $this->valid();
-        }
-
-        return false;
-    }
-
-    protected function beforeCreate()
-    {
-        if (!$this->is_single) {
-            //
-        }
-
-        return false;
-    }
-
-    protected function beforeUpdate()
-    {
-        if (!$this->is_single) {
-            //
-        }
-
-        return false;
-    }
-
-    protected function afterSave()
-    {
-        if (!$this->is_single) {
-            //
-        }
     }
 
     /**
