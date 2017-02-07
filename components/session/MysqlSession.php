@@ -84,13 +84,13 @@ class MysqlSession extends \SessionHandler
      */
     public static function component()
     {
-        if (property_exists(get_called_class(), '_instance')) {
-            if (static::$_instance instanceof static) {
-                return static::$_instance;
+        if (property_exists(get_called_class(), 'instance')) {
+            if (static::$instance instanceof static) {
+                return static::$instance;
             } else {
                 $new_mysql_session = new static();
-                static::$_instance = $new_mysql_session;
-                return static::$_instance;
+                static::$instance = $new_mysql_session;
+                return static::$instance;
             }
         }
         return false;

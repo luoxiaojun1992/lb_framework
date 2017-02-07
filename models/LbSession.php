@@ -27,7 +27,6 @@ class LbSession extends ActiveRecord
         'expire' => 'Expire',
         'data' => 'Data',
     ];
-    protected static $_instance = false;
 
     protected $rules = [
         [['data'], 'required'],
