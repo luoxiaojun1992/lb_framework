@@ -13,6 +13,11 @@ use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\ValidationHelper;
 
+/**
+ * Class ActiveRecord
+ * @inheritdoc
+ * @package lb\components\db\mysql
+ */
 class ActiveRecord extends BaseClass
 {
     const PLUS_NOTIFICATION = '+';
@@ -31,7 +36,7 @@ class ActiveRecord extends BaseClass
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     public function __set($name, $value)
@@ -56,6 +61,7 @@ class ActiveRecord extends BaseClass
 
     /**
      * @param array $attributes
+     * @return $this|null
      */
     public function setAttributes($attributes = [])
     {
@@ -75,7 +81,10 @@ class ActiveRecord extends BaseClass
                     }
                 }
             }
+            return $this;
         }
+
+        return null;
     }
 
     /**
