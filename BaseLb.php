@@ -32,8 +32,6 @@ use Monolog\Logger;
 
 class BaseLb extends BaseClass
 {
-    const VERSION = '1.0.0'; // Framework Version
-
     protected static $app;
 
     public $config = []; // App Configuration
