@@ -1306,6 +1306,6 @@ class Lb extends BaseClass
      */
     protected function runConsoleApp()
     {
-        //
+        dd('test console');
     }
 }
