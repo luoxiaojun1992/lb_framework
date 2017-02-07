@@ -491,6 +491,18 @@ class ActiveRecord extends BaseClass
         return false;
     }
 
+    /**
+     * @return bool
+     */
+    public function delete()
+    {
+        if (!$this->is_single) {
+            $this->deleteByPk($this->getPrimaryKey());
+        }
+
+        return false;
+    }
+
     public function getPrimaryKey()
     {
         if (!$this->is_single) {
