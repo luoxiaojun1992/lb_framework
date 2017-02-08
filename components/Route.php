@@ -8,6 +8,9 @@ use lb\Lb;
 
 class Route extends BaseClass
 {
+    const KERNEL_WEB_CTR_ROOT = 'lb\controllers\web\\';
+    const APP_WEB_CTR_ROOT = 'app\controllers\web\\';
+
     public static function getInfo()
     {
         $route_info = [
@@ -56,9 +59,9 @@ class Route extends BaseClass
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {
-            $controller_name = 'lb\controllers\WebController';
+            $controller_name = self::KERNEL_WEB_CTR_ROOT . 'WebController';
         } else {
-            $controller_name = 'app\controllers\\' . ucfirst($controller_id);
+            $controller_name = self::APP_WEB_CTR_ROOT . ucfirst($controller_id);
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
@@ -78,9 +81,9 @@ class Route extends BaseClass
     {
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {
-            $controller_name = 'lb\controllers\WebController';
+            $controller_name = self::KERNEL_WEB_CTR_ROOT . 'WebController';
         } else {
-            $controller_name = 'app\controllers\\' . ucfirst($controller_id);
+            $controller_name = self::APP_WEB_CTR_ROOT . ucfirst($controller_id);
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];

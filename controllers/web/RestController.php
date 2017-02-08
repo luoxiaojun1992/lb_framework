@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/11
- * Time: 15:33
- * Lb framework rest controller file
- */
 
-namespace lb\controllers;
+namespace lb\controllers\web;
 
 use lb\components\Response;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
+use lb\controllers\BaseController;
 use lb\Lb;
 
 class RestController extends BaseController

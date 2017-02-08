@@ -1,19 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/11/6
- * Time: 下午9:21
- * Lb framework web controller file
- */
 
-namespace lb\controllers;
+namespace lb\controllers\web;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
-use lb\components\helpers\HttpHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
+use lb\controllers\BaseController;
 use lb\Lb;
 use lb\components\Render;
 use lb\components\Response;
@@ -23,34 +16,39 @@ class WebController extends BaseController
     protected $layout = 'default';
     protected $public_params = [];
 
+    protected function beforeAction()
+    {
+        //
+    }
+
     protected function beforeRenderJson()
     {
-
+        //
     }
 
     protected function beforeRenderXML()
     {
-
+        //
     }
 
     protected function beforeRenderJsAlert()
     {
-
+        //
     }
 
     protected function beforeRender()
     {
-
+        //
     }
 
     protected function beforeRenderPartial()
     {
-
+        //
     }
 
     protected function beforeRedirect()
     {
-
+        //
     }
 
     protected function renderJson($array, $is_string = true, $return = false, $status_code = 200)
