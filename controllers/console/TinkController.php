@@ -4,7 +4,7 @@ namespace lb\controllers\console;
 
 class TinkController extends ConsoleController
 {
-    public function actionIndex()
+    public function index()
     {
         $_SERVER['argv'] = [];
 
