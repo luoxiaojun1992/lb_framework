@@ -1043,7 +1043,7 @@ class Lb extends BaseClass
      */
     protected function setRouteInfo()
     {
-        $this->route_info = Route::getInfo();
+        $this->route_info = php_sapi_name() === 'cli' ? Route::getWebInfo() : Route::getWebInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
@@ -1136,6 +1136,9 @@ class Lb extends BaseClass
 
         // Set Error Level
         Level::set();
+
+        // Route
+        $this->setRouteInfo();
     }
 
     /**
@@ -1143,9 +1146,6 @@ class Lb extends BaseClass
      */
     protected function initWebApp()
     {
-        // Route
-        $this->setRouteInfo();
-
         // Init Session
         $this->initSession();
 
@@ -1290,7 +1290,7 @@ class Lb extends BaseClass
             Route::rpc($this->route_info);
         } else {
             ob_start();
-            Route::runAction($this->route_info);
+            Route::runWebAction($this->route_info);
             $page_content = ob_get_contents();
             ob_end_clean();
             $page_content = $this->compressPage($page_content);
@@ -1304,6 +1304,6 @@ class Lb extends BaseClass
      */
     protected function runConsoleApp()
     {
-        dd('test console');
+        Route::runConsoleAction($this->route_info);
     }
 }

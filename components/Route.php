@@ -3,6 +3,7 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
 use lb\Lb;
 
@@ -10,8 +11,12 @@ class Route extends BaseClass
 {
     const KERNEL_WEB_CTR_ROOT = 'lb\controllers\web\\';
     const APP_WEB_CTR_ROOT = 'app\controllers\web\\';
+    const APP_CONSOLE_CTR_ROOT = 'app\controllers\console\\';
 
-    public static function getInfo()
+    /**
+     * @return array
+     */
+    public static function getWebInfo()
     {
         $route_info = [
             'controller' => '',
@@ -54,6 +59,25 @@ class Route extends BaseClass
         return $route_info;
     }
 
+    /**
+     * @return array
+     */
+    public static function getConsoleInfo()
+    {
+        $route_info = [
+            'controller' => '',
+            'action' => '',
+        ];
+        if (isset($argc) && isset($argv) && $argc && strpos($argv[0], '/')) {
+            list($route_info['controller'], $route_info['action']) = explode('/', $argv[0]);
+        }
+        return $route_info;
+    }
+
+    /**
+     * @param array $route_info
+     * @throws HttpException
+     */
     public static function rpc(Array $route_info)
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
@@ -77,7 +101,11 @@ class Route extends BaseClass
         }
     }
 
-    public static function runAction(Array $route_info)
+    /**
+     * @param array $route_info
+     * @throws HttpException
+     */
+    public static function runWebAction(Array $route_info)
     {
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {
@@ -115,6 +143,28 @@ class Route extends BaseClass
             }
         } else {
             throw new HttpException(self::PAGE_NOT_FOUND, 404);
+        }
+    }
+
+    /**
+     * @param array $route_info
+     * @throws ConsoleException
+     */
+    public static function runConsoleAction(Array $route_info)
+    {
+        $controller_id = $route_info['controller'];
+        $controller_name = self::APP_CONSOLE_CTR_ROOT . ucfirst($controller_id);
+        if (class_exists($controller_name)) {
+            $action_name = $route_info['action'];
+            $controller = new $controller_name();
+            $controller->controller_id = $controller_id;
+            if (method_exists($controller, $action_name)) {
+                $controller->$action_name();
+            } else {
+                throw new ConsoleException(self::CONTROLLER_NOT_FOUND, 404);
+            }
+        } else {
+            throw new ConsoleException(self::ACTION_NOT_FOUND, 404);
         }
     }
 }

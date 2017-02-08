@@ -2,7 +2,7 @@
 
 namespace lb\applications\console;
 
-use lb\components\error_handlers\HttpException;
+use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
 
@@ -21,8 +21,8 @@ class App extends Lb
                 // if php version >= 7.0.0
                 try {
                     parent::run();
-                } catch (HttpException $httpException) {
-                    $this->exitException($httpException);
+                } catch (ConsoleException $consoleException) {
+                    $this->exitException($consoleException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
                 } catch (\Throwable $throwable) {
@@ -32,8 +32,8 @@ class App extends Lb
                 // if php version < 7.0.0
                 try {
                     parent::run();
-                } catch (HttpException $httpException) {
-                    $this->exitException($httpException);
+                } catch (ConsoleException $consoleException) {
+                    $this->exitException($consoleException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
                 } catch (\Exception $e) {
