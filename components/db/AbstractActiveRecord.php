@@ -16,7 +16,6 @@ abstract class AbstractActiveRecord extends BaseClass
     use Singleton;
 
     protected $_attributes = [];
-    protected $is_single = false;
     protected $rules = [];
     protected $errors = [];
     public $labels = [];
@@ -28,7 +27,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function __set($name, $value)
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             if (array_key_exists($name, $this->_attributes)) {
                 settype($value, gettype($this->_attributes[$name]));
                 $this->_attributes[$name] = $value;
@@ -42,7 +41,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function __get($name)
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             if (array_key_exists($name, $this->_attributes)) {
                 return $this->_attributes[$name];
             }
@@ -74,7 +73,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function isNewRecord()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             return $this->is_new_record;
         }
         return false;
@@ -85,7 +84,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function getPrimaryKey()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             if (array_key_exists($this->_primary_key, $this->_attributes)) {
                 return $this->_attributes[$this->_primary_key];
             }
@@ -106,7 +105,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function getAttributes()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             return $this->_attributes;
         }
         return [];
@@ -117,7 +116,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function getFields()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             return array_keys($this->_attributes);
         }
         return [];
@@ -128,7 +127,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function getLabels()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             return $this->labels;
         }
         return [];
@@ -139,7 +138,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function getErrors()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             return $this->errors;
         }
         return false;
@@ -150,7 +149,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public function delete()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             self::model()->deleteByPk($this->getPrimaryKey());
         }
 
@@ -162,7 +161,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     protected function beforeSave()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             if ($this->isNewRecord()) {
                 $this->beforeCreate();
             } else {
@@ -180,7 +179,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     protected function beforeCreate()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             //
         }
 
@@ -192,7 +191,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     protected function beforeUpdate()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             //
         }
 
@@ -201,7 +200,7 @@ abstract class AbstractActiveRecord extends BaseClass
 
     protected function afterSave()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             //
         }
     }

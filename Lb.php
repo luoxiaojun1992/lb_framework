@@ -13,6 +13,7 @@ use lb\components\listeners\BaseListener;
 use lb\components\observers\BaseObserver;
 use lb\components\Pagination;
 use lb\components\session\Session;
+use lb\components\traits\Singleton;
 use lb\components\User;
 use lb\components\cache\Filecache;
 use lb\components\cache\Memcache;
@@ -32,21 +33,15 @@ use Monolog\Logger;
 
 class Lb extends BaseClass
 {
-    protected static $app;
+    use Singleton;
 
     public $config = []; // App Configuration
-    protected $is_single = false;
     protected $route_info = [];
     public $containers = [];
 
     public function __construct($is_single = false)
     {
         !$is_single && $this->init();
-    }
-
-    public function __clone()
-    {
-        //
     }
 
     // Singleton App
@@ -64,7 +59,7 @@ class Lb extends BaseClass
     // Get App Root Directory
     public function getRootDir()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 return $this->containers['config']->get('root_dir');
             }
@@ -75,7 +70,7 @@ class Lb extends BaseClass
     // Get Client IP Address
     public function getClientAddress()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getClientAddress();
         }
         return '';
@@ -84,7 +79,7 @@ class Lb extends BaseClass
     // Get Host
     public function getHost()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getHost();
         }
         return '';
@@ -93,7 +88,7 @@ class Lb extends BaseClass
     // Get Request URI
     public function getUri()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getUri();
         }
         return '';
@@ -102,7 +97,7 @@ class Lb extends BaseClass
     // Ger Host IP Address
     public function getHostAddress()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getHostAddress();
         }
         return '';
@@ -111,7 +106,7 @@ class Lb extends BaseClass
     // Get User Agent
     public function getUserAgent()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getUserAgent();
         }
         return '';
@@ -120,7 +115,7 @@ class Lb extends BaseClass
     // Get Query String
     public function getQueryString()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getQueryString();
         }
         return '';
@@ -129,7 +124,7 @@ class Lb extends BaseClass
     // Get App Name
     public function getName()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 return $this->containers['config']->get('name');
             }
@@ -140,7 +135,7 @@ class Lb extends BaseClass
     // Get Restful Api Config
     public function getRest()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 return $this->containers['config']->get('rest');
             }
@@ -151,7 +146,7 @@ class Lb extends BaseClass
     // Get Http Basic Auth User
     public function getBasicAuthUser()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getBasicAuthUser();
         }
         return '';
@@ -160,7 +155,7 @@ class Lb extends BaseClass
     // Get Http Basic Auth Password
     public function getBasicAuthPassword()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getBasicAuthPassword();
         }
         return '';
@@ -187,7 +182,7 @@ class Lb extends BaseClass
     // Get Cdn Host
     public function getCdnHost()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 return trim($this->containers['config']->get('cdn_host'), '/');
             }
@@ -223,7 +218,7 @@ class Lb extends BaseClass
     // Get Route Info
     public function getRouteInfo()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) &&
                 ($action = $this->containers['route_info']->get('action'))) {
                 return ['controller' => $controller, 'action' => $action];
@@ -259,7 +254,7 @@ class Lb extends BaseClass
     // Get Configuration By Name
     public function getConfigByName($config_name)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 return $this->containers['config']->get($config_name);
             }
@@ -270,7 +265,7 @@ class Lb extends BaseClass
     // If is home
     public function isHome()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['route_info'])) {
                 $home_controller = 'index';
                 $home_action = 'index';
@@ -291,7 +286,7 @@ class Lb extends BaseClass
     public function getHomeUri()
     {
         $homeUri = '';
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $controller = 'index';
             $action = 'index';
             $home = $this->getHome();
@@ -311,7 +306,7 @@ class Lb extends BaseClass
     // Go Home
     public function goHome()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $controller = 'index';
             $action = 'index';
             $home = $this->getHome();
@@ -331,7 +326,7 @@ class Lb extends BaseClass
     // Go Back
     public function goBack()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $referer = $this->getReferer();
             if ($referer) {
                 $this->redirect($referer);
@@ -365,7 +360,7 @@ class Lb extends BaseClass
     public function getJsFiles($controller_id, $template_id)
     {
         $js_files = [];
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 $asset_config = $this->containers['config']->get('assets');
                 if ($asset_config) {
@@ -382,7 +377,7 @@ class Lb extends BaseClass
     public function getCssFiles($controller_id, $template_id)
     {
         $css_files = [];
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($this->containers['config'])) {
                 $asset_config = $this->containers['config']->get('assets');
                 if ($asset_config) {
@@ -398,7 +393,7 @@ class Lb extends BaseClass
     // Get Db Connection
     public function getDb($db_type, $node_type)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             switch ($db_type) {
                 case Connection::DB_TYPE:
                     switch ($node_type) {
@@ -423,7 +418,7 @@ class Lb extends BaseClass
     // Request Redirect
     public function redirect($path, $replace = true, $http_response_code = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             UrlManager::redirect($path, $replace, $http_response_code);
         }
     }
@@ -431,7 +426,7 @@ class Lb extends BaseClass
     // Create Absolute Url
     public function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl, $port);
         }
         return '';
@@ -440,7 +435,7 @@ class Lb extends BaseClass
     // Create Relative Url
     public function createRelativeUrl($uri, $query_params = [])
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return UrlManager::createRelativeUrl($uri, $query_params);
         }
         return '';
@@ -449,7 +444,7 @@ class Lb extends BaseClass
     // Get Http Request Param Value
     public function getParam($param_name, $default_value = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
         }
         return false;
@@ -458,7 +453,7 @@ class Lb extends BaseClass
     // Get Csrf Token
     public function getCsrfToken()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Security::generateCsrfToken();
         }
         return '';
@@ -467,7 +462,7 @@ class Lb extends BaseClass
     // Get Session Value
     public function getSession($session_key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
         }
         return false;
@@ -476,7 +471,7 @@ class Lb extends BaseClass
     // Set Session Value
     public function setSession($session_key, $session_value)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $_SESSION[$session_key] = $session_value;
         }
     }
@@ -484,7 +479,7 @@ class Lb extends BaseClass
     // Delete Session
     public function delSession($session_key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($_SESSION[$session_key])) {
                 unset($_SESSION[$session_key]);
             }
@@ -494,7 +489,7 @@ class Lb extends BaseClass
     // Delete Multi Sessions
     public function delSessions($session_keys)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             foreach ($session_keys as $session_key) {
                 $this->delSession($session_key);
             }
@@ -504,7 +499,7 @@ class Lb extends BaseClass
     // Get Cookie Value
     public function getCookie($cookie_key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return isset($_COOKIE[$cookie_key]) ? $this->decrypt_by_config($_COOKIE[$cookie_key]) : false;
         }
         return false;
@@ -513,7 +508,7 @@ class Lb extends BaseClass
     // Set Cookie Value
     public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $cookie_value = $this->encrypt_by_config($cookie_value);
             setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
         }
@@ -522,7 +517,7 @@ class Lb extends BaseClass
     // Set Cookie Value By Header
     public function setHeaderCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $cookie_value = $this->encrypt_by_config($cookie_value);
             $cookie_str[] = $cookie_key . '=' . $cookie_value;
             if ($expire) {
@@ -547,7 +542,7 @@ class Lb extends BaseClass
     // Delete Cookie
     public function delCookie($cookie_key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($_COOKIE[$cookie_key])) {
                 setcookie($cookie_key);
             }
@@ -557,7 +552,7 @@ class Lb extends BaseClass
     // Delete Multi Cookies
     public function delCookies($cookie_keys)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             foreach ($cookie_keys as $cookie_key) {
                 $this->delCookie($cookie_key);
             }
@@ -567,7 +562,7 @@ class Lb extends BaseClass
     // Delete Cookie By Header
     public function delHeaderCookie($cookie_key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (isset($_COOKIE[$cookie_key])) {
                 $this->setHeaderCookie($cookie_key, $_COOKIE[$cookie_key], -1);
             }
@@ -577,7 +572,7 @@ class Lb extends BaseClass
     // Delete Multi Cookies By Header
     public function delHeaderCookies($cookie_keys)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             foreach ($cookie_keys as $cookie_key) {
                 $this->delHeaderCookie($cookie_key);
             }
@@ -587,7 +582,7 @@ class Lb extends BaseClass
     // Get Request Method
     public function getRequestMethod()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getRequestMethod();
         }
         return '';
@@ -596,7 +591,7 @@ class Lb extends BaseClass
     // Get Referer
     public function getReferer()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::getReferer();
         }
         return '';
@@ -605,7 +600,7 @@ class Lb extends BaseClass
     // Memcache Get
     public function memcacheGet($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Memcache::component()->get($key);
         }
         return '';
@@ -614,7 +609,7 @@ class Lb extends BaseClass
     // Memcache Set
     public function memcacheSet($key, $value, $expiration = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Memcache::component()->set($key, $value, $expiration);
         }
     }
@@ -622,7 +617,7 @@ class Lb extends BaseClass
     // Memcache Delete
     public function memcacheDelete($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Memcache::component()->delete($key);
         }
     }
@@ -630,7 +625,7 @@ class Lb extends BaseClass
     // Redis Get
     public function redisGet($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Redis::component()->get($key);
         }
         return '';
@@ -639,7 +634,7 @@ class Lb extends BaseClass
     // Redis Set
     public function redisSet($key, $value, $expiration = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Redis::component()->set($key, $value, $expiration);
         }
     }
@@ -647,7 +642,7 @@ class Lb extends BaseClass
     // Redis Delete
     public function redisDelete($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Redis::component()->delete($key);
         }
     }
@@ -655,7 +650,7 @@ class Lb extends BaseClass
     // Import PHP File
     public function import($path)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
                 $insecure_codes = [
                     '2f',
@@ -676,7 +671,7 @@ class Lb extends BaseClass
     // Get environment variable
     public function getEnv($env_name)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Environment::getValue($env_name);
         }
         return '';
@@ -685,7 +680,7 @@ class Lb extends BaseClass
     // Send Swift Mail
     public function swiftSend($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
         }
     }
@@ -693,7 +688,7 @@ class Lb extends BaseClass
     // File Cache Set
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Filecache::component()->add($key, $value, $cache_time);
         }
     }
@@ -701,7 +696,7 @@ class Lb extends BaseClass
     // File Cache Get
     public function fileCacheGet($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Filecache::component()->get($key);
         }
         return '';
@@ -710,7 +705,7 @@ class Lb extends BaseClass
     // File Cache Delete
     public function fileCacheDelete($key)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Filecache::component()->delete($key);
         }
     }
@@ -718,7 +713,7 @@ class Lb extends BaseClass
     // File Cache Flush
     public function fileCacheFlush()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Filecache::component()->flush();
         }
     }
@@ -726,7 +721,7 @@ class Lb extends BaseClass
     // Log Route Info
     public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             Log::component()->record($role, $level, $message, $context);
         }
     }
@@ -734,7 +729,7 @@ class Lb extends BaseClass
     // Check If Logged In
     public function loginRequired($redirect_url)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             User::loginRequired($redirect_url);
         }
     }
@@ -742,7 +737,7 @@ class Lb extends BaseClass
     // Check If is Guest
     public function isGuest()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return User::isGuest();
         }
         return false;
@@ -751,7 +746,7 @@ class Lb extends BaseClass
     // Get User ID
     public function getUserId()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (!$this->isGuest()) {
                 return $this->getSession('user_id');
             }
@@ -762,7 +757,7 @@ class Lb extends BaseClass
     // Get User Name
     public function getUsername()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (!$this->isGuest()) {
                 return $this->getSession('username');
             }
@@ -773,7 +768,7 @@ class Lb extends BaseClass
     // Log In
     public function login($username, $user_id, $remember_token = '', $timeout = 0)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             User::login($username, $user_id, $remember_token, $timeout);
         }
     }
@@ -781,7 +776,7 @@ class Lb extends BaseClass
     // Log Out
     public function logOut()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             User::logOut();
         }
     }
@@ -790,7 +785,7 @@ class Lb extends BaseClass
     public function isAction()
     {
         $is_action = false;
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             if (Lb::app()->isPrettyUrl()) {
                 if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getUri(), '/action/') !== false) {
                     $is_action = true;
@@ -807,7 +802,7 @@ class Lb extends BaseClass
     // Output Captcha
     public function captcha()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             ImageHelper::captcha();
         }
     }
@@ -815,7 +810,7 @@ class Lb extends BaseClass
     // Get System Version
     public function getVersion()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return SystemHelper::getVersion();
         }
         return '';
@@ -824,7 +819,7 @@ class Lb extends BaseClass
     // Get Pagination
     public function getPagination($total, $page_size, $page = 1)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Pagination::getParams($total, $page_size, $page);
         }
         return [];
@@ -833,7 +828,7 @@ class Lb extends BaseClass
     // Is Ajax
     public function isAjax()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return Request::isAjax();
         }
         return false;
@@ -842,7 +837,7 @@ class Lb extends BaseClass
     // Get RPC Client
     public function get_rpc_client($url)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             include_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' .
                 DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
             return new \Hprose\Http\Client($url);
@@ -853,7 +848,7 @@ class Lb extends BaseClass
     // Encrype
     public function encrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $encrypt_method = CryptHelper::get_encrypt_method($cryptor);
             return call_user_func_array([CryptHelper::className(), $encrypt_method], [$str, $key, $algo]);
         }
@@ -863,7 +858,7 @@ class Lb extends BaseClass
     // Decrypt
     public function decrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
             return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
         }
@@ -873,7 +868,7 @@ class Lb extends BaseClass
     // Encrypt By Config
     public function encrypt_by_config($str)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $security_key = $this->getConfigByName('security_key');
             if ($security_key) {
                 $cryptor = $this->getConfigByName('cryptor');
@@ -890,7 +885,7 @@ class Lb extends BaseClass
     // Decrypt By Config
     public function decrypt_by_config($str)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             $security_key = $this->getConfigByName('security_key');
             if ($security_key) {
                 $cryptor = $this->getConfigByName('cryptor');
@@ -907,7 +902,7 @@ class Lb extends BaseClass
     // Get DI Container
     public function getDIContainer()
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             return DI::component();
         }
         return false;
@@ -916,7 +911,7 @@ class Lb extends BaseClass
     // Register Event Listener
     public function on($event_name, BaseListener $listener, $data = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             BaseObserver::on($event_name, $listener, $data);
         }
     }
@@ -924,9 +919,35 @@ class Lb extends BaseClass
     // Trigger Event
     public function trigger($event_name, $event = null)
     {
-        if ($this->is_single) {
+        if ($this->isSingle()) {
             BaseObserver::trigger($event_name, $event);
         }
+    }
+
+    // Push message to queue
+    public function queuePush(Callable $handler, $message)
+    {
+        if ($this->isSingle()) {
+            //
+        }
+    }
+
+    // Pull message from queue
+    public function queuePull()
+    {
+        if ($this->isSingle()) {
+            //
+        }
+    }
+
+    /**
+     * Get Queue Config
+     *
+     * @return array
+     */
+    public function getQueueConfig()
+    {
+        return $this->getConfigByName('queue');
     }
 
     // Autoloader
@@ -1254,7 +1275,7 @@ class Lb extends BaseClass
      */
     public function run()
     {
-        if (!$this->is_single) {
+        if (!$this->isSingle()) {
             if (php_sapi_name() !== 'cli') {
                 $this->runWebApp();
             } else {
