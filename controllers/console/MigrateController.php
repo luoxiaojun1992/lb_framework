@@ -36,4 +36,16 @@ class MigrateController extends ConsoleController
         $this->setArgv('create');
         $this->runMigrate();
     }
+
+    public function up()
+    {
+        $this->setArgv('migrate');
+        $this->runMigrate();
+    }
+
+    public function down()
+    {
+        $this->setArgv('rollback');
+        $this->runMigrate();
+    }
 }
