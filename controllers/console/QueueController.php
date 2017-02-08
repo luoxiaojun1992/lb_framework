@@ -11,16 +11,24 @@ class QueueController extends ConsoleController
      */
     public function listen()
     {
+        declare(ticks=1);
+
         $this->writeln('Listening...');
 
         while (true) {
             $job = Lb::app()->queuePull();
             if ($job) {
                 $handler_class = $job->getHandler();
-                (new $handler_class)->handle($job);
+                try {
+                    (new $handler_class)->handle($job);
+                } catch (\Exception $e) {
+                    Lb::app()->queuePush($job);
+                }
             }
 
             usleep(500000);
         }
+
+        dd('Exited.');
     }
 }
