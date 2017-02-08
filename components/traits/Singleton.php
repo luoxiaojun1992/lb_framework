@@ -21,4 +21,16 @@ trait Singleton
     {
         return $this->is_single;
     }
+
+    /**
+     * @return object
+     */
+    public static function component()
+    {
+        if (static::$instance instanceof static) {
+            return static::$instance;
+        } else {
+            return (static::$instance = new static());
+        }
+    }
 }

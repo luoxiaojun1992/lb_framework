@@ -12,6 +12,8 @@ use lb\components\helpers\SystemHelper;
 use lb\components\listeners\BaseListener;
 use lb\components\observers\BaseObserver;
 use lb\components\Pagination;
+use lb\components\queues\BaseQueue;
+use lb\components\queues\Job;
 use lb\components\session\Session;
 use lb\components\traits\Singleton;
 use lb\components\User;
@@ -925,10 +927,17 @@ class Lb extends BaseClass
     }
 
     // Push message to queue
-    public function queuePush(Callable $handler, $message)
+    public function queuePush(Job $job)
     {
         if ($this->isSingle()) {
-            //
+            $queue_config = $this->getQueueConfig();
+            if (isset($queue_config['driver'])) {
+                /** @var BaseQueue $driver */
+                $driver = $queue_config['driver'];
+                /** @var BaseQueue $driver_instance */
+                $driver_instance = $driver::component();
+                $driver_instance->push($job);
+            }
         }
     }
 
@@ -936,8 +945,17 @@ class Lb extends BaseClass
     public function queuePull()
     {
         if ($this->isSingle()) {
-            //
+            $queue_config = $this->getQueueConfig();
+            if (isset($queue_config['driver'])) {
+                /** @var BaseQueue $driver */
+                $driver = $queue_config['driver'];
+                /** @var BaseQueue $driver_instance */
+                $driver_instance = $driver::component();
+                return $driver_instance->pull();
+            }
         }
+
+        return null;
     }
 
     /**
