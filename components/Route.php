@@ -10,8 +10,19 @@ use lb\Lb;
 class Route extends BaseClass
 {
     const KERNEL_WEB_CTR_ROOT = 'lb\controllers\web\\';
+    const KERNEL_CONSOLE_CTR_ROOT = 'lb\controllers\console\\';
     const APP_WEB_CTR_ROOT = 'app\controllers\web\\';
     const APP_CONSOLE_CTR_ROOT = 'app\controllers\console\\';
+    const KERNEL_WEB_CTR = [
+        'web',
+    ];
+    const KERNEL_WEB_ACTIONS = [
+        'error',
+        'api',
+    ];
+    const KERNEL_CONSOLE_CTR = [
+        'system',
+    ];
 
     /**
      * @return array
@@ -85,8 +96,8 @@ class Route extends BaseClass
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
-        if ($controller_id == 'web') {
-            $controller_name = self::KERNEL_WEB_CTR_ROOT . 'WebController';
+        if (in_array($controller_id, self::KERNEL_WEB_CTR)) {
+            $controller_name = self::KERNEL_WEB_CTR_ROOT . ucfirst($controller_id) . 'Controller';
         } else {
             $controller_name = self::APP_WEB_CTR_ROOT . ucfirst($controller_id);
         }
@@ -111,8 +122,8 @@ class Route extends BaseClass
     public static function runWebAction(Array $route_info)
     {
         $controller_id = $route_info['controller'];
-        if ($controller_id == 'web') {
-            $controller_name = self::KERNEL_WEB_CTR_ROOT . 'WebController';
+        if (in_array($controller_id, self::KERNEL_WEB_CTR)) {
+            $controller_name = self::KERNEL_WEB_CTR_ROOT . ucfirst($controller_id) . 'Controller';
         } else {
             $controller_name = self::APP_WEB_CTR_ROOT . ucfirst($controller_id);
         }
@@ -156,7 +167,11 @@ class Route extends BaseClass
     public static function runConsoleAction(Array $route_info)
     {
         $controller_id = $route_info['controller'];
-        $controller_name = self::APP_CONSOLE_CTR_ROOT . ucfirst($controller_id);
+        if (in_array($controller_id, self::KERNEL_CONSOLE_CTR)) {
+            $controller_name = self::KERNEL_CONSOLE_CTR_ROOT . ucfirst($controller_id) . 'Controller';
+        } else {
+            $controller_name = self::APP_CONSOLE_CTR_ROOT . ucfirst($controller_id);
+        }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             $controller = new $controller_name();

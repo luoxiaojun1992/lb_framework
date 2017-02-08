@@ -1025,7 +1025,7 @@ class Lb extends BaseClass
      */
     protected function initLoginRequired()
     {
-        if ($this->route_info['controller'] != 'web' || !in_array($this->route_info['action'], ['error', 'api'])) {
+        if (!in_array($this->route_info['controller'], Route::KERNEL_WEB_CTR) || !in_array($this->route_info['action'], Route::KERNEL_WEB_ACTIONS)) {
             $config_container = Lb::app()->containers['config'];
             $login_required_filter = $config_container->get('login_required_filter');
             if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) ||
