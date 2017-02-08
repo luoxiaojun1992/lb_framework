@@ -77,12 +77,15 @@ class Route extends BaseClass
     {
         $route_info = [
             'controller' => '',
-            'action' => '',
+            'action' => 'index',
         ];
         if (isset($_SERVER['argc']) && isset($_SERVER['argv']) && $_SERVER['argc'] > 1) {
             $controller_action_info = $_SERVER['argv'][1];
             if (strpos($controller_action_info, '/') > 0) {
                 list($route_info['controller'], $route_info['action']) = explode('/', $controller_action_info);
+                $route_info['action'] = $route_info['action'] ? : 'index';
+            } else {
+                $route_info['controller'] = $controller_action_info;
             }
         }
         return $route_info;
