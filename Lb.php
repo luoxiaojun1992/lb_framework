@@ -968,9 +968,7 @@ class Lb extends BaseClass
     // Stop App
     public function stop($content = '', $exit_code = 1)
     {
-        if ($content) {
-            echo $content;
-        }
+        $content && @_echo($content);
         die($exit_code);
     }
 
