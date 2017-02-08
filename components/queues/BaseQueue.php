@@ -18,4 +18,10 @@ abstract class BaseQueue extends BaseClass
      * PHP serializer.
      */
     const SERIALIZER_PHP = 'php';
+
+    /**
+     * Choose the serializer.
+     * @var string
+     */
+    public $serializer = 'json';
 }
