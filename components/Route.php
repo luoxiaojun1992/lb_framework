@@ -22,6 +22,7 @@ class Route extends BaseClass
     ];
     const KERNEL_CONSOLE_CTR = [
         'system',
+        'tink',
     ];
 
     /**
