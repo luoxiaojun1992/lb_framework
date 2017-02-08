@@ -60,7 +60,8 @@
     "vlucas/phpdotenv": "*",
     "guzzlehttp/guzzle": "*",
     "symfony/var-dumper": "*",
-    "psy/psysh": "*"
+    "psy/psysh": "*",
+    "symfony/console": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
