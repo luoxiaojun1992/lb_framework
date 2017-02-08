@@ -1043,7 +1043,7 @@ class Lb extends BaseClass
      */
     protected function setRouteInfo()
     {
-        $this->route_info = php_sapi_name() === 'cli' ? Route::getWebInfo() : Route::getWebInfo();
+        $this->route_info = php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';

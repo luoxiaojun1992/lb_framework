@@ -68,8 +68,11 @@ class Route extends BaseClass
             'controller' => '',
             'action' => '',
         ];
-        if (isset($argc) && isset($argv) && $argc && strpos($argv[0], '/')) {
-            list($route_info['controller'], $route_info['action']) = explode('/', $argv[0]);
+        if (isset($_SERVER['argc']) && isset($_SERVER['argv']) && $_SERVER['argc'] > 1) {
+            $controller_action_info = $_SERVER['argv'][1];
+            if (strpos($controller_action_info, '/') > 0) {
+                list($route_info['controller'], $route_info['action']) = explode('/', $controller_action_info);
+            }
         }
         return $route_info;
     }
