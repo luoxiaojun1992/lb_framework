@@ -77,7 +77,7 @@ class Route extends BaseClass
         }
     }
 
-    public static function redirect(Array $route_info)
+    public static function runAction(Array $route_info)
     {
         $controller_id = $route_info['controller'];
         if ($controller_id == 'web') {

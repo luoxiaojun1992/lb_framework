@@ -1292,7 +1292,7 @@ class Lb extends BaseClass
             Route::rpc($this->route_info);
         } else {
             ob_start();
-            Route::redirect($this->route_info);
+            Route::runAction($this->route_info);
             $page_content = ob_get_contents();
             ob_end_clean();
             $page_content = $this->compressPage($page_content);
