@@ -12,6 +12,9 @@ class QueueController extends ConsoleController
     public function listen()
     {
         declare(ticks=1);
+        pcntl_signal(SIGINT, function(){
+            dd('Exited.');
+        });
 
         $this->writeln('Listening...');
 
@@ -28,7 +31,5 @@ class QueueController extends ConsoleController
 
             usleep(500000);
         }
-
-        dd('Exited.');
     }
 }
