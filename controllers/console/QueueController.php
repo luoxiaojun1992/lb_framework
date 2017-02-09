@@ -21,11 +21,18 @@ class QueueController extends ConsoleController
         while (true) {
             $job = Lb::app()->queuePull();
             if ($job) {
-                $handler_class = $job->getHandler();
-                try {
-                    (new $handler_class)->handle($job);
-                } catch (\Exception $e) {
+                $pid = pcntl_fork();
+                if ($pid == -1) {
                     Lb::app()->queuePush($job);
+                } else if ($pid == 0) {
+                    $handler_class = $job->getHandler();
+                    (new $handler_class)->handle($job);
+                    $job->setProcessed();
+                } else {
+                    pcntl_wait($status);
+                    if (!$job->isProcessed()) {
+                        Lb::app()->queuePush($job);
+                    }
                 }
             }
 

@@ -7,6 +7,7 @@ class Job implements JobInterface
     public $handler;
     public $id;
     public $data;
+    public $is_processed = false;
 
     public function __construct(Callable $handler, $id, $data)
     {
@@ -38,5 +39,15 @@ class Job implements JobInterface
     public function getHandler()
     {
         return $this->handler;
+    }
+
+    public function isProcessed()
+    {
+        return $this->is_processed;
+    }
+
+    public function setProcessed()
+    {
+        $this->is_processed = true;
     }
 }
