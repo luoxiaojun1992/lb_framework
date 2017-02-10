@@ -28,15 +28,16 @@ class QueueController extends ConsoleController
                     Lb::app()->queuePush($job);
                 } else if ($pid == 0) {
                     $handler_class = $job->getHandler();
-                    (new $handler_class)->handle($job);
-                    $job->setProcessed();
+                    try {
+                        (new $handler_class)->handle($job);
+                    } catch (\Exception $e) {
+                        Lb::app()->queuePush($job);
+                        $this->writeln($e->getTraceAsString());
+                    }
+                    die();
                 } else {
                     pcntl_wait($status);
-                    if (!$job->isProcessed()) {
-                        Lb::app()->queuePush($job);
-                    } else {
-                        $this->writeln('Processed job ' . $job->getId());
-                    }
+                    $this->writeln('Processed job ' . $job->getId());
                 }
             }
 

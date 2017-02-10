@@ -8,7 +8,6 @@ class Job implements JobInterface
     public $id;
     public $data;
     public $execute_at;
-    public $is_processed = false;
 
     public function __construct($handler, $data, $id = 0, $execute_at = '')
     {
@@ -46,16 +45,6 @@ class Job implements JobInterface
     public function getHandler()
     {
         return $this->handler;
-    }
-
-    public function isProcessed()
-    {
-        return $this->is_processed;
-    }
-
-    public function setProcessed()
-    {
-        $this->is_processed = true;
     }
 
     public function setExecuteAt($execute_at)
