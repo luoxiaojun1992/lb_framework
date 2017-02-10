@@ -10,7 +10,7 @@ class Job implements JobInterface
     public $execute_at;
     public $is_processed = false;
 
-    public function __construct(Callable $handler, $data, $id = 0, $execute_at = '')
+    public function __construct($handler, $data, $id = 0, $execute_at = '')
     {
         $this->setHandler($handler);
         $this->setId($id ? : uniqid('queue_', true)); //todo id generator
@@ -18,7 +18,7 @@ class Job implements JobInterface
         $this->setExecuteAt($execute_at ? : date('Y-m-d H:i:s'));
     }
 
-    public function setHandler(Callable $handler)
+    public function setHandler($handler)
     {
         $this->handler = $handler;
     }
@@ -36,6 +36,11 @@ class Job implements JobInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function getHandler()
