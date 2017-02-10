@@ -17,7 +17,7 @@ class RedisQueue extends BaseQueue
         $this->conn->rPush($this->key, $this->serialize($job));
     }
 
-    public function pull() : Job
+    public function pull()
     {
         // Migrating Delayed Queues
         $delayed_queues = $this->conn->zRange($this->delayed_key, 0, -1);

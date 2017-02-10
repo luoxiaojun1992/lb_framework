@@ -68,7 +68,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
 
     abstract public function push(Job $job);
 
-    abstract public function pull() : Job;
+    abstract public function pull();
 
     abstract public function delay(Job $job, $execute_at);
 

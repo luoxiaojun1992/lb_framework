@@ -6,7 +6,7 @@ interface QueueInterface
 {
     public function push(Job $job);
 
-    public function pull() : Job;
+    public function pull();
 
     public function delay(Job $job, $execute_at);
 
