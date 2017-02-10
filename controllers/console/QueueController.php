@@ -2,6 +2,7 @@
 
 namespace lb\controllers\console;
 
+use lb\components\queues\Job;
 use lb\Lb;
 
 class QueueController extends ConsoleController
@@ -19,6 +20,7 @@ class QueueController extends ConsoleController
         $this->writeln('Listening...');
 
         while (true) {
+            /** @var Job $job */
             $job = Lb::app()->queuePull();
             if ($job) {
                 $pid = pcntl_fork();
@@ -32,6 +34,8 @@ class QueueController extends ConsoleController
                     pcntl_wait($status);
                     if (!$job->isProcessed()) {
                         Lb::app()->queuePush($job);
+                    } else {
+                        $this->writeln('Processed job ' . $job->getId());
                     }
                 }
             }
