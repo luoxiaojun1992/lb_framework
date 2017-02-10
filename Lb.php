@@ -934,9 +934,7 @@ class Lb extends BaseClass
             if (isset($queue_config['driver'])) {
                 /** @var BaseQueue $driver */
                 $driver = $queue_config['driver'];
-                /** @var BaseQueue $driver_instance */
-                $driver_instance = $driver::component();
-                $driver_instance->push($job);
+                $driver::component()->push($job);
             }
         }
     }
@@ -949,9 +947,7 @@ class Lb extends BaseClass
             if (isset($queue_config['driver'])) {
                 /** @var BaseQueue $driver */
                 $driver = $queue_config['driver'];
-                /** @var BaseQueue $driver_instance */
-                $driver_instance = $driver::component();
-                return $driver_instance->pull();
+                return $driver::component()->pull();
             }
         }
 

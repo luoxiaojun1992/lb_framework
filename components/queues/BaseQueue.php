@@ -23,11 +23,47 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
      * Choose the serializer.
      * @var string
      */
-    public $serializer = 'json';
+    public $serializer = 'php';
 
     private function __construct()
     {
         $this->init();
+    }
+
+    /**
+     * Serializer
+     *
+     * @param $unserialized_data
+     * @return string
+     */
+    protected function serialize($unserialized_data)
+    {
+        switch ($this->serializer) {
+            case self::SERIALIZER_JSON:
+                break;
+            case self::SERIALIZER_PHP:
+                return serialize($unserialized_data);
+        }
+
+        return $unserialized_data;
+    }
+
+    /**
+     * Deserializer
+     *
+     * @param $serialized_data
+     * @return mixed
+     */
+    protected function deserialize($serialized_data)
+    {
+        switch ($this->serializer) {
+            case self::SERIALIZER_JSON:
+                break;
+            case self::SERIALIZER_PHP:
+                return unserialize($serialized_data);
+        }
+
+        return $serialized_data;
     }
 
     abstract public function push(Job $job);

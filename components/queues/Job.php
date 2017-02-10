@@ -7,13 +7,15 @@ class Job implements JobInterface
     public $handler;
     public $id;
     public $data;
+    public $execute_at;
     public $is_processed = false;
 
-    public function __construct(Callable $handler, $id, $data)
+    public function __construct(Callable $handler, $data, $id = 0, $execute_at = '')
     {
         $this->setHandler($handler);
-        $this->setId($id);
+        $this->setId($id ? : uniqid('queue_', true)); //todo id generator
         $this->setData($data);
+        $this->setExecuteAt($execute_at ? : date('Y-m-d H:i:s'));
     }
 
     public function setHandler(Callable $handler)
@@ -49,5 +51,15 @@ class Job implements JobInterface
     public function setProcessed()
     {
         $this->is_processed = true;
+    }
+
+    public function setExecuteAt($execute_at)
+    {
+        $this->execute_at = $execute_at;
+    }
+
+    public function getExecuteAt()
+    {
+        return $this->execute_at;
     }
 }
