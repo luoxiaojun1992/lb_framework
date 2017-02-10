@@ -939,6 +939,19 @@ class Lb extends BaseClass
         }
     }
 
+    // Push message to delay queue
+    public function queueDelay(Job $job, $execute_at)
+    {
+        if ($this->isSingle()) {
+            $queue_config = $this->getQueueConfig();
+            if (isset($queue_config['driver'])) {
+                /** @var BaseQueue $driver */
+                $driver = $queue_config['driver'];
+                $driver::component()->delay($job, $execute_at);
+            }
+        }
+    }
+
     // Pull message from queue
     public function queuePull()
     {
