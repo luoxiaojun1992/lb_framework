@@ -20,7 +20,7 @@ trait Lock
 
     public function unlock($key = self::class)
     {
-        return Lb::app()->redisDelete($this->getLockKey($key));
+        Lb::app()->redisDelete($this->getLockKey($key));
     }
 
     protected function getLock($key = self::class)
