@@ -10,6 +10,7 @@ class Redis extends BaseClass
 {
     use Singleton;
 
+    /** @var $conn \Redis */
     public $conn;
     protected $_host = '127.0.0.1';
     protected $_port = 6379;
@@ -60,22 +61,55 @@ class Redis extends BaseClass
         }
     }
 
+    /**
+     * @param $key
+     * @return bool|string
+     */
     public function get($key)
     {
         return $this->conn ? $this->conn->get($key) : '';
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param null $expiration
+     * @return bool
+     */
     public function set($key, $value, $expiration = null)
     {
         if ($this->conn) {
-            $this->conn->set($key, $value, $expiration);
+            return $this->conn->set($key, $value, $expiration);
         }
+
+        return false;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @return bool
+     */
+    public function setnx($key, $value)
+    {
+        if ($this->conn) {
+            return $this->conn->setnx($key, $value);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
     public function delete($key)
     {
         if ($this->conn) {
             $this->conn->delete($key);
+            return true;
         }
+
+        return false;
     }
 }
