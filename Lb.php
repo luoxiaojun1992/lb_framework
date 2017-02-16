@@ -31,6 +31,7 @@ use lb\components\containers\Config;
 use lb\components\UrlManager;
 use lb\components\Security;
 use lb\components\helpers\FileHelper;
+use lb\components\utils\IdGenerator;
 use Monolog\Logger;
 
 class Lb extends BaseClass
@@ -985,6 +986,17 @@ class Lb extends BaseClass
     public function getIdGeneratorConfig()
     {
         return $this->getConfigByName('id_generator');
+    }
+
+    /**
+     * Rewrite uniqid
+     *
+     * @param string $prefix
+     * @return int
+     */
+    public function uniqid($prefix = '')
+    {
+        return IdGenerator::generate($prefix);
     }
 
     // Autoloader
