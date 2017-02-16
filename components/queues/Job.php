@@ -2,7 +2,7 @@
 
 namespace lb\components\queues;
 
-use lb\components\utils\IdGenerator;
+use lb\Lb;
 
 class Job implements JobInterface
 {
@@ -14,7 +14,7 @@ class Job implements JobInterface
     public function __construct($handler, $data, $id = 0, $execute_at = '')
     {
         $this->setHandler($handler);
-        $this->setId($id ? : IdGenerator::generate('queue_'));
+        $this->setId($id ? : Lb::app()->uniqid('queue_'));
         $this->setData($data);
         $this->setExecuteAt($execute_at ? : date('Y-m-d H:i:s'));
     }
