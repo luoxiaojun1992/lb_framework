@@ -977,6 +977,16 @@ class Lb extends BaseClass
         return $this->getConfigByName('queue');
     }
 
+    /**
+     * Get Id Generator Config
+     *
+     * @return array
+     */
+    public function getIdGeneratorConfig()
+    {
+        return $this->getConfigByName('id_generator');
+    }
+
     // Autoloader
     protected static function autoload($className)
     {
