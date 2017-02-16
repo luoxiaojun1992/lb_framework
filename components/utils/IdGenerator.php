@@ -54,7 +54,12 @@ class IdGenerator extends BaseClass
         return ((sprintf('%.0f', $timestamp) - sprintf('%.0f', self::$twepoch)) << self::$timestampLeftShift ) | (self::$workerId << self::$workerIdShift) | self::$sequence;
     }
 
-    public static function generate()
+    /**
+     * @param string $prefix
+     * @return int
+     * @throws \Exception
+     */
+    public static function generate($prefix = '')
     {
         $id_generator_config = Lb::app()->getIdGeneratorConfig();
         $workId = $id_generator_config['worker_id'] ?? 1;
@@ -63,6 +68,6 @@ class IdGenerator extends BaseClass
         }
         self::$workerId = $workId;
 
-        return static::nextId();
+        return $prefix . static::nextId();
     }
 }

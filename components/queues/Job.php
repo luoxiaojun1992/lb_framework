@@ -14,7 +14,7 @@ class Job implements JobInterface
     public function __construct($handler, $data, $id = 0, $execute_at = '')
     {
         $this->setHandler($handler);
-        $this->setId($id ? : IdGenerator::generate());
+        $this->setId($id ? : IdGenerator::generate('queue_'));
         $this->setData($data);
         $this->setExecuteAt($execute_at ? : date('Y-m-d H:i:s'));
     }
