@@ -76,7 +76,12 @@ class IdGenerator extends BaseClass
     public function generate($prefix = '')
     {
         $lock_key = $prefix ? $prefix . '@' . self::class : self::class;
-        $this->lock($lock_key);
+        $stop_time = strtotime('+ 2 seconds');
+        while (!$this->lock($lock_key)) {
+            if (time() > $stop_time) {
+                throw new \Exception('Failed to get generator lock.');
+            }
+        }
 
         $id_generator_config = Lb::app()->getIdGeneratorConfig();
         $workId = $id_generator_config['worker_id'] ?? 1;
