@@ -2,6 +2,7 @@
 
 namespace lb\tests\components;
 
+use lb\components\error_handlers\VariableException;
 use lb\tests\BaseTestCase;
 
 class FunctionsTest extends BaseTestCase
@@ -22,11 +23,8 @@ class FunctionsTest extends BaseTestCase
         ob_end_clean();
         $this->assertEquals($var, $content);
 
-        ob_start();
         @_echo($var_not_exists);
-        $content = ob_get_contents();
-        ob_end_clean();
-        $this->assertEmpty($content);
+        $this->expectException(VariableException::class);
     }
 
     public function testEnv()
