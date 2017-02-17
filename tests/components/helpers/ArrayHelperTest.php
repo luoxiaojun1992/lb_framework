@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/15
- * Time: 11:26
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\ArrayHelper;
+use lb\tests\BaseTestCase;
 
-class ArrayHelperTest extends \PHPUnit_Framework_TestCase
+class ArrayHelperTest extends BaseTestCase
 {
     public function testArrayDepth()
     {

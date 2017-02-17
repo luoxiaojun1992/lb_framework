@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/16
- * Time: 9:33
- */
 
 namespace lb\tests\components\widget;
 
 use lb\components\db\mysql\DynamicModel;
 use lb\components\widget\Grid;
+use lb\tests\BaseTestCase;
 
-class GridTest extends \PHPUnit_Framework_TestCase
+class GridTest extends BaseTestCase
 {
     public function testRender()
     {

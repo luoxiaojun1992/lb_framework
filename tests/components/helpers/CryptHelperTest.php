@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/7/30
- * Time: 11:26
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\CryptHelper;
+use lb\tests\BaseTestCase;
 
-class CryptHelperTest extends \PHPUnit_Framework_TestCase
+class CryptHelperTest extends BaseTestCase
 {
     protected $str1;
     protected $str2;

@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/16
- * Time: 11:38
- */
 
 namespace lb\tests\components\db\mysql;
 
 use lb\components\db\mysql\DynamicModel;
+use lb\tests\BaseTestCase;
 
-class DynamicModelTest extends \PHPUnit_Framework_TestCase
+class DynamicModelTest extends BaseTestCase
 {
     protected $dynamicModel;
 

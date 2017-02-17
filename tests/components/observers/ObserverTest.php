@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun1992
- * Date: 16-8-8
- * Time: 下午2:02
- */
 
 namespace lb\tests\components\observers;
 
 use lb\components\listeners\BaseListener;
 use lb\Lb;
+use lb\tests\BaseTestCase;
 
-class ObserverTest extends \PHPUnit_Framework_TestCase
+class ObserverTest extends BaseTestCase
 {
     protected $event_name;
     protected $event_data;

@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/15
- * Time: 14:01
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\XMLHelper;
+use lb\tests\BaseTestCase;
 
-class XMLHelperTest extends \PHPUnit_Framework_TestCase
+class XMLHelperTest extends BaseTestCase
 {
     const XML_TPL = '<?xml version="1.0" encoding="UTF-8" ?>';
 

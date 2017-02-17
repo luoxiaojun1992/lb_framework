@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/15
- * Time: 15:19
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\FileHelper;
+use lb\tests\BaseTestCase;
 
-class FileHelperTest extends \PHPUnit_Framework_TestCase
+class FileHelperTest extends BaseTestCase
 {
     public function testGetExtensionName()
     {

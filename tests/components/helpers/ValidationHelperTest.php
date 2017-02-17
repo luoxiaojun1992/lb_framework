@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/15
- * Time: 14:20
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\ValidationHelper;
+use lb\tests\BaseTestCase;
 
-class ValidationHelperTest extends \PHPUnit_Framework_TestCase
+class ValidationHelperTest extends BaseTestCase
 {
     public function testIsUrl()
     {

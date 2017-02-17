@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/16
- * Time: 10:54
- */
 
 namespace lb\tests\components\widget;
 
 use lb\components\Security;
 use lb\components\widget\Form;
+use lb\tests\BaseTestCase;
 
-class FormTest extends \PHPUnit_Framework_TestCase
+class FormTest extends BaseTestCase
 {
     public function testRender()
     {

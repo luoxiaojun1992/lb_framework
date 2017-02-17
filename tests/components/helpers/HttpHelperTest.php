@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/8/2
- * Time: 13:39
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\HttpHelper;
+use lb\tests\BaseTestCase;
 
-class HttpHelperTest extends \PHPUnit_Framework_TestCase
+class HttpHelperTest extends BaseTestCase
 {
     protected $ext;
     protected $mime_type;

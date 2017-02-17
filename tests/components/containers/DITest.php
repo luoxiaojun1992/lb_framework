@@ -1,17 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/8/3
- * Time: 11:26
- */
 
 namespace lb\tests\components\containers;
 
 use lb\Lb;
+use lb\tests\BaseTestCase;
 use Mockery as M;
 
-class DITest extends \PHPUnit_Framework_TestCase
+class DITest extends BaseTestCase
 {
     protected $service;
     protected $container;
@@ -42,4 +37,3 @@ class DITest extends \PHPUnit_Framework_TestCase
         M::close();
     }
 }
-

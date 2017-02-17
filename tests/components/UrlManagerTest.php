@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/16
- * Time: 14:31
- */
 
 namespace lb\tests\components;
 
 use lb\components\UrlManager;
+use lb\tests\BaseTestCase;
 
-class UrlManagerTest extends \PHPUnit_Framework_TestCase
+class UrlManagerTest extends BaseTestCase
 {
     public function testCreateRelativeUrl()
     {

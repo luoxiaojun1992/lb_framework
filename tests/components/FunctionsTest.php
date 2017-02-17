@@ -1,14 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/8/2
- * Time: 14:50
- */
 
 namespace lb\tests\components;
 
-class FunctionsTest extends \PHPUnit_Framework_TestCase
+use lb\tests\BaseTestCase;
+
+class FunctionsTest extends BaseTestCase
 {
     public function setUp()
     {

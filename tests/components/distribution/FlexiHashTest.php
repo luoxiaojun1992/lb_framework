@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/8/2
- * Time: 11:26
- */
 
 namespace lb\tests\components\distribution;
 
 use lb\components\distribution\FlexiHash;
+use lb\tests\BaseTestCase;
 
-class FlexiHashTest extends \PHPUnit_Framework_TestCase
+class FlexiHashTest extends BaseTestCase
 {
     protected $flexihash_instance;
     protected $key;

@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2016/7/30
- * Time: 14:31
- */
 
 namespace lb\tests\components;
 
 use lb\components\Pagination;
+use lb\tests\BaseTestCase;
 
-class PaginationTest extends \PHPUnit_Framework_TestCase
+class PaginationTest extends BaseTestCase
 {
     public function testGetParams()
     {

@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/12/15
- * Time: 13:39
- */
 
 namespace lb\tests\components\helpers;
 
 use lb\components\helpers\JsonHelper;
+use lb\tests\BaseTestCase;
 
-class JsonHelperTest extends \PHPUnit_Framework_TestCase
+class JsonHelperTest extends BaseTestCase
 {
     public function testEncode()
     {
