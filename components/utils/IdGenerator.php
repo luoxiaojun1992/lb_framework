@@ -3,22 +3,28 @@
 namespace lb\components\utils;
 
 use lb\BaseClass;
+use lb\components\traits\Lock;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class IdGenerator extends BaseClass
 {
-    static $workerId;
-    static $twepoch = 1361775855078;
-    static $sequence = 0;
-    const workerIdBits = 4;
-    static $maxWorkerId = 15;
-    const sequenceBits = 10;
-    static $workerIdShift = 10;
-    static $timestampLeftShift = 14;
-    static $sequenceMask = 1023;
-    private static $lastTimestamp = -1;
+    use Lock;
+    use Singleton;
 
-    protected static function timeGen()
+    private $workerId;
+    private $twepoch = 1361775855078;
+    private $sequence = 0;
+    private $maxWorkerId = 15;
+    private $workerIdShift = 10;
+    private $timestampLeftShift = 14;
+    private $sequenceMask = 1023;
+    private $lastTimestamp = -1;
+
+    /**
+     * @return string
+     */
+    protected function timeGen()
     {
         //获得当前时间戳
         $time = explode(' ', microtime());
@@ -26,32 +32,40 @@ class IdGenerator extends BaseClass
         return  $time[1].$time2;
     }
 
-    protected static function tilNextMillis($lastTimestamp)
+    /**
+     * @param $lastTimestamp
+     * @return string
+     */
+    protected function tilNextMillis($lastTimestamp)
     {
-        $timestamp = static::timeGen();
+        $timestamp = $this->timeGen();
         while ($timestamp <= $lastTimestamp) {
-            $timestamp = static::timeGen();
+            $timestamp = $this->timeGen();
         }
 
         return $timestamp;
     }
 
-    protected static function nextId()
+    /**
+     * @return int
+     * @throws \Exception
+     */
+    protected function nextId()
     {
-        $timestamp=static::timeGen();
-        if (self::$lastTimestamp == $timestamp) {
-            self::$sequence = (self::$sequence + 1) & self::$sequenceMask;
-            if (self::$sequence == 0) {
-                $timestamp = static::tilNextMillis(self::$lastTimestamp);
+        $timestamp = $this->timeGen();
+        if ($this->lastTimestamp == $timestamp) {
+            $this->sequence = ($this->sequence + 1) & $this->sequenceMask;
+            if ($this->sequence == 0) {
+                $timestamp = $this->tilNextMillis($this->lastTimestamp);
             }
         } else {
-            self::$sequence  = 0;
+            $this->sequence  = 0;
         }
-        if ($timestamp < self::$lastTimestamp) {
-            throw new \Exception("Clock moved backwards.  Refusing to generate id for ".(self::$lastTimestamp-$timestamp)." milliseconds");
+        if ($timestamp < $this->lastTimestamp) {
+            throw new \Exception("Clock moved backwards.  Refusing to generate id for " . ($this->lastTimestamp-$timestamp) . " milliseconds");
         }
-        self::$lastTimestamp  = $timestamp;
-        return ((sprintf('%.0f', $timestamp) - sprintf('%.0f', self::$twepoch)) << self::$timestampLeftShift ) | (self::$workerId << self::$workerIdShift) | self::$sequence;
+        $this->lastTimestamp  = $timestamp;
+        return ((sprintf('%.0f', $timestamp) - sprintf('%.0f', $this->twepoch)) << $this->timestampLeftShift ) | ($this->workerId << $this->workerIdShift) | $this->sequence;
     }
 
     /**
@@ -59,15 +73,22 @@ class IdGenerator extends BaseClass
      * @return int
      * @throws \Exception
      */
-    public static function generate($prefix = '')
+    public function generate($prefix = '')
     {
+        $lock_key = $prefix ? $prefix . '@' . self::class : self::class;
+        $this->lock($lock_key);
+
         $id_generator_config = Lb::app()->getIdGeneratorConfig();
         $workId = $id_generator_config['worker_id'] ?? 1;
-        if ($workId > self::$maxWorkerId || $workId < 0) {
+        if ($workId > $this->maxWorkerId || $workId < 0) {
             throw new \Exception("worker Id can't be greater than 15 or less than 0");
         }
-        self::$workerId = $workId;
+        $this->workerId = $workId;
 
-        return $prefix . static::nextId();
+        $nextId = $prefix . $this->nextId();
+
+        $this->unlock($lock_key);
+
+        return $nextId;
     }
 }

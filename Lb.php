@@ -996,7 +996,7 @@ class Lb extends BaseClass
      */
     public function uniqid($prefix = '')
     {
-        return IdGenerator::generate($prefix);
+        return IdGenerator::component()->generate($prefix);
     }
 
     // Autoloader
