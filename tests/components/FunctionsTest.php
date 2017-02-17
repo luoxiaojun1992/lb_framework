@@ -23,8 +23,8 @@ class FunctionsTest extends BaseTestCase
         ob_end_clean();
         $this->assertEquals($var, $content);
 
-        @_echo($var_not_exists);
         $this->expectException(VariableException::class);
+        @_echo($var_not_exists);
     }
 
     public function testEnv()
