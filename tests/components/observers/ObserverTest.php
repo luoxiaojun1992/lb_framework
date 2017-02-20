@@ -26,6 +26,6 @@ class ObserverTest extends BaseTestCase
         $listener = new BaseListener();
         Lb::app()->on($event_name, $listener, $event_data);
         Lb::app()->trigger($event_name);
-        $this->assertEquals($event_data, $listener->event_data);
+        $this->assertEquals($event_data, $listener->getEventData());
     }
 }
