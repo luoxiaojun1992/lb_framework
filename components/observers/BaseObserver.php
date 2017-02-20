@@ -4,6 +4,7 @@ namespace lb\components\observers;
 
 use lb\components\events\BaseEvent;
 use lb\components\listeners\BaseListener;
+use lb\components\listeners\ListenerInterface;
 
 class BaseObserver implements ObserverInterface
 {
@@ -18,14 +19,13 @@ class BaseObserver implements ObserverInterface
     {
         foreach(static::$event_listeners as $event_listener) {
             if ($event_listener[0] == $event_name) {
-                $listener = $event_listener[1];
-                $data = $event_listener[2];
-                if (!$event) {
-                    $event = new BaseEvent();
-                }
-                if ($data) {
+                $event = $event ? : new BaseEvent();
+                if ($data = $event_listener[2]) {
                     $event->data = $data;
                 }
+
+                /** @var ListenerInterface $listener */
+                $listener = $event_listener[1];
                 $listener->handler($event);
             }
         }
