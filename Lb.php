@@ -5,6 +5,7 @@ namespace lb;
 use lb\components\containers\RouteInfo;
 use lb\components\containers\DI;
 use lb\components\error_handlers\HttpException;
+use lb\components\facades\RedisFacade;
 use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
@@ -629,7 +630,7 @@ class Lb extends BaseClass
     public function redisGet($key)
     {
         if ($this->isSingle()) {
-            return Redis::component()->get($key);
+            return RedisFacade::get($key);
         }
         return '';
     }
@@ -638,7 +639,7 @@ class Lb extends BaseClass
     public function redisSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            Redis::component()->set($key, $value, $expiration);
+            RedisFacade::set($key, $value, $expiration);
         }
     }
 
@@ -646,7 +647,7 @@ class Lb extends BaseClass
     public function redisDelete($key)
     {
         if ($this->isSingle()) {
-            Redis::component()->delete($key);
+            RedisFacade::delete($key);
         }
     }
 
