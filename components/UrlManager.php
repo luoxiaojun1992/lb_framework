@@ -39,11 +39,7 @@ class UrlManager extends BaseClass
     public static function createRelativeUrl($uri, $query_params = [])
     {
         if ($query_params && ($query = static::build_query($query_params))) {
-            if (strpos($uri, '?') !== false) {
-                $uri .= ('&' . $query);
-            } else {
-                $uri .= ('?' . $query);
-            }
+            $uri .= ((strpos($uri, '?') !== false ? '&' : '?') . $query);
         }
 
         return $uri;
