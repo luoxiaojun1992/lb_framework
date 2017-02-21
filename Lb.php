@@ -2,9 +2,9 @@
 
 namespace lb;
 
-use Filecache;
-use Memcache;
-use Redis;
+use FilecacheKit;
+use MemcacheKit;
+use RedisKit;
 use lb\components\facades\FilecacheFacade;
 use lb\components\facades\MemcacheFacade;
 use lb\components\facades\RedisFacade;
@@ -607,7 +607,7 @@ class Lb extends BaseClass
     public function memcacheGet($key)
     {
         if ($this->isSingle()) {
-            return Memcache::get($key);
+            return MemcacheKit::get($key);
         }
         return '';
     }
@@ -616,7 +616,7 @@ class Lb extends BaseClass
     public function memcacheSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            Memcache::set($key, $value, $expiration);
+            MemcacheKit::set($key, $value, $expiration);
         }
     }
 
@@ -624,7 +624,7 @@ class Lb extends BaseClass
     public function memcacheDelete($key)
     {
         if ($this->isSingle()) {
-            Memcache::delete($key);
+            MemcacheKit::delete($key);
         }
     }
 
@@ -632,7 +632,7 @@ class Lb extends BaseClass
     public function redisGet($key)
     {
         if ($this->isSingle()) {
-            return Redis::get($key);
+            return RedisKit::get($key);
         }
         return '';
     }
@@ -641,7 +641,7 @@ class Lb extends BaseClass
     public function redisSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            Redis::set($key, $value, $expiration);
+            RedisKit::set($key, $value, $expiration);
         }
     }
 
@@ -649,7 +649,7 @@ class Lb extends BaseClass
     public function redisDelete($key)
     {
         if ($this->isSingle()) {
-            Redis::delete($key);
+            RedisKit::delete($key);
         }
     }
 
@@ -695,7 +695,7 @@ class Lb extends BaseClass
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
         if ($this->isSingle()) {
-            Filecache::add($key, $value, $cache_time);
+            FilecacheKit::add($key, $value, $cache_time);
         }
     }
 
@@ -703,7 +703,7 @@ class Lb extends BaseClass
     public function fileCacheGet($key)
     {
         if ($this->isSingle()) {
-            return Filecache::get($key);
+            return FilecacheKit::get($key);
         }
         return '';
     }
@@ -712,7 +712,7 @@ class Lb extends BaseClass
     public function fileCacheDelete($key)
     {
         if ($this->isSingle()) {
-            Filecache::delete($key);
+            FilecacheKit::delete($key);
         }
     }
 
@@ -720,7 +720,7 @@ class Lb extends BaseClass
     public function fileCacheFlush()
     {
         if ($this->isSingle()) {
-            Filecache::flush();
+            FilecacheKit::flush();
         }
     }
 
@@ -1139,9 +1139,9 @@ class Lb extends BaseClass
     protected function registerFacades()
     {
         $facades = [
-            'Redis' => RedisFacade::class,
-            'Memcache' => MemcacheFacade::class,
-            'Filecache' => FilecacheFacade::class,
+            'RedisKit' => RedisFacade::class,
+            'MemcacheKit' => MemcacheFacade::class,
+            'FilecacheKit' => FilecacheFacade::class,
         ];
 
         array_walk($facades, function ($facade, $alias) {
@@ -1275,11 +1275,11 @@ class Lb extends BaseClass
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
-            case Filecache::CACHE_TYPE:
+            case FilecacheKit::CACHE_TYPE:
                 return Lb::app()->fileCacheGet($page_cache_key);
-            case Memcache::CACHE_TYPE:
+            case MemcacheKit::CACHE_TYPE:
                 return Lb::app()->memcacheGet($page_cache_key);
-            case Redis::CACHE_TYPE:
+            case RedisKit::CACHE_TYPE:
                 return Lb::app()->redisGet($page_cache_key);
             default:
                 return Lb::app()->fileCacheGet($page_cache_key);
@@ -1298,13 +1298,13 @@ class Lb extends BaseClass
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
-            case Filecache::CACHE_TYPE:
+            case FilecacheKit::CACHE_TYPE:
                 Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
                 break;
-            case Memcache::CACHE_TYPE:
+            case MemcacheKit::CACHE_TYPE:
                 Lb::app()->memcacheSet($page_cache_key, $page_cache, $expire);
                 break;
-            case Redis::CACHE_TYPE:
+            case RedisKit::CACHE_TYPE:
                 Lb::app()->redisSet($page_cache_key, $page_cache, $expire);
                 break;
             default:
