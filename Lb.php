@@ -1144,9 +1144,9 @@ class Lb extends BaseClass
             'Filecache' => FilecacheFacade::class,
         ];
 
-        array_map(function ($facade, $alias) {
+        array_walk($facades, function ($facade, $alias) {
             class_alias($facade, $alias);
-        }, $facades);
+        });
     }
 
     /**
