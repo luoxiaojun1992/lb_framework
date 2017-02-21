@@ -5,6 +5,8 @@ namespace lb;
 use lb\components\containers\RouteInfo;
 use lb\components\containers\DI;
 use lb\components\error_handlers\HttpException;
+use lb\components\facades\FilecacheFacade;
+use lb\components\facades\MemcacheFacade;
 use lb\components\facades\RedisFacade;
 use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
@@ -605,7 +607,7 @@ class Lb extends BaseClass
     public function memcacheGet($key)
     {
         if ($this->isSingle()) {
-            return Memcache::component()->get($key);
+            return MemcacheFacade::get($key);
         }
         return '';
     }
@@ -614,7 +616,7 @@ class Lb extends BaseClass
     public function memcacheSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            Memcache::component()->set($key, $value, $expiration);
+            MemcacheFacade::set($key, $value, $expiration);
         }
     }
 
@@ -622,7 +624,7 @@ class Lb extends BaseClass
     public function memcacheDelete($key)
     {
         if ($this->isSingle()) {
-            Memcache::component()->delete($key);
+            MemcacheFacade::delete($key);
         }
     }
 
@@ -693,7 +695,7 @@ class Lb extends BaseClass
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
         if ($this->isSingle()) {
-            Filecache::component()->add($key, $value, $cache_time);
+            FilecacheFacade::add($key, $value, $cache_time);
         }
     }
 
@@ -701,7 +703,7 @@ class Lb extends BaseClass
     public function fileCacheGet($key)
     {
         if ($this->isSingle()) {
-            return Filecache::component()->get($key);
+            return FilecacheFacade::get($key);
         }
         return '';
     }
@@ -710,7 +712,7 @@ class Lb extends BaseClass
     public function fileCacheDelete($key)
     {
         if ($this->isSingle()) {
-            Filecache::component()->delete($key);
+            FilecacheFacade::delete($key);
         }
     }
 
@@ -718,7 +720,7 @@ class Lb extends BaseClass
     public function fileCacheFlush()
     {
         if ($this->isSingle()) {
-            Filecache::component()->flush();
+            FilecacheFacade::flush();
         }
     }
 
