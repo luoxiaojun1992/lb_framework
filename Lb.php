@@ -2,12 +2,15 @@
 
 namespace lb;
 
-use lb\components\containers\RouteInfo;
-use lb\components\containers\DI;
-use lb\components\error_handlers\HttpException;
+use Filecache;
+use Memcache;
+use Redis;
 use lb\components\facades\FilecacheFacade;
 use lb\components\facades\MemcacheFacade;
 use lb\components\facades\RedisFacade;
+use lb\components\containers\RouteInfo;
+use lb\components\containers\DI;
+use lb\components\error_handlers\HttpException;
 use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
@@ -20,9 +23,6 @@ use lb\components\queues\Job;
 use lb\components\session\Session;
 use lb\components\traits\Singleton;
 use lb\components\User;
-use lb\components\cache\Filecache;
-use lb\components\cache\Memcache;
-use lb\components\cache\Redis;
 use lb\components\db\mysql\Connection;
 use lb\components\Environment;
 use lb\components\error_handlers\Level;
@@ -607,7 +607,7 @@ class Lb extends BaseClass
     public function memcacheGet($key)
     {
         if ($this->isSingle()) {
-            return MemcacheFacade::get($key);
+            return Memcache::get($key);
         }
         return '';
     }
@@ -616,7 +616,7 @@ class Lb extends BaseClass
     public function memcacheSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            MemcacheFacade::set($key, $value, $expiration);
+            Memcache::set($key, $value, $expiration);
         }
     }
 
@@ -624,7 +624,7 @@ class Lb extends BaseClass
     public function memcacheDelete($key)
     {
         if ($this->isSingle()) {
-            MemcacheFacade::delete($key);
+            Memcache::delete($key);
         }
     }
 
@@ -632,7 +632,7 @@ class Lb extends BaseClass
     public function redisGet($key)
     {
         if ($this->isSingle()) {
-            return RedisFacade::get($key);
+            return Redis::get($key);
         }
         return '';
     }
@@ -641,7 +641,7 @@ class Lb extends BaseClass
     public function redisSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
-            RedisFacade::set($key, $value, $expiration);
+            Redis::set($key, $value, $expiration);
         }
     }
 
@@ -649,7 +649,7 @@ class Lb extends BaseClass
     public function redisDelete($key)
     {
         if ($this->isSingle()) {
-            RedisFacade::delete($key);
+            Redis::delete($key);
         }
     }
 
@@ -695,7 +695,7 @@ class Lb extends BaseClass
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
         if ($this->isSingle()) {
-            FilecacheFacade::add($key, $value, $cache_time);
+            Filecache::add($key, $value, $cache_time);
         }
     }
 
@@ -703,7 +703,7 @@ class Lb extends BaseClass
     public function fileCacheGet($key)
     {
         if ($this->isSingle()) {
-            return FilecacheFacade::get($key);
+            return Filecache::get($key);
         }
         return '';
     }
@@ -712,7 +712,7 @@ class Lb extends BaseClass
     public function fileCacheDelete($key)
     {
         if ($this->isSingle()) {
-            FilecacheFacade::delete($key);
+            Filecache::delete($key);
         }
     }
 
@@ -720,7 +720,7 @@ class Lb extends BaseClass
     public function fileCacheFlush()
     {
         if ($this->isSingle()) {
-            FilecacheFacade::flush();
+            Filecache::flush();
         }
     }
 
@@ -1134,6 +1134,22 @@ class Lb extends BaseClass
     }
 
     /**
+     * Register Facades
+     */
+    protected function registerFacades()
+    {
+        $facades = [
+            'Redis' => RedisFacade::class,
+            'Memcache' => MemcacheFacade::class,
+            'Filecache' => FilecacheFacade::class,
+        ];
+
+        array_map(function ($facade, $alias) {
+            class_alias($facade, $alias);
+        }, $facades);
+    }
+
+    /**
      * Init Session
      */
     protected function initSession()
@@ -1203,6 +1219,9 @@ class Lb extends BaseClass
 
         // Set Timezone
         $this->setDefaultTimeZone();
+
+        // Register Facades
+        $this->registerFacades();
 
         // Autoload
         spl_autoload_register(['self', 'autoload'], true, false);
