@@ -2,7 +2,7 @@
 
 namespace lb\components\traits;
 
-use lb\components\cache\Redis;
+use lb\components\facades\RedisFacade;
 use lb\Lb;
 
 trait Lock
@@ -12,7 +12,7 @@ trait Lock
         if ($lock = $this->getLock($key)) {
             return $lock;
         }
-        if (Redis::component()->setnx($this->getLockKey($key), $key)) {
+        if (RedisFacade::setnx($this->getLockKey($key), $key)) {
             return $this->getLock($key);
         }
         return null;
