@@ -53,11 +53,8 @@ class UrlManager extends BaseClass
     {
         $tmpArr = [];
         foreach ($query_params as $query_param_name => $query_param_value) {
-            if (is_int($query_param_name)) {
-                $tmpArr[] = $query_param_value;
-            } else {
-                $tmpArr[] = implode('=', [$query_param_name, $query_param_value]);
-            }
+            $tmpArr[] = is_int($query_param_name) ? $query_param_value :
+                implode('=', [$query_param_name, $query_param_value]);
         }
         return implode('&', $tmpArr);
     }
