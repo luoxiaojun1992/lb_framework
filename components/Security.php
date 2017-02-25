@@ -18,7 +18,7 @@ class Security extends BaseClass
     {
         if ($params) {
             foreach ($params as $request_name => $request_value) {
-                    $params[$request_name] = static::getFilteredInput($request_value);;
+                $params[$request_name] = static::getFilteredInput($request_value);;
             }
         } else {
             $_REQUEST && self::inputFilter($_REQUEST);
