@@ -40,6 +40,7 @@ class Security extends BaseClass
             }
         } else {
             $input_value = static::removeSqlInjection($input_value);
+            $input_value = HtmlHelper::encode($input_value);
         }
         return $input_value;
     }
@@ -55,7 +56,7 @@ class Security extends BaseClass
             $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter'
         )) {
             $filter = "/" . static::$$filter_name . "/is";
-            return preg_match($filter, $value) == true ?
+            $value = preg_match($filter, $value) == true ?
                 preg_replace($filter, '', $value) : $value;
         }
         return $value;

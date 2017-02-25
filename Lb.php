@@ -1077,6 +1077,9 @@ class Lb extends BaseClass
      */
     protected function securityHandler()
     {
+        // Input Filter
+        Security::inputFilter();
+
         // IP Filter
         Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
 
