@@ -45,10 +45,10 @@ class Dao extends BaseClass
     const JOIN_SQL_TPL = "%s JOIN %s ON %s";
 
     // Update
-    const UPDATE_SQL_TPL = "UPDATE %s SET %s WHERE %s";
+    const UPDATE_SQL_TPL = "UPDATE %s SET %s";
 
     // Delete
-    const DELETE_SQL_TPL = "DELETE FROM %s WHERE %s";
+    const DELETE_SQL_TPL = "DELETE FROM %s";
 
     /**
      * @return Dao
@@ -125,7 +125,7 @@ class Dao extends BaseClass
      */
     public function where($conditions)
     {
-        if ($this->_table && is_array($conditions) && $conditions) {
+        if (is_array($conditions) && $conditions) {
             $this->_conditions = $conditions;
             return static::$instance;
         }
@@ -138,7 +138,7 @@ class Dao extends BaseClass
      */
     public function order($orders)
     {
-        if ($this->_table && is_array($orders) && $orders) {
+        if (is_array($orders) && $orders) {
             $this->_orders = $orders;
             return static::$instance;
         }
@@ -151,7 +151,7 @@ class Dao extends BaseClass
      */
     public function limit($limit)
     {
-        if ($this->_table && $limit) {
+        if ($limit) {
             $this->_limit = $limit;
             return static::$instance;
         }
@@ -164,7 +164,7 @@ class Dao extends BaseClass
      */
     public function group($group_fields)
     {
-        if ($this->_table && is_array($group_fields) && $group_fields) {
+        if (is_array($group_fields) && $group_fields) {
             $this->_group_fields = $group_fields;
             return static::$instance;
         }
@@ -240,7 +240,7 @@ class Dao extends BaseClass
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
-                $statement = static::prepare($query_sql_statement, 'slave');
+                $statement = $this->prepare($query_sql_statement, 'slave');
                 if ($statement) {
                     try {
                         $res = $statement->execute();
@@ -250,7 +250,7 @@ class Dao extends BaseClass
                     } catch(\PDOException $e) {
                         if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006){
                             Connection::component(Connection::component()->containers, true);
-                            $statement = static::prepare($query_sql_statement, 'slave');
+                            $statement = $this->prepare($query_sql_statement, 'slave');
                             if ($statement) {
                                 $res = $statement->execute();
                                 if ($res) {
@@ -266,15 +266,13 @@ class Dao extends BaseClass
     }
 
     /**
-     * @param $sql_statement
-     * @param $node_type
+     * @param $nodeType
      * @return bool
      */
-    public static function prepare($sql_statement, $node_type)
+    protected function getConnByNodeType($nodeType)
     {
         $connection_component = Connection::component();
-        $statement = false;
-        switch ($node_type) {
+        switch ($nodeType) {
             case 'master':
                 $conn = $connection_component->write_conn;
                 break;
@@ -284,10 +282,50 @@ class Dao extends BaseClass
             default:
                 $conn = false;
         }
-        if ($conn) {
+        return $conn;
+    }
+
+    /**
+     * @param $sql_statement
+     * @param $node_type
+     * @return bool
+     */
+    public function prepare($sql_statement, $node_type)
+    {
+        $statement = false;
+        if ($conn = $this->getConnByNodeType($node_type)) {
             $statement = $conn->prepare($sql_statement);
+
+            //Binding values
+            $this->bindValues($statement);
         }
         return $statement;
+    }
+
+    /**
+     * @param $val
+     * @return int
+     */
+    protected function getBindType($val)
+    {
+        return is_string($val) ? \PDO::PARAM_STR : \PDO::PARAM_INT;
+    }
+
+    /**
+     * @param $statement
+     */
+    protected function bindValues($statement)
+    {
+        $i = 1;
+        foreach ($this->_conditions as $val) {
+            if (!is_array($val)) {
+                $statement->bindValue($i++, $val, $this->getBindType($val));
+            } else {
+                foreach ($val as $value) {
+                    $statement->bindValue($i++, $value, $this->getBindType($value));
+                }
+            }
+        }
     }
 
     /**
@@ -311,14 +349,14 @@ class Dao extends BaseClass
             }
             if ($filtered_values) {
                 $insert_sql_statement = sprintf(static::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
-                $statement = static::prepare($insert_sql_statement, 'master');
+                $statement = $this->prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = static::prepare($insert_sql_statement, 'master');
+                            $statement = $this->prepare($insert_sql_statement, 'master');
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -357,14 +395,14 @@ class Dao extends BaseClass
             }
             if ($filtered_multi_values) {
                 $insert_sql_statement = sprintf(static::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
-                $statement = static::prepare($insert_sql_statement, 'master');
+                $statement = $this->prepare($insert_sql_statement, 'master');
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = static::prepare($insert_sql_statement, 'master');
+                            $statement = $this->prepare($insert_sql_statement, 'master');
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -379,14 +417,15 @@ class Dao extends BaseClass
     /**
      * @param $table
      * @param $values
-     * @param bool $conditions
      * @return bool
      */
-    public function update($table, $values, $conditions = true)
+    public function update($table, $values)
     {
         $result = false;
         if ($table && is_array($values) && $values) {
             $this->is_query = false;
+
+            //Assembling new values
             $new_values = [];
             foreach ($values as $key => $value) {
                 if (is_string($value)) {
@@ -406,32 +445,23 @@ class Dao extends BaseClass
                     }
                 }
             }
-            if (is_array($conditions)) {
-                $new_conditions = [];
-                foreach ($conditions as $key => $value) {
-                    if (is_string($value)) {
-                        $new_conditions[] = implode('=', [$key, '"' . $value . '"']);
-                    } else {
-                        $new_conditions[] = implode('=', [$key, $value]);
-                    }
-                }
-                if (!$new_conditions) {
-                    $new_conditions = true;
-                }
-            } else {
-                $new_conditions = $conditions;
-            }
 
-            if ($new_values && $new_conditions) {
-                $update_sql_statement = sprintf(static::UPDATE_SQL_TPL, $table, implode(',', $new_values), is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = static::prepare($update_sql_statement, 'master');
+            if ($new_values) {
+                $update_sql_statement = sprintf(static::UPDATE_SQL_TPL, $table, implode(',', $new_values));
+
+                // WHERE
+                if ($this->_conditions) {
+                    $update_sql_statement .= (' ' . $this->assembleConditionStatement());
+                }
+
+                $statement = $this->prepare($update_sql_statement, 'master');
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = static::prepare($update_sql_statement, 'master');
+                            $statement = $this->prepare($update_sql_statement, 'master');
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -445,49 +475,60 @@ class Dao extends BaseClass
 
     /**
      * @param $table
-     * @param bool $conditions
      * @return bool
      */
-    public function delete($table, $conditions = true)
+    public function delete($table)
     {
         $result = false;
         if ($table) {
             $this->is_query = false;
-            if (is_array($conditions)) {
-                $new_conditions = [];
-                foreach ($conditions as $key => $value) {
-                    if (is_string($value)) {
-                        $new_conditions[] = implode('=', [$key, '"' . $value . '"']);
-                    } else {
-                        $new_conditions[] = implode('=', [$key, $value]);
-                    }
-                }
-                if (!$new_conditions) {
-                    $new_conditions = true;
-                }
-            } else {
-                $new_conditions = $conditions;
+
+            $delete_sql_statement = sprintf(static::DELETE_SQL_TPL, $table);
+
+            // WHERE
+            if ($this->_conditions) {
+                $delete_sql_statement .= (' ' . $this->assembleConditionStatement());
             }
 
-            if ($new_conditions) {
-                $delete_sql_statement = sprintf(static::DELETE_SQL_TPL, $table, is_array($new_conditions) ? implode(',', $new_conditions) : $new_conditions);
-                $statement = static::prepare($delete_sql_statement, 'master');
-                if ($statement) {
-                    try {
-                        $result = $statement->execute();
-                    } catch(\PDOException $e) {
-                        if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
-                            Connection::component(Connection::component()->containers, true);
-                            $statement = static::prepare($delete_sql_statement, 'master');
-                            if ($statement) {
-                                $result = $statement->execute();
-                            }
+            $statement = $this->prepare($delete_sql_statement, 'master');
+            if ($statement) {
+                try {
+                    $result = $statement->execute();
+                } catch (\PDOException $e) {
+                    if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
+                        Connection::component(Connection::component()->containers, true);
+                        $statement = $this->prepare($delete_sql_statement, 'master');
+                        if ($statement) {
+                            $result = $statement->execute();
                         }
                     }
                 }
             }
         }
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    protected function assembleConditionStatement()
+    {
+        $conditions = [];
+        foreach ($this->_conditions as $key => $val) {
+            if (!is_array($val)) {
+                $conditions[] = implode('=', [$key, '?']);
+            } else {
+                foreach ($val as $op => $value) {
+                    $conditions[] = implode(' ' . $op . ' ', [$key, '?']);
+                }
+            }
+        }
+        if ($conditions) {
+            $condition_statement = implode(' AND ', $conditions);
+            return sprintf(static::WHERE_SQL_TPL, $condition_statement);
+        }
+
+        return sprintf(static::WHERE_SQL_TPL, 'true');
     }
 
     /**
@@ -518,21 +559,7 @@ class Dao extends BaseClass
 
                 // WHERE
                 if ($this->_conditions) {
-                    $conditions = [];
-                    foreach ($this->_conditions as $key => $val) {
-                        if (!is_array($val)) {
-                            $conditions[] = implode('=', [$key, '"' . $val . '"']);
-                        } else {
-                            foreach ($val as $op => $value) {
-                                $conditions[] = implode(' ' . $op . ' ', [$key, $value]);
-                            }
-                        }
-                    }
-                    if ($conditions) {
-                        $condition_statement = implode(' AND ', $conditions);
-                        $where_sql_statement = sprintf(static::WHERE_SQL_TPL, $condition_statement);
-                        $statement .= (' ' . $where_sql_statement);
-                    }
+                    $statement .= (' ' . $this->assembleConditionStatement());
                 }
 
                 // Lock For Update

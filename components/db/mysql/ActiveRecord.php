@@ -315,9 +315,10 @@ class ActiveRecord extends AbstractActiveRecord
     {
         if ($this->is_single) {
             return Dao::component()
-                ->update(static::TABLE_NAME, $values, [
+                ->where([
                     $this->_primary_key => $primary_key,
-                ]);
+                ])
+                ->update(static::TABLE_NAME, $values);
         }
         return false;
     }
@@ -380,9 +381,10 @@ class ActiveRecord extends AbstractActiveRecord
             }
 
             return Dao::component()
-                ->update(static::TABLE_NAME, $values, [
+                ->where([
                     $this->_primary_key => $primary_key,
-                ]);
+                ])
+                ->update(static::TABLE_NAME, $values);
         }
         return false;
     }
@@ -395,9 +397,10 @@ class ActiveRecord extends AbstractActiveRecord
     {
         if ($this->is_single) {
             return Dao::component()
-                ->delete(static::TABLE_NAME, [
+                ->where([
                     $this->_primary_key => $primary_key,
-                ]);
+                ])
+                ->delete(static::TABLE_NAME);
         }
         return false;
     }
@@ -410,7 +413,8 @@ class ActiveRecord extends AbstractActiveRecord
     {
         if ($this->is_single) {
             return Dao::component()
-                ->delete(static::TABLE_NAME, $conditions);
+                ->where($conditions)
+                ->delete(static::TABLE_NAME);
         }
         return false;
     }
@@ -571,7 +575,9 @@ class ActiveRecord extends AbstractActiveRecord
                         $primary_key = $this->_attributes[$this->_primary_key];
                         unset($values[$this->_primary_key]);
                     }
-                    $res = Dao::component()->update(static::TABLE_NAME, $values, [$this->_primary_key => $primary_key]);
+                    $res = Dao::component()
+                        ->where([$this->_primary_key => $primary_key])
+                        ->update(static::TABLE_NAME, $values);
                 }
                 if ($res) {
                     $this->afterSave();

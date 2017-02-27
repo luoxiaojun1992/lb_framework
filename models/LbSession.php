@@ -18,7 +18,7 @@ class LbSession extends ActiveRecord
     const TABLE_NAME = 'lb_session';
     protected $_primary_key = 'id';
     protected $_attributes = [
-        'id' => '',
+        'id' => 0,
         'expire' => 0,
         'data' => '',
     ];
