@@ -1,21 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: 224
- * Date: 2015/11/11
- * Time: 10:35
- * Lb framework mysql db dao file
- */
 
 namespace lb\components\db\mysql;
 
 use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
+use lb\components\traits\BaseObject;
 use lb\Lb;
 use Monolog\Logger;
 
 class Dao extends BaseClass
 {
+    use BaseObject;
+
     protected static $instance;
     protected $_table = '';
     protected $_fields = [];
@@ -29,13 +25,18 @@ class Dao extends BaseClass
 
     protected $_joined_table = '';
     protected $_join_condition = [];
-    protected $_join_type = 'LEFT';
+    protected $_join_type = self::JOIN_TYPE_LEFT;
 
-    // Create
+    //Join Type
+    const JOIN_TYPE_LEFT = 'LEFT';
+    const JOIN_TYPE_RIGHT = 'RIGHT';
+    const JOIN_TYPE_INNER = 'INNER';
+
+    //Create
     const INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES (%s)";
     const MULTI_INSERT_INTO_SQL_TPL = "INSERT INTO %s (%s) VALUES %s";
 
-    // Read
+    //Read
     const SELECT_FROM_SQL_TPL = "SELECT %s FROM %s";
     const SELECT_COUNT_FROM_SQL_TPL = "SELECT COUNT(*) AS total FROM %s";
     const WHERE_SQL_TPL = "WHERE %s";
@@ -44,10 +45,10 @@ class Dao extends BaseClass
     const LIMIT_SQL_TPL = "LIMIT %s";
     const JOIN_SQL_TPL = "%s JOIN %s ON %s";
 
-    // Update
+    //Update
     const UPDATE_SQL_TPL = "UPDATE %s SET %s";
 
-    // Delete
+    //Delete
     const DELETE_SQL_TPL = "DELETE FROM %s";
 
     /**
@@ -56,17 +57,20 @@ class Dao extends BaseClass
     public static function component()
     {
         if (static::$instance instanceof static) {
+            /** @var Dao $instance */
             $instance = static::$instance;
-            $instance->_table = '';
-            $instance->_fields = [];
-            $instance->_conditions = [];
-            $instance->is_query = false;
-            $instance->_orders = [];
-            $instance->_limit = '';
-            $instance->_group_fields = [];
-            $instance->_joined_table = '';
-            $instance->_join_condition = [];
-            $instance->_join_type = 'LEFT';
+            $instance->setProperties([
+                '_table' => '',
+                '_fields' => [],
+                '_conditions' => [],
+                'is_query' => false,
+                '_orders' => [],
+                '_limit' => '',
+                '_group_fields' => [],
+                '_joined_table' => '',
+                '_join_condition' => [],
+                '_join_type' => self::JOIN_TYPE_LEFT,
+            ]);
             return $instance;
         } else {
             return (static::$instance = new static());
@@ -75,12 +79,12 @@ class Dao extends BaseClass
 
     private function __construct()
     {
-
+        //
     }
 
     public function __clone()
     {
-        // TODO: Implement __clone() method.
+        //
     }
 
     /**
