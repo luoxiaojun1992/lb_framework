@@ -61,6 +61,9 @@ class DITest extends BaseTestCase
 
         //Get String
         $this->assertEquals('test string', $this->container->get('test string'));
+
+        //Get Object
+        $this->assertEquals(1, $this->container->get($this->service)->test(1));
     }
 
     public function tearDown()

@@ -49,15 +49,14 @@ class DI extends Base
      */
     protected function createObjOrCall($service_name)
     {
-        if ($obj = $this->createObj($service_name)) {
-            return $obj;
+        switch ($this->getServiceType($service_name)) {
+            case static::SERVICE_TYPE_CLASS:
+                return $this->createObj($service_name);
+            case static::SERVICE_TYPE_CALLABLE:
+                return $this->call($service_name);
+            default:
+                return $service_name;
         }
-
-        if ($callResult = $this->call($service_name)) {
-            return $callResult;
-        }
-
-        return $service_name;
     }
 
     /**
@@ -130,7 +129,7 @@ class DI extends Base
 
             return static::SERVICE_TYPE_STRING;
         } else {
-            if (is_callable($service_impl)) {
+            if (!is_object($service_impl) && is_callable($service_impl)) {
                 return static::SERVICE_TYPE_CALLABLE;
             }
 
