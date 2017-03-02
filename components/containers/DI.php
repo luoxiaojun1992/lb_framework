@@ -129,7 +129,7 @@ class DI extends Base
 
             return static::SERVICE_TYPE_STRING;
         } else {
-            if (!is_object($service_impl) && is_callable($service_impl)) {
+            if (is_callable($service_impl)) {
                 return static::SERVICE_TYPE_CALLABLE;
             }
 
