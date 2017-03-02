@@ -25,7 +25,7 @@ class DI extends Base
      */
     public function get($service_name)
     {
-        $service = $this->{$service_name};
+        $service = is_string($service_name) ? $this->{$service_name} : null;
         if ($service) {
             switch($this->getServiceType($service)) {
                 case static::SERVICE_TYPE_CLASS:
