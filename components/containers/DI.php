@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 16/8/3
- * Time: 下午3:26
- * Lb framework DI container file
- */
 
 namespace lb\components\containers;
 
@@ -26,8 +19,7 @@ class DI extends Base
     {
         $service = $this->{$service_name};
         if ($service) {
-            $service_type = $this->get_service_type($service);
-            switch($service_type) {
+            switch($this->getServiceType($service)) {
                 case static::SERVICE_TYPE_CLASS:
                     $reflectionClass = new \ReflectionClass($service);
                     return $this->create_obj_by_reflection_class($reflectionClass);
@@ -92,7 +84,8 @@ class DI extends Base
         return null;
     }
 
-    public function get_service_type($service_impl) {
+    protected function getServiceType($service_impl)
+    {
         if (is_string($service_impl)) {
             if (interface_exists($service_impl)) {
                 return static::SERVICE_TYPE_INTERFACE;
