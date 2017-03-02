@@ -25,8 +25,7 @@ class DI extends Base
      */
     public function get($service_name)
     {
-        $service = is_string($service_name) ? $this->{$service_name} : null;
-        if ($service) {
+        if ($service = is_string($service_name) ? $this->{$service_name} : null) {
             switch($this->getServiceType($service)) {
                 case static::SERVICE_TYPE_CLASS:
                     return $this->createObj($service);
@@ -45,20 +44,20 @@ class DI extends Base
     }
 
     /**
-     * @param $service
+     * @param $service_name
      * @return mixed|null|object
      */
-    protected function createObjOrCall($service)
+    protected function createObjOrCall($service_name)
     {
-        if ($obj = $this->createObj($service)) {
+        if ($obj = $this->createObj($service_name)) {
             return $obj;
         }
 
-        if ($callResult = $this->call($service)) {
+        if ($callResult = $this->call($service_name)) {
             return $callResult;
         }
 
-        return $service;
+        return $service_name;
     }
 
     /**
