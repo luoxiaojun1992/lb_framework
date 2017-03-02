@@ -78,11 +78,13 @@ class DI extends Base
         }
 
         $arguments = [];
-        foreach($reflectionClass->getConstructor()->getParameters() as $parameter) {
-            if ($dependencyClass = $parameter->getClass()) {
-                $arguments[] = $this->get($dependencyClass->getName());
-            } else {
-                $arguments[] = $this->get($parameter->getName());
+        if ($constructor = $reflectionClass->getConstructor()) {
+            foreach ($constructor->getParameters() as $parameter) {
+                if ($dependencyClass = $parameter->getClass()) {
+                    $arguments[] = $this->get($dependencyClass->getName());
+                } else {
+                    $arguments[] = $this->get($parameter->getName());
+                }
             }
         }
         return $reflectionClass->newInstanceArgs($arguments);
