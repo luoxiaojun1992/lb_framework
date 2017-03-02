@@ -122,6 +122,29 @@ class Route extends BaseClass
     }
 
     /**
+     * @param \ReflectionMethod $method
+     * @return array
+     */
+    protected static function matchActionParams(\ReflectionMethod $method)
+    {
+        $param_values = [];
+        foreach ($method->getParameters() as $param) {
+            $param_name = $param->getName();
+            if (array_key_exists($param_name, $_REQUEST)) {
+                $param_values[] = $_REQUEST[$param_name];
+            } else {
+                try {
+                    $param_values[] = $param->getDefaultValue();
+                } catch (\Exception $e) {
+                    $param_values[] = null;
+                }
+            }
+        }
+
+        return $param_values;
+    }
+
+    /**
      * @param array $route_info
      * @throws HttpException
      */
@@ -138,26 +161,8 @@ class Route extends BaseClass
             $controller = new $controller_name();
             $controller->controller_id = $controller_id;
             if (method_exists($controller, $action_name)) {
-                $method = new \ReflectionMethod($controller_name, $action_name);
-                $params = $method->getParameters();
-                $param_values = [];
-                foreach ($params as $param) {
-                    $param_name = $param->getName();
-                    if (array_key_exists($param_name, $_REQUEST)) {
-                        $param_values[] = $_REQUEST[$param_name];
-                    } else {
-                        try {
-                            $param_values[] = $param->getDefaultValue();
-                        } catch (\Exception $e) {
-                            $param_values[] = null;
-                        }
-                    }
-                }
-                if ($param_values) {
-                    $method->invokeArgs($controller, $param_values);
-                } else {
-                    $controller->$action_name();
-                }
+                $method = new \ReflectionMethod($controller, $action_name);
+                $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
                 throw new HttpException(self::PAGE_NOT_FOUND, 404);
             }
