@@ -129,14 +129,18 @@ class Route extends BaseClass
     {
         $param_values = [];
         foreach ($method->getParameters() as $param) {
-            $param_name = $param->getName();
-            if (array_key_exists($param_name, $_REQUEST)) {
-                $param_values[] = $_REQUEST[$param_name];
+            if ($class = $param->getClass()) {
+                $param_values[] = Lb::app()->getDIContainer()->get($class->getName());
             } else {
-                try {
-                    $param_values[] = $param->getDefaultValue();
-                } catch (\Exception $e) {
-                    $param_values[] = null;
+                $param_name = $param->getName();
+                if (array_key_exists($param_name, $_REQUEST)) {
+                    $param_values[] = $_REQUEST[$param_name];
+                } else {
+                    try {
+                        $param_values[] = $param->getDefaultValue();
+                    } catch (\Exception $e) {
+                        $param_values[] = null;
+                    }
                 }
             }
         }
