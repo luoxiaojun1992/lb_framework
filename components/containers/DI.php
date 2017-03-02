@@ -10,19 +10,26 @@ class DI extends Base
     const SERVICE_TYPE_STRING = 'string';
     const SERVICE_TYPE_CALLABLE = 'callable';
 
+    /**
+     * @param $service_name
+     * @param $service_impl
+     */
     public function set($service_name, $service_impl)
     {
         $this->{$service_name} = $service_impl;
     }
 
+    /**
+     * @param $service_name
+     * @return bool|mixed|null|object
+     */
     public function get($service_name)
     {
         $service = $this->{$service_name};
         if ($service) {
             switch($this->getServiceType($service)) {
                 case static::SERVICE_TYPE_CLASS:
-                    $reflectionClass = new \ReflectionClass($service);
-                    return $this->create_obj_by_reflection_class($reflectionClass);
+                    return $this->createObj($service);
                 case static::SERVICE_TYPE_INTERFACE:
                 case static::SERVICE_TYPE_ABSTRACT:
                 case static::SERVICE_TYPE_STRING:
@@ -33,49 +40,58 @@ class DI extends Base
                     return $service;
             }
         } else {
-            if (is_string($service_name)) {
-                if ($obj = $this->cretae_obj($service_name)) {
-                    return $obj;
-                }
-            } else {
-                if ($result = $this->call($service_name)) {
-                    return $result;
-                }
-            }
+            return $this->createObjOrCall($service_name);
         }
-
-        return $service_name;
     }
 
-    public function create_obj_by_reflection_class(\ReflectionClass $reflectionClass)
+    /**
+     * @param $service
+     * @return mixed|null|object
+     */
+    protected function createObjOrCall($service)
     {
-        $reflectionMethod = $reflectionClass->getConstructor();
-        $parameters = $reflectionMethod->getParameters();
+        if ($obj = $this->createObj($service)) {
+            return $obj;
+        }
+
+        if ($callResult = $this->call($service)) {
+            return $callResult;
+        }
+
+        return $service;
+    }
+
+    /**
+     * @param $className
+     * @return null|object
+     */
+    public function createObj($className)
+    {
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        $reflectionClass = new \ReflectionClass($className);
+
+        if (!$reflectionClass->isInstantiable()) {
+            return null;
+        }
+
         $arguments = [];
-        foreach($parameters as $parameter) {
-            $dependencyClass = $parameter->getClass();
-            if ($dependencyClass) {
-                $dependencyClassName = $dependencyClass->getName();
-                $arguments[] = $this->get($dependencyClassName);
+        foreach($reflectionClass->getConstructor()->getParameters() as $parameter) {
+            if ($dependencyClass = $parameter->getClass()) {
+                $arguments[] = $this->get($dependencyClass->getName());
             } else {
-                $parameterName = $parameter->getName();
-                $arguments[] = $this->get($parameterName);
+                $arguments[] = $this->get($parameter->getName());
             }
         }
         return $reflectionClass->newInstanceArgs($arguments);
     }
 
-    public function cretae_obj($className)
-    {
-        if (class_exists($className)) {
-            $reflectionClass = new \ReflectionClass($className);
-            if ($reflectionClass->isInstantiable()) {
-                return $this->create_obj_by_reflection_class($reflectionClass);
-            }
-        }
-        return null;
-    }
-
+    /**
+     * @param $callable
+     * @return mixed|null
+     */
     public function call($callable)
     {
         if (is_callable($callable)) {
@@ -84,6 +100,10 @@ class DI extends Base
         return null;
     }
 
+    /**
+     * @param $service_impl
+     * @return string
+     */
     protected function getServiceType($service_impl)
     {
         if (is_string($service_impl)) {
@@ -101,6 +121,10 @@ class DI extends Base
                 if ($reflectionClass->isAbstract()) {
                     return static::SERVICE_TYPE_ABSTRACT;
                 }
+            }
+
+            if (is_callable($service_impl)) {
+                return static::SERVICE_TYPE_CALLABLE;
             }
 
             return static::SERVICE_TYPE_STRING;
