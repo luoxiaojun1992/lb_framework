@@ -61,7 +61,8 @@
     "guzzlehttp/guzzle": "*",
     "symfony/var-dumper": "*",
     "psy/psysh": "*",
-    "symfony/console": "*"
+    "symfony/console": "*",
+    "ezyang/htmlpurifier": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
