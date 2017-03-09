@@ -76,4 +76,14 @@ html;
         $actualATag = HtmlHelper::a($href, $content, $title, $target, $options);
         $this->assertEquals($expectedATag, $actualATag);
     }
+
+    public function testPurify()
+    {
+        $html = <<<html
+<h1>test</h1>
+<p>test</p>
+<script></script>
+html;
+        var_dump(HtmlHelper::purify($html));
+    }
 }
