@@ -111,6 +111,22 @@ class HtmlHelper extends BaseClass
         return sprintf($a_tag_tpl, $href, $title, $target, self::assembleTagOptions($options), $content);
     }
 
+    /**
+     * Purify dirty html
+     *
+     * @param $dirtyHtml
+     * @return mixed
+     */
+    public static function purify($dirtyHtml)
+    {
+        if (self::$htmlPurifier && self::$htmlPurifier instanceof \HTMLPurifier) {
+            $purifier = self::$htmlPurifier;
+        } else {
+            $purifier = (self::$htmlPurifier = new \HTMLPurifier(\HTMLPurifier_Config::createDefault()));
+        }
+        return $purifier->purify($dirtyHtml);
+    }
+
     protected static function format_tag($tag)
     {
         return trim(strtolower($tag));
