@@ -3,6 +3,7 @@
 namespace lb;
 
 use FilecacheKit;
+use lb\components\helpers\HttpHelper;
 use MemcacheKit;
 use RedisKit;
 use lb\components\facades\FilecacheFacade;
@@ -1322,7 +1323,7 @@ class Lb extends BaseClass
     {
         $html_cache_config = Lb::app()->containers['config']->get('html_cache');
         if (isset($html_cache_config['cache_control']) && isset($html_cache_config['offset'])) {
-            HtmlHelper::setCache($html_cache_config['cache_control'], $html_cache_config['offset']);
+            HttpHelper::setCache($html_cache_config['cache_control'], $html_cache_config['offset']);
         }
     }
 

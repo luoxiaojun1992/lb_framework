@@ -280,4 +280,17 @@ class HttpHelper extends  BaseClass
 
         return (isset($codes[$status_code])) ? $codes[$status_code] : '';
     }
+
+    /**
+     * Set http cache
+     *
+     * @param $cache_control
+     * @param $offset
+     */
+    public static function setCache($cache_control, $offset)
+    {
+        header("Cache-Control: {$cache_control}");
+        $ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
+        header($ExpStr);
+    }
 }
