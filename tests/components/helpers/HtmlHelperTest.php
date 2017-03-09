@@ -84,6 +84,10 @@ html;
 <p>test</p>
 <script></script>
 html;
-        var_dump(HtmlHelper::purify($html));
+        $purifiedHtml = <<<html
+<h1>test</h1>
+<p>test</p>
+html;
+        $this->assertEquals($purifiedHtml, HtmlHelper::purify($html));
     }
 }
