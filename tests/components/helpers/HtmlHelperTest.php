@@ -87,6 +87,7 @@ html;
         $purifiedHtml = <<<html
 <h1>test</h1>
 <p>test</p>
+
 html;
         $this->assertEquals($purifiedHtml, HtmlHelper::purify($html));
     }
