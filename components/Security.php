@@ -178,4 +178,31 @@ class Security extends BaseClass
             }
         }
     }
+
+    /**
+     * @param $password
+     * @return bool|string
+     */
+    public static function generatePasswordHash($password)
+    {
+        if (function_exists('password_hash')) {
+            return password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        return md5($password);
+    }
+
+    /**
+     * @param $password
+     * @param $hash
+     * @return bool
+     */
+    public static function verifyPassword($password, $hash)
+    {
+        if (function_exists('verifyPassword')) {
+            return password_verify($password, $hash);
+        }
+
+        return md5($password) == $hash;
+    }
 }
