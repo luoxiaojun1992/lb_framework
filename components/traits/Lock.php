@@ -25,11 +25,7 @@ trait Lock
 
     protected function getLock($key = self::class)
     {
-        if ($lock = Lb::app()->redisGet($this->getLockKey($key))) {
-            return $lock;
-        }
-
-        return null;
+        return Lb::app()->redisGet($this->getLockKey($key));
     }
 
     protected function getLockKey($key = self::class)
