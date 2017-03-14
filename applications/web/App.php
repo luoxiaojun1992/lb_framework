@@ -3,6 +3,7 @@
 namespace lb\applications\web;
 
 use lb\components\error_handlers\HttpException;
+use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
 
@@ -35,6 +36,8 @@ class App extends Lb
                     $this->handleException($httpException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
+                } catch (ParamException $paramException) {
+                    $this->exitException($paramException);
                 } catch (\Throwable $throwable) {
                     $this->handleException($throwable);
                 }
@@ -46,6 +49,8 @@ class App extends Lb
                     $this->handleException($httpException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
+                } catch (ParamException $paramException) {
+                    $this->exitException($paramException);
                 } catch (\Exception $e) {
                     $this->handleException($e);
                 }

@@ -3,6 +3,7 @@
 namespace lb\applications\console;
 
 use lb\components\error_handlers\ConsoleException;
+use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
 
@@ -25,6 +26,8 @@ class App extends Lb
                     $this->exitException($consoleException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
+                } catch (ParamException $paramException) {
+                    $this->exitException($paramException);
                 } catch (\Throwable $throwable) {
                     $this->exitException($throwable);
                 }
@@ -36,6 +39,8 @@ class App extends Lb
                     $this->exitException($consoleException);
                 } catch (VariableException $variableException) {
                     $this->exitException($variableException);
+                } catch (ParamException $paramException) {
+                    $this->exitException($paramException);
                 } catch (\Exception $e) {
                     $this->exitException($e);
                 }
