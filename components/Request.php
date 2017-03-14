@@ -3,9 +3,13 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\containers\Header;
 
 class Request extends BaseClass
 {
+    /** @var  Header */
+    protected static $_headers;
+
     public static function getClientAddress()
     {
         $ip = false;
@@ -76,5 +80,36 @@ class Request extends BaseClass
     public static function getBasicAuthPassword()
     {
         return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+    }
+
+    public static function getHeaders() : Header
+    {
+        if (self::$_headers === null) {
+            self::$_headers = Header::component();
+            if (function_exists('getallheaders')) {
+                $headers = getallheaders();
+            } elseif (function_exists('http_get_request_headers')) {
+                $headers = http_get_request_headers();
+            } else {
+                foreach ($_SERVER as $name => $value) {
+                    if (strncmp($name, 'HTTP_', 5) === 0) {
+                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                        self::$_headers->set($name, $value);
+                    }
+                }
+
+                return self::$_headers;
+            }
+            foreach ($headers as $name => $value) {
+                self::$_headers->set($name, $value);
+            }
+        }
+
+        return self::$_headers;
+    }
+
+    public static function getHeader(Header $headerKey)
+    {
+        return self::getHeaders()->get($headerKey);
     }
 }

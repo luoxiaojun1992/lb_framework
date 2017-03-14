@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 15/12/31
- * Time: 下午10:20
- * Lb framework route container file
- */
 
 namespace lb\components\containers;
 
