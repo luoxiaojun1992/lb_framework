@@ -108,7 +108,7 @@ class Request extends BaseClass
         return self::$_headers;
     }
 
-    public static function getHeader(Header $headerKey)
+    public static function getHeader($headerKey)
     {
         return self::getHeaders()->get($headerKey);
     }
