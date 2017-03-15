@@ -16,6 +16,11 @@ class SecurityPasswordTest extends BaseTestCase
         $this->testPassword = '123456789';
     }
 
+    public function testGeneratePasswordHash()
+    {
+        $this->assertNotEmpty(Security::generatePasswordHash($this->testPassword));
+    }
+
     public function testVerifyPassword()
     {
 
