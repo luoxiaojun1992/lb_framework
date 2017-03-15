@@ -199,7 +199,7 @@ class Security extends BaseClass
      */
     public static function verifyPassword($password, $hash)
     {
-        if (function_exists('verifyPassword')) {
+        if (function_exists('password_verify')) {
             return password_verify($password, $hash);
         }
 
