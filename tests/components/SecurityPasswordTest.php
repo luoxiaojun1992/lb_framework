@@ -18,13 +18,7 @@ class SecurityPasswordTest extends BaseTestCase
 
     public function testGeneratePasswordHash()
     {
-        if (function_exists('password_hash')) {
-            $passwordHash = password_hash($this->testPassword, PASSWORD_DEFAULT);
-        } else {
-            $passwordHash = md5($this->testPassword);
-        }
-
-        $this->assertEquals($passwordHash, Security::generatePasswordHash($this->testPassword));
+        $this->assertNotEmpty(Security::generatePasswordHash($this->testPassword));
     }
 
     public function testVerifyPassword()
