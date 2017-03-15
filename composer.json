@@ -62,7 +62,8 @@
     "symfony/var-dumper": "*",
     "psy/psysh": "*",
     "symfony/console": "*",
-    "ezyang/htmlpurifier": "*"
+    "ezyang/htmlpurifier": "*",
+    "php-ai/php-ml": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
