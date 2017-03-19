@@ -14,13 +14,6 @@ class ImageHelper extends BaseClass
      */
     public static function captcha($latency = 0, $latencyType = 1)
     {
-        $builder = new CaptchaBuilder;
-        $builder->build();
-
-        Lb::app()->setSession('verify_code', $builder->getPhrase());
-
-        header('Content-type: image/jpeg');
-
         //Frequency Limit
         if ($latency) {
             $latencyTimes = 1000;
@@ -30,6 +23,13 @@ class ImageHelper extends BaseClass
             }
             usleep($latency * $latencyTimes);
         }
+
+        $builder = new CaptchaBuilder;
+        $builder->build();
+
+        Lb::app()->setSession('verify_code', $builder->getPhrase());
+
+        header('Content-type: image/jpeg');
 
         $builder->output();
     }
