@@ -726,10 +726,10 @@ class Lb extends BaseClass
     }
 
     // Log Route Info
-    public function log($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
+    public function log($message = '', $context = [], $level = Logger::NOTICE, $role = 'system')
     {
         if ($this->isSingle()) {
-            Log::component()->record($role, $level, $message, $context);
+            Log::component()->record($message, $context, $level, $role);
         }
     }
 
@@ -1249,9 +1249,10 @@ class Lb extends BaseClass
         $this->initLoginRequired();
 
         // Log
-        Lb::app()->log('system', Logger::NOTICE,
+        Lb::app()->log(
             Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(),
-            $this->route_info);
+            $this->route_info
+        );
 
         // Security Handler
         $this->securityHandler();

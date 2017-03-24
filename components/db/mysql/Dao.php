@@ -597,7 +597,7 @@ class Dao extends BaseClass
                 }
             }
         }
-        Lb::app()->log('system', Logger::NOTICE, 'sql:'.$statement);
+        Lb::app()->log('sql:'.$statement);
         return $statement;
     }
 

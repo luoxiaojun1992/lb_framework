@@ -18,7 +18,8 @@ class Log extends BaseClass
 
     public function __construct()
     {
-        $handler = new StreamHandler(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR .'system' . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', Logger::NOTICE);
+        $handler = new StreamHandler(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR .
+            'log' . DIRECTORY_SEPARATOR .'system' . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', Logger::NOTICE);
         $log_config = Lb::app()->getLogConfig();
         if ($log_config && isset($log_config['type'])) {
             switch($log_config['type']) {
@@ -49,7 +50,13 @@ class Log extends BaseClass
         }
     }
 
-    public function record($role = 'system', $level = Logger::NOTICE, $message = '', $context = [])
+    /**
+     * @param string $message
+     * @param array $context
+     * @param $level
+     * @param string $role
+     */
+    public function record($message = '', $context = [], $level = Logger::NOTICE, $role = 'system')
     {
         if (isset($this->loggers[$role])) {
             $this->loggers[$role]->addRecord($level, $message, $context);
