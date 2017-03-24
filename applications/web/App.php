@@ -6,11 +6,13 @@ use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
+use Monolog\Logger;
 
 class App extends Lb
 {
     protected function handleException($exception)
     {
+        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
         $status_code = $exception->getCode();
         Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
             'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
@@ -21,6 +23,7 @@ class App extends Lb
 
     protected function exitException(\Exception $exception)
     {
+        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
         Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 

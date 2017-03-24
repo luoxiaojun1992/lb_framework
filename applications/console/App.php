@@ -6,11 +6,13 @@ use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
+use Monolog\Logger;
 
 class App extends Lb
 {
     protected function exitException($exception)
     {
+        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
         dd(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
