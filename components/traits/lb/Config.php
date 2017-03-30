@@ -3,6 +3,7 @@
 namespace lb\components\traits\lb;
 
 use lb\Lb;
+use lb\components\containers\Config as ConfigContainer;
 
 trait Config
 {
@@ -214,7 +215,7 @@ trait Config
         }
 
         // Inject Config Container
-        $config_container = Config::component();
+        $config_container = ConfigContainer::component();
         foreach ($this->config as $config_name => $config_content) {
             $config_container->set($config_name, $config_content);
         }
