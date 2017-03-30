@@ -3,7 +3,9 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\consts\Event;
 use lb\components\db\mysql\Connection;
+use lb\components\events\LogWriteEvent;
 use lb\components\log_handlers\PDOHandler;
 use lb\components\log_handlers\QueueHandler;
 use lb\components\traits\Singleton;
@@ -11,7 +13,7 @@ use lb\Lb;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-class Log extends BaseClass
+class Log extends BaseClass implements Event
 {
     use Singleton;
 
@@ -68,6 +70,13 @@ class Log extends BaseClass
     {
         if (isset($this->loggers[$role])) {
             $this->loggers[$role]->addRecord($level, $message, $context);
+            Lb::app()->trigger(self::LOG_WRITE_EVENT, new LogWriteEvent([
+                'level' => $level,
+                'message' => $message,
+                'context' => $context,
+                'role' => $role,
+                'time' => time(),
+            ]));
         }
     }
 }
