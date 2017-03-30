@@ -20,6 +20,15 @@
   "support": {
     "source": "https://git.oschina.net/lb002/lb_framework/"
   },
+  "repositories": [
+    {
+      "packagist": false
+    },
+    {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  ],
   "require": {
     "php": ">=5.4.0",
     "swiftmailer/swiftmailer": "*",
