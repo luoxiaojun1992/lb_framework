@@ -13,9 +13,11 @@ class QueueController extends ConsoleController
     public function listen()
     {
         declare(ticks=1);
-        pcntl_signal(SIGINT, function(){
+        $signalCallback = function(){
             dd('Exited.');
-        });
+        };
+        pcntl_signal(SIGINT, $signalCallback);
+        pcntl_signal(SIGTERM, $signalCallback);
 
         $this->writeln('Listening...');
 
