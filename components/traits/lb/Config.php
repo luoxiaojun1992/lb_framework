@@ -2,6 +2,8 @@
 
 namespace lb\components\traits\lb;
 
+use lb\Lb;
+
 trait Config
 {
     // Get App Root Directory
@@ -180,5 +182,43 @@ trait Config
             }
         }
         return $css_files;
+    }
+
+    /**
+     * Get Queue Config
+     *
+     * @return array
+     */
+    public function getQueueConfig()
+    {
+        return $this->getConfigByName('queue');
+    }
+
+    /**
+     * Get Id Generator Config
+     *
+     * @return array
+     */
+    public function getIdGeneratorConfig()
+    {
+        return $this->getConfigByName('id_generator');
+    }
+
+    /**
+     * Init Configuration
+     */
+    protected function initConfig()
+    {
+        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
+            $this->config = include_once(CONFIG_FILE);
+        }
+
+        // Inject Config Container
+        $config_container = Config::component();
+        foreach ($this->config as $config_name => $config_content) {
+            $config_container->set($config_name, $config_content);
+        }
+        $this->config = [];
+        Lb::app()->containers['config'] = $config_container;
     }
 }

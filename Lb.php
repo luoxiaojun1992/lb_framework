@@ -4,6 +4,7 @@ namespace lb;
 
 use FilecacheKit;
 use lb\components\helpers\HttpHelper;
+use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;
 use lb\components\traits\lb\Memcache as MemcacheTrait;
 use lb\components\traits\lb\Redis as RedisTrait;
@@ -51,6 +52,7 @@ class Lb extends BaseClass
     use MemcacheTrait;
     use ConfigTrait;
     use SessionTrait;
+    use CookieTrait;
 
     public $config = []; // App Configuration
     protected $route_info = [];
@@ -296,89 +298,6 @@ class Lb extends BaseClass
             return Security::generateCsrfToken();
         }
         return '';
-    }
-
-    // Get Cookie Value
-    public function getCookie($cookie_key)
-    {
-        if ($this->isSingle()) {
-            return isset($_COOKIE[$cookie_key]) ? $this->decrypt_by_config($_COOKIE[$cookie_key]) : false;
-        }
-        return false;
-    }
-
-    // Set Cookie Value
-    public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
-    {
-        if ($this->isSingle()) {
-            $cookie_value = $this->encrypt_by_config($cookie_value);
-            setcookie($cookie_key, $cookie_value, $expire, $path, $domain, $secure, $httpOnly);
-        }
-    }
-
-    // Set Cookie Value By Header
-    public function setHeaderCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
-    {
-        if ($this->isSingle()) {
-            $cookie_value = $this->encrypt_by_config($cookie_value);
-            $cookie_str[] = $cookie_key . '=' . $cookie_value;
-            if ($expire) {
-                $cookie_str[] = 'expires=' . gmstrftime("%A, %d-%b-%Y %H:%M:%S GMT", time() + $expire);
-            }
-            if ($path) {
-                $cookie_str[] = 'path=' . $path;
-            }
-            if ($domain) {
-                $cookie_str[] = 'domain=' . $domain;
-            }
-            if ($secure) {
-                $cookie_str[] = 'secure';
-            }
-            if ($httpOnly) {
-                $cookie_str[] = 'HttpOnly';
-            }
-            header("Set-Cookie: " . implode('; ', $cookie_str), false);
-        }
-    }
-
-    // Delete Cookie
-    public function delCookie($cookie_key)
-    {
-        if ($this->isSingle()) {
-            if (isset($_COOKIE[$cookie_key])) {
-                setcookie($cookie_key);
-            }
-        }
-    }
-
-    // Delete Multi Cookies
-    public function delCookies($cookie_keys)
-    {
-        if ($this->isSingle()) {
-            foreach ($cookie_keys as $cookie_key) {
-                $this->delCookie($cookie_key);
-            }
-        }
-    }
-
-    // Delete Cookie By Header
-    public function delHeaderCookie($cookie_key)
-    {
-        if ($this->isSingle()) {
-            if (isset($_COOKIE[$cookie_key])) {
-                $this->setHeaderCookie($cookie_key, $_COOKIE[$cookie_key], -1);
-            }
-        }
-    }
-
-    // Delete Multi Cookies By Header
-    public function delHeaderCookies($cookie_keys)
-    {
-        if ($this->isSingle()) {
-            foreach ($cookie_keys as $cookie_key) {
-                $this->delHeaderCookie($cookie_key);
-            }
-        }
     }
 
     // Get Request Method
@@ -685,26 +604,6 @@ class Lb extends BaseClass
     }
 
     /**
-     * Get Queue Config
-     *
-     * @return array
-     */
-    public function getQueueConfig()
-    {
-        return $this->getConfigByName('queue');
-    }
-
-    /**
-     * Get Id Generator Config
-     *
-     * @return array
-     */
-    public function getIdGeneratorConfig()
-    {
-        return $this->getConfigByName('id_generator');
-    }
-
-    /**
      * Rewrite uniqid
      *
      * @param string $prefix
@@ -876,24 +775,6 @@ class Lb extends BaseClass
             }
         }
         session_start();
-    }
-
-    /**
-     * Init Configuration
-     */
-    protected function initConfig()
-    {
-        if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include_once(CONFIG_FILE);
-        }
-
-        // Inject Config Container
-        $config_container = Config::component();
-        foreach ($this->config as $config_name => $config_content) {
-            $config_container->set($config_name, $config_content);
-        }
-        $this->config = [];
-        Lb::app()->containers['config'] = $config_container;
     }
 
     /**
