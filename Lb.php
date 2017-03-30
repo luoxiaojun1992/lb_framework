@@ -4,6 +4,7 @@ namespace lb;
 
 use FilecacheKit;
 use lb\components\helpers\HttpHelper;
+use lb\components\traits\lb\FileCache;
 use MemcacheKit;
 use RedisKit;
 use lb\components\facades\FilecacheFacade;
@@ -41,6 +42,7 @@ use Monolog\Logger;
 class Lb extends BaseClass
 {
     use Singleton;
+    use FileCache;
 
     public $config = []; // App Configuration
     protected $route_info = [];
@@ -689,39 +691,6 @@ class Lb extends BaseClass
     {
         if ($this->isSingle()) {
             Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
-        }
-    }
-
-    // File Cache Set
-    public function fileCacheSet($key, $value, $cache_time = 86400)
-    {
-        if ($this->isSingle()) {
-            FilecacheKit::add($key, $value, $cache_time);
-        }
-    }
-
-    // File Cache Get
-    public function fileCacheGet($key)
-    {
-        if ($this->isSingle()) {
-            return FilecacheKit::get($key);
-        }
-        return '';
-    }
-
-    // File Cache Delete
-    public function fileCacheDelete($key)
-    {
-        if ($this->isSingle()) {
-            FilecacheKit::delete($key);
-        }
-    }
-
-    // File Cache Flush
-    public function fileCacheFlush()
-    {
-        if ($this->isSingle()) {
-            FilecacheKit::flush();
         }
     }
 
