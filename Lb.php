@@ -63,7 +63,11 @@ class Lb extends BaseClass
         !$is_single && $this->init();
     }
 
-    // Singleton App
+    /**
+     * Singleton App
+     *
+     * @return static
+     */
     public static function app()
     {
         if (static::$app instanceof self) {
@@ -75,7 +79,11 @@ class Lb extends BaseClass
         }
     }
 
-    // Get Client IP Address
+    /**
+     * Get Client IP Address
+     *
+     * @return bool|string
+     */
     public function getClientAddress()
     {
         if ($this->isSingle()) {
@@ -84,7 +92,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Host
+    /**
+     * Get Host
+     *
+     * @return string
+     */
     public function getHost()
     {
         if ($this->isSingle()) {
@@ -93,7 +105,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Request URI
+    /**
+     * Get Request URI
+     *
+     * @return string
+     */
     public function getUri()
     {
         if ($this->isSingle()) {
@@ -102,7 +118,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Ger Host IP Address
+    /**
+     * Ger Host IP Address
+     *
+     * @return string
+     */
     public function getHostAddress()
     {
         if ($this->isSingle()) {
@@ -111,7 +131,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get User Agent
+    /**
+     * Get User Agent
+     *
+     * @return string
+     */
     public function getUserAgent()
     {
         if ($this->isSingle()) {
@@ -120,7 +144,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Query String
+    /**
+     * Get Query String
+     *
+     * @return string
+     */
     public function getQueryString()
     {
         if ($this->isSingle()) {
@@ -129,7 +157,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Http Basic Auth User
+    /**
+     * Get Http Basic Auth User
+     *
+     * @return string
+     */
     public function getBasicAuthUser()
     {
         if ($this->isSingle()) {
@@ -138,7 +170,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Http Basic Auth Password
+    /**
+     * Get Http Basic Auth Password
+     *
+     * @return string
+     */
     public function getBasicAuthPassword()
     {
         if ($this->isSingle()) {
@@ -147,7 +183,11 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Route Info
+    /**
+     * Get Route Info
+     * 
+     * @return array
+     */
     public function getRouteInfo()
     {
         if ($this->isSingle()) {
