@@ -5,6 +5,7 @@ namespace lb;
 use FilecacheKit;
 use lb\components\helpers\HttpHelper;
 use lb\components\traits\lb\Cookie as CookieTrait;
+use lb\components\traits\lb\Crypt as CryptTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;
 use lb\components\traits\lb\Memcache as MemcacheTrait;
 use lb\components\traits\lb\Queue as QueueTrait;
@@ -19,7 +20,6 @@ use lb\components\facades\RedisFacade;
 use lb\components\containers\RouteInfo;
 use lb\components\containers\DI;
 use lb\components\error_handlers\HttpException;
-use lb\components\helpers\CryptHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\helpers\ImageHelper;
 use lb\components\helpers\SystemHelper;
@@ -52,6 +52,7 @@ class Lb extends BaseClass
     use SessionTrait;
     use CookieTrait;
     use QueueTrait;
+    use CryptTrait;
 
     public $config = []; // App Configuration
     protected $route_info = [];
@@ -480,60 +481,6 @@ class Lb extends BaseClass
             return new \Hprose\Http\Client($url);
         }
         return false;
-    }
-
-    // Encrype
-    public function encrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
-    {
-        if ($this->isSingle()) {
-            $encrypt_method = CryptHelper::get_encrypt_method($cryptor);
-            return call_user_func_array([CryptHelper::className(), $encrypt_method], [$str, $key, $algo]);
-        }
-        return '';
-    }
-
-    // Decrypt
-    public function decrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
-    {
-        if ($this->isSingle()) {
-            $decrypt_method = CryptHelper::get_decrypt_method($cryptor);
-            return call_user_func_array([CryptHelper::className(), $decrypt_method], [$str, $key, $algo]);
-        }
-        return '';
-    }
-
-    // Encrypt By Config
-    public function encrypt_by_config($str)
-    {
-        if ($this->isSingle()) {
-            $security_key = $this->getConfigByName('security_key');
-            if ($security_key) {
-                $cryptor = $this->getConfigByName('cryptor');
-                if (!$cryptor) {
-                    $cryptor = 'zend';
-                }
-                $str = $this->encrypt($str, $security_key, $cryptor);
-            }
-            return $str;
-        }
-        return '';
-    }
-
-    // Decrypt By Config
-    public function decrypt_by_config($str)
-    {
-        if ($this->isSingle()) {
-            $security_key = $this->getConfigByName('security_key');
-            if ($security_key) {
-                $cryptor = $this->getConfigByName('cryptor');
-                if (!$cryptor) {
-                    $cryptor = 'zend';
-                }
-                $str = $this->decrypt($str, $security_key, $cryptor);
-            }
-            return $str;
-        }
-        return '';
     }
 
     // Get DI Container
