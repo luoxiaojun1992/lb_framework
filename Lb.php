@@ -12,8 +12,6 @@ use lb\components\traits\lb\Queue as QueueTrait;
 use lb\components\traits\lb\Redis as RedisTrait;
 use lb\components\traits\lb\Config as ConfigTrait;
 use lb\components\traits\lb\Session as SessionTrait;
-use MemcacheKit;
-use RedisKit;
 use lb\components\facades\FilecacheFacade;
 use lb\components\facades\MemcacheFacade;
 use lb\components\facades\RedisFacade;
@@ -41,6 +39,8 @@ use lb\components\Security;
 use lb\components\helpers\FileHelper;
 use lb\components\utils\IdGenerator;
 use Monolog\Logger;
+use MemcacheKit;
+use RedisKit;
 
 class Lb extends BaseClass
 {
@@ -185,7 +185,7 @@ class Lb extends BaseClass
 
     /**
      * Get Route Info
-     * 
+     *
      * @return array
      */
     public function getRouteInfo()
