@@ -5,6 +5,7 @@ namespace lb\components;
 use lb\BaseClass;
 use lb\components\db\mysql\Connection;
 use lb\components\log_handlers\PDOHandler;
+use lb\components\log_handlers\QueueHandler;
 use lb\components\traits\Singleton;
 use lb\Lb;
 use Monolog\Logger;
@@ -16,6 +17,10 @@ class Log extends BaseClass
 
     protected $loggers = [];
 
+    //Log Handler Types
+    const LOG_TYPE_MYSQL = 'mysql';
+    const LOG_TYPE_QUEUE = 'queue';
+
     public function __construct()
     {
         $handler = new StreamHandler(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR .
@@ -23,8 +28,11 @@ class Log extends BaseClass
         $log_config = Lb::app()->getLogConfig();
         if ($log_config && isset($log_config['type'])) {
             switch($log_config['type']) {
-                case 'mysql':
+                case self::LOG_TYPE_MYSQL:
                     $handler = new PDOHandler(Connection::component()->write_conn, Logger::NOTICE);
+                    break;
+                case self::LOG_TYPE_QUEUE:
+                    $handler = new QueueHandler(Logger::NOTICE);
                     break;
             }
         }
