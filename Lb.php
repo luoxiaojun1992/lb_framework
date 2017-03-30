@@ -4,7 +4,11 @@ namespace lb;
 
 use FilecacheKit;
 use lb\components\helpers\HttpHelper;
-use lb\components\traits\lb\FileCache;
+use lb\components\traits\lb\FileCache as FileCacheTrait;
+use lb\components\traits\lb\Memcache as MemcacheTrait;
+use lb\components\traits\lb\Redis as RedisTrait;
+use lb\components\traits\lb\Config as ConfigTrait;
+use lb\components\traits\lb\Session as SessionTrait;
 use MemcacheKit;
 use RedisKit;
 use lb\components\facades\FilecacheFacade;
@@ -42,7 +46,11 @@ use Monolog\Logger;
 class Lb extends BaseClass
 {
     use Singleton;
-    use FileCache;
+    use FileCacheTrait;
+    use RedisTrait;
+    use MemcacheTrait;
+    use ConfigTrait;
+    use SessionTrait;
 
     public $config = []; // App Configuration
     protected $route_info = [];
@@ -63,17 +71,6 @@ class Lb extends BaseClass
             $app->is_single = true;
             return (static::$app = $app);
         }
-    }
-
-    // Get App Root Directory
-    public function getRootDir()
-    {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('root_dir');
-            }
-        }
-        return '';
     }
 
     // Get Client IP Address
@@ -130,28 +127,6 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get App Name
-    public function getName()
-    {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('name');
-            }
-        }
-        return '';
-    }
-
-    // Get Restful Api Config
-    public function getRest()
-    {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('rest');
-            }
-        }
-        return false;
-    }
-
     // Get Http Basic Auth User
     public function getBasicAuthUser()
     {
@@ -170,60 +145,6 @@ class Lb extends BaseClass
         return '';
     }
 
-    // Get Http Port
-    public function getHttpPort()
-    {
-        return $this->getConfigByName('http_port');
-    }
-
-    // Get Time Zone
-    public function getTimeZone()
-    {
-        return $this->getConfigByName('timeZone');
-    }
-
-    // Get mb internal encoding configuration
-    public function getMbInternalEncoding()
-    {
-        return $this->getConfigByName('mb_internal_encoding');
-    }
-
-    // Get Cdn Host
-    public function getCdnHost()
-    {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return trim($this->containers['config']->get('cdn_host'), '/');
-            }
-        }
-        return '';
-    }
-
-    // Get Seo Settings
-    public function getSeo()
-    {
-        return $this->getConfigByName('seo');
-    }
-
-    // Get Custom Configuration
-    public function getCustomConfig($name = '')
-    {
-        $custom_config = $this->getConfigByName('custom');
-        return $name ? ($custom_config[$name] ?? null) : $custom_config;
-    }
-
-    // Get Home Controller & Action
-    public function getHome()
-    {
-        return $this->getConfigByName('home');
-    }
-
-    // Get DB Config
-    public function getDbConfig($db_type)
-    {
-        return $this->getConfigByName($db_type);
-    }
-
     // Get Route Info
     public function getRouteInfo()
     {
@@ -234,41 +155,6 @@ class Lb extends BaseClass
             }
         }
         return ['controller' => 'index', 'action' => 'index'];
-    }
-
-    // Get Csrf Config
-    public function getCsrfConfig()
-    {
-        return $this->getConfigByName('csrf');
-    }
-
-    // Get RPC Config
-    public function getRpcConfig()
-    {
-        return $this->getConfigByName('rpc');
-    }
-
-    // Get Api Doc Config
-    public function getApiDocConfig()
-    {
-        return $this->getConfigByName('api_doc');
-    }
-
-    // Get Log Config
-    public function getLogConfig()
-    {
-        return $this->getConfigByName('log');
-    }
-
-    // Get Configuration By Name
-    public function getConfigByName($config_name)
-    {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get($config_name);
-            }
-        }
-        return [];
     }
 
     // If is home
@@ -343,62 +229,6 @@ class Lb extends BaseClass
         }
     }
 
-    // Get Url Manager Config By Item Name
-    public function getUrlManagerConfig($item)
-    {
-        $urlManager = $this->getConfigByName('urlManager');
-        if (isset($urlManager[$item])) {
-            return $urlManager[$item];
-        }
-        return false;
-    }
-
-    // Is Pretty Url
-    public function isPrettyUrl()
-    {
-        return $this->getUrlManagerConfig('is_pretty_url');
-    }
-
-    // Get Custom Url Suffix
-    public function getUrlSuffix()
-    {
-        return $this->getUrlManagerConfig('suffix') ? : '';
-    }
-
-    // Get Js Files
-    public function getJsFiles($controller_id, $template_id)
-    {
-        $js_files = [];
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                $asset_config = $this->containers['config']->get('assets');
-                if ($asset_config) {
-                    if (isset($asset_config[$controller_id][$template_id]['js'])) {
-                        $js_files = $asset_config[$controller_id][$template_id]['js'];
-                    }
-                }
-            }
-        }
-        return $js_files;
-    }
-
-    // Get Css Files
-    public function getCssFiles($controller_id, $template_id)
-    {
-        $css_files = [];
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                $asset_config = $this->containers['config']->get('assets');
-                if ($asset_config) {
-                    if (isset($asset_config[$controller_id][$template_id]['css'])) {
-                        $css_files = $asset_config[$controller_id][$template_id]['css'];
-                    }
-                }
-            }
-        }
-        return $css_files;
-    }
-
     // Get Db Connection
     public function getDb($db_type, $node_type)
     {
@@ -466,43 +296,6 @@ class Lb extends BaseClass
             return Security::generateCsrfToken();
         }
         return '';
-    }
-
-    // Get Session Value
-    public function getSession($session_key)
-    {
-        if ($this->isSingle()) {
-            return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
-        }
-        return false;
-    }
-
-    // Set Session Value
-    public function setSession($session_key, $session_value)
-    {
-        if ($this->isSingle()) {
-            $_SESSION[$session_key] = $session_value;
-        }
-    }
-
-    // Delete Session
-    public function delSession($session_key)
-    {
-        if ($this->isSingle()) {
-            if (isset($_SESSION[$session_key])) {
-                unset($_SESSION[$session_key]);
-            }
-        }
-    }
-
-    // Delete Multi Sessions
-    public function delSessions($session_keys)
-    {
-        if ($this->isSingle()) {
-            foreach ($session_keys as $session_key) {
-                $this->delSession($session_key);
-            }
-        }
     }
 
     // Get Cookie Value
@@ -604,56 +397,6 @@ class Lb extends BaseClass
             return Request::getReferer();
         }
         return '';
-    }
-
-    // Memcache Get
-    public function memcacheGet($key)
-    {
-        if ($this->isSingle()) {
-            return MemcacheKit::get($key);
-        }
-        return '';
-    }
-
-    // Memcache Set
-    public function memcacheSet($key, $value, $expiration = null)
-    {
-        if ($this->isSingle()) {
-            MemcacheKit::set($key, $value, $expiration);
-        }
-    }
-
-    // Memcache Delete
-    public function memcacheDelete($key)
-    {
-        if ($this->isSingle()) {
-            MemcacheKit::delete($key);
-        }
-    }
-
-    // Redis Get
-    public function redisGet($key)
-    {
-        if ($this->isSingle()) {
-            return RedisKit::get($key);
-        }
-        return '';
-    }
-
-    // Redis Set
-    public function redisSet($key, $value, $expiration = null)
-    {
-        if ($this->isSingle()) {
-            RedisKit::set($key, $value, $expiration);
-        }
-    }
-
-    // Redis Delete
-    public function redisDelete($key)
-    {
-        if ($this->isSingle()) {
-            RedisKit::delete($key);
-        }
     }
 
     // Import PHP File
