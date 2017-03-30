@@ -7,6 +7,7 @@ use lb\components\helpers\HttpHelper;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;
 use lb\components\traits\lb\Memcache as MemcacheTrait;
+use lb\components\traits\lb\Queue as QueueTrait;
 use lb\components\traits\lb\Redis as RedisTrait;
 use lb\components\traits\lb\Config as ConfigTrait;
 use lb\components\traits\lb\Session as SessionTrait;
@@ -25,8 +26,6 @@ use lb\components\helpers\SystemHelper;
 use lb\components\listeners\BaseListener;
 use lb\components\observers\BaseObserver;
 use lb\components\Pagination;
-use lb\components\queues\BaseQueue;
-use lb\components\queues\Job;
 use lb\components\session\Session;
 use lb\components\traits\Singleton;
 use lb\components\User;
@@ -37,7 +36,6 @@ use lb\components\Log;
 use lb\components\mailer\Swift;
 use lb\components\Request;
 use lb\components\Route;
-use lb\components\containers\Config;
 use lb\components\UrlManager;
 use lb\components\Security;
 use lb\components\helpers\FileHelper;
@@ -53,6 +51,7 @@ class Lb extends BaseClass
     use ConfigTrait;
     use SessionTrait;
     use CookieTrait;
+    use QueueTrait;
 
     public $config = []; // App Configuration
     protected $route_info = [];
@@ -560,47 +559,6 @@ class Lb extends BaseClass
         if ($this->isSingle()) {
             BaseObserver::trigger($event_name, $event);
         }
-    }
-
-    // Push message to queue
-    public function queuePush(Job $job)
-    {
-        if ($this->isSingle()) {
-            $queue_config = $this->getQueueConfig();
-            if (isset($queue_config['driver'])) {
-                /** @var BaseQueue $driver */
-                $driver = $queue_config['driver'];
-                $driver::component()->push($job);
-            }
-        }
-    }
-
-    // Push message to delay queue
-    public function queueDelay(Job $job, $execute_at)
-    {
-        if ($this->isSingle()) {
-            $queue_config = $this->getQueueConfig();
-            if (isset($queue_config['driver'])) {
-                /** @var BaseQueue $driver */
-                $driver = $queue_config['driver'];
-                $driver::component()->delay($job, $execute_at);
-            }
-        }
-    }
-
-    // Pull message from queue
-    public function queuePull()
-    {
-        if ($this->isSingle()) {
-            $queue_config = $this->getQueueConfig();
-            if (isset($queue_config['driver'])) {
-                /** @var BaseQueue $driver */
-                $driver = $queue_config['driver'];
-                return $driver::component()->pull();
-            }
-        }
-
-        return null;
     }
 
     /**
