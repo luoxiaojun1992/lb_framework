@@ -4,6 +4,7 @@ namespace lb\controllers\web;
 
 use lb\components\Auth;
 use lb\components\middleware\AuthMiddleware;
+use lb\components\middleware\RequestMethodFilter;
 use lb\components\Response;
 use lb\controllers\BaseController;
 use lb\Lb;
@@ -19,7 +20,10 @@ class RestController extends BaseController
     protected $middleware = [
         'authMiddleware' => [
             'class' => AuthMiddleware::class,
-        ]
+        ],
+        'requestMethodFilter' => [
+            'class' => RequestMethodFilter::class,
+        ],
     ];
 
     /**
@@ -37,25 +41,15 @@ class RestController extends BaseController
                 'auth_type' => $this->auth_type,
                 'rest_config' => $this->self_rest_config,
             ];
+
+            $this->middleware['requestMethodFilter']['params'] = [
+                'request_method' => $this->request_method,
+            ];
         } else {
             $this->response_invalid_request();
         }
 
-        $this->validRequestMethod();
-
         parent::beforeAction();
-    }
-
-    /**
-     * Valid Request Method
-     */
-    protected function validRequestMethod()
-    {
-        $this->request_method = trim($this->request_method);
-        if ($this->request_method != '*' &&
-            strtolower($this->request_method) != strtolower(Lb::app()->getRequestMethod())) {
-            $this->response_invalid_request();
-        }
     }
 
     /**
@@ -73,6 +67,7 @@ class RestController extends BaseController
      */
     protected function response_invalid_request($status_code = 200)
     {
+        $this->beforeResponse();
         Response::response_invalid_request($status_code);
     }
 
@@ -83,6 +78,7 @@ class RestController extends BaseController
      */
     protected function response_unauthorized($status_code = 200)
     {
+        $this->beforeResponse();
         Response::response_unauthorized($status_code);
     }
 
@@ -91,6 +87,7 @@ class RestController extends BaseController
      */
     protected function response_success()
     {
+        $this->beforeResponse();
         Response::response_success();
     }
 
@@ -101,6 +98,7 @@ class RestController extends BaseController
      */
     protected function response_failed($status_code = 200)
     {
+        $this->beforeResponse();
         Response::response_failed($status_code);
     }
 }
