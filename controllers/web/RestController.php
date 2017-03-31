@@ -2,6 +2,7 @@
 
 namespace lb\controllers\web;
 
+use lb\components\Auth;
 use lb\components\Response;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
@@ -61,18 +62,14 @@ class RestController extends BaseController
     {
         switch($this->auth_type) {
             case self::AUTH_TYPE_BASIC:
-                $auth_user = Lb::app()->getBasicAuthUser();
-                $auth_pwd = Lb::app()->getBasicAuthPassword();
-                if ($auth_user != $this->self_rest_config[2][0] || md5($auth_pwd) != $this->self_rest_config[2][1]) {
+                if (!Auth::authBasic($this->self_rest_config[2][0], $this->self_rest_config[2][1])) {
                     $this->response_unauthorized();
                 }
                 break;
             case self::AUTH_TYPE_OAUTH:
                 break;
             case self::AUTH_TYPE_QUERY_STRING:
-                $auth_key = $this->self_rest_config[2][0];
-                $auth_value = Lb::app()->getParam($auth_key);
-                if (md5($auth_value) != $this->self_rest_config[2][1]) {
+                if (!Auth::authQueryString($this->self_rest_config[2][0], $this->self_rest_config[2][1])) {
                     $this->response_unauthorized();
                 }
                 break;
