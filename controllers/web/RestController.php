@@ -23,9 +23,12 @@ class RestController extends BaseController
 
     //Middleware
     protected $middleware = [
-        [
+        'authMiddleware' => [
             'class' => AuthMiddleware::class,
             'params' => [],
+            'action' => '',
+            'successCallback' => null,
+            'failureCallback' => null,
         ]
     ];
 
@@ -39,16 +42,19 @@ class RestController extends BaseController
         if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($this->request_method, $this->auth_type) = $this->self_rest_config;
-            $this->middleware[0]['params'] = [
-                'authType' => $this->auth_type,
-                'restConfig' => $this->self_rest_config,
+
+            $this->middleware['authMiddleware']['params'] = [
+                'auth_type' => $this->auth_type,
+                'rest_config' => $this->self_rest_config,
             ];
+            $this->middleware['authMiddleware']['failureCallback'] = function () use ($this) {
+                $this->response_unauthorized(401);
+            };
         } else {
             $this->response_invalid_request();
         }
 
         $this->validRequestMethod();
-        $this->authentication();
     }
 
     /**

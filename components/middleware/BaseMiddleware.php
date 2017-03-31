@@ -6,13 +6,8 @@ use lb\BaseClass;
 
 abstract class BaseMiddleware extends BaseClass
 {
-    public function returnAction()
+    public function runAction($params, $successCallback, $failureCallback)
     {
         return true;
-    }
-
-    public function exceptionAction()
-    {
-        //
     }
 }
