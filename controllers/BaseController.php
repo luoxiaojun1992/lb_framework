@@ -27,7 +27,8 @@ abstract class BaseController extends BaseClass
             $params = !empty($middleware['params']) ? $middleware['params'] : [];
             $successCallback = !empty($middleware['successCallback']) ? $middleware['successCallback'] : null;
             $failureCallback = !empty($middleware['failureCallback']) ? $middleware['failureCallback'] : null;
-            if (!call_user_func_array([$middleware['class'], $action], [
+            $middlewareClass = $middleware['class'];
+            if (!call_user_func_array([new $middlewareClass, $action], [
                 'params' => $params,
                 'successCallback' => $successCallback,
                 'failureCallback' => $failureCallback,

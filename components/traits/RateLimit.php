@@ -27,7 +27,7 @@ trait RateLimit
             RedisKit::incr($rateLimitKey);
         }
 
-        $expire > 0 && RedisKit::expire($rateLimitKey);
+        $expire > 0 && RedisKit::expire($rateLimitKey, $expire);
     }
 
     protected function getRateLimitKey($key = self::class)
