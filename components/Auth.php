@@ -33,6 +33,6 @@ class Auth extends BaseClass
      */
     public static function authQueryString($authKey, $accessToken)
     {
-        return Lb::app()->getParam($authKey) == $accessToken;
+        return md5(Lb::app()->getParam($authKey)) == $accessToken;
     }
 }
