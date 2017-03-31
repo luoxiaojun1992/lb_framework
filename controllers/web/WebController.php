@@ -18,7 +18,7 @@ class WebController extends BaseController
 
     protected function beforeAction()
     {
-        //
+        parent::beforeAction();
     }
 
     protected function beforeRenderJson()

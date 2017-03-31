@@ -42,6 +42,8 @@ class RestController extends BaseController
         }
 
         $this->validRequestMethod();
+
+        parent::beforeAction();
     }
 
     /**

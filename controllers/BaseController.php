@@ -13,8 +13,6 @@ abstract class BaseController extends BaseClass
     public function __construct()
     {
         $this->beforeAction();
-
-        $this->runMiddleware();
     }
 
     public function __clone()
@@ -39,5 +37,8 @@ abstract class BaseController extends BaseClass
         }
     }
 
-    abstract protected function beforeAction();
+    protected function beforeAction()
+    {
+        $this->runMiddleware();
+    }
 }
