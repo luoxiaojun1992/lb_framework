@@ -3,6 +3,7 @@
 namespace lb\controllers\web;
 
 use lb\components\Auth;
+use lb\components\middleware\AuthMiddleware;
 use lb\components\Response;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
@@ -15,15 +16,18 @@ class RestController extends BaseController
     const RESPONSE_TYPE_JSON  = 1;
     const RESPONSE_TYPE_XML = 2;
 
-    // Authentication Type
-    const AUTH_TYPE_BASIC = 1;
-    const AUTH_TYPE_OAUTH = 2;
-    const AUTH_TYPE_QUERY_STRING = 3;
-
-    protected $auth_type = self::AUTH_TYPE_BASIC;
+    protected $auth_type = Auth::AUTH_TYPE_BASIC;
     protected $request_method = '';
     protected $rest_config = [];
     protected $self_rest_config = [];
+
+    //Middleware
+    protected $middleware = [
+        [
+            'class' => AuthMiddleware::class,
+            'params' => [],
+        ]
+    ];
 
     /**
      * Before Action Filter
@@ -35,6 +39,10 @@ class RestController extends BaseController
         if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($this->request_method, $this->auth_type) = $this->self_rest_config;
+            $this->middleware[0]['params'] = [
+                'authType' => $this->auth_type,
+                'restConfig' => $this->self_rest_config,
+            ];
         } else {
             $this->response_invalid_request();
         }
@@ -52,28 +60,6 @@ class RestController extends BaseController
         if ($this->request_method != '*' &&
             strtolower($this->request_method) != strtolower(Lb::app()->getRequestMethod())) {
             $this->response_invalid_request();
-        }
-    }
-
-    /**
-     * Api Authentication
-     */
-    protected function authentication()
-    {
-        switch($this->auth_type) {
-            case self::AUTH_TYPE_BASIC:
-                if (!Auth::authBasic($this->self_rest_config[2][0], $this->self_rest_config[2][1])) {
-                    $this->response_unauthorized();
-                }
-                break;
-            case self::AUTH_TYPE_OAUTH:
-                break;
-            case self::AUTH_TYPE_QUERY_STRING:
-                if (!Auth::authQueryString($this->self_rest_config[2][0], $this->self_rest_config[2][1])) {
-                    $this->response_unauthorized();
-                }
-                break;
-            default:
         }
     }
 
@@ -152,7 +138,7 @@ class RestController extends BaseController
         }
         echo $response_content;
         if (!$is_success) {
-            die();
+            Lb::app()->stop();
         }
     }
 }

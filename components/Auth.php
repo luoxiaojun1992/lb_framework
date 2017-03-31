@@ -7,6 +7,11 @@ use lb\Lb;
 
 class Auth extends BaseClass
 {
+    // Authentication Type
+    const AUTH_TYPE_BASIC = 1;
+    const AUTH_TYPE_OAUTH = 2;
+    const AUTH_TYPE_QUERY_STRING = 3;
+
     /**
      * Basic Authentication
      *

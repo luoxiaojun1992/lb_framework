@@ -3,6 +3,7 @@
 namespace lb\components\helpers;
 
 use lb\BaseClass;
+use lb\Lb;
 
 class ArrayHelper extends BaseClass
 {
@@ -60,6 +61,6 @@ class ArrayHelper extends BaseClass
         echo '<pre>';
         $func($array);
         echo '</pre>';
-        die();
+        Lb::app()->stop();
     }
 }

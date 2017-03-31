@@ -37,7 +37,7 @@ class QueueController extends ConsoleController
                         $job->canTry() && Lb::app()->queuePush($job);
                         $this->writeln($e->getTraceAsString());
                     }
-                    die();
+                    Lb::app()->stop();
                 } else {
                     pcntl_wait($status);
                     $this->writeln('Processed job ' . $job->getId());
