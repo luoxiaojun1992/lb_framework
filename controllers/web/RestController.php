@@ -19,11 +19,14 @@ class RestController extends BaseController
     const AUTH_TYPE_OAUTH = 2;
     const AUTH_TYPE_QUERY_STRING = 3;
 
-    protected $auth_type = 1;
+    protected $auth_type = self::AUTH_TYPE_BASIC;
     protected $request_method = '';
     protected $rest_config = [];
     protected $self_rest_config = [];
 
+    /**
+     * Before Action Filter
+     */
     protected function beforeAction()
     {
         $this->rest_config = Lb::app()->getRest();
@@ -39,14 +42,21 @@ class RestController extends BaseController
         $this->authentication();
     }
 
+    /**
+     * Valid Request Method
+     */
     protected function validRequestMethod()
     {
         $this->request_method = trim($this->request_method);
-        if ($this->request_method != '*' && strtolower($this->request_method) != strtolower(Lb::app()->getRequestMethod())) {
+        if ($this->request_method != '*' &&
+            strtolower($this->request_method) != strtolower(Lb::app()->getRequestMethod())) {
             $this->response_invalid_request();
         }
     }
 
+    /**
+     * Api Authentication
+     */
     protected function authentication()
     {
         switch($this->auth_type) {
@@ -70,31 +80,60 @@ class RestController extends BaseController
         }
     }
 
+    /**
+     * Before Response Filter
+     */
     protected function beforeResponse()
     {
-
+        //
     }
 
+    /**
+     * Response Invalid Request
+     *
+     * @param int $status_code
+     */
     protected function response_invalid_request($status_code = 200)
     {
         $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
+    /**
+     * Reponse Unauthorized Request
+     *
+     * @param int $status_code
+     */
     protected function response_unauthorized($status_code = 200)
     {
         $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
+    /**
+     * Response Successful Request
+     */
     protected function response_success()
     {
         $this->response(['msg' => 'success'], static::RESPONSE_TYPE_JSON);
     }
 
+    /**
+     * Response Failed Request
+     *
+     * @param int $status_code
+     */
     protected function response_failed($status_code = 200)
     {
         $this->response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
+    /**
+     * Response Request
+     *
+     * @param $data
+     * @param $format
+     * @param bool $is_success
+     * @param int $status_code
+     */
     protected function response($data, $format, $is_success=true, $status_code = 200)
     {
         Response::httpCode($status_code);
