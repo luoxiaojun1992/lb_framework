@@ -363,18 +363,7 @@ class Lb extends BaseClass
     {
         if ($this->isSingle()) {
             if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
-                $insecure_codes = [
-                    '2f',
-                    '2e',
-                    '%5c',
-                    '%252e',
-                    '%255c',
-                    '%c0',
-                    '%af',
-                    '%c1',
-                    '%9c',
-                ];
-                include_once(str_replace($insecure_codes, '', $path));
+                include_once(str_replace(Security::INSECURE_CODES, '', $path));
             }
         }
     }

@@ -180,7 +180,7 @@ trait Config
      */
     public function getFacadesConfig()
     {
-        return (array)$this->getConfigByName('facades');
+        return $this->getConfigByName('facades') ? : [];
     }
 
     /**
