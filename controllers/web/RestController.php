@@ -30,6 +30,16 @@ class RestController extends BaseController
         ],
     ];
 
+    //Rate Limit Actions
+    protected $rateLimitActions = [
+        'index' => [
+            'rate' => 60,
+            'expire' => 60,
+            'step' => 1,
+            'key' => self::class . '@' . 'index',
+        ]
+    ];
+
     /**
      * Before Action Filter
      */
@@ -41,16 +51,26 @@ class RestController extends BaseController
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($this->request_method, $this->auth_type) = $this->self_rest_config;
 
+            //Set Auth Middleware
             $this->middleware['authMiddleware']['params'] = [
                 'auth_type' => $this->auth_type,
                 'rest_config' => $this->self_rest_config,
             ];
 
+            //Set Request Method Filter
             $this->middleware['requestMethodFilter']['params'] = [
                 'request_method' => $this->request_method,
             ];
+
+            //Set Rate Limit Filter
+            if (array_key_exists($route_info['action'], $this->rateLimitActions)) {
+                $this->middleware['rateLimitFilter']['params'] = $this->rateLimitActions[$route_info['action']];
+                $this->middleware['rateLimitFilter']['failureCallback'] = function () {
+                    Response::response_invalid_request(403);
+                };
+            }
         } else {
-            $this->response_invalid_request();
+            $this->response_invalid_request(403);
         }
 
         parent::beforeAction();

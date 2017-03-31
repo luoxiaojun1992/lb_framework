@@ -5,7 +5,7 @@ namespace lb\components\traits;
 use RedisKit;
 use lb\Lb;
 
-class RateLimit
+trait RateLimit
 {
     public function getRateByKey($key = self::class)
     {
