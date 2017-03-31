@@ -32,12 +32,13 @@ class RestController extends BaseController
 
     //Rate Limit Actions
     protected $rateLimitActions = [
-        'index' => [
-            'rate' => 60,
-            'expire' => 60,
-            'step' => 1,
-            'key' => self::class . '@' . 'index',
-        ]
+        //Example Rate Limit Configuration
+//        'index' => [
+//            'rate' => 60,
+//            'expire' => 60,
+//            'step' => 1,
+//            'key' => self::class . '@' . 'index',
+//        ]
     ];
 
     /**
