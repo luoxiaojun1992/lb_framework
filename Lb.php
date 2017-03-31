@@ -698,11 +698,11 @@ class Lb extends BaseClass
      */
     protected function registerFacades()
     {
-        $facades = [
+        $facades = array_merge([
             'RedisKit' => RedisFacade::class,
             'MemcacheKit' => MemcacheFacade::class,
             'FilecacheKit' => FilecacheFacade::class,
-        ];
+        ], Lb::app()->getFacadesConfig());
 
         array_walk($facades, function ($facade, $alias) {
             class_alias($facade, $alias);

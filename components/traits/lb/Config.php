@@ -10,34 +10,19 @@ trait Config
     // Get App Root Directory
     public function getRootDir()
     {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('root_dir');
-            }
-        }
-        return '';
+        return $this->getConfigByName('root_dir');
     }
 
     // Get App Name
     public function getName()
     {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('name');
-            }
-        }
-        return '';
+        return $this->getConfigByName('name');
     }
 
     // Get Restful Api Config
     public function getRest()
     {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return $this->containers['config']->get('rest');
-            }
-        }
-        return false;
+        return $this->getConfigByName('rest');
     }
 
     // Get Http Port
@@ -61,12 +46,7 @@ trait Config
     // Get Cdn Host
     public function getCdnHost()
     {
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                return trim($this->containers['config']->get('cdn_host'), '/');
-            }
-        }
-        return '';
+        return trim((string)$this->getConfigByName('cdn_host'), '/');
     }
 
     // Get Seo Settings
@@ -155,15 +135,9 @@ trait Config
     public function getJsFiles($controller_id, $template_id)
     {
         $js_files = [];
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                $asset_config = $this->containers['config']->get('assets');
-                if ($asset_config) {
-                    if (isset($asset_config[$controller_id][$template_id]['js'])) {
-                        $js_files = $asset_config[$controller_id][$template_id]['js'];
-                    }
-                }
-            }
+        $asset_config = $this->getConfigByName('assets');
+        if (isset($asset_config[$controller_id][$template_id]['js'])) {
+            $js_files = $asset_config[$controller_id][$template_id]['js'];
         }
         return $js_files;
     }
@@ -172,15 +146,9 @@ trait Config
     public function getCssFiles($controller_id, $template_id)
     {
         $css_files = [];
-        if ($this->isSingle()) {
-            if (isset($this->containers['config'])) {
-                $asset_config = $this->containers['config']->get('assets');
-                if ($asset_config) {
-                    if (isset($asset_config[$controller_id][$template_id]['css'])) {
-                        $css_files = $asset_config[$controller_id][$template_id]['css'];
-                    }
-                }
-            }
+        $asset_config = $this->getConfigByName('assets');
+        if (isset($asset_config[$controller_id][$template_id]['css'])) {
+            $css_files = $asset_config[$controller_id][$template_id]['css'];
         }
         return $css_files;
     }
@@ -203,6 +171,16 @@ trait Config
     public function getIdGeneratorConfig()
     {
         return $this->getConfigByName('id_generator');
+    }
+
+    /**
+     * Get Facades Config
+     *
+     * @return array
+     */
+    public function getFacadesConfig()
+    {
+        return (array)$this->getConfigByName('facades');
     }
 
     /**
