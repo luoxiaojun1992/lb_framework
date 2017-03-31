@@ -4,6 +4,7 @@ namespace lb\controllers\web;
 
 use lb\components\Auth;
 use lb\components\middleware\AuthMiddleware;
+use lb\components\middleware\RateLimitFilter;
 use lb\components\middleware\RequestMethodFilter;
 use lb\components\Response;
 use lb\controllers\BaseController;
@@ -23,6 +24,9 @@ class RestController extends BaseController
         ],
         'requestMethodFilter' => [
             'class' => RequestMethodFilter::class,
+        ],
+        'rateLimitFilter' => [
+            'class' => RateLimitFilter::class,
         ],
     ];
 
