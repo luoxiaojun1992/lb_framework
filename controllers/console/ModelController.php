@@ -15,6 +15,7 @@ class ModelController extends ConsoleController implements ErrorMsg
     const ATTRIBUTES_TAG = '{{%attributes}}';
     const LABELS_TAG = '{{%labels}}';
     const PRIMARY_KEY_TAG = '{{%primaryKey}}';
+    const PROPERTY_COMMENTS_TAG = '{{%propertyComments}}';
 
     /**
      * Create Model
@@ -74,39 +75,65 @@ class ModelController extends ConsoleController implements ErrorMsg
             //Assemble Attributes & Labels
             $primaryKeyAttr = '';
             $attributes = '';
+
             $primaryKeyLabel = '';
             $labels = '';
+
             $primaryKey = '';
+
+            $primaryKeyComment = '';
+            $propertyComments = '';
+
             foreach ($fields as $field) {
                 $attrName = $field['Field'];
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
                 $label = $this->formatLabel($attrName);
+                $commentType = $this->getCommentType($field['Type']);
                 if ($field['Key'] == 'PRI') {
+                    //Primary Key
                     $primaryKey = $attrName;
 
+                    //Primary Key Attribute
                     $primaryKeyAttr = <<<EOF
     '{$attrName}' => {$defaultValue},
 EOF;
                     $primaryKeyAttr .= PHP_EOL;
 
+                    //Primary Key Label
                     $primaryKeyLabel = <<<EOF
     '{$attrName}' => '{$label}',
 EOF;
                     $primaryKeyLabel .= PHP_EOL;
+
+                    //Primary Key Comment
+                    $primaryKeyComment = <<<EOF
+ * @property {$commentType} \${$attrName}
+EOF;
+                    $primaryKeyComment .= PHP_EOL;
                 } else {
+                    //Attributes
                     $attributes .= <<<EOF
         '{$attrName}' => {$defaultValue},
 EOF;
                     $attributes .= PHP_EOL;
 
+                    //Labels
                     $labels .= <<<EOF
         '{$attrName}' => '{$label}',
 EOF;
                     $labels .= PHP_EOL;
+
+                    //Property Comment
+                    $propertyComments .= <<<EOF
+ * @property {$commentType} \${$attrName}
+EOF;
+                    $propertyComments .= PHP_EOL;
                 }
             }
             $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
             $modelTpl = str_replace(self::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(self::PROPERTY_COMMENTS_TAG, rtrim($primaryKeyComment . $propertyComments, PHP_EOL),
+                $modelTpl);
             $modelTpl = str_replace(self::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
         }
 
@@ -170,6 +197,26 @@ EOF;
         }
 
         return $attrName;
+    }
+
+    /**
+     * Get comment property variable type
+     *
+     * @param $propertyType
+     * @return string
+     */
+    protected function getCommentType($propertyType)
+    {
+        $commentType = 'string';
+        if (stripos($propertyType, 'int') !== false) {
+            $commentType = 'integer';
+        } else if (stripos($propertyType, 'float') !== false) {
+            $commentType = 'float';
+        } else if (stripos($propertyType, 'decimal') !== false) {
+            $commentType = 'double';
+        }
+
+        return $commentType;
     }
 
     /**

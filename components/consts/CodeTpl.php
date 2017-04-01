@@ -14,9 +14,7 @@ use lb\components\db\mysql\ActiveRecord;
 
 /**
  * Class {{%className}}
- * @property integer $id
- * @property string $created_at
- * @property string $updated_at
+{{%propertyComments}}
  * @inheritdoc
  * @package app\components
  */
