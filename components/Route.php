@@ -26,6 +26,7 @@ class Route extends BaseClass
         'migrate',
         'queue',
         'model',
+        'swoole',
     ];
 
     /**
