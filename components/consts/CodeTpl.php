@@ -26,14 +26,10 @@ class {{%className}} extends ActiveRecord
     const TABLE_NAME = '{{%tableName}}';
     protected $_primary_key = 'id';
     protected $_attributes = [
-        'id' => 0,
-        'created_at' => '',
-        'updated_at' => '',
+        {{%attributes}}
     ];
     public $labels = [
-        'id' => 'ID',
-        'created_at' => 'Created At',
-        'updated_at' => 'Updated At',
+        {{%labels}}
     ];
     protected static $_instance = false;
 
@@ -44,7 +40,7 @@ class {{%className}} extends ActiveRecord
      */
     public function beforeCreate()
     {
-        $this->created_at = $this->updated_at = Carbon::now()->toDateTimeString();
+//        $this->created_at = $this->updated_at = Carbon::now()->toDateTimeString();
 
         return parent::beforeCreate();
     }
@@ -54,7 +50,7 @@ class {{%className}} extends ActiveRecord
      */
     public function beforeUpdate()
     {
-        $this->updated_at = Carbon::now()->toDateTimeString();
+//        $this->updated_at = Carbon::now()->toDateTimeString();
 
         return parent::beforeUpdate();
     }
