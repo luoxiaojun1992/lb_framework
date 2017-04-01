@@ -10,13 +10,6 @@ use lb\Lb;
 
 class ModelController extends ConsoleController implements ErrorMsg
 {
-    const CLASS_NAME_TAG = '{{%className}}';
-    const TABLE_NAME_TAG = '{{%tableName}}';
-    const ATTRIBUTES_TAG = '{{%attributes}}';
-    const LABELS_TAG = '{{%labels}}';
-    const PRIMARY_KEY_TAG = '{{%primaryKey}}';
-    const PROPERTY_COMMENTS_TAG = '{{%propertyComments}}';
-
     /**
      * Create Model
      */
@@ -65,7 +58,7 @@ class ModelController extends ConsoleController implements ErrorMsg
      */
     protected function getModelTpl($modelClassName, $tableName)
     {
-        $modelTpl = str_replace(self::CLASS_NAME_TAG, $modelClassName, CodeTpl::MODEL_TPL);
+        $modelTpl = str_replace(CodeTpl::CLASS_NAME_TAG, $modelClassName, CodeTpl::MODEL_TPL);
 
         /** @var \PDOStatement $statement */
         $statement = Connection::component()->read_conn->prepare('desc ' . $tableName);
@@ -130,14 +123,15 @@ EOF;
                     $propertyComments .= PHP_EOL;
                 }
             }
-            $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
-            $modelTpl = str_replace(self::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
-            $modelTpl = str_replace(self::PROPERTY_COMMENTS_TAG, rtrim($primaryKeyComment . $propertyComments, PHP_EOL),
+            $modelTpl = str_replace(CodeTpl::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(CodeTpl::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(CodeTpl::PROPERTY_COMMENTS_TAG,
+                rtrim($primaryKeyComment . $propertyComments, PHP_EOL),
                 $modelTpl);
-            $modelTpl = str_replace(self::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
+            $modelTpl = str_replace(CodeTpl::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
         }
 
-        return str_replace(self::TABLE_NAME_TAG, $tableName, $modelTpl);
+        return str_replace(CodeTpl::TABLE_NAME_TAG, $tableName, $modelTpl);
     }
 
     /**

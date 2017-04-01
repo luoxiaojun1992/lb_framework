@@ -4,6 +4,13 @@ namespace lb\components\consts;
 
 interface CodeTpl
 {
+    const CLASS_NAME_TAG = '{{%className}}';
+    const TABLE_NAME_TAG = '{{%tableName}}';
+    const ATTRIBUTES_TAG = '{{%attributes}}';
+    const LABELS_TAG = '{{%labels}}';
+    const PRIMARY_KEY_TAG = '{{%primaryKey}}';
+    const PROPERTY_COMMENTS_TAG = '{{%propertyComments}}';
+
     const MODEL_TPL = <<<'EOF'
 <?php
 
