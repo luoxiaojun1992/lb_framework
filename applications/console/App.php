@@ -48,8 +48,7 @@ class App extends Lb
                 }
             }
         } else {
-            echo 'Unsupported running mode.';
-            Lb::app()->stop();
+            Lb::app()->stop('Unsupported running mode.');
         }
     }
 }

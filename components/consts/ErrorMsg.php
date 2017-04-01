@@ -11,4 +11,6 @@ interface ErrorMsg
     const CONTROLLER_NOT_FOUND = 'Controller not found.';
 
     const ACTION_NOT_FOUND = 'Action not found.';
+
+    const INVALID_PARAM = 'Invalid params.';
 }
