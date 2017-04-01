@@ -77,12 +77,12 @@ class ModelController extends ConsoleController implements ErrorMsg
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
                 if ($field['Key'] == 'PRI') {
                     $primayKey = <<<EOF
-'{$attrName}' => {$defaultValue}
+'{$attrName}' => {$defaultValue},
 EOF;
                     $primayKey .= PHP_EOL;
                 } else {
                     $attributes .= <<<EOF
-'{$attrName}' => {$defaultValue},
+    '{$attrName}' => {$defaultValue},
 EOF;
                     $attributes .= PHP_EOL;
                 }
@@ -105,13 +105,13 @@ EOF;
     protected function formatValue($value, $type)
     {
         if (strtolower($type) == 'timestamp') {
-            $value = '';
+            $value = '\'\'';
         } else if (strtolower($type) == 'datetime') {
-            $value = '';
+            $value = '\'\'';
         } else if (strtolower($type) == 'date') {
-            $value = '';
+            $value = '\'\'';
         } else if (strtolower($type) == 'time') {
-            $value = '';
+            $value = '\'\'';
         } else if (stripos($type, 'int') !== false) {
             $value = intval($value);
         } else if (stripos($type, 'float') !== false) {
@@ -119,7 +119,7 @@ EOF;
         } else if (stripos($type, 'decimal') !== false) {
             $value = doubleval($value);
         } else {
-            $value = (string)$value;
+            $value = '\'' . (string)$value . '\'';
         }
 
         return $value;

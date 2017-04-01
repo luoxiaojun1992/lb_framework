@@ -26,10 +26,10 @@ class {{%className}} extends ActiveRecord
     const TABLE_NAME = '{{%tableName}}';
     protected $_primary_key = 'id';
     protected $_attributes = [
-        {{%attributes}}
+    {{%attributes}}
     ];
     public $labels = [
-        {{%labels}}
+    
     ];
     protected static $_instance = false;
 
