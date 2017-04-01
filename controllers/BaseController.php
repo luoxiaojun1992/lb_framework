@@ -33,7 +33,7 @@ abstract class BaseController extends BaseClass
                 'successCallback' => $successCallback,
                 'failureCallback' => $failureCallback,
             ])) {
-                Lb::app()->stop();
+                break;
             }
         }
     }
