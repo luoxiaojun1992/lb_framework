@@ -25,6 +25,7 @@ class Route extends BaseClass
         'tink',
         'migrate',
         'queue',
+        'model',
     ];
 
     /**

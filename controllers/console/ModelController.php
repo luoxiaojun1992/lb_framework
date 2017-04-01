@@ -16,8 +16,8 @@ class ModelController extends ConsoleController implements ErrorMsg
     {
         $argc = $_SERVER['argc'];
         $argv = $_SERVER['argv'];
-        if ($argc > 1) {
-            $this->generateModel($this->getModelClassName($argv[1]));
+        if ($argc > 2) {
+            $this->generateModel($this->getModelClassName($argv[2]));
         } else {
             throw new ParamException(ErrorMsg::INVALID_PARAM);
         }
