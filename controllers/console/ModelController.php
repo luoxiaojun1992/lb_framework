@@ -14,6 +14,7 @@ class ModelController extends ConsoleController implements ErrorMsg
     const TABLE_NAME_TAG = '{{%tableName}}';
     const ATTRIBUTES_TAG = '{{%attributes}}';
     const LABELS_TAG = '{{%labels}}';
+    const PRIMARY_KEY_TAG = '{{%primaryKey}}';
 
     /**
      * Create Model
@@ -75,11 +76,14 @@ class ModelController extends ConsoleController implements ErrorMsg
             $attributes = '';
             $primaryKeyLabel = '';
             $labels = '';
+            $primaryKey = '';
             foreach ($fields as $field) {
                 $attrName = $field['Field'];
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
                 $label = $this->formatLabel($attrName);
                 if ($field['Key'] == 'PRI') {
+                    $primaryKey = $attrName;
+
                     $primaryKeyAttr = <<<EOF
     '{$attrName}' => {$defaultValue},
 EOF;
@@ -103,6 +107,7 @@ EOF;
             }
             $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
             $modelTpl = str_replace(self::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(self::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
         }
 
         return str_replace(self::TABLE_NAME_TAG, $tableName, $modelTpl);

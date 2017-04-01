@@ -24,7 +24,7 @@ class {{%className}} extends ActiveRecord
 {
     // * Required Properties
     const TABLE_NAME = '{{%tableName}}';
-    protected $_primary_key = 'id';
+    protected $_primary_key = '{{%primaryKey}}';
     protected $_attributes = [
     {{%attributes}}
     ];
@@ -55,6 +55,7 @@ class {{%className}} extends ActiveRecord
         return parent::beforeUpdate();
     }
 }
+
 EOF;
 
 }
