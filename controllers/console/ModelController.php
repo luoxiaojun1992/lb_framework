@@ -86,7 +86,7 @@ EOF;
                     $primaryKeyAttr .= PHP_EOL;
 
                     $primaryKeyLabel = <<<EOF
-    '{$attrName}' => {$label},
+    '{$attrName}' => '{$label}',
 EOF;
                     $primaryKeyLabel .= PHP_EOL;
                 } else {
@@ -96,7 +96,7 @@ EOF;
                     $attributes .= PHP_EOL;
 
                     $labels .= <<<EOF
-        '{$attrName}' => {$label},
+        '{$attrName}' => '{$label}',
 EOF;
                     $labels .= PHP_EOL;
                 }
@@ -153,7 +153,8 @@ EOF;
             }
             $attrName = implode(' ', $tempArr);
         } else {
-            $cloneAttrName = ucfirst($attrName);
+            $attrName = ucfirst($attrName);
+            $cloneAttrName = $attrName;
             for ($i = 0; $i < mb_strlen($cloneAttrName, 'UTF8'); ++$i) {
                 $asciiCode = ord($cloneAttrName[$i]);
                 if ($asciiCode >= 65 && $asciiCode <= 90) {
