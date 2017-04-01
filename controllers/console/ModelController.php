@@ -65,31 +65,44 @@ class ModelController extends ConsoleController implements ErrorMsg
     {
         $modelTpl = str_replace(self::CLASS_NAME_TAG, $modelClassName, CodeTpl::MODEL_TPL);
 
+        /** @var \PDOStatement $statement */
         $statement = Connection::component()->read_conn->prepare('desc ' . $tableName);
         if ($result = $statement->execute()) {
             $fields = $statement->fetchAll();
 
-            //Assemble Attributes
-            $primaryKey = '';
+            //Assemble Attributes & Labels
+            $primaryKeyAttr = '';
             $attributes = '';
+            $primaryKeyLabel = '';
+            $labels = '';
             foreach ($fields as $field) {
                 $attrName = $field['Field'];
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
+                $label = $this->formatLabel($attrName);
                 if ($field['Key'] == 'PRI') {
-                    $primaryKey = <<<EOF
+                    $primaryKeyAttr = <<<EOF
     '{$attrName}' => {$defaultValue},
 EOF;
-                    $primaryKey .= PHP_EOL;
+                    $primaryKeyAttr .= PHP_EOL;
+
+                    $primaryKeyLabel = <<<EOF
+    '{$attrName}' => {$label},
+EOF;
+                    $primaryKeyLabel .= PHP_EOL;
                 } else {
                     $attributes .= <<<EOF
-    '{$attrName}' => {$defaultValue},
+        '{$attrName}' => {$defaultValue},
 EOF;
                     $attributes .= PHP_EOL;
+
+                    $labels .= <<<EOF
+        '{$attrName}' => {$label},
+EOF;
+                    $labels .= PHP_EOL;
                 }
             }
-            $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKey . $attributes, PHP_EOL), $modelTpl);
-
-            //Assemble Labels
+            $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(self::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
         }
 
         return str_replace(self::TABLE_NAME_TAG, $tableName, $modelTpl);
@@ -123,6 +136,34 @@ EOF;
         }
 
         return $value;
+    }
+
+    /**
+     * Format attribute label
+     *
+     * @param $attrName
+     * @return string
+     */
+    protected function formatLabel($attrName)
+    {
+        if (strpos($attrName, '_') !== false) {
+            $tempArr = explode('_', $attrName);
+            foreach ($tempArr as $key => $item) {
+                $tempArr[$key] = ucfirst(strtolower($item));
+            }
+            $attrName = implode(' ', $tempArr);
+        } else {
+            $cloneAttrName = ucfirst($attrName);
+            for ($i = 0; $i < mb_strlen($cloneAttrName, 'UTF8'); ++$i) {
+                $asciiCode = ord($cloneAttrName[$i]);
+                if ($asciiCode >= 65 && $asciiCode <= 90) {
+                    str_replace($cloneAttrName[$i], ' ' . $cloneAttrName[$i], $attrName);
+                }
+            }
+            $attrName = trim($attrName);
+        }
+
+        return $attrName;
     }
 
     /**
