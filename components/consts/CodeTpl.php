@@ -29,7 +29,7 @@ class {{%className}} extends ActiveRecord
     {{%attributes}}
     ];
     public $labels = [
-    
+    {{%labels}}
     ];
     protected static $_instance = false;
 
