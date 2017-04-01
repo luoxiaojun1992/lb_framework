@@ -8,6 +8,12 @@ use lb\components\db\mysql\Connection;
 use lb\components\error_handlers\ParamException;
 use lb\Lb;
 
+/**
+ * Model Generator
+ *
+ * Class ModelController
+ * @package lb\controllers\console
+ */
 class ModelController extends ConsoleController implements ErrorMsg
 {
     /**
