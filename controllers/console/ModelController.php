@@ -70,16 +70,16 @@ class ModelController extends ConsoleController implements ErrorMsg
             $fields = $statement->fetchAll();
 
             //Assemble Attributes
-            $primayKey = '';
+            $primaryKey = '';
             $attributes = '';
             foreach ($fields as $field) {
                 $attrName = $field['Field'];
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
                 if ($field['Key'] == 'PRI') {
-                    $primayKey = <<<EOF
-'{$attrName}' => {$defaultValue},
+                    $primaryKey = <<<EOF
+    '{$attrName}' => {$defaultValue},
 EOF;
-                    $primayKey .= PHP_EOL;
+                    $primaryKey .= PHP_EOL;
                 } else {
                     $attributes .= <<<EOF
     '{$attrName}' => {$defaultValue},
@@ -87,7 +87,7 @@ EOF;
                     $attributes .= PHP_EOL;
                 }
             }
-            $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primayKey . $attributes, PHP_EOL), $modelTpl);
+            $modelTpl = str_replace(self::ATTRIBUTES_TAG, rtrim($primaryKey . $attributes, PHP_EOL), $modelTpl);
 
             //Assemble Labels
         }
