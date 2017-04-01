@@ -13,6 +13,8 @@ class ConsoleController extends BaseController
     protected function beforeAction()
     {
         $this->outputer = new ConsoleOutput();
+
+        parent::beforeAction();
     }
 
     /**
