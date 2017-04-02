@@ -32,9 +32,8 @@ class AuthMiddleware extends BaseMiddleware
         } else {
             $failureCallback && call_user_func($failureCallback);
             Response::response_unauthorized(401);
-            return false;
         }
 
-        return parent::runAction($params, $successCallback, $failureCallback);
+        $this->runNextMiddleware();
     }
 }

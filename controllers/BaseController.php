@@ -3,6 +3,7 @@
 namespace lb\controllers;
 
 use lb\BaseClass;
+use lb\components\middleware\MiddlewareInterface;
 use lb\Lb;
 
 abstract class BaseController extends BaseClass
@@ -22,19 +23,25 @@ abstract class BaseController extends BaseClass
 
     protected function runMiddleware()
     {
-        foreach ($this->middleware as $middleware) {
-            $action = !empty($middleware['action']) ? $middleware['action'] : 'runAction';
-            $params = !empty($middleware['params']) ? $middleware['params'] : [];
-            $successCallback = !empty($middleware['successCallback']) ? $middleware['successCallback'] : null;
-            $failureCallback = !empty($middleware['failureCallback']) ? $middleware['failureCallback'] : null;
-            $middlewareClass = $middleware['class'];
-            if (!call_user_func_array([new $middlewareClass, $action], [
+        $middlewareSerial = 0;
+        if (isset($this->middleware[$middlewareSerial])) {
+            $middlewareConfig = $this->middleware[$middlewareSerial];
+            $middlewareClass = $middlewareConfig['class'];
+            /** @var MiddlewareInterface $middleware */
+            $middleware = new $middlewareClass;
+            $middleware->setSerial($middlewareSerial);
+            $middleware->setMiddlewares($this->middleware);
+            $action = !empty($middlewareConfig['action']) ? $middlewareConfig['action'] : 'runAction';
+            $params = !empty($middlewareConfig['params']) ? $middlewareConfig['params'] : [];
+            $successCallback = !empty($middlewareConfig['successCallback']) ?
+                $middlewareConfig['successCallback'] : null;
+            $failureCallback = !empty($middlewareConfig['failureCallback']) ?
+                $middlewareConfig['failureCallback'] : null;
+            call_user_func_array([$middleware, $action], [
                 'params' => $params,
                 'successCallback' => $successCallback,
                 'failureCallback' => $failureCallback,
-            ])) {
-                break;
-            }
+            ]);
         }
     }
 

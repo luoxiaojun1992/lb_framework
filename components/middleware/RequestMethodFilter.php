@@ -21,9 +21,8 @@ class RequestMethodFilter extends BaseMiddleware
         } else {
             $failureCallback && call_user_func($failureCallback);
             Response::response_invalid_request(403);
-            return false;
         }
 
-        return parent::runAction($params, $successCallback, $failureCallback);
+        $this->runNextMiddleware();
     }
 }
