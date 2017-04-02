@@ -126,4 +126,18 @@ class RestController extends BaseController
         $this->beforeResponse();
         Response::response_failed($status_code);
     }
+
+    /**
+     * Response
+     *
+     * @param $data
+     * @param $format
+     * @param bool $is_success
+     * @param int $status_code
+     */
+    protected function response($data, $format, $is_success=true, $status_code = 200)
+    {
+        $this->beforeResponse();
+        Response::response($data, $format, $is_success, $status_code);
+    }
 }
