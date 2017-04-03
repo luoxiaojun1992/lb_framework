@@ -4,12 +4,16 @@ namespace lb\controllers;
 
 use lb\BaseClass;
 use lb\components\middleware\MiddlewareInterface;
+use lb\components\Request;
+use lb\components\Response;
 use lb\Lb;
 
 abstract class BaseController extends BaseClass
 {
     protected $controller_id = '';
+    /** @var  Request */
     protected $request;
+    /** @var  Response */
     protected $response;
     protected $middleware = [];
 
