@@ -11,10 +11,13 @@ use lb\Lb;
 abstract class BaseController extends BaseClass
 {
     protected $controller_id = '';
+
     /** @var  Request */
     protected $request;
+
     /** @var  Response */
     protected $response;
+
     protected $middleware = [];
 
     public function __construct()
