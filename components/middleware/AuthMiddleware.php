@@ -3,7 +3,6 @@
 namespace lb\components\middleware;
 
 use lb\components\Auth;
-use ResponseKit;
 
 class AuthMiddleware extends BaseMiddleware
 {
@@ -31,7 +30,6 @@ class AuthMiddleware extends BaseMiddleware
             $successCallback && call_user_func($successCallback);
         } else {
             $failureCallback && call_user_func($failureCallback);
-            ResponseKit::response_unauthorized(401);
         }
 
         $this->runNextMiddleware();

@@ -51,22 +51,30 @@ class RestController extends BaseController
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($this->request_method, $this->auth_type) = $this->self_rest_config;
 
+            $response = $this->response;
+
             //Set Auth Middleware
             $this->middleware['authMiddleware']['params'] = [
                 'auth_type' => $this->auth_type,
                 'rest_config' => $this->self_rest_config,
             ];
+            $this->middleware['authMiddleware']['failureCallback'] = function () use ($response) {
+                $response->response_unauthorized(401);
+            };
 
             //Set Request Method Filter
             $this->middleware['requestMethodFilter']['params'] = [
                 'request_method' => $this->request_method,
             ];
+            $this->middleware['requestMethodFilter']['failureCallback'] = function () use ($response) {
+                $response->response_invalid_request(403);
+            };
 
             //Set Rate Limit Filter
             if (array_key_exists($route_info['action'], $this->rateLimitActions)) {
                 $this->middleware['rateLimitFilter']['params'] = $this->rateLimitActions[$route_info['action']];
-                $this->middleware['rateLimitFilter']['failureCallback'] = function () {
-                    $this->response_invalid_request(403);
+                $this->middleware['rateLimitFilter']['failureCallback'] = function () use ($response) {
+                    $response->response_invalid_request(403);
                 };
             }
         } else {

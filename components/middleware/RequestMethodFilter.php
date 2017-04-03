@@ -3,7 +3,6 @@
 namespace lb\components\middleware;
 
 use lb\Lb;
-use ResponseKit;
 
 class RequestMethodFilter extends BaseMiddleware
 {
@@ -20,7 +19,6 @@ class RequestMethodFilter extends BaseMiddleware
             $successCallback && call_user_func($successCallback);
         } else {
             $failureCallback && call_user_func($failureCallback);
-            ResponseKit::response_invalid_request(403);
         }
 
         $this->runNextMiddleware();
