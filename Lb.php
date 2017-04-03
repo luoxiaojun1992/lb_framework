@@ -3,6 +3,7 @@
 namespace lb;
 
 use FilecacheKit;
+use lb\components\facades\RequestFacade;
 use lb\components\helpers\HttpHelper;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
@@ -41,6 +42,7 @@ use lb\components\utils\IdGenerator;
 use Monolog\Logger;
 use MemcacheKit;
 use RedisKit;
+use RequestKit;
 
 class Lb extends BaseClass
 {
@@ -88,7 +90,7 @@ class Lb extends BaseClass
     public function getClientAddress()
     {
         if ($this->isSingle()) {
-            return Request::getClientAddress();
+            return RequestKit::getClientAddress();
         }
         return '';
     }
@@ -101,7 +103,7 @@ class Lb extends BaseClass
     public function getHost()
     {
         if ($this->isSingle()) {
-            return Request::getHost();
+            return RequestKit::getHost();
         }
         return '';
     }
@@ -114,7 +116,7 @@ class Lb extends BaseClass
     public function getUri()
     {
         if ($this->isSingle()) {
-            return Request::getUri();
+            return RequestKit::getUri();
         }
         return '';
     }
@@ -127,7 +129,7 @@ class Lb extends BaseClass
     public function getHostAddress()
     {
         if ($this->isSingle()) {
-            return Request::getHostAddress();
+            return RequestKit::getHostAddress();
         }
         return '';
     }
@@ -140,7 +142,7 @@ class Lb extends BaseClass
     public function getUserAgent()
     {
         if ($this->isSingle()) {
-            return Request::getUserAgent();
+            return RequestKit::getUserAgent();
         }
         return '';
     }
@@ -153,7 +155,7 @@ class Lb extends BaseClass
     public function getQueryString()
     {
         if ($this->isSingle()) {
-            return Request::getQueryString();
+            return RequestKit::getQueryString();
         }
         return '';
     }
@@ -166,7 +168,7 @@ class Lb extends BaseClass
     public function getBasicAuthUser()
     {
         if ($this->isSingle()) {
-            return Request::getBasicAuthUser();
+            return RequestKit::getBasicAuthUser();
         }
         return '';
     }
@@ -179,7 +181,7 @@ class Lb extends BaseClass
     public function getBasicAuthPassword()
     {
         if ($this->isSingle()) {
-            return Request::getBasicAuthPassword();
+            return RequestKit::getBasicAuthPassword();
         }
         return '';
     }
@@ -345,7 +347,7 @@ class Lb extends BaseClass
     public function getRequestMethod()
     {
         if ($this->isSingle()) {
-            return Request::getRequestMethod();
+            return RequestKit::getRequestMethod();
         }
         return '';
     }
@@ -354,7 +356,7 @@ class Lb extends BaseClass
     public function getReferer()
     {
         if ($this->isSingle()) {
-            return Request::getReferer();
+            return RequestKit::getReferer();
         }
         return '';
     }
@@ -497,7 +499,7 @@ class Lb extends BaseClass
     public function isAjax()
     {
         if ($this->isSingle()) {
-            return Request::isAjax();
+            return RequestKit::isAjax();
         }
         return false;
     }
@@ -668,14 +670,10 @@ class Lb extends BaseClass
 
     /**
      * Set Route Info
-     *
-     * @param $webRoute
      */
-    public function setRouteInfo($webRoute = false)
+    protected function setRouteInfo()
     {
-        $this->route_info = $webRoute ?
-            Route::getWebInfo() :
-            (php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo());
+        $this->route_info = php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
@@ -702,6 +700,7 @@ class Lb extends BaseClass
             'RedisKit' => RedisFacade::class,
             'MemcacheKit' => MemcacheFacade::class,
             'FilecacheKit' => FilecacheFacade::class,
+            'RequestKit' => RequestFacade::class,
         ], Lb::app()->getFacadesConfig());
 
         array_walk($facades, function ($facade, $alias) {
@@ -778,7 +777,7 @@ class Lb extends BaseClass
     /**
      * Init Web Application
      */
-    public function initWebApp()
+    protected function initWebApp()
     {
         // Init Session
         $this->initSession();
@@ -908,7 +907,7 @@ class Lb extends BaseClass
      * @param $response
      * @return string
      */
-    public function getHttpResponse($request = null, $response = null)
+    protected function getHttpResponse($request = null, $response = null)
     {
         // Response cache content
         $is_cache = false;
@@ -946,7 +945,7 @@ class Lb extends BaseClass
      */
     protected function runWebApp()
     {
-        @_echo($this->getHttpResponse());
+        @_echo($this->getHttpResponse(Request::component()));
     }
 
     /**
