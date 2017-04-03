@@ -6,9 +6,9 @@ use lb\components\Auth;
 use lb\components\middleware\AuthMiddleware;
 use lb\components\middleware\RateLimitFilter;
 use lb\components\middleware\RequestMethodFilter;
-use lb\components\Response;
 use lb\controllers\BaseController;
 use lb\Lb;
+use ResponseKit;
 
 class RestController extends BaseController
 {
@@ -67,7 +67,7 @@ class RestController extends BaseController
             if (array_key_exists($route_info['action'], $this->rateLimitActions)) {
                 $this->middleware['rateLimitFilter']['params'] = $this->rateLimitActions[$route_info['action']];
                 $this->middleware['rateLimitFilter']['failureCallback'] = function () {
-                    Response::response_invalid_request(403);
+                    $this->response_invalid_request(403);
                 };
             }
         } else {
@@ -93,7 +93,7 @@ class RestController extends BaseController
     protected function response_invalid_request($status_code = 200)
     {
         $this->beforeResponse();
-        Response::response_invalid_request($status_code);
+        $this->response->response_invalid_request($status_code);
     }
 
     /**
@@ -104,7 +104,7 @@ class RestController extends BaseController
     protected function response_unauthorized($status_code = 200)
     {
         $this->beforeResponse();
-        Response::response_unauthorized($status_code);
+        $this->response->response_unauthorized($status_code);
     }
 
     /**
@@ -113,7 +113,7 @@ class RestController extends BaseController
     protected function response_success()
     {
         $this->beforeResponse();
-        Response::response_success();
+        $this->response->response_success();
     }
 
     /**
@@ -124,7 +124,7 @@ class RestController extends BaseController
     protected function response_failed($status_code = 200)
     {
         $this->beforeResponse();
-        Response::response_failed($status_code);
+        $this->response->response_failed($status_code);
     }
 
     /**
@@ -138,6 +138,6 @@ class RestController extends BaseController
     protected function response($data, $format, $is_success=true, $status_code = 200)
     {
         $this->beforeResponse();
-        Response::response($data, $format, $is_success, $status_code);
+        $this->response->response($data, $format, $is_success, $status_code);
     }
 }

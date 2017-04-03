@@ -19,3 +19,8 @@ class RequestKit extends \lb\components\Request
 {
     //
 }
+
+class ResponseKit extends \lb\components\Response
+{
+    //
+}

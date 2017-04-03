@@ -4,7 +4,9 @@ namespace lb;
 
 use FilecacheKit;
 use lb\components\facades\RequestFacade;
+use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
+use lb\components\Response;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;
@@ -701,6 +703,7 @@ class Lb extends BaseClass
             'MemcacheKit' => MemcacheFacade::class,
             'FilecacheKit' => FilecacheFacade::class,
             'RequestKit' => RequestFacade::class,
+            'ResponseKit' => ResponseFacade::class,
         ], Lb::app()->getFacadesConfig());
 
         array_walk($facades, function ($facade, $alias) {
@@ -945,7 +948,7 @@ class Lb extends BaseClass
      */
     protected function runWebApp()
     {
-        @_echo($this->getHttpResponse(Request::component()));
+        @_echo($this->getHttpResponse(Request::component(), Response::component()));
     }
 
     /**

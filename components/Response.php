@@ -6,13 +6,18 @@ use lb\BaseClass;
 use lb\components\helpers\HttpHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
+use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Response extends BaseClass
 {
+    use Singleton;
+
     // Response Type
     const RESPONSE_TYPE_JSON  = 1;
     const RESPONSE_TYPE_XML = 2;
+
+    protected $swooleResponse;
 
     /**
      * Send Http Code
@@ -20,7 +25,7 @@ class Response extends BaseClass
      * @param int $http_code
      * @param string $protocol
      */
-    public static function httpCode($http_code = 200, $protocol = 'HTTP/1.1')
+    public function httpCode($http_code = 200, $protocol = 'HTTP/1.1')
     {
         $http_code = intval($http_code);
         $status_str = HttpHelper::get_status_code_message($http_code);
@@ -37,9 +42,9 @@ class Response extends BaseClass
      * @param bool $is_success
      * @param int $status_code
      */
-    public static function response($data, $format, $is_success=true, $status_code = 200)
+    public function response($data, $format, $is_success=true, $status_code = 200)
     {
-        self::httpCode($status_code);
+        $this->httpCode($status_code);
         if ($is_success) {
             $data['status'] = 1;
         } else {
@@ -67,9 +72,9 @@ class Response extends BaseClass
      *
      * @param int $status_code
      */
-    public static function response_invalid_request($status_code = 200)
+    public function response_invalid_request($status_code = 200)
     {
-        self::response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false, $status_code);
+        $this->response(['msg' => 'invalid request'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
     /**
@@ -77,17 +82,17 @@ class Response extends BaseClass
      *
      * @param int $status_code
      */
-    public static function response_unauthorized($status_code = 200)
+    public function response_unauthorized($status_code = 200)
     {
-        self::response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false, $status_code);
+        $this->response(['msg' => 'unauthorized'], static::RESPONSE_TYPE_JSON, false, $status_code);
     }
 
     /**
      * Response Successful Request
      */
-    public static function response_success()
+    public function response_success()
     {
-        self::response(['msg' => 'success'], static::RESPONSE_TYPE_JSON);
+        $this->response(['msg' => 'success'], static::RESPONSE_TYPE_JSON);
     }
 
     /**
@@ -95,8 +100,20 @@ class Response extends BaseClass
      *
      * @param int $status_code
      */
-    public static function response_failed($status_code = 200)
+    public function response_failed($status_code = 200)
     {
-        self::response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false, $status_code);
+        $this->response(['msg' => 'failed'], static::RESPONSE_TYPE_JSON, false, $status_code);
+    }
+
+    /**
+     * Set swoole response
+     *
+     * @param $swooleResponse
+     * @return $this
+     */
+    public function setSwooleResponse($swooleResponse)
+    {
+        $this->swooleResponse = $swooleResponse;
+        return $this;
     }
 }
