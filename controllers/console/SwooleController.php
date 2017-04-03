@@ -2,6 +2,7 @@
 
 namespace lb\controllers\console;
 
+use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
 
 class SwooleController
@@ -17,7 +18,12 @@ class SwooleController
             foreach ($request->server as $item => $value) {
                 $_SERVER[strtoupper($item)] = $value;
             }
-            $response->end($request->server['request_uri']);
+
+            Lb::app()->setRouteInfo(true);
+
+            Lb::app()->initWebApp();
+
+            $response->end(Lb::app()->getHttpResponse());
         });
 
         $server->start();

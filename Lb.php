@@ -55,8 +55,9 @@ class Lb extends BaseClass
     use CryptTrait;
 
     public $config = []; // App Configuration
-    protected $route_info = [];
     public $containers = [];
+
+    protected $route_info = [];
 
     public function __construct($is_single = false)
     {
@@ -623,23 +624,25 @@ class Lb extends BaseClass
      */
     protected function securityHandler()
     {
+        $routeInfo = Lb::app()->getRouteInfo();
+
         // Input Filter
         Security::inputFilter();
 
         // IP Filter
-        Security::ipFilter($this->route_info['controller'], $this->route_info['action']);
+        Security::ipFilter($routeInfo['controller'], $routeInfo['action']);
 
         // Csrf Token Validation
-        Security::validCsrfToken($this->route_info['controller'], $this->route_info['action']);
+        Security::validCsrfToken($routeInfo['controller'], $routeInfo['action']);
 
         // CORS
-        Security::cors($this->route_info['controller'], $this->route_info['action']);
+        Security::cors($routeInfo['controller'], $routeInfo['action']);
 
         // X-Frame-Options
-        Security::x_frame_options($this->route_info['controller'], $this->route_info['action']);
+        Security::x_frame_options($routeInfo['controller'], $routeInfo['action']);
 
         // X-XSS-Protection
-        Security::x_xss_protection($this->route_info['controller'], $this->route_info['action']);
+        Security::x_xss_protection($routeInfo['controller'], $routeInfo['action']);
     }
 
     /**
@@ -647,13 +650,16 @@ class Lb extends BaseClass
      */
     protected function initLoginRequired()
     {
-        if (!in_array($this->route_info['controller'], Route::KERNEL_WEB_CTR) || !in_array($this->route_info['action'], Route::KERNEL_WEB_ACTIONS)) {
-            $config_container = Lb::app()->containers['config'];
-            $login_required_filter = $config_container->get('login_required_filter');
-            if (!isset($login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) ||
-                !$login_required_filter['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
-                $login_default_url = $config_container->get('login_default_url');
-                if ($config_container->get('login_required') && $login_default_url) {
+        $routeInfo = Lb::app()->getRouteInfo();
+        if (
+            !in_array($routeInfo['controller'], Route::KERNEL_WEB_CTR) ||
+            !in_array($routeInfo['action'], Route::KERNEL_WEB_ACTIONS)
+        ) {
+            $login_required_filter = Lb::app()->getLoginRequiredFilter();
+            if (!isset($login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) ||
+                !$login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
+                $login_default_url = Lb::app()->getLoginDefaultUrl();
+                if (Lb::app()->isLoginRequired() && $login_default_url) {
                     Lb::app()->loginRequired($login_default_url);
                 }
             }
@@ -662,10 +668,14 @@ class Lb extends BaseClass
 
     /**
      * Set Route Info
+     *
+     * @param $webRoute
      */
-    protected function setRouteInfo()
+    public function setRouteInfo($webRoute = false)
     {
-        $this->route_info = php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo();
+        $this->route_info = $webRoute ?
+            Route::getWebInfo() :
+            (php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo());
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
@@ -679,6 +689,7 @@ class Lb extends BaseClass
         foreach ($this->route_info as $item_name => $item_value) {
             $route_info_container->set($item_name, $item_value);
         }
+        $this->route_info = [];
         Lb::app()->containers['route_info'] = $route_info_container;
     }
 
@@ -703,9 +714,9 @@ class Lb extends BaseClass
      */
     protected function initSession()
     {
-        if ($session_config = Lb::app()->containers['config']->get('session')) {
+        if ($session_config = Lb::app()->getSessionConfig()) {
             if (isset($session_config['type'])) {
-                Session::set_session($session_config['type']);
+                Session::setSession($session_config['type']);
             }
         }
         session_start();
@@ -767,7 +778,7 @@ class Lb extends BaseClass
     /**
      * Init Web Application
      */
-    protected function initWebApp()
+    public function initWebApp()
     {
         // Init Session
         $this->initSession();
@@ -778,7 +789,7 @@ class Lb extends BaseClass
         // Log
         Lb::app()->log(
             Lb::app()->getHostAddress() . ' visit ' . Lb::app()->getUri() . Lb::app()->getQueryString(),
-            $this->route_info
+            Lb::app()->getRouteInfo()
         );
 
         // Security Handler
@@ -804,7 +815,7 @@ class Lb extends BaseClass
      */
     protected function getPageCache($cache_type)
     {
-        $route_info = $this->route_info;
+        $route_info = Lb::app()->getRouteInfo();
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
             case FilecacheKit::CACHE_TYPE:
@@ -827,7 +838,7 @@ class Lb extends BaseClass
      */
     protected function setPageCache($cache_type, $page_cache, $expire = 60)
     {
-        $route_info = $this->route_info;
+        $route_info = Lb::app()->getRouteInfo();
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
         switch ($cache_type) {
             case FilecacheKit::CACHE_TYPE:
@@ -849,9 +860,9 @@ class Lb extends BaseClass
      */
     protected function setHttpCache()
     {
-        $html_cache_config = Lb::app()->containers['config']->get('html_cache');
-        if (isset($html_cache_config['cache_control']) && isset($html_cache_config['offset'])) {
-            HttpHelper::setCache($html_cache_config['cache_control'], $html_cache_config['offset']);
+        $http_cache_config = Lb::app()->getHttpCacheConfig();
+        if (isset($http_cache_config['cache_control']) && isset($http_cache_config['offset'])) {
+            HttpHelper::setCache($http_cache_config['cache_control'], $http_cache_config['offset']);
         }
     }
 
@@ -863,9 +874,10 @@ class Lb extends BaseClass
      */
     protected function compressPage($page_content)
     {
-        $page_compress_config = Lb::app()->containers['config']->get('page_compress');
-        if (isset($page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) &&
-            $page_compress_config['controllers'][$this->route_info['controller']][$this->route_info['action']]) {
+        $page_compress_config = Lb::app()->getPageCompressConfig();
+        $routeInfo = Lb::app()->getRouteInfo();
+        if (isset($page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) &&
+            $page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
             return HtmlHelper::compress($page_content);
         }
         return $page_content;
@@ -890,37 +902,49 @@ class Lb extends BaseClass
     }
 
     /**
-     * Run web application
+     * Get http response
+     *
+     * @return string
      */
-    protected function runWebApp()
+    public function getHttpResponse()
     {
         // Response cache content
         $is_cache = false;
         $cache_type = null;
-        $page_cache_config = Lb::app()->containers['config']->get('page_cache');
-        if (isset($page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']])) {
+        $page_cache_config = Lb::app()->getPageCacheConfig();
+        $routeInfo = Lb::app()->getRouteInfo();
+        if (isset($page_cache_config['controllers'][$routeInfo['controller']][$routeInfo['action']])) {
             $is_cache = true;
-            $cache_type = $page_cache_config['controllers'][$this->route_info['controller']][$this->route_info['action']];
+            $cache_type = $page_cache_config['controllers'][$routeInfo['controller']][$routeInfo['action']];
             if ($page_cache = $this->getPageCache($cache_type)) {
-                @_echo($page_cache);
-                return;
+                return $page_cache;
             }
         }
 
         // Route
         $rpc_config = Lb::app()->getRpcConfig();
-        if (isset($rpc_config[$this->route_info['controller']][$this->route_info['action']]) &&
-            $rpc_config[$this->route_info['controller']][$this->route_info['action']]) {
-            Route::rpc($this->route_info);
+        if (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
+            $rpc_config[$routeInfo['controller']][$routeInfo['action']]) {
+            Route::rpc($routeInfo);
         } else {
             ob_start();
-            Route::runWebAction($this->route_info);
+            Route::runWebAction($routeInfo);
             $page_content = ob_get_contents();
             ob_end_clean();
             $page_content = $this->compressPage($page_content);
             $is_cache && $this->setPageCache($cache_type, $page_content);
-            @_echo($page_content);
+            return $page_content;
         }
+
+        return '';
+    }
+
+    /**
+     * Run web application
+     */
+    protected function runWebApp()
+    {
+        @_echo($this->getHttpResponse());
     }
 
     /**
@@ -928,6 +952,6 @@ class Lb extends BaseClass
      */
     protected function runConsoleApp()
     {
-        Route::runConsoleAction($this->route_info);
+        Route::runConsoleAction(Lb::app()->getRouteInfo());
     }
 }

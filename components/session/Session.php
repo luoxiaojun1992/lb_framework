@@ -6,7 +6,7 @@ use lb\BaseClass;
 
 class Session extends BaseClass
 {
-    public static function set_session($session_type = 'default')
+    public static function setSession($session_type = 'default')
     {
         switch($session_type) {
             case 'default':

@@ -184,6 +184,76 @@ trait Config
     }
 
     /**
+     * Get session config
+     *
+     * @return array
+     */
+    public function getSessionConfig()
+    {
+        return $this->getConfigByName('session') ? : [];
+    }
+
+    /**
+     * Get login required filter
+     *
+     * @return array
+     */
+    public function getLoginRequiredFilter()
+    {
+        return $this->getConfigByName('login_required_filter') ? : [];
+    }
+
+    /**
+     * Get login default url
+     *
+     * @return array
+     */
+    public function getLoginDefaultUrl()
+    {
+        return $this->getConfigByName('login_default_url') ? : [];
+    }
+
+    /**
+     * If login required or not
+     *
+     * @return bool
+     */
+    public function isLoginRequired()
+    {
+        return $this->getConfigByName('login_required') ? : false;
+    }
+
+    /**
+     * Get http cache config
+     *
+     * @return array
+     */
+    public function getHttpCacheConfig()
+    {
+        return $this->getConfigByName('http_cache') ? : [];
+    }
+
+    /**
+     * Get page cache config
+     *
+     * @return array
+     */
+    public function getPageCacheConfig()
+    {
+        return $this->getConfigByName('page_cache') ? : [];
+    }
+
+    /**
+     * Get page compress config
+     *
+     * @return array
+     */
+    public function getPageCompressConfig()
+    {
+        return $this->getConfigByName('page_compress') ? : [];
+    }
+
+    /**
      * Init Configuration
      */
     protected function initConfig()
