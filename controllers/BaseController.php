@@ -24,13 +24,14 @@ abstract class BaseController extends BaseClass
     protected function runMiddleware()
     {
         $middlewareSerial = 0;
-        if (isset($this->middleware[$middlewareSerial])) {
-            $middlewareConfig = $this->middleware[$middlewareSerial];
+        $middlewares = array_values($this->middleware);
+        if (isset($middlewares[$middlewareSerial])) {
+            $middlewareConfig = $middlewares[$middlewareSerial];
             $middlewareClass = $middlewareConfig['class'];
             /** @var MiddlewareInterface $middleware */
             $middleware = new $middlewareClass;
             $middleware->setSerial($middlewareSerial);
-            $middleware->setMiddlewares($this->middleware);
+            $middleware->setMiddlewares($middlewares);
             $action = !empty($middlewareConfig['action']) ? $middlewareConfig['action'] : 'runAction';
             $params = !empty($middlewareConfig['params']) ? $middlewareConfig['params'] : [];
             $successCallback = !empty($middlewareConfig['successCallback']) ?
