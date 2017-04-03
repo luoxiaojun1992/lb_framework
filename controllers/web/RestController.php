@@ -8,7 +8,6 @@ use lb\components\middleware\RateLimitFilter;
 use lb\components\middleware\RequestMethodFilter;
 use lb\controllers\BaseController;
 use lb\Lb;
-use ResponseKit;
 
 class RestController extends BaseController
 {
