@@ -118,6 +118,11 @@ class Request extends BaseClass
         return $this->getHeaders()->get($headerKey);
     }
 
+    public function getParam($param_name, $default_value = null)
+    {
+        return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
+    }
+
     public function setSwooleRequest($swooleRequest)
     {
         $this->swooleRequest = $swooleRequest;

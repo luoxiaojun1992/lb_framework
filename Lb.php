@@ -329,7 +329,7 @@ class Lb extends BaseClass
     public function getParam($param_name, $default_value = null)
     {
         if ($this->isSingle()) {
-            return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
+            return RequestKit::getParam($param_name, $default_value);
         }
         return false;
     }
