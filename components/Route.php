@@ -5,6 +5,7 @@ namespace lb\components;
 use lb\BaseClass;
 use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
+use lb\controllers\BaseController;
 use lb\Lb;
 
 class Route extends BaseClass
@@ -98,9 +99,11 @@ class Route extends BaseClass
 
     /**
      * @param array $route_info
+     * @param $request
+     * @param $response
      * @throws HttpException
      */
-    public static function rpc(Array $route_info)
+    public static function rpc(Array $route_info, $request = null, $response = null)
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
@@ -112,8 +115,13 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
+                /** @var BaseController $controller */
+                $controller = new $controller_name;
+                $controller->setControllerId($controller_id)
+                    ->setRequest($request)
+                    ->setResponse($response);
                 $server = new \Hprose\Http\Server();
-                $server->addMethod($action_name, new $controller_name());
+                $server->addMethod($action_name, $controller);
                 $server->start();
             } else {
                 throw new HttpException(self::PAGE_NOT_FOUND, 404);
@@ -152,9 +160,11 @@ class Route extends BaseClass
 
     /**
      * @param array $route_info
+     * @param $request
+     * @param $response
      * @throws HttpException
      */
-    public static function runWebAction(Array $route_info)
+    public static function runWebAction(Array $route_info, $request = null, $response = null)
     {
         $controller_id = $route_info['controller'];
         if (in_array($controller_id, self::KERNEL_WEB_CTR)) {
@@ -164,9 +174,12 @@ class Route extends BaseClass
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
-            $controller = new $controller_name();
-            $controller->controller_id = $controller_id;
-            if (method_exists($controller, $action_name)) {
+            if (method_exists($controller_name, $action_name)) {
+                /** @var BaseController $controller */
+                $controller = new $controller_name();
+                $controller->setControllerId($controller_id)
+                    ->setRequest($request)
+                    ->setResponse($response);
                 $method = new \ReflectionMethod($controller, $action_name);
                 $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
@@ -179,9 +192,11 @@ class Route extends BaseClass
 
     /**
      * @param array $route_info
+     * @param $request
+     * @param $response
      * @throws ConsoleException
      */
-    public static function runConsoleAction(Array $route_info)
+    public static function runConsoleAction(Array $route_info, $request = null, $response = null)
     {
         $controller_id = $route_info['controller'];
         if (in_array($controller_id, self::KERNEL_CONSOLE_CTR)) {
@@ -191,8 +206,11 @@ class Route extends BaseClass
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
+            /** @var BaseController $controller */
             $controller = new $controller_name();
-            $controller->controller_id = $controller_id;
+            $controller->setControllerId($controller_id)
+                ->setRequest($request)
+                ->setResponse($response);
             if (method_exists($controller, $action_name)) {
                 $controller->$action_name();
             } else {

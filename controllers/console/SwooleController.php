@@ -20,7 +20,7 @@ class SwooleController
             Lb::app()->initWebApp();
 
             //todo transfer request & response
-            $response->end(Lb::app()->getHttpResponse());
+            $response->end(Lb::app()->getHttpResponse($request, $response));
 
         });
 

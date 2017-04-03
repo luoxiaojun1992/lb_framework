@@ -8,7 +8,9 @@ use lb\Lb;
 
 abstract class BaseController extends BaseClass
 {
-    public $controller_id = '';
+    protected $controller_id = '';
+    protected $request;
+    protected $response;
     protected $middleware = [];
 
     public function __construct()
@@ -21,6 +23,9 @@ abstract class BaseController extends BaseClass
         //
     }
 
+    /**
+     * Run middlewares
+     */
     protected function runMiddleware()
     {
         $middlewareSerial = 0;
@@ -46,8 +51,47 @@ abstract class BaseController extends BaseClass
         }
     }
 
+    /**
+     * Before action filter
+     */
     protected function beforeAction()
     {
         $this->runMiddleware();
+    }
+
+    /**
+     * Set controller id
+     *
+     * @param $controllerId
+     * @return $this
+     */
+    public function setControllerId($controllerId)
+    {
+        $this->controller_id = $controllerId;
+        return $this;
+    }
+
+    /**
+     * Set request
+     *
+     * @param $request
+     * @return $this
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
+     * Set response
+     *
+     * @param $response
+     * @return $this
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+        return $this;
     }
 }

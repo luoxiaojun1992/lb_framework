@@ -904,9 +904,11 @@ class Lb extends BaseClass
     /**
      * Get http response
      *
+     * @param $request
+     * @param $response
      * @return string
      */
-    public function getHttpResponse()
+    public function getHttpResponse($request = null, $response = null)
     {
         // Response cache content
         $is_cache = false;
@@ -925,10 +927,10 @@ class Lb extends BaseClass
         $rpc_config = Lb::app()->getRpcConfig();
         if (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
             $rpc_config[$routeInfo['controller']][$routeInfo['action']]) {
-            Route::rpc($routeInfo);
+            Route::rpc($routeInfo, $request, $response);
         } else {
             ob_start();
-            Route::runWebAction($routeInfo);
+            Route::runWebAction($routeInfo, $request, $response);
             $page_content = ob_get_contents();
             ob_end_clean();
             $page_content = $this->compressPage($page_content);
