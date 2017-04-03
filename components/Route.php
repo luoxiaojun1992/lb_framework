@@ -116,10 +116,7 @@ class Route extends BaseClass
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
-                $controller = new $controller_name;
-                $controller->setControllerId($controller_id)
-                    ->setRequest($request)
-                    ->setResponse($response);
+                $controller = new $controller_name($controller_id, $request, $response);
                 $server = new \Hprose\Http\Server();
                 $server->addMethod($action_name, $controller);
                 $server->start();
@@ -176,10 +173,7 @@ class Route extends BaseClass
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
-                $controller = new $controller_name();
-                $controller->setControllerId($controller_id)
-                    ->setRequest($request)
-                    ->setResponse($response);
+                $controller = new $controller_name($controller_id, $request, $response);
                 $method = new \ReflectionMethod($controller, $action_name);
                 $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
@@ -192,11 +186,9 @@ class Route extends BaseClass
 
     /**
      * @param array $route_info
-     * @param $request
-     * @param $response
      * @throws ConsoleException
      */
-    public static function runConsoleAction(Array $route_info, $request = null, $response = null)
+    public static function runConsoleAction(Array $route_info)
     {
         $controller_id = $route_info['controller'];
         if (in_array($controller_id, self::KERNEL_CONSOLE_CTR)) {
@@ -207,10 +199,7 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             /** @var BaseController $controller */
-            $controller = new $controller_name();
-            $controller->setControllerId($controller_id)
-                ->setRequest($request)
-                ->setResponse($response);
+            $controller = new $controller_name($controller_id);
             if (method_exists($controller, $action_name)) {
                 $controller->$action_name();
             } else {

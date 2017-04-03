@@ -19,9 +19,12 @@ abstract class BaseController extends BaseClass
 
     protected $middleware = [];
 
-    public function __construct()
+    public function __construct($controllerId, $request = null, $response = null)
     {
-        $this->beforeAction();
+        $this->setControllerId($controllerId)
+            ->setRequest($request)
+            ->setResponse($response)
+            ->beforeAction();
     }
 
     public function __clone()
