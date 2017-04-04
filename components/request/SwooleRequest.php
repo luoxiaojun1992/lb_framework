@@ -140,5 +140,10 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         return $default_value;
     }
 
+    public function getRawContent()
+    {
+        return $this->swooleRequest->rawContent();
+    }
+
     //todo other methods like cookie、raw_content、files
 }

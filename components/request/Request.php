@@ -121,4 +121,9 @@ class Request extends BaseClass implements RequestContract
     {
         return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
     }
+
+    public function getRawContent()
+    {
+        return file_get_contents('php://input');
+    }
 }

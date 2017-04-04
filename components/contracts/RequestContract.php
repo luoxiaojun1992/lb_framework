@@ -33,4 +33,6 @@ interface RequestContract
     public function getHeader($headerKey);
 
     public function getParam($param_name, $default_value = null);
+
+    public function getRawContent();
 }
