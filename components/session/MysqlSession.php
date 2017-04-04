@@ -12,7 +12,7 @@ class MysqlSession extends \SessionHandler
 
     private function __construct()
     {
-
+        //todo create session table
     }
 
     public function open($save_path, $session_name)
