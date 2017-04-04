@@ -17,12 +17,13 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     public function getClientAddress()
     {
         $swooleRequest = $this->swooleRequest;
+        $header = $swooleRequest->header;
         $ip = false;
-        if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
-            $ip = $_SERVER["HTTP_CLIENT_IP"];
+        if (!empty($header["client-ip"])) {
+            $ip = $header["client-ip"];
         }
-        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ips = explode (", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
+        if (!empty($header['x-forwarded-for'])) {
+            $ips = explode (", ", $header['x-forwarded-for']);
             if ($ip) {
                 array_unshift($ips, $ip);
                 $ip = false;
@@ -34,32 +35,43 @@ class SwooleRequest extends RequestAdapter implements RequestContract
                 }
             }
         }
-        return ($ip ? $ip : $_SERVER['REMOTE_ADDR']);
+        return ($ip ? $ip : $swooleRequest->server['remote_addr']);
     }
 
     public function getHost()
     {
-        return isset($_SERVER['HTTP_X_FORWARDED_HOST']) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '');
+        $swooleRequest = $this->swooleRequest;
+        $header = $swooleRequest->header;
+        return isset($header['x-forwarded-host']) ? $header['x-forwarded-host'] :
+            (isset($header['host']) ? $header['host'] : '');
     }
 
     public function getUri()
     {
-        return isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $swooleRequest = $this->swooleRequest;
+        $server = $swooleRequest->server;
+        return isset($server['request_uri']) ? $server['request_uri'] : '';
     }
 
     public function getHostAddress()
     {
-        return isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+        $swooleRequest = $this->swooleRequest;
+        $server = $swooleRequest->server;
+        return isset($server['server_addr']) ? $server['server_addr'] : '';
     }
 
     public function getUserAgent()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+        $swooleRequest = $this->swooleRequest;
+        $header = $swooleRequest->header;
+        return isset($header['user-agent']) ? $header['user-agent'] : '';
     }
 
     public function getRequestMethod()
     {
-        return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
+        $swooleRequest = $this->swooleRequest;
+        $server = $swooleRequest->server;
+        return isset($server['request_method']) ? $server['request_method'] : '';
     }
 
     public function getQueryString()
@@ -74,17 +86,28 @@ class SwooleRequest extends RequestAdapter implements RequestContract
 
     public function isAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+        $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
 
     public function getBasicAuthUser()
     {
-        return isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
+        list($authType, $authCode) = explode(' ', $this->swooleRequest->header['authorization']);
+        if ($authType == 'Basic') {
+            list($user, $pw) = explode(':', base64_decode($authCode));
+            return $user;
+        }
+        return '';
     }
 
     public function getBasicAuthPassword()
     {
-        return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
+        list($authType, $authCode) = explode(' ', $this->swooleRequest->header['authorization']);
+        if ($authType == 'Basic') {
+            list($user, $pw) = explode(':', base64_decode($authCode));
+            return $pw;
+        }
+        return '';
     }
 
     public function getHeaders() : Header
@@ -98,7 +121,11 @@ class SwooleRequest extends RequestAdapter implements RequestContract
             } else {
                 foreach ($_SERVER as $name => $value) {
                     if (strncmp($name, 'HTTP_', 5) === 0) {
-                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                        $name = str_replace(
+                            ' ',
+                            '-',
+                            ucwords(strtolower(str_replace('_', ' ', substr($name, 5))))
+                        );
                         $this->_headers->set($name, $value);
                     }
                 }
