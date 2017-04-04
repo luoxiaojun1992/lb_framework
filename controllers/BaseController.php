@@ -3,15 +3,15 @@
 namespace lb\controllers;
 
 use lb\BaseClass;
+use lb\components\contracts\RequestContract;
 use lb\components\middleware\MiddlewareInterface;
-use lb\components\request\Request;
 use lb\components\Response;
 
 abstract class BaseController extends BaseClass
 {
     protected $controller_id = '';
 
-    /** @var  Request */
+    /** @var  RequestContract */
     protected $request;
 
     /** @var  Response */
