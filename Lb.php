@@ -45,6 +45,7 @@ use Monolog\Logger;
 use MemcacheKit;
 use RedisKit;
 use RequestKit;
+use ResponseKit;
 
 class Lb extends BaseClass
 {
@@ -721,7 +722,7 @@ class Lb extends BaseClass
                 Session::setSession($session_config['type']);
             }
         }
-        session_start();
+        ResponseKit::startSession();
     }
 
     /**

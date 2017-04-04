@@ -106,6 +106,16 @@ class Response extends BaseClass
     }
 
     /**
+     * Start Session
+     *
+     * @return bool
+     */
+    public function startSession()
+    {
+        return session_start();
+    }
+
+    /**
      * Set swoole response
      *
      * @param $swooleResponse
