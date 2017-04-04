@@ -1,22 +1,22 @@
 <?php
 
-namespace lb\components;
+namespace lb\components\request;
 
-use lb\BaseClass;
+use lb\components\adapters\RequestAdapter;
 use lb\components\containers\Header;
+use lb\components\contracts\RequestContract;
 use lb\components\traits\Singleton;
 
-class Request extends BaseClass
+class SwooleRequest extends RequestAdapter implements RequestContract
 {
     use Singleton;
 
     /** @var  Header */
     protected $_headers;
 
-    protected $swooleRequest;
-
     public function getClientAddress()
     {
+        $swooleRequest = $this->swooleRequest;
         $ip = false;
         if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
             $ip = $_SERVER["HTTP_CLIENT_IP"];
@@ -121,11 +121,5 @@ class Request extends BaseClass
     public function getParam($param_name, $default_value = null)
     {
         return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
-    }
-
-    public function setSwooleRequest($swooleRequest)
-    {
-        $this->swooleRequest = $swooleRequest;
-        return $this;
     }
 }

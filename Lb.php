@@ -35,7 +35,7 @@ use lb\components\Environment;
 use lb\components\error_handlers\Level;
 use lb\components\Log;
 use lb\components\mailer\Swift;
-use lb\components\Request;
+use lb\components\request\Request;
 use lb\components\Route;
 use lb\components\UrlManager;
 use lb\components\Security;

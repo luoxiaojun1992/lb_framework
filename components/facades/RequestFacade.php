@@ -2,7 +2,7 @@
 
 namespace lb\components\facades;
 
-use lb\components\Request;
+use lb\components\request\Request;
 
 class RequestFacade extends BaseFacade
 {
