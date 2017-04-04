@@ -163,6 +163,7 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     public function getSession($session_key)
     {
         $sessions = [];
+        //todo handle the duplicate of php session
         $mysqlSession = MysqlSession::component();
         $mysqlSession->gc(time());
         $sessionData =  $mysqlSession->read($this->getSessionId());
