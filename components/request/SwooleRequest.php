@@ -114,26 +114,8 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     {
         if ($this->_headers === null) {
             $this->_headers = Header::component();
-            if (function_exists('getallheaders')) {
-                $headers = getallheaders();
-            } elseif (function_exists('http_get_request_headers')) {
-                $headers = http_get_request_headers();
-            } else {
-                foreach ($_SERVER as $name => $value) {
-                    if (strncmp($name, 'HTTP_', 5) === 0) {
-                        $name = str_replace(
-                            ' ',
-                            '-',
-                            ucwords(strtolower(str_replace('_', ' ', substr($name, 5))))
-                        );
-                        $this->_headers->set($name, $value);
-                    }
-                }
-
-                return $this->_headers;
-            }
-            foreach ($headers as $name => $value) {
-                $this->_headers->set($name, $value);
+            foreach ($this->swooleRequest->header as $name => $value) {
+                $this->_headers->set(strtoupper($name), $value);
             }
         }
 
@@ -147,6 +129,16 @@ class SwooleRequest extends RequestAdapter implements RequestContract
 
     public function getParam($param_name, $default_value = null)
     {
-        return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
+        if (isset($this->swooleRequest->get[$param_name])) {
+            return $this->swooleRequest->get[$param_name];
+        }
+
+        if (isset($this->swooleRequest->post[$param_name])) {
+            return $this->swooleRequest->post[$param_name];
+        }
+
+        return $default_value;
     }
+
+    //todo other methods like cookie、raw_content、files
 }
