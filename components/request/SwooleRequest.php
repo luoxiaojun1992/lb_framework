@@ -167,7 +167,7 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         $mysqlSession->gc(time());
         $sessionData =  $mysqlSession->read($this->getSessionId());
         if ($sessionData) {
-            $sessions = json_decode($sessionData);
+            $sessions = unserialize($sessionData);
         }
         return isset($sessions[$session_key]) ? $sessions[$session_key] : false;
     }
