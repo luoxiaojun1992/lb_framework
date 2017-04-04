@@ -4,7 +4,7 @@ namespace lb\controllers;
 
 use lb\BaseClass;
 use lb\components\middleware\MiddlewareInterface;
-use lb\components\Request;
+use lb\components\request\Request;
 use lb\components\Response;
 
 abstract class BaseController extends BaseClass
