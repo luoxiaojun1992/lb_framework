@@ -2,13 +2,15 @@
 
 namespace lb\components\traits\lb;
 
+use RequestKit;
+
 trait Session
 {
     // Get Session Value
     public function getSession($session_key)
     {
         if ($this->isSingle()) {
-            return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+            return RequestKit::getSession($session_key);
         }
         return false;
     }

@@ -15,7 +15,7 @@ class FilecacheKit extends \lb\components\cache\Filecache
     //
 }
 
-class RequestKit extends \lb\components\Request
+class RequestKit extends \lb\components\request\Request
 {
     //
 }

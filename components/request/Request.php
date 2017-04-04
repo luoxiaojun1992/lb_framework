@@ -6,6 +6,7 @@ use lb\BaseClass;
 use lb\components\containers\Header;
 use lb\components\contracts\RequestContract;
 use lb\components\traits\Singleton;
+use lb\Lb;
 
 class Request extends BaseClass implements RequestContract
 {
@@ -125,5 +126,26 @@ class Request extends BaseClass implements RequestContract
     public function getRawContent()
     {
         return file_get_contents('php://input');
+    }
+
+    public function getCookie($cookie_key)
+    {
+        return isset($_COOKIE[$cookie_key]) ?
+            Lb::app()->decrypt_by_config($_COOKIE[$cookie_key]) : false;
+    }
+
+    public function getFile($file_name)
+    {
+        return isset($_FILES[$file_name]) ? $_FILES[$file_name] : false;
+    }
+
+    public function getSession($session_key)
+    {
+        return isset($_SESSION[$session_key]) ? $_SESSION[$session_key] : false;
+    }
+
+    public function getSessionId()
+    {
+        return session_id();
     }
 }

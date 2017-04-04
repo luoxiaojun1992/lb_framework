@@ -35,4 +35,12 @@ interface RequestContract
     public function getParam($param_name, $default_value = null);
 
     public function getRawContent();
+
+    public function getCookie($cookie_key);
+
+    public function getFile($file_name);
+
+    public function getSession($session_key);
+
+    public function getSessionId();
 }

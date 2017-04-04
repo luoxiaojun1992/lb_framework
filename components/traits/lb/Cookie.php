@@ -2,13 +2,15 @@
 
 namespace lb\components\traits\lb;
 
+use RequestKit;
+
 trait Cookie
 {
     // Get Cookie Value
     public function getCookie($cookie_key)
     {
         if ($this->isSingle()) {
-            return isset($_COOKIE[$cookie_key]) ? $this->decrypt_by_config($_COOKIE[$cookie_key]) : false;
+            return RequestKit::getCookie($cookie_key);
         }
         return false;
     }

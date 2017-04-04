@@ -5,7 +5,9 @@ namespace lb\components\request;
 use lb\components\adapters\RequestAdapter;
 use lb\components\containers\Header;
 use lb\components\contracts\RequestContract;
+use lb\components\session\MysqlSession;
 use lb\components\traits\Singleton;
+use lb\Lb;
 
 class SwooleRequest extends RequestAdapter implements RequestContract
 {
@@ -145,5 +147,33 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         return $this->swooleRequest->rawContent();
     }
 
-    //todo other methods like cookie、raw_content、files
+    public function getCookie($cookie_key)
+    {
+        $cookie = $this->swooleRequest->cookie;
+        return isset($cookie[$cookie_key]) ?
+            Lb::app()->decrypt_by_config($cookie[$cookie_key]) : false;
+    }
+
+    public function getFile($file_name)
+    {
+        $files = $this->swooleRequest->files;
+        return isset($files[$file_name]) ? $files[$file_name] : false;
+    }
+
+    public function getSession($session_key)
+    {
+        $sessions = [];
+        $mysqlSession = MysqlSession::component();
+        $mysqlSession->gc(time());
+        $sessionData =  $mysqlSession->read($this->getSessionId());
+        if ($sessionData) {
+            $sessions = json_decode($sessionData);
+        }
+        return isset($sessions[$session_key]) ? $sessions[$session_key] : false;
+    }
+
+    public function getSessionId()
+    {
+        return $this->getCookie('swoole_session_id');
+    }
 }
