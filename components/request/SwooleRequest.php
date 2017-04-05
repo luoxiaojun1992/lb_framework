@@ -2,9 +2,7 @@
 
 namespace lb\components\request;
 
-use lb\components\adapters\RequestAdapter;
 use lb\components\containers\Header;
-use lb\components\contracts\RequestContract;
 use lb\components\session\MysqlSession;
 use lb\components\traits\Singleton;
 use lb\Lb;

@@ -4,7 +4,6 @@ namespace lb\components\request;
 
 use lb\BaseClass;
 use lb\components\containers\Header;
-use lb\components\contracts\RequestContract;
 use lb\components\traits\Singleton;
 use lb\Lb;
 

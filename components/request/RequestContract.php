@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components\contracts;
+namespace lb\components\request;
 
 use lb\components\containers\Header;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components\adapters;
+namespace lb\components\request;
 
 use lb\BaseClass;
 

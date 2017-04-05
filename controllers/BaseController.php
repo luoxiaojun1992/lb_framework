@@ -3,7 +3,7 @@
 namespace lb\controllers;
 
 use lb\BaseClass;
-use lb\components\contracts\RequestContract;
+use lb\components\request\RequestContract;
 use lb\components\middleware\MiddlewareInterface;
 use lb\components\Response;
 
