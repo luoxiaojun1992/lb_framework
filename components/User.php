@@ -14,8 +14,8 @@ class User extends BaseClass
 
         // Remember Me
         if ($remember_token && $timeout) {
-            Lb::app()->setHeaderCookie('username', $username, $timeout, null, null, null, true);
-            Lb::app()->setHeaderCookie('remember_token', $remember_token, $timeout, null, null, null, true);
+            Lb::app()->setCookie('username', $username, $timeout, null, null, null, true);
+            Lb::app()->setCookie('remember_token', $remember_token, $timeout, null, null, null, true);
         }
     }
 

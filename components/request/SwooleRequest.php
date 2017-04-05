@@ -170,9 +170,4 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         }
         return isset($sessions[$session_key]) ? $sessions[$session_key] : false;
     }
-
-    public function getSessionId()
-    {
-        return $this->getCookie('swoole_session_id');
-    }
 }

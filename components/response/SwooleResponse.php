@@ -1,15 +1,16 @@
 <?php
 
-namespace lb\components\response;
+namespace lb\components\request;
 
-use lb\BaseClass;
-use lb\components\helpers\HttpHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
+use lb\components\response\ResponseAdapter;
+use lb\components\response\ResponseContract;
+use lb\components\session\MysqlSession;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
-class Response extends BaseClass implements ResponseContract
+class SwooleResponse extends ResponseAdapter implements ResponseContract
 {
     use Singleton;
 
@@ -21,11 +22,7 @@ class Response extends BaseClass implements ResponseContract
      */
     public function httpCode($http_code = 200, $protocol = 'HTTP/1.1')
     {
-        $http_code = intval($http_code);
-        $status_str = HttpHelper::get_status_code_message($http_code);
-        if ($status_str) {
-            header(implode(' ', [$protocol, $http_code, $status_str]));
-        }
+        $this->swooleResponse->status(intval($http_code));
     }
 
     /**
@@ -56,7 +53,7 @@ class Response extends BaseClass implements ResponseContract
                 $response_content = '';
         }
         if (!$is_success) {
-            Lb::app()->stop($response_content);
+            $this->swooleResponse->end($response_content);
         } else {
             echo $response_content;
         }
@@ -107,17 +104,51 @@ class Response extends BaseClass implements ResponseContract
      */
     public function startSession()
     {
-        return session_start();
+        $mysqlSession = MysqlSession::component();
+        $mysqlSession->gc(time());
+        $mysqlSession->write($this->getSessionId(), serialize([]));
+        return true;
     }
 
     /**
-     * Get session id
+     * Set session
      *
-     * @return string
+     * @param $sessionKey
+     * @param $sessionValue
      */
-    public function getSessionId()
+    public function setSession($sessionKey, $sessionValue)
     {
-        return session_id();
+        $sessions = [];
+        $mysqlSession = MysqlSession::component();
+        $mysqlSession->gc(time());
+        $sessionData =  $mysqlSession->read($this->getSessionId());
+        if ($sessionData) {
+            $sessions = unserialize($sessionData);
+        }
+        if (isset($sessions[$sessionKey])) {
+            $sessions[$sessionKey] = $sessionValue;
+            $mysqlSession->write($this->getSessionId(), serialize($sessions));
+        }
+    }
+
+    /**
+     * Delete session
+     *
+     * @param $sessionKey
+     */
+    public function delSession($sessionKey)
+    {
+        $sessions = [];
+        $mysqlSession = MysqlSession::component();
+        $mysqlSession->gc(time());
+        $sessionData =  $mysqlSession->read($this->getSessionId());
+        if ($sessionData) {
+            $sessions = unserialize($sessionData);
+        }
+        if (isset($sessions[$sessionKey])) {
+            unset($sessions[$sessionKey]);
+            $mysqlSession->write($this->getSessionId(), serialize($sessions));
+        }
     }
 
     /**
@@ -129,7 +160,7 @@ class Response extends BaseClass implements ResponseContract
      */
     public function setHeader($key, $value, $replace = true)
     {
-        header($key . ':' . $value, $replace);
+        $this->swooleResponse->header($key. $value);
     }
 
     /**
@@ -153,29 +184,14 @@ class Response extends BaseClass implements ResponseContract
         $httpOnly = null
     )
     {
-        setcookie($cookie_key, Lb::app()->encrypt_by_config($cookie_value), $expire, $path, $domain, $secure, $httpOnly);
-    }
-
-    /**
-     * Set session
-     *
-     * @param $sessionKey
-     * @param $sessionValue
-     */
-    public function setSession($sessionKey, $sessionValue)
-    {
-        $_SESSION[$sessionKey] = $sessionValue;
-    }
-
-    /**
-     * Delete session
-     *
-     * @param $sessionKey
-     */
-    public function delSession($sessionKey)
-    {
-        if (isset($_SESSION[$sessionKey])) {
-            unset($_SESSION[$sessionKey]);
-        }
+        $this->swooleResponse->cookie(
+            $cookie_key,
+            Lb::app()->encrypt_by_config($cookie_value),
+            $expire,
+            $path,
+            $domain,
+            $secure,
+            $httpOnly
+        );
     }
 }

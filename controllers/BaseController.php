@@ -5,7 +5,7 @@ namespace lb\controllers;
 use lb\BaseClass;
 use lb\components\request\RequestContract;
 use lb\components\middleware\MiddlewareInterface;
-use lb\components\Response;
+use lb\components\response\ResponseContract;
 
 abstract class BaseController extends BaseClass
 {
@@ -14,7 +14,7 @@ abstract class BaseController extends BaseClass
     /** @var  RequestContract */
     protected $request;
 
-    /** @var  Response */
+    /** @var  ResponseContract */
     protected $response;
 
     protected $middleware = [];

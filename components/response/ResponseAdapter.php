@@ -1,18 +1,18 @@
 <?php
 
-namespace lb\components\request;
+namespace lb\components\response;
 
 use lb\BaseClass;
 
-abstract class RequestAdapter extends BaseClass
+abstract class ResponseAdapter extends BaseClass
 {
-    protected $swooleRequest;
+    protected $swooleResponse;
 
     protected $sessionId;
 
-    public function setSwooleRequest($swooleRequest)
+    public function setSwooleResponse($swooleResponse)
     {
-        $this->swooleRequest = $swooleRequest;
+        $this->swooleResponse = $swooleResponse;
         return $this;
     }
 

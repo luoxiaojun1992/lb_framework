@@ -3,6 +3,7 @@
 namespace lb\components\traits\lb;
 
 use RequestKit;
+use ResponseKit;
 
 trait Session
 {
@@ -19,7 +20,7 @@ trait Session
     public function setSession($session_key, $session_value)
     {
         if ($this->isSingle()) {
-            $_SESSION[$session_key] = $session_value;
+            ResponseKit::setSession($session_key, $session_value);
         }
     }
 
@@ -27,9 +28,7 @@ trait Session
     public function delSession($session_key)
     {
         if ($this->isSingle()) {
-            if (isset($_SESSION[$session_key])) {
-                unset($_SESSION[$session_key]);
-            }
+            ResponseKit::delSession($session_key);
         }
     }
 
