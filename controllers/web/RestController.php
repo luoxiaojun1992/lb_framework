@@ -57,6 +57,7 @@ class RestController extends BaseController
             $this->middleware['authMiddleware']['params'] = [
                 'auth_type' => $this->auth_type,
                 'rest_config' => $this->self_rest_config,
+                'request' => $this->request,
             ];
             $this->middleware['authMiddleware']['failureCallback'] = function () use ($response) {
                 $response->response_unauthorized(401);
@@ -65,6 +66,7 @@ class RestController extends BaseController
             //Set Request Method Filter
             $this->middleware['requestMethodFilter']['params'] = [
                 'request_method' => $this->request_method,
+                'request' => $this->request,
             ];
             $this->middleware['requestMethodFilter']['failureCallback'] = function () use ($response) {
                 $response->response_invalid_request(403);

@@ -11,11 +11,12 @@ class RequestMethodFilter extends BaseMiddleware
      * @param $params
      * @param $successCallback
      * @param $failureCallback
-     * @param RequestContract $request
      */
-    public function runAction($params, $successCallback, $failureCallback, $request = null)
+    public function runAction($params, $successCallback, $failureCallback)
     {
         $result = true;
+        /** @var RequestContract $request */
+        $request = $params['request'];
         $requestMethod = trim($params['request_method']);
         if ($requestMethod != '*' &&
             strtolower($requestMethod) != strtolower($request ? $request->getRequestMethod() :

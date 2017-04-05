@@ -180,7 +180,7 @@ class Security extends BaseClass
      * @param $action
      * @param $response ResponseContract
      */
-    public static function x_xss_protection($controller, $action, $response)
+    public static function x_xss_protection($controller, $action, $response = null)
     {
         if (isset(Lb::app()->containers['config'])) {
             $config = Lb::app()->containers['config'];
