@@ -5,6 +5,7 @@ namespace lb\components;
 use lb\BaseClass;
 use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
+use lb\components\request\RequestContract;
 use lb\controllers\BaseController;
 use lb\Lb;
 
@@ -31,17 +32,18 @@ class Route extends BaseClass
     ];
 
     /**
+     * @param $request RequestContract
      * @return array
      */
-    public static function getWebInfo()
+    public static function getWebInfo($request = null)
     {
         $route_info = [
             'controller' => '',
             'action' => '',
             'id' => '',
         ];
-        $request_uri = Lb::app()->getUri();
-        $query_string = Lb::app()->getQueryString();
+        $request_uri = $request ? $request->getUri() : Lb::app()->getUri();
+        $query_string = $request ? $request->getQueryString() : Lb::app()->getQueryString();
         if (Lb::app()->isPrettyUrl()) {
             if ($query_string) {
                 $request_uri = str_replace('?' . $query_string, '', $request_uri);

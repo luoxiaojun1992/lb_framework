@@ -3,6 +3,7 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\request\RequestContract;
 use lb\Lb;
 
 class Auth extends BaseClass
@@ -17,11 +18,13 @@ class Auth extends BaseClass
      *
      * @param $user
      * @param $password
+     * @param $request RequestContract
      * @return bool
      */
-    public static function authBasic($user, $password)
+    public static function authBasic($user, $password, $request = null)
     {
-        return Lb::app()->getBasicAuthUser() == $user && md5(Lb::app()->getBasicAuthPassword()) == $password;
+        return ($request ? $request->getBasicAuthUser() : Lb::app()->getBasicAuthUser()) == $user &&
+        md5($request ? $request->getBasicAuthPassword() : Lb::app()->getBasicAuthPassword()) == $password;
     }
 
     /**
@@ -29,10 +32,11 @@ class Auth extends BaseClass
      *
      * @param $authKey
      * @param $accessToken
+     * @param $request RequestContract
      * @return bool
      */
-    public static function authQueryString($authKey, $accessToken)
+    public static function authQueryString($authKey, $accessToken, $request = null)
     {
-        return md5(Lb::app()->getParam($authKey)) == $accessToken;
+        return md5($request ? $request->getParam($authKey) : Lb::app()->getParam($authKey)) == $accessToken;
     }
 }

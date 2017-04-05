@@ -53,7 +53,7 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
                 $response_content = '';
         }
         if (!$is_success) {
-            $this->swooleResponse->end($response_content);
+            Lb::app()->stop($response_content);
         } else {
             echo $response_content;
         }
