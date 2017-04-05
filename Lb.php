@@ -6,6 +6,7 @@ use FilecacheKit;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
+use lb\components\request\RequestContract;
 use lb\components\response\Response;
 use lb\components\response\ResponseContract;
 use lb\components\traits\lb\Cookie as CookieTrait;
@@ -455,17 +456,22 @@ class Lb extends BaseClass
         }
     }
 
-    // Detect Action Exists
-    public function isAction()
+    /**
+     * Detect Action Exists
+     *
+     * @param RequestContract $request
+     * @return bool
+     */
+    public function isAction($request = null)
     {
         $is_action = false;
         if ($this->isSingle()) {
             if (Lb::app()->isPrettyUrl()) {
-                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getUri(), '/action/') !== false) {
+                if (!trim($request ? $request->getUri() : Lb::app()->getUri(), '/') || stripos($request ? $request->getUri() : Lb::app()->getUri(), '/action/') !== false) {
                     $is_action = true;
                 }
             } else {
-                if (!trim(Lb::app()->getUri(), '/') || stripos(Lb::app()->getQueryString(), 'action=') !== false) {
+                if (!trim($request ? $request->getUri() : Lb::app()->getUri(), '/') || stripos($request ? $request->getQueryString() : Lb::app()->getQueryString(), 'action=') !== false) {
                     $is_action = true;
                 }
             }
@@ -674,13 +680,10 @@ class Lb extends BaseClass
 
     /**
      * Set Route Info
-     *
-     * @param $request
      */
-    protected function setRouteInfo($request = null)
+    protected function setRouteInfo()
     {
-        $this->route_info = php_sapi_name() === 'cli' ?
-            ($request ? Route::getWebInfo($request) : Route::getConsoleInfo()) : Route::getWebInfo();
+        $this->route_info = php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
@@ -723,9 +726,11 @@ class Lb extends BaseClass
      */
     protected function initSession($response = null)
     {
-        if ($session_config = Lb::app()->getSessionConfig()) {
-            if (isset($session_config['type'])) {
-                Session::setSession($session_config['type']);
+        if (!$response) {
+            if ($session_config = Lb::app()->getSessionConfig()) {
+                if (isset($session_config['type'])) {
+                    Session::setSession($session_config['type']);
+                }
             }
         }
         $response ? $response->startSession() : ResponseKit::startSession();

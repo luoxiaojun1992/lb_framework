@@ -3,6 +3,8 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\request\RequestContract;
+use lb\components\response\ResponseContract;
 use lb\Lb;
 
 class User extends BaseClass
@@ -19,10 +21,16 @@ class User extends BaseClass
         }
     }
 
-    public static function loginRequired($redirect_url)
+    /**
+     * @param $redirect_url
+     * @param $request RequestContract
+     * @param $response ResponseContract
+     */
+    public static function loginRequired($redirect_url, $request = null, $response = null)
     {
-        if (!Lb::app()->getSession('username') || !Lb::app()->getSession('user_id')) {
-            if (Lb::app()->isAction()) {
+        if (!($request ? $request->getSession('username') : Lb::app()->getSession('username')) || !($request ? $request->getSession('user_id') : Lb::app()->getSession('user_id'))) {
+            if (Lb::app()->isAction($request)) {
+                //todo continue
                 $http_port = Lb::app()->getHttpPort();
                 if (stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], true, $http_port), $redirect_url) === false || stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], false, $http_port), $redirect_url) === false) {
                     Lb::app()->redirect($redirect_url);
