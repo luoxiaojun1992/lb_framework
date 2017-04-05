@@ -7,6 +7,7 @@ use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
 use lb\components\response\Response;
+use lb\components\response\ResponseContract;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;
@@ -303,10 +304,10 @@ class Lb extends BaseClass
     }
 
     // Request Redirect
-    public function redirect($path, $replace = true, $http_response_code = null)
+    public function redirect($path, $replace = true, $http_response_code = null, $response = null)
     {
         if ($this->isSingle()) {
-            UrlManager::redirect($path, $replace, $http_response_code);
+            UrlManager::redirect($path, $replace, $http_response_code, $response);
         }
     }
 
@@ -673,10 +674,13 @@ class Lb extends BaseClass
 
     /**
      * Set Route Info
+     *
+     * @param $request
      */
-    protected function setRouteInfo()
+    protected function setRouteInfo($request = null)
     {
-        $this->route_info = php_sapi_name() === 'cli' ? Route::getConsoleInfo() : Route::getWebInfo();
+        $this->route_info = php_sapi_name() === 'cli' ?
+            ($request ? Route::getWebInfo($request) : Route::getConsoleInfo()) : Route::getWebInfo();
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
@@ -714,15 +718,17 @@ class Lb extends BaseClass
 
     /**
      * Init Session
+     *
+     * @param $response ResponseContract
      */
-    protected function initSession()
+    protected function initSession($response = null)
     {
         if ($session_config = Lb::app()->getSessionConfig()) {
             if (isset($session_config['type'])) {
                 Session::setSession($session_config['type']);
             }
         }
-        ResponseKit::startSession();
+        $response ? $response->startSession() : ResponseKit::startSession();
     }
 
     /**

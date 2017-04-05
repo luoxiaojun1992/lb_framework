@@ -1,11 +1,9 @@
 <?php
 
-namespace lb\components\request;
+namespace lb\components\response;
 
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
-use lb\components\response\ResponseAdapter;
-use lb\components\response\ResponseContract;
 use lb\components\session\MysqlSession;
 use lb\components\traits\Singleton;
 use lb\Lb;

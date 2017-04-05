@@ -1,14 +1,15 @@
 <?php
 
-namespace lb\applications\web;
+namespace lb\applications\swoole;
 
 use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\Lb;
+use lb\SwooleLb;
 use Monolog\Logger;
 
-class App extends Lb
+class App extends SwooleLb
 {
     protected function handleException($exception)
     {
