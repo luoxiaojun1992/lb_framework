@@ -65,4 +65,49 @@ interface ResponseContract
      * @return string
      */
     public function getSessionId();
+
+    /**
+     * Set header
+     *
+     * @param $key
+     * @param $value
+     * @param bool $replace
+     */
+    public function setHeader($key, $value, $replace = true);
+
+    /**
+     * Set cookie
+     *
+     * @param $cookie_key
+     * @param $cookie_value
+     * @param null $expire
+     * @param null $path
+     * @param null $domain
+     * @param null $secure
+     * @param null $httpOnly
+     */
+    public function setCookie(
+        $cookie_key,
+        $cookie_value,
+        $expire = null,
+        $path = null,
+        $domain = null,
+        $secure = null,
+        $httpOnly = null
+    );
+
+    /**
+     * Set session
+     *
+     * @param $sessionKey
+     * @param $sessionValue
+     */
+    public function setSession($sessionKey, $sessionValue);
+
+    /**
+     * Delete session
+     *
+     * @param $sessionKey
+     */
+    public function delSession($sessionKey);
 }
