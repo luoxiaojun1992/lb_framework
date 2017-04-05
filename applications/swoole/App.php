@@ -25,7 +25,7 @@ class App extends SwooleLb
     protected function exitException(\Exception $exception)
     {
         Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
-        Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        $this->response->getSwooleResponse()->end(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
     public function run()
@@ -60,7 +60,7 @@ class App extends SwooleLb
                 }
             }
         } else {
-            Lb::app()->stop('Unsupported running mode.');
+            $this->response->getSwooleResponse()->end('Unsupported running mode.');
         }
     }
 }
