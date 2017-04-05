@@ -4,7 +4,7 @@ namespace lb\components\response;
 
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
-use lb\components\session\MysqlSession;
+use lb\components\session\SwooleSession;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
@@ -102,9 +102,9 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
      */
     public function startSession()
     {
-        $mysqlSession = MysqlSession::component();
-        $mysqlSession->gc(time());
-        $mysqlSession->write($this->getSessionId(), serialize([]));
+        $swooleSession = SwooleSession::component();
+        $swooleSession->gc(time());
+        $swooleSession->write($this->getSessionId(), serialize([]));
         return true;
     }
 
@@ -117,15 +117,15 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
     public function setSession($sessionKey, $sessionValue)
     {
         $sessions = [];
-        $mysqlSession = MysqlSession::component();
-        $mysqlSession->gc(time());
-        $sessionData =  $mysqlSession->read($this->getSessionId());
+        $swooleSession = SwooleSession::component();
+        $swooleSession->gc(time());
+        $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
             $sessions = unserialize($sessionData);
         }
         if (isset($sessions[$sessionKey])) {
             $sessions[$sessionKey] = $sessionValue;
-            $mysqlSession->write($this->getSessionId(), serialize($sessions));
+            $swooleSession->write($this->getSessionId(), serialize($sessions));
         }
     }
 
@@ -137,15 +137,15 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
     public function delSession($sessionKey)
     {
         $sessions = [];
-        $mysqlSession = MysqlSession::component();
-        $mysqlSession->gc(time());
-        $sessionData =  $mysqlSession->read($this->getSessionId());
+        $swooleSession = SwooleSession::component();
+        $swooleSession->gc(time());
+        $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
             $sessions = unserialize($sessionData);
         }
         if (isset($sessions[$sessionKey])) {
             unset($sessions[$sessionKey]);
-            $mysqlSession->write($this->getSessionId(), serialize($sessions));
+            $swooleSession->write($this->getSessionId(), serialize($sessions));
         }
     }
 

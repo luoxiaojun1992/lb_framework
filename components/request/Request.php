@@ -147,4 +147,14 @@ class Request extends BaseClass implements RequestContract
     {
         return session_id();
     }
+
+    public function getQueryParams()
+    {
+        return $_GET;
+    }
+
+    public function getBodyParams()
+    {
+        return $_POST;
+    }
 }

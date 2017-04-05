@@ -6,7 +6,10 @@ use lb\BaseClass;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\HtmlHelper;
+use lb\components\request\RequestContract;
+use lb\components\response\ResponseContract;
 use lb\Lb;
+use ResponseKit;
 
 class Security extends BaseClass
 {
@@ -85,15 +88,17 @@ class Security extends BaseClass
     /**
      * @param $controller
      * @param $action
+     * @param $request RequestContract
+     * @param $response ResponseContract
      * @throws HttpException
      */
-    public static function validCsrfToken($controller, $action)
+    public static function validCsrfToken($controller, $action, $request = null, $response = null)
     {
         $csrf_config = Lb::app()->getCsrfConfig();
         if (!isset($csrf_config['filter']['controllers'][$controller][$action]) || !$csrf_config['filter']['controllers'][$controller][$action]) {
-            if (strtolower(Lb::app()->getRequestMethod()) == 'post') {
-                $session_csrf_token = Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
-                $request_csrf_token = Lb::app()->getParam('csrf_token');
+            if (strtolower($request ? $request->getRequestMethod() : Lb::app()->getRequestMethod()) == 'post') {
+                $session_csrf_token = $request ? $request->getSession(implode('_', ['csrf_token', $controller, $action])) : Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
+                $request_csrf_token = $request ? $request->getParam('csrf_token') : Lb::app()->getParam('csrf_token');
                 if ($session_csrf_token && $request_csrf_token) {
                     if ($session_csrf_token != $request_csrf_token) {
                         throw new HttpException('Csrf token invalid.', 403);
@@ -102,8 +107,8 @@ class Security extends BaseClass
                     throw new HttpException('Csrf token missing.', 403);
                 }
             }
-            if (!(Lb::app()->isAjax() && strtolower(Lb::app()->getRequestMethod()) == 'post')) {
-                Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
+            if (!(Lb::app()->isAjax($request) && strtolower($request ? $request->getRequestMethod() : Lb::app()->getRequestMethod()) == 'post')) {
+                $response ? $response->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken()) : Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
             }
         }
     }
@@ -111,15 +116,20 @@ class Security extends BaseClass
     /**
      * @param $controller
      * @param $action
+     * @param $response ResponseContract
      */
-    public static function cors($controller, $action)
+    public static function cors($controller, $action, $response = null)
     {
         if (isset(Lb::app()->containers['config'])) {
             $config = Lb::app()->containers['config'];
             $cors = $config->get('cors');
             if ($cors) {
                 if (isset($cors[$controller][$action]) && $cors[$controller][$action] == true) {
-                    header('Access Control Allow Origin: *');
+                    if ($response) {
+                        $response->setHeader('Access Control Allow Origin', '*');
+                    } else {
+                        ResponseKit::setHeader('Access Control Allow Origin', '*');
+                    }
                 }
             }
         }
@@ -128,62 +138,97 @@ class Security extends BaseClass
     /**
      * @param $controller
      * @param $action
+     * @param $response ResponseContract
      */
-    public static function x_frame_options($controller, $action)
+    public static function x_frame_options($controller, $action, $response = null)
     {
         if (isset(Lb::app()->containers['config'])) {
             $config = Lb::app()->containers['config'];
             $x_frame_options = $config->get('x_frame_options');
             if ($x_frame_options) {
                 if (isset($x_frame_options[$controller][$action])) {
-                    header("X-Frame-Options: {$x_frame_options[$controller][$action]}");
+                    if ($response) {
+                        $response->setHeader('X-Frame-Options', $x_frame_options[$controller][$action]);
+                    } else {
+                        ResponseKit::setHeader('X-Frame-Options', $x_frame_options[$controller][$action]);
+                    }
                 } else if (isset($x_frame_options['common'])) {
-                    header("X-Frame-Options: {$x_frame_options['common']}");
+                    if ($response) {
+                        $response->setHeader('X-Frame-Options', $x_frame_options['common']);
+                    } else {
+                        ResponseKit::setHeader('X-Frame-Options', $x_frame_options['common']);
+                    }
                 } else {
-                    header("X-Frame-Options: DENY");
+                    if ($response) {
+                        $response->setHeader('X-Frame-Options', 'DENY');
+                    } else {
+                        ResponseKit::setHeader('X-Frame-Options', 'DENY');
+                    }
                 }
                 return;
             }
         }
-        header("X-Frame-Options: DENY");
+        if ($response) {
+            $response->setHeader('X-Frame-Options', 'DENY');
+        } else {
+            ResponseKit::setHeader('X-Frame-Options', 'DENY');
+        }
     }
 
     /**
      * @param $controller
      * @param $action
+     * @param $response ResponseContract
      */
-    public static function x_xss_protection($controller, $action)
+    public static function x_xss_protection($controller, $action, $response)
     {
         if (isset(Lb::app()->containers['config'])) {
             $config = Lb::app()->containers['config'];
             $x_xss_protection = $config->get('x_xss_protection');
             if ($x_xss_protection) {
                 if (isset($x_xss_protection[$controller][$action])) {
-                    header("X-XSS-Protection: {$x_xss_protection[$controller][$action]}");
+                    if ($response) {
+                        $response->setHeader('X-XSS-Protection', $x_xss_protection[$controller][$action]);
+                    } else {
+                        ResponseKit::setHeader('X-XSS-Protection', $x_xss_protection[$controller][$action]);
+                    }
                 } else if (isset($x_xss_protection['common'])) {
-                    header("X-XSS-Protection: {$x_xss_protection['common']}");
+                    if ($response) {
+                        $response->setHeader('X-XSS-Protection', $x_xss_protection['common']);
+                    } else {
+                        ResponseKit::setHeader('X-XSS-Protection', $x_xss_protection['common']);
+                    }
                 } else {
-                    header("X-XSS-Protection: 1");
+                    if ($response) {
+                        $response->setHeader('X-XSS-Protection', '1');
+                    } else {
+                        ResponseKit::setHeader('X-XSS-Protection', '1');
+                    }
                 }
                 return;
             }
         }
-        header("X-XSS-Protection: 1");
+        if ($response) {
+            $response->setHeader('X-XSS-Protection', '1');
+        } else {
+            ResponseKit::setHeader('X-XSS-Protection', '1');
+        }
     }
 
     /**
      * @param $controller
      * @param $action
+     * @param $request RequestContract
      * @throws HttpException
      */
-    public static function ipFilter($controller, $action)
+    public static function ipFilter($controller, $action, $request = null)
     {
         if (isset(Lb::app()->containers['config'])) {
             $config = Lb::app()->containers['config'];
             $filter = $config->get('filter');
             if ($filter) {
                 if (isset($filter['ip'][$controller][$action]) && is_array($filter['ip'][$controller][$action]) && ArrayHelper::array_depth($filter['ip'][$controller][$action]) == 1) {
-                    if (in_array(Lb::app()->getClientAddress(), $filter['ip'][$controller][$action])) {
+                    if (in_array($request ? $request->getClientAddress() : Lb::app()->getClientAddress(), $filter['ip'][$controller][$action])) {
                         throw new HttpException('IP Forbidden', 403);
                     }
                 }

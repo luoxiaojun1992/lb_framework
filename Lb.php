@@ -313,10 +313,10 @@ class Lb extends BaseClass
     }
 
     // Create Absolute Url
-    public function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
+    public function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80, $request = null)
     {
         if ($this->isSingle()) {
-            return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl, $port);
+            return UrlManager::createAbsoluteUrl($uri, $query_params, $ssl, $port, $request);
         }
         return '';
     }
@@ -401,11 +401,17 @@ class Lb extends BaseClass
         }
     }
 
-    // Check If Logged In
-    public function loginRequired($redirect_url)
+    /**
+     * Check If Logged In
+     *
+     * @param $redirect_url
+     * @param RequestContract $request
+     * @param ResponseContract $response
+     */
+    public function loginRequired($redirect_url, $request = null, $response = null)
     {
         if ($this->isSingle()) {
-            User::loginRequired($redirect_url);
+            User::loginRequired($redirect_url, $request, $response);
         }
     }
 
@@ -505,11 +511,16 @@ class Lb extends BaseClass
         return [];
     }
 
-    // Is Ajax
-    public function isAjax()
+    /**
+     * Is Ajax
+     *
+     * @param RequestContract $request
+     * @return bool
+     */
+    public function isAjax($request = null)
     {
         if ($this->isSingle()) {
-            return RequestKit::isAjax();
+            return $request ? $request->isAjax() : RequestKit::isAjax();
         }
         return false;
     }
@@ -871,12 +882,14 @@ class Lb extends BaseClass
 
     /**
      * Set Http Cache
+     *
+     * @param $response ResponseContract
      */
-    protected function setHttpCache()
+    protected function setHttpCache($response = null)
     {
         $http_cache_config = Lb::app()->getHttpCacheConfig();
         if (isset($http_cache_config['cache_control']) && isset($http_cache_config['offset'])) {
-            HttpHelper::setCache($http_cache_config['cache_control'], $http_cache_config['offset']);
+            HttpHelper::setCache($http_cache_config['cache_control'], $http_cache_config['offset'], $response);
         }
     }
 

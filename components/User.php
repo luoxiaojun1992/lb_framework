@@ -28,12 +28,17 @@ class User extends BaseClass
      */
     public static function loginRequired($redirect_url, $request = null, $response = null)
     {
-        if (!($request ? $request->getSession('username') : Lb::app()->getSession('username')) || !($request ? $request->getSession('user_id') : Lb::app()->getSession('user_id'))) {
+        if (
+            !($request ? $request->getSession('username') : Lb::app()->getSession('username')) ||
+            !($request ? $request->getSession('user_id') : Lb::app()->getSession('user_id'))
+        ) {
             if (Lb::app()->isAction($request)) {
-                //todo continue
                 $http_port = Lb::app()->getHttpPort();
-                if (stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], true, $http_port), $redirect_url) === false || stripos(Lb::app()->createAbsoluteUrl(Lb::app()->getUri() . Lb::app()->getQueryString(), [], false, $http_port), $redirect_url) === false) {
-                    Lb::app()->redirect($redirect_url);
+                if (
+                    stripos(Lb::app()->createAbsoluteUrl($request ? $request->getUri() : Lb::app()->getUri() . ($request ? $request->getQueryString() : Lb::app()->getQueryString()), [], true, $http_port, $request), $redirect_url) === false ||
+                    stripos(Lb::app()->createAbsoluteUrl($request ? $request->getUri() : Lb::app()->getUri() . ($request ? $request->getQueryString() : Lb::app()->getQueryString()), [], false, $http_port, $request), $redirect_url) === false
+                ) {
+                    Lb::app()->redirect($redirect_url, true, null, $response);
                 }
             }
         }

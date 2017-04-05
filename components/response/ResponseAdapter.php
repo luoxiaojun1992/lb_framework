@@ -25,4 +25,9 @@ abstract class ResponseAdapter extends BaseClass
     {
         return $this->sessionId;
     }
+
+    public function getSwooleResponse()
+    {
+        return $this->swooleResponse;
+    }
 }

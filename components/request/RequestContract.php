@@ -43,4 +43,8 @@ interface RequestContract
     public function getSession($session_key);
 
     public function getSessionId();
+
+    public function getQueryParams();
+
+    public function getBodyParams();
 }

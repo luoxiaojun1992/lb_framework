@@ -3,6 +3,8 @@
 namespace lb\components\helpers;
 
 use lb\BaseClass;
+use lb\components\response\ResponseContract;
+use ResponseKit;
 
 class HttpHelper extends  BaseClass
 {
@@ -286,11 +288,19 @@ class HttpHelper extends  BaseClass
      *
      * @param $cache_control
      * @param $offset
+     * @param $response ResponseContract
      */
-    public static function setCache($cache_control, $offset)
+    public static function setCache($cache_control, $offset, $response = null)
     {
-        header("Cache-Control: {$cache_control}");
-        $ExpStr = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
-        header($ExpStr);
+        if ($response) {
+            $response->setHeader('Cache-Control', $cache_control);
+        } else {
+            ResponseKit::setHeader('Cache-Control', $cache_control);
+        }
+        if ($response) {
+            $response->setHeader('Expires', gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
+        } else {
+            ResponseKit::setHeader('Expires', gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
+        }
     }
 }

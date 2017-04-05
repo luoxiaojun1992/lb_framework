@@ -3,7 +3,7 @@
 namespace lb\components\request;
 
 use lb\components\containers\Header;
-use lb\components\session\MysqlSession;
+use lb\components\session\SwooleSession;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
@@ -140,6 +140,16 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         return $default_value;
     }
 
+    public function getQueryParams()
+    {
+        return $this->swooleRequest->get;
+    }
+
+    public function getBodyParams()
+    {
+        return $this->swooleRequest->post;
+    }
+
     public function getRawContent()
     {
         return $this->swooleRequest->rawContent();
@@ -161,10 +171,9 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     public function getSession($session_key)
     {
         $sessions = [];
-        //todo handle the duplicate of php session
-        $mysqlSession = MysqlSession::component();
-        $mysqlSession->gc(time());
-        $sessionData =  $mysqlSession->read($this->getSessionId());
+        $swooleSession = SwooleSession::component();
+        $swooleSession->gc(time());
+        $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
             $sessions = unserialize($sessionData);
         }
