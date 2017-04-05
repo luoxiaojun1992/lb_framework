@@ -46,7 +46,7 @@ class RestController extends BaseController
     protected function beforeAction()
     {
         $this->rest_config = Lb::app()->getRest();
-        $route_info = Lb::app()->getRouteInfo();
+        $route_info = ['controller' => $this->controller_id, 'action' => $this->action_id];
         if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
             $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
             list($this->request_method, $this->auth_type) = $this->self_rest_config;

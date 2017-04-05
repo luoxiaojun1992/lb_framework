@@ -10,6 +10,7 @@ use lb\components\response\ResponseContract;
 abstract class BaseController extends BaseClass
 {
     protected $controller_id = '';
+    protected $action_id = '';
 
     /** @var  RequestContract */
     protected $request;
@@ -19,9 +20,10 @@ abstract class BaseController extends BaseClass
 
     protected $middleware = [];
 
-    public function __construct($controllerId, $request = null, $response = null)
+    public function __construct($controllerId, $actionId, $request = null, $response = null)
     {
         $this->setControllerId($controllerId)
+            ->setActionId($actionId)
             ->setRequest($request)
             ->setResponse($response)
             ->beforeAction();
@@ -77,6 +79,18 @@ abstract class BaseController extends BaseClass
     public function setControllerId($controllerId)
     {
         $this->controller_id = $controllerId;
+        return $this;
+    }
+
+    /**
+     * Set action id
+     *
+     * @param $actionId
+     * @return $this
+     */
+    public function setActionId($actionId)
+    {
+        $this->action_id = $actionId;
         return $this;
     }
 

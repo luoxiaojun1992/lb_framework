@@ -118,7 +118,7 @@ class Route extends BaseClass
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
-                $controller = new $controller_name($controller_id, $request, $response);
+                $controller = new $controller_name($controller_id, $action_name, $request, $response);
                 $server = new \Hprose\Http\Server();
                 $server->addMethod($action_name, $controller);
                 $server->start();
@@ -175,7 +175,7 @@ class Route extends BaseClass
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
-                $controller = new $controller_name($controller_id, $request, $response);
+                $controller = new $controller_name($controller_id, $action_name, $request, $response);
                 $method = new \ReflectionMethod($controller, $action_name);
                 $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
@@ -201,7 +201,7 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             /** @var BaseController $controller */
-            $controller = new $controller_name($controller_id);
+            $controller = new $controller_name($controller_id, $action_name);
             if (method_exists($controller, $action_name)) {
                 $controller->$action_name();
             } else {
