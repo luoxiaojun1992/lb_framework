@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components;
+namespace lb\components\response;
 
 use lb\BaseClass;
 use lb\components\helpers\HttpHelper;

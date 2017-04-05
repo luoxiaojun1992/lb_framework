@@ -6,7 +6,7 @@ use FilecacheKit;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
-use lb\components\Response;
+use lb\components\response\Response;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
 use lb\components\traits\lb\FileCache as FileCacheTrait;

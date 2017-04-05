@@ -2,7 +2,7 @@
 
 namespace lb\components\facades;
 
-use lb\components\Response;
+use lb\components\response\Response;
 
 class ResponseFacade extends BaseFacade
 {
