@@ -47,7 +47,7 @@ class SwooleLb extends Lb
      */
     protected function setRouteInfo($request)
     {
-        $this->route_info = Route::getWebInfo();
+        $this->route_info = Route::getWebInfo($request);
         if (!$this->route_info['controller'] || !$this->route_info['action']) {
             $this->route_info['controller'] = 'index';
             $this->route_info['action'] = 'index';
