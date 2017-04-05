@@ -157,8 +157,9 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
      * @param $key
      * @param $value
      * @param bool $replace
+     * @param $http_response_code
      */
-    public function setHeader($key, $value, $replace = true)
+    public function setHeader($key, $value, $replace = true, $http_response_code = null)
     {
         $this->swooleResponse->header($key. $value);
     }

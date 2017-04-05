@@ -126,10 +126,11 @@ class Response extends BaseClass implements ResponseContract
      * @param $key
      * @param $value
      * @param bool $replace
+     * @param $http_response_code
      */
-    public function setHeader($key, $value, $replace = true)
+    public function setHeader($key, $value, $replace = true, $http_response_code = null)
     {
-        header($key . ':' . $value, $replace);
+        header($key . ':' . $value, $replace, $http_response_code);
     }
 
     /**

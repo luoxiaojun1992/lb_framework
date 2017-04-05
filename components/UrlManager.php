@@ -3,7 +3,10 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\request\RequestContract;
+use lb\components\response\ResponseContract;
 use lb\Lb;
+use ResponseKit;
 
 class UrlManager extends BaseClass
 {
@@ -11,10 +14,15 @@ class UrlManager extends BaseClass
      * @param $path
      * @param bool $replace
      * @param null $http_response_code
+     * @param $response ResponseContract
      */
-    public static function redirect($path, $replace = true, $http_response_code = null)
+    public static function redirect($path, $replace = true, $http_response_code = null, $response = null)
     {
-        header("Location: $path", $replace, $http_response_code);
+        if ($response) {
+            $response->setHeader('Location', $path, $replace, $http_response_code);
+        } else {
+            ResponseKit::setHeader('Location', $path, $replace, $http_response_code);
+        }
         Lb::app()->stop();
     }
 
@@ -23,11 +31,12 @@ class UrlManager extends BaseClass
      * @param array $query_params
      * @param bool $ssl
      * @param int $port
+     * @param $request RequestContract
      * @return string
      */
-    public static function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80)
+    public static function createAbsoluteUrl($uri, $query_params = [], $ssl = false, $port = 80, $request = null)
     {
-        return ($ssl ? 'https' : 'http') . '://' . Lb::app()->getHost() .
+        return ($ssl ? 'https' : 'http') . '://' . ($request ? $request->getHost() : Lb::app()->getHost()) .
             ($port == 80 ? '' : ':' . $port) . static::createRelativeUrl($uri, $query_params);
     }
 
