@@ -35,7 +35,7 @@ class CryptHelper extends BaseClass
         $iv = static::mcrypt_get_iv();
 
         //加密后的内容：
-        return trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv));
+        return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, trim($str), MCRYPT_MODE_ECB, $iv)));
     }
 
     /**
@@ -48,7 +48,7 @@ class CryptHelper extends BaseClass
         $iv = static::mcrypt_get_iv();
 
         //解密后的内容：
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $str, MCRYPT_MODE_ECB, $iv));
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode(trim($str)), MCRYPT_MODE_ECB, $iv));
     }
 
     /**
@@ -80,7 +80,7 @@ class CryptHelper extends BaseClass
     public static function zend_encrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return trim($blockCipher->encrypt($str));
+        return base64_encode(trim($blockCipher->encrypt(trim($str))));
     }
 
     /**
@@ -92,7 +92,7 @@ class CryptHelper extends BaseClass
     public static function zend_decrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return trim($blockCipher->decrypt($str));
+        return trim($blockCipher->decrypt(base64_decode(trim($str))));
     }
 
     /**
@@ -111,5 +111,39 @@ class CryptHelper extends BaseClass
     public static function get_decrypt_method($cryptor = 'zend')
     {
         return implode('_', [$cryptor, static::DECRYPT_METHOD_SUFFIX]);
+    }
+
+    /**
+     * RSA Encrypt
+     *
+     * @param $str
+     * @param $publicKeyPath
+     * @return string
+     */
+    public static function rsaEncrypt($str, $publicKeyPath)
+    {
+        openssl_public_encrypt(
+            trim($str),
+            $cryrted,
+            openssl_get_publickey(file_get_contents($publicKeyPath))
+        );
+        return base64_encode(trim($cryrted));
+    }
+
+    /**
+     * RSA Decrypt
+     *
+     * @param $str
+     * @param $privateKeyPath
+     * @return string
+     */
+    public static function rsaDecrypt($str, $privateKeyPath)
+    {
+        openssl_private_decrypt(
+            base64_decode(trim($str)),
+            $decrypted,
+            openssl_get_privatekey(file_get_contents($privateKeyPath))
+        );
+        return trim($decrypted);
     }
 }
