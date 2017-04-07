@@ -2,6 +2,7 @@
 
 namespace lb\components\session;
 
+use lb\components\db\mysql\Connection;
 use lb\components\db\mysql\Dao;
 use lb\components\traits\Singleton;
 use lb\models\LbSession;
@@ -12,7 +13,10 @@ class MysqlSession extends \SessionHandler
 
     private function __construct()
     {
-        //todo create session table
+        Connection::component()->write_conn->exec(
+            'CREATE TABLE IF NOT EXISTS lb_session '
+            . '(id int unsigned not null primary key, expire int unsigned not null default 0, data text not null)'
+        );
     }
 
     public function open($save_path, $session_name)
