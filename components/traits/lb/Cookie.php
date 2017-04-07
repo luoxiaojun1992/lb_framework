@@ -7,7 +7,12 @@ use ResponseKit;
 
 trait Cookie
 {
-    // Get Cookie Value
+    /**
+     * Get Cookie Value
+     *
+     * @param $cookie_key
+     * @return bool|mixed|string
+     */
     public function getCookie($cookie_key)
     {
         if ($this->isSingle()) {
@@ -16,7 +21,17 @@ trait Cookie
         return false;
     }
 
-    // Set Cookie Value
+    /**
+     * Set Cookie Value
+     *
+     * @param $cookie_key
+     * @param $cookie_value
+     * @param null $expire
+     * @param null $path
+     * @param null $domain
+     * @param null $secure
+     * @param null $httpOnly
+     */
     public function setCookie($cookie_key, $cookie_value, $expire = null, $path = null, $domain = null, $secure = null, $httpOnly = null)
     {
         if ($this->isSingle()) {
@@ -24,7 +39,11 @@ trait Cookie
         }
     }
 
-    // Delete Cookie
+    /**
+     * Delete Cookie
+     *
+     * @param $cookie_key
+     */
     public function delCookie($cookie_key)
     {
         if ($this->isSingle()) {
@@ -34,7 +53,11 @@ trait Cookie
         }
     }
 
-    // Delete Multi Cookies
+    /**
+     * Delete Multi Cookies
+     *
+     * @param $cookie_keys
+     */
     public function delCookies($cookie_keys)
     {
         if ($this->isSingle()) {

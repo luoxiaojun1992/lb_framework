@@ -6,7 +6,13 @@ use FilecacheKit;
 
 trait FileCache
 {
-    // File Cache Set
+    /**
+     * File Cache Set
+     *
+     * @param $key
+     * @param $value
+     * @param int $cache_time
+     */
     public function fileCacheSet($key, $value, $cache_time = 86400)
     {
         if ($this->isSingle()) {
@@ -14,7 +20,12 @@ trait FileCache
         }
     }
 
-    // File Cache Get
+    /**
+     * File Cache Get
+     *
+     * @param $key
+     * @return string
+     */
     public function fileCacheGet($key)
     {
         if ($this->isSingle()) {
@@ -23,7 +34,11 @@ trait FileCache
         return '';
     }
 
-    // File Cache Delete
+    /**
+     * File Cache Delete
+     *
+     * @param $key
+     */
     public function fileCacheDelete($key)
     {
         if ($this->isSingle()) {
@@ -31,7 +46,9 @@ trait FileCache
         }
     }
 
-    // File Cache Flush
+    /**
+     * File Cache Flush
+     */
     public function fileCacheFlush()
     {
         if ($this->isSingle()) {

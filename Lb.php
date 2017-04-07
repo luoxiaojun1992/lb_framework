@@ -9,12 +9,10 @@ use lb\components\helpers\HttpHelper;
 use lb\components\request\RequestContract;
 use lb\components\response\Response;
 use lb\components\response\ResponseContract;
+use lb\components\traits\lb\Cache as CacheTrait;
 use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
-use lb\components\traits\lb\FileCache as FileCacheTrait;
-use lb\components\traits\lb\Memcache as MemcacheTrait;
 use lb\components\traits\lb\Queue as QueueTrait;
-use lb\components\traits\lb\Redis as RedisTrait;
 use lb\components\traits\lb\Config as ConfigTrait;
 use lb\components\traits\lb\Session as SessionTrait;
 use lb\components\facades\FilecacheFacade;
@@ -52,9 +50,7 @@ use ResponseKit;
 class Lb extends BaseClass
 {
     use Singleton;
-    use FileCacheTrait;
-    use RedisTrait;
-    use MemcacheTrait;
+    use CacheTrait;
     use ConfigTrait;
     use SessionTrait;
     use CookieTrait;

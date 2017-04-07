@@ -6,7 +6,15 @@ use lb\components\helpers\CryptHelper;
 
 trait Crypt
 {
-    // Encrype
+    /**
+     * Encrype
+     *
+     * @param $str
+     * @param $key
+     * @param string $cryptor
+     * @param string $algo
+     * @return mixed|string
+     */
     public function encrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
         if ($this->isSingle()) {
@@ -16,7 +24,15 @@ trait Crypt
         return '';
     }
 
-    // Decrypt
+    /**
+     * Decrypt
+     *
+     * @param $str
+     * @param $key
+     * @param string $cryptor
+     * @param string $algo
+     * @return mixed|string
+     */
     public function decrypt($str, $key, $cryptor = 'zend', $algo = 'aes')
     {
         if ($this->isSingle()) {
@@ -26,7 +42,12 @@ trait Crypt
         return '';
     }
 
-    // Encrypt By Config
+    /**
+     * Encrypt By Config
+     *
+     * @param $str
+     * @return mixed|string
+     */
     public function encrypt_by_config($str)
     {
         if ($this->isSingle()) {
@@ -43,7 +64,12 @@ trait Crypt
         return '';
     }
 
-    // Decrypt By Config
+    /**
+     * Decrypt By Config
+     *
+     * @param $str
+     * @return mixed|string
+     */
     public function decrypt_by_config($str)
     {
         if ($this->isSingle()) {
