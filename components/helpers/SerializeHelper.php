@@ -61,4 +61,26 @@ class SerializeHelper extends BaseClass
     {
         return $this->getSerializer()->unserialize($serialized);
     }
+
+    /**
+     * Serialize
+     *
+     * @param $serializable
+     * @return string
+     */
+    public function serialize($serializable)
+    {
+        return serialize($serializable);
+    }
+
+    /**
+     * Unserialize
+     *
+     * @param $serialized
+     * @return mixed
+     */
+    public function unserialize($serialized)
+    {
+        return unserialize($serialized);
+    }
 }

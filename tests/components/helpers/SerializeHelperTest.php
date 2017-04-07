@@ -15,4 +15,13 @@ class SerializeHelperTest extends BaseTestCase
             SerializeHelper::component()->unserializeClosure(SerializeHelper::component()->serializeClosure($testClosure))
         );
     }
+
+    public function testSerializeUnserialize()
+    {
+        $arr = [];
+        $this->assertEquals(
+            $arr,
+            SerializeHelper::component()->unserialize(SerializeHelper::component()->serialize($arr))
+        );
+    }
 }
