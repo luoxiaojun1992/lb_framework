@@ -7,7 +7,12 @@ use ResponseKit;
 
 trait Session
 {
-    // Get Session Value
+    /**
+     * Get Session Value
+     *
+     * @param $session_key
+     * @return bool
+     */
     public function getSession($session_key)
     {
         if ($this->isSingle()) {
@@ -16,7 +21,12 @@ trait Session
         return false;
     }
 
-    // Set Session Value
+    /**
+     * Set Session Value
+     *
+     * @param $session_key
+     * @param $session_value
+     */
     public function setSession($session_key, $session_value)
     {
         if ($this->isSingle()) {
@@ -24,7 +34,11 @@ trait Session
         }
     }
 
-    // Delete Session
+    /**
+     * Delete Session
+     *
+     * @param $session_key
+     */
     public function delSession($session_key)
     {
         if ($this->isSingle()) {
@@ -32,7 +46,11 @@ trait Session
         }
     }
 
-    // Delete Multi Sessions
+    /**
+     * Delete Multi Sessions
+     *
+     * @param $session_keys
+     */
     public function delSessions($session_keys)
     {
         if ($this->isSingle()) {

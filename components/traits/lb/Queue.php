@@ -7,7 +7,11 @@ use lb\components\queues\Job;
 
 trait Queue
 {
-    // Push message to queue
+    /**
+     * Push message to queue
+     *
+     * @param Job $job
+     */
     public function queuePush(Job $job)
     {
         if ($this->isSingle()) {
@@ -20,7 +24,12 @@ trait Queue
         }
     }
 
-    // Push message to delay queue
+    /**
+     * Push message to delay queue
+     *
+     * @param Job $job
+     * @param $execute_at
+     */
     public function queueDelay(Job $job, $execute_at)
     {
         if ($this->isSingle()) {
@@ -33,7 +42,11 @@ trait Queue
         }
     }
 
-    // Pull message from queue
+    /**
+     * Pull message from queue
+     *
+     * @return null
+     */
     public function queuePull()
     {
         if ($this->isSingle()) {

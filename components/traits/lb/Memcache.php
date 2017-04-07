@@ -6,7 +6,12 @@ use MemcacheKit;
 
 trait Memcache
 {
-    // Memcache Get
+    /**
+     * Memcache Get
+     *
+     * @param $key
+     * @return string
+     */
     public function memcacheGet($key)
     {
         if ($this->isSingle()) {
@@ -15,7 +20,13 @@ trait Memcache
         return '';
     }
 
-    // Memcache Set
+    /**
+     * Memcache Set
+     *
+     * @param $key
+     * @param $value
+     * @param null $expiration
+     */
     public function memcacheSet($key, $value, $expiration = null)
     {
         if ($this->isSingle()) {
@@ -23,7 +34,11 @@ trait Memcache
         }
     }
 
-    // Memcache Delete
+    /**
+     * Memcache Delete
+     *
+     * @param $key
+     */
     public function memcacheDelete($key)
     {
         if ($this->isSingle()) {
