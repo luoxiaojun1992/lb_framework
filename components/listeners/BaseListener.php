@@ -10,7 +10,12 @@ class BaseListener implements ListenerInterface
 
     public function handler(BaseEvent $event)
     {
-        $this->event_data = $event->data;
+        $this->setEventData($event->getData());
+    }
+
+    public function setEventData($eventData)
+    {
+        $this->event_data = $eventData;
     }
 
     public function getEventData()

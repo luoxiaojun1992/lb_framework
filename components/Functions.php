@@ -89,3 +89,16 @@ if (!function_exists('dd')) {
         Lb::app()->stop();
     }
 }
+
+if (!function_exists('aop')) {
+    function aop(array $callable, \Closure $closure)
+    {
+        /** @var \lb\components\listeners\AopListener $aopListener */
+        $aopListener = \lb\components\listeners\AopListener::component();
+        Lb::app()->on(
+            \lb\components\consts\Event::AOP_EVENT . '_' . implode('@', $callable),
+            $aopListener,
+            ['closure' => $closure]
+        );
+    }
+}

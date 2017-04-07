@@ -3,8 +3,10 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\consts\Event;
 use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
+use lb\components\events\AopEvent;
 use lb\components\request\RequestContract;
 use lb\controllers\BaseController;
 use lb\Lb;
@@ -119,6 +121,8 @@ class Route extends BaseClass
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
                 $controller = new $controller_name($controller_id, $action_name, $request, $response);
+                //Trigger AOP Event
+                self::triggerAopEvent($controller_id, $action_name, $request, $response);
                 $server = new \Hprose\Http\Server();
                 $server->addMethod($action_name, $controller);
                 $server->start();
@@ -176,6 +180,8 @@ class Route extends BaseClass
             if (method_exists($controller_name, $action_name)) {
                 /** @var BaseController $controller */
                 $controller = new $controller_name($controller_id, $action_name, $request, $response);
+                //Trigger AOP Event
+                self::triggerAopEvent($controller_id, $action_name, $request, $response);
                 $method = new \ReflectionMethod($controller, $action_name);
                 $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
@@ -200,9 +206,11 @@ class Route extends BaseClass
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
-            /** @var BaseController $controller */
-            $controller = new $controller_name($controller_id, $action_name);
-            if (method_exists($controller, $action_name)) {
+            if (method_exists($controller_name, $action_name)) {
+                /** @var BaseController $controller */
+                $controller = new $controller_name($controller_id, $action_name);
+                //Trigger AOP Event
+                self::triggerAopEvent($controller_id, $action_name);
                 $controller->$action_name();
             } else {
                 throw new ConsoleException(self::CONTROLLER_NOT_FOUND, 404);
@@ -210,5 +218,36 @@ class Route extends BaseClass
         } else {
             throw new ConsoleException(self::ACTION_NOT_FOUND, 404);
         }
+    }
+
+    /**
+     * Trigger AOP Event
+     *
+     * @param $controller_id
+     * @param $action_name
+     * @param null $request
+     * @param null $response
+     */
+    protected static function triggerAopEvent(
+        $controller_id,
+        $action_name,
+        $request = null,
+        $response = null
+    )
+    {
+        $context = [
+            'controller_id' => $controller_id,
+            'action_id' => $action_name,
+        ];
+        if ($request) {
+            $context['request'] = $request;
+        }
+        if ($response) {
+            $context['response'] = $response;
+        }
+        Lb::app()->trigger(
+            Event::AOP_EVENT . '_' . implode('@', [$controller_id, $action_name]),
+            new AopEvent($context)
+        );
     }
 }

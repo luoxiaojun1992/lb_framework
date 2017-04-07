@@ -21,7 +21,7 @@ class BaseObserver implements ObserverInterface
             if ($event_listener[0] == $event_name) {
                 $event = $event ? : new BaseEvent();
                 if ($data = $event_listener[2]) {
-                    $event->data = $data;
+                    $event->setData($data);
                 }
 
                 /** @var ListenerInterface $listener */
