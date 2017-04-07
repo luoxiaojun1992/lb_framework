@@ -24,3 +24,10 @@ class ResponseKit extends \lb\components\response\Response
 {
     //
 }
+
+class HelperLb extends \lb\Lb
+{
+    use \lb\components\traits\lb\FileCache;
+    use \lb\components\traits\lb\Memcache;
+    use \lb\components\traits\lb\Redis;
+}
