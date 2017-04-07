@@ -74,7 +74,11 @@ trait Config
      */
     public function getCdnHost()
     {
-        return trim((string)$this->getConfigByName('cdn_host'), '/');
+        $cdnHost = $this->getConfigByName('cdn_host');
+        if ($cdnHost) {
+            return trim((string)$this->getConfigByName('cdn_host'), '/');
+        }
+        return '';
     }
 
     /**
