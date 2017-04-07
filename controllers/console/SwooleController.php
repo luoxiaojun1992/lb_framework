@@ -9,10 +9,12 @@ use lb\components\utils\IdGenerator;
 use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
 
-class SwooleController
+class SwooleController extends ConsoleController
 {
     public function http()
     {
+        $this->writeln('Start swoole server...');
+
         $swooleConfig = Lb::app()->getSwooleConfig();
         $server = new HttpServer($swooleConfig['host'] ?? '127.0.0.1', $swooleConfig['port'] ?? '9501');
 
