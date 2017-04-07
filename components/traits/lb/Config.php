@@ -7,104 +7,175 @@ use lb\components\containers\Config as ConfigContainer;
 
 trait Config
 {
-    // Get App Root Directory
+    /**
+     * Get App Root Directory
+     *
+     * @return array
+     */
     public function getRootDir()
     {
         return $this->getConfigByName('root_dir');
     }
 
-    // Get App Name
+    /**
+     * Get App Name
+     *
+     * @return array
+     */
     public function getName()
     {
         return $this->getConfigByName('name');
     }
 
-    // Get Restful Api Config
+    /**
+     * Get Restful Api Config
+     *
+     * @return array
+     */
     public function getRest()
     {
         return $this->getConfigByName('rest');
     }
 
-    // Get Http Port
+    /**
+     * Get Http Port
+     *
+     * @return array
+     */
     public function getHttpPort()
     {
         return $this->getConfigByName('http_port');
     }
 
-    // Get Time Zone
+    /**
+     * Get Time Zone
+     *
+     * @return array
+     */
     public function getTimeZone()
     {
         return $this->getConfigByName('timeZone');
     }
 
-    // Get mb internal encoding configuration
+    /**
+     * Get mb internal encoding configuration
+     *
+     * @return array
+     */
     public function getMbInternalEncoding()
     {
         return $this->getConfigByName('mb_internal_encoding');
     }
 
-    // Get Cdn Host
+    /**
+     * Get Cdn Host
+     *
+     * @return string
+     */
     public function getCdnHost()
     {
         return trim((string)$this->getConfigByName('cdn_host'), '/');
     }
 
-    // Get Seo Settings
+    /**
+     * Get Seo Settings
+     *
+     * @return array
+     */
     public function getSeo()
     {
         return $this->getConfigByName('seo');
     }
 
-    // Get Custom Configuration
+    /**
+     * Get Custom Configuration
+     *
+     * @param string $name
+     * @return array|null
+     */
     public function getCustomConfig($name = '')
     {
         $custom_config = $this->getConfigByName('custom');
         return $name ? ($custom_config[$name] ?? null) : $custom_config;
     }
 
-    // Get Home Controller & Action
+    /**
+     * Get Home Controller & Action
+     *
+     * @return array
+     */
     public function getHome()
     {
         return $this->getConfigByName('home');
     }
 
-    // Get DB Config
+    /**
+     * Get DB Config
+     *
+     * @param $db_type
+     * @return array
+     */
     public function getDbConfig($db_type)
     {
         return $this->getConfigByName($db_type);
     }
 
-    // Get Csrf Config
+    /**
+     * Get Csrf Config
+     *
+     * @return array
+     */
     public function getCsrfConfig()
     {
         return $this->getConfigByName('csrf');
     }
 
-    // Get RPC Config
+    /**
+     * Get RPC Config
+     *
+     * @return array
+     */
     public function getRpcConfig()
     {
         return $this->getConfigByName('rpc');
     }
 
-    // Get Api Doc Config
+    /**
+     * Get Api Doc Config
+     *
+     * @return array
+     */
     public function getApiDocConfig()
     {
         return $this->getConfigByName('api_doc');
     }
 
-    // Get Log Config
+    /**
+     * Get Log Config
+     *
+     * @return array
+     */
     public function getLogConfig()
     {
         return $this->getConfigByName('log');
     }
 
-    // Get Swoole Config
+    /**
+     * Get Swoole Config
+     *
+     * @return array
+     */
     public function getSwooleConfig()
     {
         return $this->getConfigByName('swoole') ? : [];
     }
 
-    // Get Configuration By Name
+    /**
+     * Get Configuration By Name
+     *
+     * @param $config_name
+     * @return array
+     */
     public function getConfigByName($config_name)
     {
         if ($this->isSingle()) {
@@ -115,7 +186,12 @@ trait Config
         return [];
     }
 
-    // Get Url Manager Config By Item Name
+    /**
+     * Get Url Manager Config By Item Name
+     *
+     * @param $item
+     * @return bool
+     */
     public function getUrlManagerConfig($item)
     {
         $urlManager = $this->getConfigByName('urlManager');
@@ -125,19 +201,33 @@ trait Config
         return false;
     }
 
-    // Is Pretty Url
+    /**
+     * Is Pretty Url
+     *
+     * @return bool
+     */
     public function isPrettyUrl()
     {
         return $this->getUrlManagerConfig('is_pretty_url');
     }
 
-    // Get Custom Url Suffix
+    /**
+     * Get Custom Url Suffix
+     *
+     * @return string
+     */
     public function getUrlSuffix()
     {
         return $this->getUrlManagerConfig('suffix') ? : '';
     }
 
-    // Get Js Files
+    /**
+     * Get Js Files
+     *
+     * @param $controller_id
+     * @param $template_id
+     * @return array
+     */
     public function getJsFiles($controller_id, $template_id)
     {
         $js_files = [];
@@ -148,7 +238,13 @@ trait Config
         return $js_files;
     }
 
-    // Get Css Files
+    /**
+     * Get Css Files
+     *
+     * @param $controller_id
+     * @param $template_id
+     * @return array
+     */
     public function getCssFiles($controller_id, $template_id)
     {
         $css_files = [];
