@@ -98,6 +98,12 @@ trait Config
         return $this->getConfigByName('log');
     }
 
+    // Get Swoole Config
+    public function getSwooleConfig()
+    {
+        return $this->getConfigByName('swoole') ? : [];
+    }
+
     // Get Configuration By Name
     public function getConfigByName($config_name)
     {
