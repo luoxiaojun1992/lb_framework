@@ -14,6 +14,7 @@ use lb\components\traits\lb\Cookie as CookieTrait;
 use lb\components\traits\lb\Crypt as CryptTrait;
 use lb\components\traits\lb\Queue as QueueTrait;
 use lb\components\traits\lb\Config as ConfigTrait;
+use lb\components\traits\lb\Serializer as SerializerTrait;
 use lb\components\traits\lb\Session as SessionTrait;
 use lb\components\facades\FilecacheFacade;
 use lb\components\facades\MemcacheFacade;
@@ -56,6 +57,7 @@ class Lb extends BaseClass
     use CookieTrait;
     use QueueTrait;
     use CryptTrait;
+    use SerializerTrait;
 
     public $config = []; // App Configuration
     public $containers = [];
