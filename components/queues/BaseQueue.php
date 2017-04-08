@@ -4,6 +4,7 @@ namespace lb\components\queues;
 
 use lb\BaseClass;
 use lb\components\traits\Singleton;
+use lb\Lb;
 
 abstract class BaseQueue extends BaseClass implements QueueInterface
 {
@@ -42,7 +43,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
             case self::SERIALIZER_JSON:
                 break;
             case self::SERIALIZER_PHP:
-                return serialize($unserialized_data);
+                return Lb::app()->serializeClosure($unserialized_data);
         }
 
         return $unserialized_data;
@@ -60,7 +61,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
             case self::SERIALIZER_JSON:
                 break;
             case self::SERIALIZER_PHP:
-                return unserialize($serialized_data);
+                return Lb::app()->unserialize($serialized_data);
         }
 
         return $serialized_data;

@@ -35,7 +35,7 @@ class CryptHelper extends BaseClass
         $iv = static::mcrypt_get_iv();
 
         //加密后的内容：
-        return base64_encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, trim($str), MCRYPT_MODE_ECB, $iv)));
+        return EncodeHelper::base64Encode(trim(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, trim($str), MCRYPT_MODE_ECB, $iv)));
     }
 
     /**
@@ -48,7 +48,7 @@ class CryptHelper extends BaseClass
         $iv = static::mcrypt_get_iv();
 
         //解密后的内容：
-        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode(trim($str)), MCRYPT_MODE_ECB, $iv));
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, EncodeHelper::base64Decode(trim($str)), MCRYPT_MODE_ECB, $iv));
     }
 
     /**
@@ -80,7 +80,7 @@ class CryptHelper extends BaseClass
     public static function zend_encrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return base64_encode(trim($blockCipher->encrypt(trim($str))));
+        return EncodeHelper::base64Encode(trim($blockCipher->encrypt(trim($str))));
     }
 
     /**
@@ -92,7 +92,7 @@ class CryptHelper extends BaseClass
     public static function zend_decrypt($str, $key, $algo = 'aes')
     {
         $blockCipher = static::zend_get_block_cipher($key, $algo);
-        return trim($blockCipher->decrypt(base64_decode(trim($str))));
+        return trim($blockCipher->decrypt(EncodeHelper::base64Decode(trim($str))));
     }
 
     /**
@@ -127,7 +127,7 @@ class CryptHelper extends BaseClass
             $cryrted,
             openssl_get_publickey(file_get_contents($publicKeyPath))
         );
-        return base64_encode(trim($cryrted));
+        return EncodeHelper::base64Encode(trim($cryrted));
     }
 
     /**
@@ -140,7 +140,7 @@ class CryptHelper extends BaseClass
     public static function rsaDecrypt($str, $privateKeyPath)
     {
         openssl_private_decrypt(
-            base64_decode(trim($str)),
+            EncodeHelper::base64Decode(trim($str)),
             $decrypted,
             openssl_get_privatekey(file_get_contents($privateKeyPath))
         );

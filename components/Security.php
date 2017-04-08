@@ -5,6 +5,7 @@ namespace lb\components;
 use lb\BaseClass;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
+use lb\components\helpers\HashHelper;
 use lb\components\helpers\HtmlHelper;
 use lb\components\request\RequestContract;
 use lb\components\response\ResponseContract;
@@ -82,7 +83,7 @@ class Security extends BaseClass
      */
     public static function generateCsrfToken()
     {
-        return md5(uniqid(rand(), true));
+        return HashHelper::hash(uniqid(rand(), true));
     }
 
     /**
@@ -246,7 +247,7 @@ class Security extends BaseClass
             return password_hash($password, PASSWORD_DEFAULT);
         }
 
-        return md5($password);
+        return HashHelper::hash($password);
     }
 
     /**
@@ -260,6 +261,6 @@ class Security extends BaseClass
             return password_verify($password, $hash);
         }
 
-        return md5($password) == $hash;
+        return HashHelper::hash($password) == $hash;
     }
 }

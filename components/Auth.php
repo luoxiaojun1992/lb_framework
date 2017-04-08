@@ -3,6 +3,7 @@
 namespace lb\components;
 
 use lb\BaseClass;
+use lb\components\helpers\HashHelper;
 use lb\components\request\RequestContract;
 use lb\Lb;
 
@@ -24,7 +25,7 @@ class Auth extends BaseClass
     public static function authBasic($user, $password, $request = null)
     {
         return ($request ? $request->getBasicAuthUser() : Lb::app()->getBasicAuthUser()) == $user &&
-        md5($request ? $request->getBasicAuthPassword() : Lb::app()->getBasicAuthPassword()) == $password;
+        HashHelper::hash($request ? $request->getBasicAuthPassword() : Lb::app()->getBasicAuthPassword()) == $password;
     }
 
     /**
@@ -37,6 +38,6 @@ class Auth extends BaseClass
      */
     public static function authQueryString($authKey, $accessToken, $request = null)
     {
-        return md5($request ? $request->getParam($authKey) : Lb::app()->getParam($authKey)) == $accessToken;
+        return HashHelper::hash($request ? $request->getParam($authKey) : Lb::app()->getParam($authKey)) == $accessToken;
     }
 }

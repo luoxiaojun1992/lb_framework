@@ -104,7 +104,7 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
     {
         $swooleSession = SwooleSession::component();
         $swooleSession->gc(time());
-        $swooleSession->write($this->getSessionId(), serialize([]));
+        $swooleSession->write($this->getSessionId(), Lb::app()->serialize([]));
         return true;
     }
 
@@ -121,11 +121,11 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
         $swooleSession->gc(time());
         $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
-            $sessions = unserialize($sessionData);
+            $sessions = Lb::app()->unserialize($sessionData);
         }
         if (isset($sessions[$sessionKey])) {
             $sessions[$sessionKey] = $sessionValue;
-            $swooleSession->write($this->getSessionId(), serialize($sessions));
+            $swooleSession->write($this->getSessionId(), Lb::app()->serialize($sessions));
         }
     }
 
@@ -141,11 +141,11 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
         $swooleSession->gc(time());
         $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
-            $sessions = unserialize($sessionData);
+            $sessions = Lb::app()->unserialize($sessionData);
         }
         if (isset($sessions[$sessionKey])) {
             unset($sessions[$sessionKey]);
-            $swooleSession->write($this->getSessionId(), serialize($sessions));
+            $swooleSession->write($this->getSessionId(), Lb::app()->serialize($sessions));
         }
     }
 

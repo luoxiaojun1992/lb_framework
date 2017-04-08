@@ -3,6 +3,7 @@
 namespace lb\components\distribution;
 
 use lb\BaseClass;
+use lb\components\helpers\HashHelper;
 use lb\components\traits\Singleton;
 
 class FlexiHash extends BaseClass
@@ -42,8 +43,8 @@ class FlexiHash extends BaseClass
         if (strlen($server) > 1) {
             $virtualHashs[] = $this->mHash(strrev($server));
         }
-        $virtualHashs[] = $this->mHash(md5($server));
-        $virtualHashs[] = $this->mHash(sha1($server));
+        $virtualHashs[] = $this->mHash(HashHelper::hash($server));
+        $virtualHashs[] = $this->mHash(HashHelper::hash($server, HashHelper::SHA1_HASH));
         foreach ($virtualHashs as $virtualHash) {
             if (!isset($this->serverList[$virtualHash])) {
                 $this->serverList[$virtualHash] = $server;
@@ -102,13 +103,6 @@ class FlexiHash extends BaseClass
     //Hash函数
     private function mHash($key)
     {
-        $md5 = substr(md5($key), 0, 8);
-        $seed = 31;
-        $hash = 0;
-        for ($i = 0; $i < 8; $i++) {
-            $hash = $hash * $seed + ord($md5{$i});
-            $i++;
-        }
-        return $hash & 0x7FFFFFFF;
+        return HashHelper::flexiHash($key);
     }
 }

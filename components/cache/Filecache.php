@@ -3,6 +3,8 @@
 namespace lb\components\cache;
 
 use lb\BaseClass;
+use lb\components\helpers\EncodeHelper;
+use lb\components\helpers\HashHelper;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
@@ -50,7 +52,7 @@ class Filecache extends BaseClass
         //写文件, 文件锁避免出错
         $time = time();
         touch($filename, $time, $time + $this->cache_time);
-        file_put_contents($filename, serialize(base64_encode($value)), LOCK_EX);
+        file_put_contents($filename, Lb::app()->serialize(EncodeHelper::base64Encode($value)), LOCK_EX);
     }
 
     //删除对应的一个缓存
@@ -70,7 +72,7 @@ class Filecache extends BaseClass
             $filename = $this->_get_cache_file($key);
             $file_content = file_get_contents($filename);
             if ($file_content) {
-                $value = base64_decode(unserialize($file_content));
+                $value = EncodeHelper::base64Decode(Lb::app()->unserialize($file_content));
             }
         }
         return $value;
@@ -113,7 +115,7 @@ class Filecache extends BaseClass
     private function _safe_filename($key)
     {
         if ($this->_is_valid_key($key)) {
-            return md5($key);
+            return HashHelper::hash($key);
         }
         //key不合法的时候，均使用默认文件'unvalid_cache_key'，不使用抛出异常，简化使用，增强容错性
         return 'unvalid_cache_key';

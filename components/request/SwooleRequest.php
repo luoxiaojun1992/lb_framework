@@ -3,6 +3,7 @@
 namespace lb\components\request;
 
 use lb\components\containers\Header;
+use lb\components\helpers\EncodeHelper;
 use lb\components\session\SwooleSession;
 use lb\components\traits\Singleton;
 use lb\Lb;
@@ -94,7 +95,7 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     {
         list($authType, $authCode) = explode(' ', $this->swooleRequest->header['authorization']);
         if ($authType == 'Basic') {
-            list($user, $pw) = explode(':', base64_decode($authCode));
+            list($user, $pw) = explode(':', EncodeHelper::base64Decode($authCode));
             return $user;
         }
         return '';
@@ -104,7 +105,7 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     {
         list($authType, $authCode) = explode(' ', $this->swooleRequest->header['authorization']);
         if ($authType == 'Basic') {
-            list($user, $pw) = explode(':', base64_decode($authCode));
+            list($user, $pw) = explode(':', EncodeHelper::base64Decode($authCode));
             return $pw;
         }
         return '';
@@ -175,7 +176,7 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         $swooleSession->gc(time());
         $sessionData =  $swooleSession->read($this->getSessionId());
         if ($sessionData) {
-            $sessions = unserialize($sessionData);
+            $sessions = Lb::app()->unserialize($sessionData);
         }
         return isset($sessions[$session_key]) ? $sessions[$session_key] : false;
     }
