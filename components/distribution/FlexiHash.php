@@ -36,6 +36,20 @@ class FlexiHash extends BaseClass
         if (!isset($this->serverList[$hash])) {
             $this->serverList[$hash] = $server;
         }
+
+        //Adding Virtual Nodes
+        $virtualHashs = [];
+        if (strlen($server) > 1) {
+            $virtualHashs[] = $this->mHash(strrev($server));
+        }
+        $virtualHashs[] = $this->mHash(md5($server));
+        $virtualHashs[] = $this->mHash(sha1($server));
+        foreach ($virtualHashs as $virtualHash) {
+            if (!isset($this->serverList[$virtualHash])) {
+                $this->serverList[$virtualHash] = $server;
+            }
+        }
+
         //需要重新排序
         $this->isSorted = false;
         return true;
