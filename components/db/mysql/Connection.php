@@ -82,8 +82,7 @@ class Connection extends BaseClass
             // 一致性HASH
             $flexihash = FlexiHash::component();
             $flexihash->addServers($server_hosts);
-            $time = time();
-            $target_host = $flexihash->lookup($time);
+            $target_host = $flexihash->lookup(time());
             foreach ($server_hosts as $key => $server_host) {
                 if ($server_host == $target_host) {
                     $slave_target_num = $key;
