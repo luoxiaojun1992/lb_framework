@@ -43,7 +43,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
             case self::SERIALIZER_JSON:
                 break;
             case self::SERIALIZER_PHP:
-                return Lb::app()->serializeClosure($unserialized_data);
+                return Lb::app()->serialize($unserialized_data);
         }
 
         return $unserialized_data;
