@@ -78,9 +78,9 @@ class FlexiHash extends BaseClass
     }
 
     //在当前服务器列表查找合适的服务器
-    public function lookup($key)
+    public function lookup($key = null)
     {
-        $hash = $this->mHash($key);
+        $hash = $this->mHash($key ? : time());
         //先进行倒序排序操作
         if (!$this->isSorted) {
             krsort($this->serverList, SORT_NUMERIC);
