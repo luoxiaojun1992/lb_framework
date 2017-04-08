@@ -61,6 +61,8 @@ class FlexiHash extends BaseClass
         foreach ($servers as $server) {
             $this->addServer($server);
         }
+
+        return $this;
     }
 
     //移除一台服务器
