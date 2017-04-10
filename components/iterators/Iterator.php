@@ -9,7 +9,17 @@ class Iterator implements \Iterator
 
     public function __construct($collection) {
         $this->position = 0;
+        $this->setCollection($collection);
+    }
+
+    function setCollection($collection)
+    {
         $this->collection = $collection;
+    }
+
+    function getCollection()
+    {
+        return $this->collection;
     }
 
     function rewind() {
@@ -17,11 +27,11 @@ class Iterator implements \Iterator
     }
 
     function current() {
-        return array_slice(array_values($this->collection), $this->position, 1)[0];
+        return array_slice(array_values($this->getCollection()), $this->position, 1)[0];
     }
 
     function key() {
-        return array_slice(array_keys($this->collection), $this->position, 1)[0];
+        return array_slice(array_keys($this->getCollection()), $this->position, 1)[0];
     }
 
     function next() {
@@ -29,6 +39,6 @@ class Iterator implements \Iterator
     }
 
     function valid() {
-        return isset(array_slice($this->collection, $this->position, 1)[0]);
+        return isset(array_values(array_slice($this->getCollection(), $this->position, 1))[0]);
     }
 }

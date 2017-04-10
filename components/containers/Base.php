@@ -3,11 +3,10 @@
 namespace lb\components\containers;
 
 use lb\BaseClass;
-use lb\components\iterators\Iterator;
 use lb\components\traits\ArrayOp;
 use lb\components\traits\Singleton;
 
-class Base extends BaseClass implements \ArrayAccess
+abstract class Base extends BaseClass implements \ArrayAccess
 {
     use Singleton;
 
@@ -18,8 +17,13 @@ class Base extends BaseClass implements \ArrayAccess
         //
     }
 
-    public function iterator()
+    public function set($key, $val)
     {
-        return new Iterator($this);
+        $this->$key = $val;
+    }
+
+    public function get($key)
+    {
+        return $this->$key;
     }
 }

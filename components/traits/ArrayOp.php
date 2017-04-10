@@ -2,6 +2,8 @@
 
 namespace lb\components\traits;
 
+use lb\components\iterators\Iterator;
+
 trait ArrayOp
 {
     protected $components = [];
@@ -52,5 +54,10 @@ trait ArrayOp
     public function offsetGet($offset)
     {
         return $this->{$offset};
+    }
+
+    public function iterator()
+    {
+        return new Iterator($this->components);
     }
 }

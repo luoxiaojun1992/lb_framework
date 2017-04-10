@@ -24,7 +24,7 @@ class FlexiHashTest extends BaseTestCase
         ];
         $this->flexihash_instance->addServers($this->servers);
 
-        $this->key = 'test_key';
+        $this->key = '8.8.8.8';
     }
 
     public function testLookUp()
