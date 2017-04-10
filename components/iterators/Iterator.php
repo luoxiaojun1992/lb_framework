@@ -8,7 +8,7 @@ class Iterator implements \Iterator
     protected $collection;
 
     public function __construct($collection) {
-        $this->position = 0;
+        $this->rewind();
         $this->setCollection($collection);
     }
 
@@ -22,23 +22,38 @@ class Iterator implements \Iterator
         return $this->collection;
     }
 
-    function rewind() {
-        $this->position = 0;
+    function setPosition($position)
+    {
+        $this->position = $position;
     }
 
-    function current() {
-        return array_slice(array_values($this->getCollection()), $this->position, 1)[0];
+    function getPosition()
+    {
+        return $this->position;
     }
 
-    function key() {
-        return array_slice(array_keys($this->getCollection()), $this->position, 1)[0];
-    }
-
-    function next() {
+    function increasePosition()
+    {
         ++$this->position;
     }
 
+    function rewind() {
+        $this->setPosition(0);
+    }
+
+    function current() {
+        return array_slice(array_values($this->getCollection()), $this->getPosition(), 1)[0];
+    }
+
+    function key() {
+        return array_slice(array_keys($this->getCollection()), $this->getPosition(), 1)[0];
+    }
+
+    function next() {
+        $this->increasePosition();
+    }
+
     function valid() {
-        return isset(array_values(array_slice($this->getCollection(), $this->position, 1))[0]);
+        return isset(array_values(array_slice($this->getCollection(), $this->getPosition(), 1))[0]);
     }
 }
