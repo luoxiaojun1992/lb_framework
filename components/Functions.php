@@ -47,6 +47,8 @@ if (!function_exists('file_cache')) {
         } else {
             Lb::app()->fileCacheSet($key, $value, $cache_time);
         }
+
+        return true;
     }
 }
 
@@ -79,6 +81,9 @@ if (!function_exists('memcache')) {
 }
 
 if (!function_exists('dd')) {
+    /**
+     * Dump data
+     */
     function dd()
     {
         array_map(function($x)
@@ -91,6 +96,12 @@ if (!function_exists('dd')) {
 }
 
 if (!function_exists('aop')) {
+    /**
+     * AOP Register
+     *
+     * @param array $callable
+     * @param Closure $closure
+     */
     function aop(array $callable, \Closure $closure)
     {
         /** @var \lb\components\listeners\AopListener $aopListener */
