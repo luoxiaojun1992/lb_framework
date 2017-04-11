@@ -10,7 +10,7 @@ class IteratorTest extends BaseTestCase
     public function testContainerIterator()
     {
         /** @var Base $container */
-        $container = Collection::component();
+        $container = new Base();
         $data = ['first' => 'a', 'second' => 'b'];
         $values = array_values($data);
         foreach ($data as $key => $val) {

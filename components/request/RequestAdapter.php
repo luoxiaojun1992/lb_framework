@@ -2,9 +2,7 @@
 
 namespace lb\components\request;
 
-use lb\BaseClass;
-
-abstract class RequestAdapter extends BaseClass
+abstract class RequestAdapter extends BaseRequest
 {
     protected $swooleRequest;
 

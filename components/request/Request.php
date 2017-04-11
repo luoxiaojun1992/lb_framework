@@ -2,17 +2,19 @@
 
 namespace lb\components\request;
 
-use lb\BaseClass;
+use lb\components\containers\Cookie;
 use lb\components\containers\Header;
 use lb\components\traits\Singleton;
-use lb\Lb;
 
-class Request extends BaseClass implements RequestContract
+class Request extends BaseRequest
 {
     use Singleton;
 
     /** @var  Header */
     protected $_headers;
+
+    /** @var  Cookie */
+    protected $_cookies;
 
     public function getClientAddress()
     {
@@ -89,7 +91,7 @@ class Request extends BaseClass implements RequestContract
     public function getHeaders() : Header
     {
         if ($this->_headers === null) {
-            $this->_headers = Header::component();
+            $this->_headers = new Header();
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
             } elseif (function_exists('http_get_request_headers')) {
@@ -112,11 +114,6 @@ class Request extends BaseClass implements RequestContract
         return $this->_headers;
     }
 
-    public function getHeader($headerKey)
-    {
-        return $this->getHeaders()->get($headerKey);
-    }
-
     public function getParam($param_name, $default_value = null)
     {
         return isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : $default_value;
@@ -127,10 +124,16 @@ class Request extends BaseClass implements RequestContract
         return file_get_contents('php://input');
     }
 
-    public function getCookie($cookie_key)
+    public function getCookies() : Cookie
     {
-        return isset($_COOKIE[$cookie_key]) ?
-            Lb::app()->decrypt_by_config($_COOKIE[$cookie_key]) : false;
+        if ($this->_cookies === null) {
+            $this->_cookies = new Cookie();
+            foreach ($_COOKIE as $name => $value) {
+                $this->_cookies->set($name, $value);
+            }
+        }
+
+        return $this->_cookies;
     }
 
     public function getFile($file_name)

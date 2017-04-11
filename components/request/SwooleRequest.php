@@ -2,18 +2,22 @@
 
 namespace lb\components\request;
 
+use lb\components\containers\Cookie;
 use lb\components\containers\Header;
 use lb\components\helpers\EncodeHelper;
 use lb\components\session\SwooleSession;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
-class SwooleRequest extends RequestAdapter implements RequestContract
+class SwooleRequest extends RequestAdapter
 {
     use Singleton;
 
     /** @var  Header */
     protected $_headers;
+
+    /** @var  Cookie */
+    protected $_cookies;
 
     public function getClientAddress()
     {
@@ -114,18 +118,13 @@ class SwooleRequest extends RequestAdapter implements RequestContract
     public function getHeaders() : Header
     {
         if ($this->_headers === null) {
-            $this->_headers = Header::component();
+            $this->_headers = new Header();
             foreach ($this->swooleRequest->header as $name => $value) {
                 $this->_headers->set(strtoupper($name), $value);
             }
         }
 
         return $this->_headers;
-    }
-
-    public function getHeader($headerKey)
-    {
-        return $this->getHeaders()->get($headerKey);
     }
 
     public function getParam($param_name, $default_value = null)
@@ -156,11 +155,16 @@ class SwooleRequest extends RequestAdapter implements RequestContract
         return $this->swooleRequest->rawContent();
     }
 
-    public function getCookie($cookie_key)
+    public function getCookies() : Cookie
     {
-        $cookie = $this->swooleRequest->cookie;
-        return isset($cookie[$cookie_key]) ?
-            Lb::app()->decrypt_by_config($cookie[$cookie_key]) : false;
+        if ($this->_cookies === null) {
+            $this->_cookies = new Cookie();
+            foreach ($this->swooleRequest->cookie as $name => $value) {
+                $this->_cookies->set($name, $value);
+            }
+        }
+
+        return $this->_cookies;
     }
 
     public function getFile($file_name)
