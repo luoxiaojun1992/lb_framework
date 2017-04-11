@@ -2,7 +2,6 @@
 
 namespace lb\components\request;
 
-use lb\components\containers\Cookie;
 use lb\components\containers\Header;
 use lb\components\helpers\EncodeHelper;
 use lb\components\session\SwooleSession;
@@ -15,9 +14,6 @@ class SwooleRequest extends RequestAdapter
 
     /** @var  Header */
     protected $_headers;
-
-    /** @var  Cookie */
-    protected $_cookies;
 
     public function getClientAddress()
     {
@@ -155,16 +151,11 @@ class SwooleRequest extends RequestAdapter
         return $this->swooleRequest->rawContent();
     }
 
-    public function getCookies() : Cookie
+    public function getCookie($cookie_key)
     {
-        if ($this->_cookies === null) {
-            $this->_cookies = new Cookie();
-            foreach ($this->swooleRequest->cookie as $name => $value) {
-                $this->_cookies->set($name, $value);
-            }
-        }
-
-        return $this->_cookies;
+        $cookie = $this->swooleRequest->cookie;
+        return isset($cookie[$cookie_key]) ?
+            Lb::app()->decrypt_by_config($cookie[$cookie_key]) : false;
     }
 
     public function getFile($file_name)

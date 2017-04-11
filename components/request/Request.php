@@ -2,9 +2,9 @@
 
 namespace lb\components\request;
 
-use lb\components\containers\Cookie;
 use lb\components\containers\Header;
 use lb\components\traits\Singleton;
+use lb\Lb;
 
 class Request extends BaseRequest
 {
@@ -12,9 +12,6 @@ class Request extends BaseRequest
 
     /** @var  Header */
     protected $_headers;
-
-    /** @var  Cookie */
-    protected $_cookies;
 
     public function getClientAddress()
     {
@@ -124,16 +121,10 @@ class Request extends BaseRequest
         return file_get_contents('php://input');
     }
 
-    public function getCookies() : Cookie
+    public function getCookie($cookie_key)
     {
-        if ($this->_cookies === null) {
-            $this->_cookies = new Cookie();
-            foreach ($_COOKIE as $name => $value) {
-                $this->_cookies->set($name, $value);
-            }
-        }
-
-        return $this->_cookies;
+        return isset($_COOKIE[$cookie_key]) ?
+            Lb::app()->decrypt_by_config($_COOKIE[$cookie_key]) : false;
     }
 
     public function getFile($file_name)

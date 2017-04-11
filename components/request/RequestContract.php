@@ -2,7 +2,6 @@
 
 namespace lb\components\request;
 
-use lb\components\containers\Cookie;
 use lb\components\containers\Header;
 
 interface RequestContract
@@ -36,8 +35,6 @@ interface RequestContract
     public function getParam($param_name, $default_value = null);
 
     public function getRawContent();
-
-    public function getCookies() : Cookie;
 
     public function getCookie($cookie_key);
 
