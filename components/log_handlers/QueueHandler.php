@@ -3,7 +3,7 @@
 namespace lb\components\log_handlers;
 
 use lb\components\queues\handlers\LogHandler;
-use lb\components\queues\Job;
+use lb\components\queues\jobs\Job;
 use lb\Lb;
 use Monolog\Logger;
 use Monolog\Handler\AbstractProcessingHandler;
