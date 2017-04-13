@@ -1,6 +1,8 @@
 <?php
 
-namespace lb\components\queues;
+namespace lb\components\queues\handlers;
+
+use lb\components\queues\jobs\Job;
 
 interface HandlerInterface
 {

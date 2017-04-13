@@ -2,7 +2,7 @@
 
 namespace lb\controllers\console;
 
-use lb\components\queues\Job;
+use lb\components\queues\jobs\Job;
 use lb\Lb;
 
 class QueueController extends ConsoleController

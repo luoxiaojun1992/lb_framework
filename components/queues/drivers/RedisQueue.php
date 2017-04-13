@@ -1,8 +1,9 @@
 <?php
 
-namespace lb\components\queues;
+namespace lb\components\queues\drivers;
 
 use lb\components\cache\Redis;
+use lb\components\queues\jobs\Job;
 use lb\Lb;
 
 class RedisQueue extends BaseQueue

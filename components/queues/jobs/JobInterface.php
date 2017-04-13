@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components\queues;
+namespace lb\components\queues\jobs;
 
 interface JobInterface
 {

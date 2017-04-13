@@ -3,8 +3,7 @@
 namespace lb\components\queues\handlers;
 
 use lb\components\db\mysql\Connection;
-use lb\components\queues\HandlerInterface;
-use lb\components\queues\Job;
+use lb\components\queues\jobs\Job;
 
 class LogHandler implements HandlerInterface
 {

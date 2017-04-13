@@ -2,8 +2,8 @@
 
 namespace lb\components\traits\lb;
 
-use lb\components\queues\BaseQueue;
-use lb\components\queues\Job;
+use lb\components\queues\drivers\BaseQueue;
+use lb\components\queues\jobs\Job;
 
 trait Queue
 {

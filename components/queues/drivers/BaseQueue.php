@@ -1,8 +1,9 @@
 <?php
 
-namespace lb\components\queues;
+namespace lb\components\queues\drivers;
 
 use lb\BaseClass;
+use lb\components\queues\jobs\Job;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
