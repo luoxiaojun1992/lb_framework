@@ -4,6 +4,7 @@ namespace lb\components\helpers;
 
 use Gregwar\Captcha\CaptchaBuilder;
 use lb\BaseClass;
+use lb\components\response\ResponseContract;
 use lb\Lb;
 
 class ImageHelper extends BaseClass
@@ -11,8 +12,9 @@ class ImageHelper extends BaseClass
     /**
      * @param int $latency millisecond default
      * @param $latencyType 1 millisecond, 2 microsecond
+     * @param $response ResponseContract
      */
-    public static function captcha($latency = 0, $latencyType = 1)
+    public static function captcha($latency = 0, $latencyType = 1, $response = null)
     {
         //Frequency Limit
         if ($latency) {
@@ -27,7 +29,11 @@ class ImageHelper extends BaseClass
         $builder = new CaptchaBuilder;
         $builder->build();
 
-        Lb::app()->setSession('verify_code', $builder->getPhrase());
+        if ($response) {
+            $response->setSession('verify_code', $builder->getPhrase());
+        } else {
+            Lb::app()->setSession('verify_code', $builder->getPhrase());
+        }
 
         header('Content-type: image/jpeg');
 
