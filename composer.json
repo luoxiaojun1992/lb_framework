@@ -22,10 +22,6 @@
   },
   "repositories": [
     {
-      "type": "git",
-      "url": "git@github.com:luoxiaojun1992/nsqphp.git"
-    },
-    {
       "packagist": false
     },
     {
@@ -78,7 +74,7 @@
     "ezyang/htmlpurifier": "*",
     "php-ai/php-ml": "*",
     "jeremeamia/SuperClosure": "*",
-    "luoxiaojun1992/nsqphp": "dev-master"
+    "luoxiaojun1992/nsqphp": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
