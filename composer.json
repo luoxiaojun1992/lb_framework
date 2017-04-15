@@ -78,7 +78,7 @@
     "ezyang/htmlpurifier": "*",
     "php-ai/php-ml": "*",
     "jeremeamia/SuperClosure": "*",
-    "davegardnerisme/nsqphp": "*"
+    "luoxiaojun1992/nsqphp": "dev-master"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
