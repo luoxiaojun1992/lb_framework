@@ -22,6 +22,10 @@
   },
   "repositories": [
     {
+      "type": "git",
+      "url": "git@github.com:davegardnerisme/nsqphp.git"
+    },
+    {
       "packagist": false
     },
     {
@@ -74,7 +78,7 @@
     "ezyang/htmlpurifier": "*",
     "php-ai/php-ml": "*",
     "jeremeamia/SuperClosure": "*",
-    "davegardnerisme/nsqphp": "*"
+    "davegardnerisme/nsqphp": "dev-master"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
