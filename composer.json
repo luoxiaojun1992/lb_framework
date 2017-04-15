@@ -73,7 +73,9 @@
     "symfony/console": "*",
     "ezyang/htmlpurifier": "*",
     "php-ai/php-ml": "*",
-    "jeremeamia/SuperClosure": "*",
+    "jeremeamia/SuperClosure": "*"
+  },
+  "require-dev": {
     "davegardnerisme/nsqphp": "dev-master"
   },
   "autoload": {
