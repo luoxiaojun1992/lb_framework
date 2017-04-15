@@ -18,13 +18,18 @@ class NsqQueue extends BaseQueue
 
     private $key = 'queue';
     private $delayed_key = 'queue:delayed';
-    private $hosts = [];
+    private $hosts;
     private $channel = 'queue';
 
     public function push(Job $job)
     {
-        $this->conn->publishTo($this->hosts, nsqphp::PUB_QUORUM)
-            ->publish($this->key, new Message($this->serialize($job)));
+        if (is_array($this->hosts)) {
+            $this->conn->publishTo($this->hosts, nsqphp::PUB_QUORUM)
+                ->publish($this->key, new Message($this->serialize($job)));
+        } else {
+            $this->conn->publishTo($this->hosts)
+                ->publish($this->key, new Message($this->serialize($job)));
+        }
     }
 
     public function pull()
@@ -77,6 +82,10 @@ class NsqQueue extends BaseQueue
             $this->channel = $queue_config['nsq_channel'];
         }
 
-        $this->pullConn = new nsqphp(new Nsqlookupd($this->hosts));
+        if (is_array($this->hosts)) {
+            $this->pullConn = new nsqphp(new Nsqlookupd(implode(',', $this->hosts)));
+        } else {
+            $this->pullConn = new nsqphp(new Nsqlookupd($this->hosts));
+        }
     }
 }
