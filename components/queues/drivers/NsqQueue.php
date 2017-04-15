@@ -62,16 +62,21 @@ class NsqQueue extends BaseQueue
     {
         $this->conn = new nsqphp();
         $queue_config = Lb::app()->getQueueConfig();
+
         if (isset($queue_config['queue'])) {
             $this->key = $queue_config['queue'];
         }
+
         if (isset($queue_config['queue_delayed'])) {
             $this->delayed_key = $queue_config['queue_delayed'];
         }
+
         $this->hosts = $queue_config['nsq_hosts'];
+
         if (isset($queue_config['nsq_channel'])) {
             $this->channel = $queue_config['nsq_channel'];
         }
+
         $this->pullConn = new nsqphp(new Nsqlookupd($this->hosts));
     }
 }
