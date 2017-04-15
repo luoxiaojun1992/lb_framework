@@ -77,8 +77,7 @@
     "symfony/console": "*",
     "ezyang/htmlpurifier": "*",
     "php-ai/php-ml": "*",
-    "jeremeamia/SuperClosure": "*",
-    "davegardnerisme/nsqphp": "dev-master"
+    "jeremeamia/SuperClosure": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
