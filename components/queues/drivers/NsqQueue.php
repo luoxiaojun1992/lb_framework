@@ -34,22 +34,38 @@ class NsqQueue extends BaseQueue
 
     public function pull()
     {
-        $serialized_job = null;
-
-        $nsqphp = $this->pullConn;
-        $nsqphp->subscribe(
-            $this->key,
-            $this->channel,
-            function($msg) use (&$serialized_job, $nsqphp) {
-                $serialized_job = $msg->getPayload();
-                $nsqphp->stop();
-            }
-        )->run();
-
-        if (!$serialized_job) {
-            return null;
+        try {
+            $this->pullConn->subscribe(
+                $this->key,
+                $this->channel,
+                function ($msg) {
+                    $job = $this->deserialize($msg->getPayload());
+                    if ($job) {
+                        $job->addTriedTimes();
+                        $pid = pcntl_fork();
+                        if ($pid == -1) {
+                            $job->canTry() && Lb::app()->queuePush($job);
+                        } else if ($pid == 0) {
+                            $handler_class = $job->getHandler();
+                            try {
+                                (new $handler_class)->handle($job);
+                            } catch (\Exception $e) {
+                                $job->canTry() && Lb::app()->queuePush($job);
+                                echo $e->getTraceAsString() . PHP_EOL;
+                            }
+                            Lb::app()->stop();
+                        } else {
+                            pcntl_wait($status);
+                            echo 'Processed job ' . $job->getId() . PHP_EOL;
+                        }
+                    }
+                }
+            )->run();
+        } catch (\Exception $e) {
+            $this->setPullConn();
         }
-        return $this->deserialize($serialized_job);
+
+        return null;
     }
 
     public function delay(Job $job, $execute_at)
@@ -82,6 +98,11 @@ class NsqQueue extends BaseQueue
             $this->channel = $queue_config['nsq_channel'];
         }
 
+        $this->setPullConn();
+    }
+
+    protected function setPullConn()
+    {
         if (is_array($this->hosts)) {
             $this->pullConn = new nsqphp(new Nsqlookupd(implode(',', $this->hosts)));
         } else {
