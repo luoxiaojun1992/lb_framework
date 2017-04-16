@@ -39,25 +39,10 @@ class NsqQueue extends BaseQueue
                 $this->key,
                 $this->channel,
                 function ($msg) {
+                    /** @var Job $job */
                     $job = $this->deserialize($msg->getPayload());
                     if ($job) {
-                        $job->addTriedTimes();
-                        $pid = pcntl_fork();
-                        if ($pid == -1) {
-                            $job->canTry() && Lb::app()->queuePush($job);
-                        } else if ($pid == 0) {
-                            $handler_class = $job->getHandler();
-                            try {
-                                (new $handler_class)->handle($job);
-                            } catch (\Exception $e) {
-                                $job->canTry() && Lb::app()->queuePush($job);
-                                echo $e->getTraceAsString() . PHP_EOL;
-                            }
-                            Lb::app()->stop();
-                        } else {
-                            pcntl_wait($status);
-                            echo 'Processed job ' . $job->getId() . PHP_EOL;
-                        }
+                        $job->handle();
                     }
                 }
             )->run();

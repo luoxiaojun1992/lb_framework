@@ -91,4 +91,25 @@ class Job implements JobInterface
     {
         $this->setTriedTimes($this->getTriedTimes() + $step);
     }
+
+    public function handle()
+    {
+        $this->addTriedTimes();
+        $pid = pcntl_fork();
+        if ($pid == -1) {
+            $this->canTry() && Lb::app()->queuePush($this);
+        } else if ($pid == 0) {
+            $handler_class = $this->getHandler();
+            try {
+                (new $handler_class)->handle($this);
+            } catch (\Exception $e) {
+                $this->canTry() && Lb::app()->queuePush($this);
+                echo $e->getTraceAsString() . PHP_EOL;
+            }
+            Lb::app()->stop();
+        } else {
+            pcntl_wait($status);
+            echo 'Processed job ' . $this->getId() . PHP_EOL;
+        }
+    }
 }

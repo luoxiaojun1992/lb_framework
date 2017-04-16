@@ -25,23 +25,7 @@ class QueueController extends ConsoleController
             /** @var Job $job */
             $job = Lb::app()->queuePull();
             if ($job) {
-                $job->addTriedTimes();
-                $pid = pcntl_fork();
-                if ($pid == -1) {
-                    $job->canTry() && Lb::app()->queuePush($job);
-                } else if ($pid == 0) {
-                    $handler_class = $job->getHandler();
-                    try {
-                        (new $handler_class)->handle($job);
-                    } catch (\Exception $e) {
-                        $job->canTry() && Lb::app()->queuePush($job);
-                        $this->writeln($e->getTraceAsString());
-                    }
-                    Lb::app()->stop();
-                } else {
-                    pcntl_wait($status);
-                    $this->writeln('Processed job ' . $job->getId());
-                }
+                $job->handle();
             }
 
             usleep(500000);
