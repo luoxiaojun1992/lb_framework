@@ -4,21 +4,28 @@ namespace lb\components\queues\drivers;
 
 use lb\components\queues\jobs\Job;
 use lb\Lb;
+use Stomp\Client;
+use Stomp\SimpleStomp;
+use Stomp\Transport\Bytes;
 
 class ActivemqQueue extends BaseQueue
 {
+    /** @var SimpleStomp */
     private $conn;
     private $key = 'queue';
     private $delayed_key = 'queue:delayed';
 
     public function push(Job $job)
     {
-        //
+        $this->conn->send('/queue/' . $this->key, new Bytes($this->serialize($job)));
     }
 
     public function pull()
     {
-        //
+        $this->conn->subscribe('/queue/' . $this->key, 'binary-sub-' . $this->key);
+        $msg = $this->conn->read();
+        $this->conn->unsubscribe('/queue/' . $this->key, 'binary-sub-' . $this->key);
+        $serialized_job = $msg->body;
 
         if (!$serialized_job) {
             return null;
@@ -46,6 +53,9 @@ class ActivemqQueue extends BaseQueue
         if (isset($queue_config['queue_delayed'])) {
             $this->delayed_key = $queue_config['queue_delayed'];
         }
-        //
+
+        $client = new Client($queue_config['activemq_hosts']);
+        $client->setLogin($queue_config['activemq_username'], $queue_config['activemq_password']);
+        $this->conn = new SimpleStomp($client);
     }
 }
