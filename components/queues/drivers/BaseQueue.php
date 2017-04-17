@@ -77,4 +77,16 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
     abstract public function delete(Job $job);
 
     abstract public function init();
+
+    abstract protected function setConn($conn);
+
+    abstract protected function getConn();
+
+    abstract protected function setKey($queue);
+
+    abstract protected function getKey();
+
+    abstract protected function setDelayedKey($delayedQueue);
+
+    abstract protected function getDelayedKey();
 }

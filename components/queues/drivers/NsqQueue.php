@@ -23,21 +23,22 @@ class NsqQueue extends BaseQueue
 
     public function push(Job $job)
     {
-        if (is_array($this->hosts)) {
-            $this->conn->publishTo($this->hosts, nsqphp::PUB_QUORUM)
-                ->publish($this->key, new Message($this->serialize($job)));
+        $hosts = $this->getHosts();
+        if (is_array($hosts)) {
+            $this->getConn()->publishTo($hosts, nsqphp::PUB_QUORUM)
+                ->publish($this->getKey(), new Message($this->serialize($job)));
         } else {
-            $this->conn->publishTo($this->hosts)
-                ->publish($this->key, new Message($this->serialize($job)));
+            $this->getConn()->publishTo($hosts)
+                ->publish($this->getKey(), new Message($this->serialize($job)));
         }
     }
 
     public function pull()
     {
         try {
-            $this->pullConn->subscribe(
-                $this->key,
-                $this->channel,
+            $this->getPullConn()->subscribe(
+                $this->getKey(),
+                $this->getChannel(),
                 function ($msg) {
                     /** @var Job $job */
                     $job = $this->deserialize($msg->getPayload());
@@ -66,21 +67,21 @@ class NsqQueue extends BaseQueue
 
     public function init()
     {
-        $this->conn = new nsqphp();
+        $this->setConn(new nsqphp());
         $queue_config = Lb::app()->getQueueConfig();
 
         if (isset($queue_config['queue'])) {
-            $this->key = $queue_config['queue'];
+            $this->setKey($queue_config['queue']);
         }
 
         if (isset($queue_config['queue_delayed'])) {
-            $this->delayed_key = $queue_config['queue_delayed'];
+            $this->setDelayedKey($queue_config['queue_delayed']);
         }
 
-        $this->hosts = $queue_config['nsq_hosts'];
+        $this->setHosts($queue_config['nsq_hosts']);
 
         if (isset($queue_config['nsq_channel'])) {
-            $this->channel = $queue_config['nsq_channel'];
+            $this->setChannel($queue_config['nsq_channel']);
         }
 
         $this->setPullConn();
@@ -88,10 +89,66 @@ class NsqQueue extends BaseQueue
 
     protected function setPullConn()
     {
-        if (is_array($this->hosts)) {
-            $this->pullConn = new nsqphp(new Nsqlookupd(implode(',', $this->hosts)));
+        $hosts = $this->getHosts();
+        if (is_array($hosts)) {
+            $this->pullConn = new nsqphp(new Nsqlookupd(implode(',', $hosts)));
         } else {
-            $this->pullConn = new nsqphp(new Nsqlookupd($this->hosts));
+            $this->pullConn = new nsqphp(new Nsqlookupd($hosts));
         }
+    }
+
+    protected function getPullConn()
+    {
+        return $this->pullConn;
+    }
+
+    protected function setConn($conn)
+    {
+        $this->conn = $conn;
+    }
+
+    protected function getConn()
+    {
+        return $this->conn;
+    }
+
+    protected function setKey($queue)
+    {
+        $this->key = $queue;
+    }
+
+    protected function getKey()
+    {
+        return $this->key;
+    }
+
+    protected function setDelayedKey($delayedQueue)
+    {
+        $this->delayed_key = $delayedQueue;
+    }
+
+    protected function getDelayedKey()
+    {
+        return $this->delayed_key;
+    }
+
+    protected function setHosts($hosts)
+    {
+        $this->hosts = $hosts;
+    }
+
+    protected function getHosts()
+    {
+        return $this->hosts;
+    }
+
+    protected function setChannel($channel)
+    {
+        $this->channel = $channel;
+    }
+
+    protected function getChannel()
+    {
+        return $this->channel;
     }
 }

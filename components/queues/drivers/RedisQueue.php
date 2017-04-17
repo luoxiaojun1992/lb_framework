@@ -15,32 +15,33 @@ class RedisQueue extends BaseQueue
 
     public function push(Job $job)
     {
-        $this->conn->rPush($this->key, $this->serialize($job));
+        $this->getConn()->rPush($this->getKey(), $this->serialize($job));
     }
 
     public function pull()
     {
+        $conn = $this->getConn();
         // Migrating Delayed Queues
-        $delayed_queues = $this->conn->zRange($this->delayed_key, 0, -1);
+        $delayed_queues = $conn->zRange($this->getDelayedKey(), 0, -1);
         foreach ($delayed_queues as $delayed_queue) {
             if ($delayed_queue) {
                 /** @var Job $job */
                 $job = $this->deserialize($delayed_queue);
                 if ($job->getExecuteAt() <= date('Y-m-d H:i:s')) {
-                    $this->conn->watch($this->delayed_key . '@' . $job->getId());
-                    $this->conn->multi();
-                    $this->conn->zRem($this->delayed_key, $delayed_queue);
+                    $conn->watch($this->getDelayedKey() . '@' . $job->getId());
+                    $conn->multi();
+                    $conn->zRem($this->getDelayedKey(), $delayed_queue);
                     $this->push($job);
                     try {
-                        $this->conn->exec();
+                        $conn->exec();
                     } catch (\Exception $e) {
-                        $this->conn->discard();
+                        $conn->discard();
                     }
                 }
             }
         }
 
-        $serialized_job = $this->conn->lPop($this->key);
+        $serialized_job = $conn->lPop($this->getKey());
         if (!$serialized_job) {
             return null;
         }
@@ -60,13 +61,43 @@ class RedisQueue extends BaseQueue
 
     public function init()
     {
-        $this->conn = Redis::component()->conn;
+        $this->setConn(Redis::component()->conn);
         $queue_config = Lb::app()->getQueueConfig();
         if (isset($queue_config['queue'])) {
-            $this->key = $queue_config['queue'];
+            $this->setKey($queue_config['queue']);
         }
         if (isset($queue_config['queue_delayed'])) {
-            $this->delayed_key = $queue_config['queue_delayed'];
+            $this->setDelayedKey($queue_config['queue_delayed']);
         }
+    }
+
+    protected function setConn($conn)
+    {
+        $this->conn = $conn;
+    }
+
+    protected function getConn()
+    {
+        return $this->conn;
+    }
+
+    protected function setKey($queue)
+    {
+        $this->key = $queue;
+    }
+
+    protected function getKey()
+    {
+        return $this->key;
+    }
+
+    protected function setDelayedKey($delayedQueue)
+    {
+        $this->delayed_key = $delayedQueue;
+    }
+
+    protected function getDelayedKey()
+    {
+        return $this->delayed_key;
     }
 }

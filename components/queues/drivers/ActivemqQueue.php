@@ -17,14 +17,15 @@ class ActivemqQueue extends BaseQueue
 
     public function push(Job $job)
     {
-        $this->conn->send('/queue/' . $this->key, new Bytes($this->serialize($job)));
+        $this->getConn()->send('/queue/' . $this->getKey(), new Bytes($this->serialize($job)));
     }
 
     public function pull()
     {
-        $this->conn->subscribe('/queue/' . $this->key, 'binary-sub-' . $this->key);
-        $msg = $this->conn->read();
-        $this->conn->unsubscribe('/queue/' . $this->key, 'binary-sub-' . $this->key);
+        $conn = $this->getConn();
+        $conn->subscribe('/queue/' . $this->getKey(), 'binary-sub-' . $this->getKey());
+        $msg = $conn->read();
+        $conn->unsubscribe('/queue/' . $this->getKey(), 'binary-sub-' . $this->getKey());
         $serialized_job = $msg->body;
 
         if (!$serialized_job) {
@@ -48,14 +49,44 @@ class ActivemqQueue extends BaseQueue
     {
         $queue_config = Lb::app()->getQueueConfig();
         if (isset($queue_config['queue'])) {
-            $this->key = $queue_config['queue'];
+            $this->setKey($queue_config['queue']);
         }
         if (isset($queue_config['queue_delayed'])) {
-            $this->delayed_key = $queue_config['queue_delayed'];
+            $this->setDelayedKey($queue_config['queue_delayed']);
         }
 
         $client = new Client($queue_config['activemq_hosts']);
         $client->setLogin($queue_config['activemq_username'], $queue_config['activemq_password']);
-        $this->conn = new SimpleStomp($client);
+        $this->setConn(new SimpleStomp($client));
+    }
+
+    protected function setConn($conn)
+    {
+        $this->conn = $conn;
+    }
+
+    protected function getConn()
+    {
+        return $this->conn;
+    }
+
+    protected function setKey($queue)
+    {
+        $this->key = $queue;
+    }
+
+    protected function getKey()
+    {
+        return $this->key;
+    }
+
+    protected function setDelayedKey($delayedQueue)
+    {
+        $this->delayed_key = $delayedQueue;
+    }
+
+    protected function getDelayedKey()
+    {
+        return $this->delayed_key;
     }
 }
