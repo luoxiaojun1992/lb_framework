@@ -152,14 +152,14 @@ class CryptHelper extends BaseClass
      *
      * @param $str
      * @param $privateKeyPath
-     * @param int $alog
+     * @param int $algo
      * @return string
      */
-    public static function sign($str, $privateKeyPath, $alog = OPENSSL_ALGO_SHA1)
+    public static function sign($str, $privateKeyPath, $algo = OPENSSL_ALGO_SHA1)
     {
         $privateKey = openssl_pkey_get_private(file_get_contents($privateKeyPath));
 
-        openssl_sign(trim($str), $singature, $privateKey, $alog);
+        openssl_sign(trim($str), $singature, $privateKey, $algo);
 
         openssl_free_key($privateKey);
 
@@ -172,14 +172,14 @@ class CryptHelper extends BaseClass
      * @param $str
      * @param $sinature
      * @param $publicKeyPath
-     * @param int $alog
+     * @param int $algo
      * @return bool
      */
-    public static function verify($str, $sinature, $publicKeyPath, $alog = OPENSSL_ALGO_SHA1)
+    public static function verify($str, $sinature, $publicKeyPath, $algo = OPENSSL_ALGO_SHA1)
     {
         $publicKey = openssl_pkey_get_public(file_get_contents($publicKeyPath));
 
-        $res = openssl_verify(trim($str), $sinature, $publicKey, $alog);
+        $res = openssl_verify(trim($str), $sinature, $publicKey, $algo);
 
         openssl_free_key($publicKey);
 
