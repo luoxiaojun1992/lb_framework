@@ -179,7 +179,7 @@ class CryptHelper extends BaseClass
     {
         $publicKey = openssl_pkey_get_public(file_get_contents($publicKeyPath));
 
-        $res = openssl_verify(trim($str), $sinature, $publicKey, $algo);
+        $res = openssl_verify(trim($str), hex2bin(trim($sinature)), $publicKey, $algo);
 
         openssl_free_key($publicKey);
 
