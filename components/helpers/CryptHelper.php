@@ -146,4 +146,47 @@ class CryptHelper extends BaseClass
         );
         return trim($decrypted);
     }
+
+    /**
+     * RSA Sign
+     *
+     * @param $str
+     * @param $privateKeyPath
+     * @param int $alog
+     * @return string
+     */
+    public static function sign($str, $privateKeyPath, $alog = OPENSSL_ALGO_SHA1)
+    {
+        $privateKey = openssl_pkey_get_private(file_get_contents($privateKeyPath));
+
+        openssl_sign(trim($str), $singature, $privateKey, $alog);
+
+        openssl_free_key($privateKey);
+
+        return bin2hex(trim($singature));
+    }
+
+    /**
+     * RSA Verify Sign
+     *
+     * @param $str
+     * @param $sinature
+     * @param $publicKeyPath
+     * @param int $alog
+     * @return bool
+     */
+    public static function verify($str, $sinature, $publicKeyPath, $alog = OPENSSL_ALGO_SHA1)
+    {
+        $publicKey = openssl_pkey_get_public(file_get_contents($publicKeyPath));
+
+        $res = openssl_verify(trim($str), $sinature, $publicKey, $alog);
+
+        openssl_free_key($publicKey);
+
+        if ($res == 1) {
+            return true;
+        }
+
+        return false;
+    }
 }
