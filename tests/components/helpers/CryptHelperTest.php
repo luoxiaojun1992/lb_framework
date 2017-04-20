@@ -17,37 +17,19 @@ class CryptHelperTest extends BaseTestCase
 
         $this->str1 = 'test string 1';
         $this->str2 = 'test str 2';
-        $this->key = 'q@e5c8%zM3LDb$4l';
+        $this->key = hex2bin(md5('q@e5c8%zM3LDb$4l'));
     }
 
-    public function tearDown()
-    {
-
-    }
-
-    public function testMcryptCryptor()
+    public function testOpenSSLEncrypt()
     {
         $expectedStr = $this->str1;
-        $encrypted_str = CryptHelper::mcrypt_encrypt($expectedStr, $this->key);
-        $actualStr = CryptHelper::mcrypt_decrypt($encrypted_str, $this->key);
+        $encrypted_str = CryptHelper::opensslEncrypt($expectedStr, $this->key);
+        $actualStr = CryptHelper::opensslDecrypt($encrypted_str, $this->key);
         $this->assertEquals($expectedStr, $actualStr);
 
         $expectedStr = $this->str2;
-        $encrypted_str = CryptHelper::mcrypt_encrypt($expectedStr, $this->key);
-        $actualStr = CryptHelper::mcrypt_decrypt($encrypted_str, $this->key);
-        $this->assertEquals($expectedStr, $actualStr);
-    }
-
-    public function testZendCryptor()
-    {
-        $expectedStr = $this->str1;
-        $encrypted_str = CryptHelper::zend_encrypt($expectedStr, $this->key);
-        $actualStr = CryptHelper::zend_decrypt($encrypted_str, $this->key);
-        $this->assertEquals($expectedStr, $actualStr);
-
-        $expectedStr = $this->str2;
-        $encrypted_str = CryptHelper::zend_encrypt($expectedStr, $this->key);
-        $actualStr = CryptHelper::zend_decrypt($encrypted_str, $this->key);
+        $encrypted_str = CryptHelper::opensslEncrypt($expectedStr, $this->key);
+        $actualStr = CryptHelper::opensslDecrypt($encrypted_str, $this->key);
         $this->assertEquals($expectedStr, $actualStr);
     }
 }

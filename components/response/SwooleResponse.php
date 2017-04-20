@@ -185,7 +185,7 @@ class SwooleResponse extends ResponseAdapter implements ResponseContract
     {
         $this->swooleResponse->cookie(
             $cookie_key,
-            Lb::app()->encrypt_by_config($cookie_value),
+            Lb::app()->encryptByConfig($cookie_value),
             $expire,
             $path,
             $domain,

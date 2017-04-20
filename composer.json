@@ -61,7 +61,6 @@
     "zircote/swagger-php": "*",
     "emanueleminotto/simple-html-dom": "*",
     "snoopy/snoopy": "*",
-    "zendframework/zend-crypt": "*",
     "mockery/mockery": "*",
     "pbweb/xhprof": "*",
     "nesbot/carbon": "*",

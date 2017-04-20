@@ -154,7 +154,7 @@ class Response extends BaseClass implements ResponseContract
         $httpOnly = null
     )
     {
-        setcookie($cookie_key, Lb::app()->encrypt_by_config($cookie_value), $expire, $path, $domain, $secure, $httpOnly);
+        setcookie($cookie_key, Lb::app()->encryptByConfig($cookie_value), $expire, $path, $domain, $secure, $httpOnly);
     }
 
     /**

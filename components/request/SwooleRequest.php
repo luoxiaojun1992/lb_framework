@@ -155,7 +155,7 @@ class SwooleRequest extends RequestAdapter
     {
         $cookie = $this->swooleRequest->cookie;
         return isset($cookie[$cookie_key]) ?
-            Lb::app()->decrypt_by_config($cookie[$cookie_key]) : false;
+            Lb::app()->decryptByConfig($cookie[$cookie_key]) : false;
     }
 
     public function getFile($file_name)

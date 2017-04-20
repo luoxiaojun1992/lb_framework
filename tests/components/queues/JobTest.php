@@ -2,9 +2,9 @@
 
 namespace lb\tests\queues;
 
-use lb\components\queues\HandlerInterface;
+use lb\components\queues\handlers\HandlerInterface;
 use Mockery as M;
-use lb\components\queues\Job;
+use lb\components\queues\jobs\Job;
 use lb\tests\BaseTestCase;
 
 class JobTest extends BaseTestCase

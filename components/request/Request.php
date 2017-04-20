@@ -124,7 +124,7 @@ class Request extends BaseRequest
     public function getCookie($cookie_key)
     {
         return isset($_COOKIE[$cookie_key]) ?
-            Lb::app()->decrypt_by_config($_COOKIE[$cookie_key]) : false;
+            Lb::app()->decryptByConfig($_COOKIE[$cookie_key]) : false;
     }
 
     public function getFile($file_name)
