@@ -17,18 +17,18 @@ class Connection extends BaseClass
 {
     public $write_conn;
     public $read_conn;
-    protected $_master_db = '';
-    protected $_master_host = '';
-    protected $_master_username = '';
-    protected $_master_password = '';
+    protected $_master_db;
+    protected $_master_host;
+    protected $_master_username;
+    protected $_master_password;
     protected $_master_options = [];
-    protected $_master_dsn = '';
-    protected $_slave_db = '';
-    protected $_slave_host = '';
-    protected $_slave_username = '';
-    protected $_slave_password = '';
-    protected $_slave_options = [];
-    protected $_slave_dsn = '';
+    protected $_master_dsn;
+    protected $_slave_db;
+    protected $_slave_host;
+    protected $_slave_username;
+    protected $_slave_password;
+    protected $_slave_options;
+    protected $_slave_dsn;
     public $containers = [];
     protected static $instance;
 

@@ -7,23 +7,23 @@ use lb\tests\BaseTestCase;
 
 class SecurityPasswordTest extends BaseTestCase
 {
-    protected $testPassword;
+    protected $str;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->testPassword = '123456789';
+        $this->str = '123456789';
     }
 
     public function testGeneratePasswordHash()
     {
-        $this->assertNotEmpty(Security::generatePasswordHash($this->testPassword));
+        $this->assertNotEmpty(Security::generatePasswordHash($this->str));
     }
 
     public function testVerifyPassword()
     {
 
-        $this->assertTrue(Security::verifyPassword($this->testPassword, Security::generatePasswordHash($this->testPassword)));
+        $this->assertTrue(Security::verifyPassword($this->str, Security::generatePasswordHash($this->str)));
     }
 }

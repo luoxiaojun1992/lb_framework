@@ -15,11 +15,11 @@ use lb\Lb;
 class Connection extends BaseClass
 {
     public $_conn;
-    protected $_db = '';
-    protected $_host = '';
-    protected $_username = '';
-    protected $_password = '';
-    protected $_dsn = '';
+    protected $_db;
+    protected $_host;
+    protected $_username;
+    protected $_password;
+    protected $_dsn;
     public $containers = [];
     protected static $instance;
 

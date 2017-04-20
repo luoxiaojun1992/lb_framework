@@ -3,19 +3,25 @@
 namespace lb\components\mailer;
 
 use lb\BaseClass;
-use lb\components\traits\Singleton;
 use lb\Lb;
 
 class Swift extends BaseClass
 {
-    use Singleton;
+    const DEFAULT_PORT = 25;
 
     public $containers = [];
     public $transport;
-    protected $_smtp = '';
-    protected $_smtp_port = 25;
-    protected $_username = '';
-    protected $_password = '';
+    protected $_smtp;
+    protected $_smtp_port = self::DEFAULT_PORT;
+    protected $_username;
+    protected $_password;
+
+    protected static $instance;
+
+    public function __clone()
+    {
+        //
+    }
 
     public function __construct($containers)
     {
@@ -53,28 +59,37 @@ class Swift extends BaseClass
         }
     }
 
-    public function send($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
+    /**
+     * Send Email
+     *
+     * @param $from_name
+     * @param array $receivers
+     * @param $successfulRecipients
+     * @param $failedRecipients
+     * @param string $subject
+     * @param string $body
+     * @param string $content_type
+     * @param string $charset
+     * @return bool
+     */
+    public function send(
+        $from_name,
+        array $receivers,
+        &$successfulRecipients,
+        &$failedRecipients,
+        $subject = '',
+        $body = '',
+        $content_type = 'text/html',
+        $charset = 'UTF-8'
+    )
     {
-        $err_msg = '';
-        if ($this->transport) {
-            if ($from_name && is_array($receivers) && $receivers && $subject && $body) {
-                $mailer = \Swift_Mailer::newInstance($this->transport);
-                $message = \Swift_Message::newInstance();
-                $message->setFrom([$this->_username => $from_name]);
-                $message->setTo($receivers);
-                $message->setSubject($subject);
-                $message->setBody($body, $content_type, $charset);
-                try {
-                    $mailer->send($message);
-                } catch (\Swift_SwiftException $e) {
-                    $err_msg = 'There was a problem communicating with SMTP: ' . $e->getMessage();
-                }
-            } else {
-                $err_msg = 'Invalid Parameter.';
-            }
-        } else {
-            $err_msg = 'Transport not set.';
-        }
-        return $err_msg;
+        $mailer = \Swift_Mailer::newInstance($this->transport);
+        $message = \Swift_Message::newInstance();
+        $message->setFrom([$this->_username => $from_name]);
+        $message->setTo($receivers);
+        $message->setSubject($subject);
+        $message->setBody($body, $content_type, $charset);
+        $successfulRecipients = $mailer->send($message, $failedRecipients);
+        return true;
     }
 }

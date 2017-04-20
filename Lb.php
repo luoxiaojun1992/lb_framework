@@ -384,10 +384,28 @@ class Lb extends BaseClass
     }
 
     // Send Swift Mail
-    public function swiftSend($from_name, $receivers, $subject, $body, $content_type = 'text/html', $charset = 'UTF-8')
+    public function swiftSend(
+        $from_name,
+        $receivers,
+        &$successfulRecipients,
+        &$failedRecipients,
+        $subject = '',
+        $body = '',
+        $content_type = 'text/html',
+        $charset = 'UTF-8'
+    )
     {
         if ($this->isSingle()) {
-            Swift::component()->send($from_name, $receivers, $subject, $body, $content_type, $charset);
+            Swift::component()->send(
+                $from_name,
+                $receivers,
+                $successfulRecipients,
+                $failedRecipients,
+                $subject,
+                $body,
+                $content_type,
+                $charset
+            );
         }
     }
 
