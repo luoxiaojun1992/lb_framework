@@ -88,6 +88,82 @@ class CryptHelper extends BaseClass
     }
 
     /**
+     * RSA Private Encrypt
+     *
+     * @param $str
+     * @param $privateKeyPath
+     * @param string $passPhrase
+     * @param int $padding
+     * @param $format
+     * @return string
+     */
+    public static function rsaPrivateEncrypt(
+        $str,
+        $privateKeyPath,
+        $passPhrase = '',
+        $padding = OPENSSL_PKCS1_PADDING,
+        $format = self::FORMAT_HEX
+    )
+    {
+        openssl_private_encrypt(
+            trim($str),
+            $cryrted,
+            openssl_get_privatekey(file_get_contents($privateKeyPath), $passPhrase),
+            $padding
+        );
+
+        $cryrted = trim($cryrted);
+
+        switch ($format) {
+            case self::FORMAT_HEX:
+                return bin2hex($cryrted);
+            case self::FORMAT_BASE64:
+                return EncodeHelper::base64Encode($cryrted);
+        }
+
+        return bin2hex($cryrted);
+    }
+
+    /**
+     * RSA Public Decrypt
+     *
+     * @param $str
+     * @param $publicKeyPath
+     * @param int $padding
+     * @param $format
+     * @return string
+     */
+    public static function rsaPublicDecrypt(
+        $str,
+        $publicKeyPath,
+        $padding = OPENSSL_PKCS1_PADDING,
+        $format = self::FORMAT_HEX
+    )
+    {
+        $str = trim($str);
+
+        switch ($format) {
+            case self::FORMAT_HEX:
+                $str = hex2bin($str);
+                break;
+            case self::FORMAT_BASE64:
+                $str = EncodeHelper::base64Decode($str);
+                break;
+            default:
+                $str = hex2bin($str);
+        }
+
+        openssl_public_decrypt(
+            $str,
+            $decrypted,
+            openssl_get_publickey(file_get_contents($publicKeyPath)),
+            $padding
+        );
+
+        return trim($decrypted);
+    }
+
+    /**
      * RSA Sign
      *
      * @param $str
