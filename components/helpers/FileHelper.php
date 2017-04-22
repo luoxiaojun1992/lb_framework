@@ -3,9 +3,10 @@
 namespace lb\components\helpers;
 
 use lb\BaseClass;
+use lb\components\consts\IO;
 use lb\Lb;
 
-class FileHelper extends BaseClass
+class FileHelper extends BaseClass implements IO
 {
     public static function delete($file_path)
     {
@@ -38,7 +39,7 @@ class FileHelper extends BaseClass
     {
         if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
             $file_size = filesize($file_path);
-            $fp = fopen($file_path, 'rb');
+            $fp = fopen($file_path, self::READ_BINARY);
             Header('Content-type: application/octet-stream');
             Header('Accept-Ranges: bytes');
             Header('Accept-Length: ' . $file_size);
