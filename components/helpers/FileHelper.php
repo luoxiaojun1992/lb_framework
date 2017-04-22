@@ -38,7 +38,7 @@ class FileHelper extends BaseClass
     {
         if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
             $file_size = filesize($file_path);
-            $fp = fopen($file_path, 'r');
+            $fp = fopen($file_path, 'rb');
             Header('Content-type: application/octet-stream');
             Header('Accept-Ranges: bytes');
             Header('Accept-Length: ' . $file_size);
