@@ -163,9 +163,13 @@ abstract class AbstractActiveRecord extends BaseClass
     {
         if (!$this->isSingle()) {
             if ($this->isNewRecord()) {
-                $this->beforeCreate();
+                if (!$this->beforeCreate()) {
+                    return false;
+                }
             } else {
-                $this->beforeUpdate();
+                if (!$this->beforeUpdate()) {
+                    return false;
+                }
             }
 
             return $this->valid();
@@ -180,7 +184,7 @@ abstract class AbstractActiveRecord extends BaseClass
     protected function beforeCreate()
     {
         if (!$this->isSingle()) {
-            //
+            return true;
         }
 
         return false;
@@ -192,13 +196,32 @@ abstract class AbstractActiveRecord extends BaseClass
     protected function beforeUpdate()
     {
         if (!$this->isSingle()) {
-            //
+            return true;
         }
 
         return false;
     }
 
     protected function afterSave()
+    {
+        if (!$this->isSingle()) {
+            //
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function beforeValid()
+    {
+        if (!$this->isSingle()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function afterValid()
     {
         if (!$this->isSingle()) {
             //

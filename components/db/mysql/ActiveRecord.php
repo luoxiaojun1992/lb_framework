@@ -441,6 +441,10 @@ class ActiveRecord extends AbstractActiveRecord
      */
     protected function valid()
     {
+        if (!$this->beforeValid()) {
+            return false;
+        }
+
         $is_valid = true;
         $this->errors = [];
         $rules = $this->rules;
@@ -547,6 +551,9 @@ class ActiveRecord extends AbstractActiveRecord
                 }
             }
         }
+
+        $this->afterValid();
+
         return $is_valid;
     }
 
