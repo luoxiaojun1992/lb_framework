@@ -12,6 +12,7 @@ class Dao extends BaseClass
 {
     use BaseObject;
 
+    /** @var  Dao */
     protected static $instance;
     protected $_table = '';
     protected $_fields = [];
@@ -89,7 +90,7 @@ class Dao extends BaseClass
 
     /**
      * @param $fields
-     * @return bool
+     * @return bool|Dao
      */
     public function select($fields)
     {
@@ -102,7 +103,7 @@ class Dao extends BaseClass
     }
 
     /**
-     * @return bool
+     * @return bool|Dao
      */
     public function lockForUpdate()
     {
@@ -115,7 +116,7 @@ class Dao extends BaseClass
 
     /**
      * @param $table
-     * @return bool
+     * @return bool|Dao
      */
     public function from($table)
     {
@@ -125,7 +126,7 @@ class Dao extends BaseClass
 
     /**
      * @param $conditions
-     * @return bool
+     * @return bool|Dao
      */
     public function where($conditions)
     {
@@ -138,7 +139,7 @@ class Dao extends BaseClass
 
     /**
      * @param $orders
-     * @return bool
+     * @return bool|Dao
      */
     public function order($orders)
     {
@@ -151,7 +152,7 @@ class Dao extends BaseClass
 
     /**
      * @param $limit
-     * @return bool
+     * @return bool|Dao
      */
     public function limit($limit)
     {
@@ -164,7 +165,7 @@ class Dao extends BaseClass
 
     /**
      * @param $group_fields
-     * @return bool
+     * @return bool|Dao
      */
     public function group($group_fields)
     {
@@ -179,7 +180,7 @@ class Dao extends BaseClass
      * @param $joined_table
      * @param $condition
      * @param string $type
-     * @return bool
+     * @return bool|Dao
      */
     public function join($joined_table, $condition, $type = 'LEFT')
     {
@@ -232,6 +233,21 @@ class Dao extends BaseClass
             $result = $query_result->fetchAll();
         }
         return $result;
+    }
+
+    /**
+     * Chunk query
+     *
+     * @param int $step
+     * @param \Closure $callBack
+     */
+    public function chunk($step = 10000, \Closure $callBack)
+    {
+        $start = 0;
+        while($result = $this->limit($start . ',' . $step)->findAll()) {
+            $start += $step;
+            call_user_func_array($callBack, $result);
+        }
     }
 
     /**
