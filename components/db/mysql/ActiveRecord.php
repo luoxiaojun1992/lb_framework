@@ -150,13 +150,14 @@ class ActiveRecord extends AbstractActiveRecord
     }
 
     /**
+     * @param $isRelatedModelExists
      * @param array $conditions
      * @param array $group_fields
      * @param array $orders
      * @param string $limit
-     * @return array|ActiveRecord[]|ActiveRecord
+     * @return bool|Dao|null
      */
-    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    protected function getDaoByConditions(&$isRelatedModelExists, $conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
             $dao = Dao::component()->select(['*'])->from(static::TABLE_NAME);
@@ -173,12 +174,12 @@ class ActiveRecord extends AbstractActiveRecord
                 $dao->limit($limit);
             }
 
-            $is_related_model_exists = false;
+            $isRelatedModelExists = false;
             if ($this->relations && count($this->relations) >= 3) {
                 list($self_field, $joined_table, $joined_table_field) = $this->relations;
                 $related_model_class = 'app\models\\' . ucfirst($joined_table);
                 if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
-                    $is_related_model_exists = true;
+                    $isRelatedModelExists = true;
                     $related_model_fields = (new $related_model_class())->getFields();
                     foreach ($related_model_fields as $key => $related_model_field) {
                         $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
@@ -193,17 +194,35 @@ class ActiveRecord extends AbstractActiveRecord
                 }
             }
 
-            $result = $dao->findAll();
+            return $dao;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $conditions
+     * @param array $group_fields
+     * @param array $orders
+     * @param string $limit
+     * @return array|ActiveRecord[]|ActiveRecord
+     */
+    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    {
+        if ($this->is_single) {
+            $result = $this->getDaoByConditions($is_related_model_exists, $conditions, $group_fields, $orders, $limit)->findAll();
             if ($result) {
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+                        /** @var ActiveRecord $related_model */
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
+                    /** @var ActiveRecord $model */
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -213,6 +232,49 @@ class ActiveRecord extends AbstractActiveRecord
             }
         }
         return [];
+    }
+
+    /**
+     * @param \Closure $callback
+     * @param int $limit
+     * @param array $conditions
+     * @param array $group_fields
+     * @param array $orders
+     */
+    public function chunkByConditions(
+        \Closure $callback,
+        $limit = 10000,
+        $conditions = [],
+        $group_fields = [],
+        $orders = []
+    )
+    {
+        if ($this->is_single) {
+            $dao = $this->getDaoByConditions($is_related_model_exists, $conditions, $group_fields, $orders);
+            $offset = 0;
+            while($result = $dao->limit($offset . ',' . $limit)->findAll()) {
+                $offset += $limit;
+
+                $models = [];
+                foreach ($result as $attributes) {
+                    $model_class = get_class($this);
+                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+                        /** @var ActiveRecord $related_model */
+                        $related_model = new $related_model_class();
+                        $related_model->setAttributes($attributes);
+                        $related_model->is_new_record = false;
+                        $attributes[$self_field] = $related_model;
+                    }
+                    /** @var ActiveRecord $model */
+                    $model = new $model_class();
+                    $model->setAttributes($attributes);
+                    $model->is_new_record = false;
+                    $models[] = $model;
+                }
+
+                call_user_func_array($callback, ['result' => $models]);
+            }
+        }
     }
 
     /**

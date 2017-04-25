@@ -238,15 +238,15 @@ class Dao extends BaseClass
     /**
      * Chunk query
      *
-     * @param int $step
      * @param \Closure $callBack
+     * @param int $limit
      */
-    public function chunk($step = 10000, \Closure $callBack)
+    public function chunk(\Closure $callBack, $limit = 10000)
     {
-        $start = 0;
-        while($result = $this->limit($start . ',' . $step)->findAll()) {
-            $start += $step;
-            call_user_func_array($callBack, $result);
+        $offset = 0;
+        while($result = $this->limit($offset . ',' . $limit)->findAll()) {
+            $offset += $limit;
+            call_user_func_array($callBack, ['result' => $result]);
         }
     }
 
