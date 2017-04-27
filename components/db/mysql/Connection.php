@@ -38,7 +38,7 @@ class Connection extends BaseClass
     public function __construct($containers)
     {
         $this->containers = $containers;
-        if (isset($this->containers['config'])) {
+        if ($this->containers['config']) {
             $db_config = $this->containers['config']->get('mysql');
             if ($db_config) {
                 if (isset($db_config['master'])) {
@@ -84,12 +84,12 @@ class Connection extends BaseClass
             foreach ($server_hosts as $key => $server_host) {
                 if ($server_host == $target_host) {
                     $slave_target_num = $key;
-                    $slave_db_config = $slave_config[$slave_target_num];
-                    $this->_slave_db = $slave_db_config['dbname'] ?? '';
-                    $this->_slave_host = $slave_db_config['host'] ?? '';
-                    $this->_slave_username = $slave_db_config['username'] ?? '';
-                    $this->_slave_password = $slave_db_config['password'] ?? '';
-                    $this->_slave_options = $slave_db_config['options'] ?? [];
+                    $target_slave_config = $slave_config[$slave_target_num];
+                    $this->_slave_db = $target_slave_config['dbname'] ?? '';
+                    $this->_slave_host = $target_slave_config['host'] ?? '';
+                    $this->_slave_username = $target_slave_config['username'] ?? '';
+                    $this->_slave_password = $target_slave_config['password'] ?? '';
+                    $this->_slave_options = $target_slave_config['options'] ?? [];
                     $this->getDsn('slave');
                     try {
                         $this->getConnection('slave');

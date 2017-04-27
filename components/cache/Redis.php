@@ -3,6 +3,7 @@
 namespace lb\components\cache;
 
 use lb\BaseClass;
+use lb\components\distribution\FlexiHash;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
@@ -15,7 +16,7 @@ class Redis extends BaseClass
     protected $_host = '127.0.0.1';
     protected $_port = 6379;
     protected $_timeout = 0.01;
-    protected $_password = null;
+    protected $_password;
     protected $_database = 0;
     public $containers = [];
 
@@ -24,15 +25,42 @@ class Redis extends BaseClass
     private function __construct($containers)
     {
         $this->containers = $containers;
-        if (isset($this->containers['config'])) {
+        if ($this->containers['config']) {
             $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
             if ($cache_config) {
-                $this->_host = isset($cache_config['host']) ? $cache_config['host'] : $this->_host;
-                $this->_port = isset($cache_config['port']) ? $cache_config['port'] : $this->_port;
-                $this->_timeout = isset($cache_config['timeout']) ? $cache_config['timeout'] : $this->_timeout;
-                $this->_password = isset($cache_config['password']) ? $cache_config['password'] : $this->_password;
-                $this->_database = isset($cache_config['database']) ? $cache_config['database'] : $this->_database;
-                $this->getConnection();
+                $this->getTargetConfig();
+            }
+        }
+    }
+
+    protected function getTargetConfig($server_hosts = [])
+    {
+        $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
+        if (!$server_hosts) {
+            foreach ($cache_config as $key => $config) {
+                $server_hosts[$key] = $config['host'];
+            }
+        }
+        if ($server_hosts) {
+            // 一致性HASH
+            $target_host = FlexiHash::component()->addServers($server_hosts)->lookup();
+            foreach ($server_hosts as $key => $server_host) {
+                if ($server_host == $target_host) {
+                    $slave_target_num = $key;
+                    $target_cache_config = $cache_config[$slave_target_num];
+                    $this->_host = $target_cache_config['host'] ?? $this->_host;
+                    $this->_port = $target_cache_config['port'] ?? $this->_port;
+                    $this->_timeout = $target_cache_config['timeout'] ?? $this->_timeout;
+                    $this->_password = $target_cache_config['password'] ?? $this->_password;
+                    $this->_database = $target_cache_config['database'] ?? $this->_database;
+                    try {
+                        $this->getConnection();
+                    } catch (\Exception $e) {
+                        unset($server_hosts[$slave_target_num]);
+                        $this->getTargetConfig($server_hosts);
+                    }
+                    break;
+                }
             }
         }
     }
