@@ -28,12 +28,12 @@ class Redis extends BaseClass
         if ($this->containers['config']) {
             $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
             if ($cache_config) {
-                $this->getTargetConfig();
+                $this->getShardingConnection();
             }
         }
     }
 
-    protected function getTargetConfig($server_hosts = [])
+    protected function getShardingConnection($server_hosts = [])
     {
         $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
         if (!$server_hosts) {
@@ -57,7 +57,7 @@ class Redis extends BaseClass
                         $this->getConnection();
                     } catch (\Exception $e) {
                         unset($server_hosts[$slave_target_num]);
-                        $this->getTargetConfig($server_hosts);
+                        $this->getShardingConnection($server_hosts);
                     }
                     break;
                 }
