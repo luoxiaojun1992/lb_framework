@@ -3,7 +3,7 @@
 namespace lb\components\cache;
 
 use lb\BaseClass;
-use lb\components\distribution\FlexiHash;
+use lb\components\LoadBalancer;
 use lb\components\traits\Singleton;
 use lb\Lb;
 
@@ -43,7 +43,7 @@ class Redis extends BaseClass
         }
         if ($server_hosts) {
             // 一致性HASH
-            $target_host = FlexiHash::component()->addServers($server_hosts)->lookup();
+            $target_host = LoadBalancer::getTargetHost($server_hosts);
             foreach ($server_hosts as $key => $server_host) {
                 if ($server_host == $target_host) {
                     $slave_target_num = $key;
