@@ -117,4 +117,32 @@ abstract class BaseController extends BaseClass
         $this->response = $response;
         return $this;
     }
+
+    /**
+     * Set Flash Message
+     *
+     * @param $flashKey
+     * @param $content
+     */
+    protected function setFlash($flashKey, $content)
+    {
+        $this->response->setSession($flashKey, $content);
+    }
+
+    /**
+     * Get Flash Message
+     *
+     * @param $flashKey
+     * @param $once
+     * @return mixed
+     */
+    protected function getFlash($flashKey, $once = true)
+    {
+        $content = $this->request->getSession($flashKey);
+        if ($content && $once) {
+            $this->response->delSession($flashKey);
+        }
+
+        return $content;
+    }
 }
