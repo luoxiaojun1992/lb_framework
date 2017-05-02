@@ -4,7 +4,7 @@ namespace lb\components\jobs;
 
 use lb\BaseClass;
 
-abstract class BaseJob extends BaseClass
+abstract class BaseJob extends BaseClass implements JobInterface
 {
     protected $data;
 
