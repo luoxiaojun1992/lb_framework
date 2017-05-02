@@ -4,7 +4,7 @@ namespace lb\components\jobs;
 
 interface JobInterface
 {
-    public function hanlder($data);
+    public function handler($data);
 
     public function setData($data);
 

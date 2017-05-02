@@ -6,9 +6,9 @@ use lb\components\helpers\JsonHelper;
 
 class SwooleTcpJob extends BaseJob
 {
-    public function hanlder($data)
+    public function handler($data)
     {
-        parent::hanlder($data);
+        parent::handler($data);
 
         return 'Swoole Tcp Test Success, data:' . JsonHelper::encode($this->getData());
     }

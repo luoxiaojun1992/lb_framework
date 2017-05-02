@@ -8,7 +8,7 @@ abstract class BaseJob extends BaseClass implements JobInterface
 {
     protected $data;
 
-    public function hanlder($data)
+    public function handler($data)
     {
         $this->setData($data);
     }
