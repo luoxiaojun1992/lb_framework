@@ -5,15 +5,12 @@ namespace lb\controllers\console;
 use lb\applications\swoole\App;
 use lb\components\request\SwooleRequest;
 use lb\components\response\SwooleResponse;
-use lb\components\traits\PcntlSignal;
 use lb\components\utils\IdGenerator;
 use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
 
 class SwooleController extends ConsoleController
 {
-    use PcntlSignal;
-
     /**
      * Swoole Http Server
      */
