@@ -19,11 +19,6 @@ class SwooleController extends ConsoleController
      */
     public function http()
     {
-        declare(ticks=1);
-        $this->listenPcntlSignals([SIGINT, SIGTERM], function(){
-            dd('Swoole Http Server Exited.');
-        });
-
         $this->writeln('Starting swoole http server...');
 
         $swooleConfig = Lb::app()->getSwooleConfig();
