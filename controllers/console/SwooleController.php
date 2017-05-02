@@ -4,6 +4,7 @@ namespace lb\controllers\console;
 
 use lb\applications\swoole\App;
 use lb\components\helpers\JsonHelper;
+use lb\components\jobs\SwooleTcpJob;
 use lb\components\request\SwooleRequest;
 use lb\components\response\SwooleResponse;
 use lb\components\utils\IdGenerator;
@@ -113,7 +114,7 @@ class SwooleController extends ConsoleController
         $client = new TcpClient(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
-            $cli->send(JsonHelper::encode(['handler' => 'test']));
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
         });
         $client->on('receive', function($cli, $data){
             $this->writeln('Received: '.$data);
