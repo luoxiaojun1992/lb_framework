@@ -15,6 +15,7 @@ class QueueController extends ConsoleController
      */
     public function listen()
     {
+        declare(ticks=1);
         $this->listenPcntlSignals([SIGINT, SIGTERM], function(){
             dd('Queue Listener Exited.');
         });

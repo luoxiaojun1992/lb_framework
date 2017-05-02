@@ -19,6 +19,7 @@ class SwooleController extends ConsoleController
      */
     public function http()
     {
+        declare(ticks=1);
         $this->listenPcntlSignals([SIGINT, SIGTERM], function(){
             dd('Swoole Http Server Exited.');
         });
