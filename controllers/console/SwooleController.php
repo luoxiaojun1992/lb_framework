@@ -15,6 +15,10 @@ use Swoole\Client as TcpClient;
 
 class SwooleController extends ConsoleController
 {
+    const DEFAULT_SWOOLE_HOST = '127.0.0.1';
+    const DEFAULT_SWOOLE_PORT = '9501';
+    const DEFAULT_SWOOLE_TIMEOUT = 0.5;
+
     protected $swooleConfig;
 
     protected function beforeAction()
@@ -32,8 +36,8 @@ class SwooleController extends ConsoleController
         $this->writeln('Starting swoole http server...');
 
         $server = new HttpServer(
-            $this->swooleConfig['http']['host'] ?? '127.0.0.1',
-            $this->swooleConfig['http']['port'] ?? '9501'
+            $this->swooleConfig['http']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['http']['port'] ?? self::DEFAULT_SWOOLE_PORT
         );
 
         $server->on('Request', function ($request, $response) {
@@ -63,8 +67,8 @@ class SwooleController extends ConsoleController
         $this->writeln('Starting swoole tcp server...');
 
         $server = new TcpServer(
-            $this->swooleConfig['tcp']['host'] ?? '127.0.0.1',
-            $this->swooleConfig['tcp']['port'] ?? '9501'
+            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT
         );
 
         $server->on('connect', function ($serv, $fd){
@@ -127,9 +131,9 @@ class SwooleController extends ConsoleController
         });
 
         $client->connect(
-            $this->swooleConfig['tcp']['host'] ?? '127.0.0.1',
-            $this->swooleConfig['tcp']['port'] ?? '9501',
-            $this->swooleConfig['tcp']['timeout'] ?? 0.5
+            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            $this->swooleConfig['tcp']['timeout'] ?? self::DEFAULT_SWOOLE_TIMEOUT
         );
     }
 }
