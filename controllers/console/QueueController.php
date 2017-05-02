@@ -3,23 +3,23 @@
 namespace lb\controllers\console;
 
 use lb\components\queues\jobs\Job;
+use lb\components\traits\PcntlSignal;
 use lb\Lb;
 
 class QueueController extends ConsoleController
 {
+    use PcntlSignal;
+
     /**
      * Listen queue
      */
     public function listen()
     {
-        declare(ticks=1);
-        $signalCallback = function(){
-            dd('Exited.');
-        };
-        pcntl_signal(SIGINT, $signalCallback);
-        pcntl_signal(SIGTERM, $signalCallback);
+        $this->listenPcntlSignals([SIGINT, SIGTERM], function(){
+            dd('Queue Listener Exited.');
+        });
 
-        $this->writeln('Listening...');
+        $this->writeln('Queue Listening...');
 
         while (true) {
             /** @var Job $job */

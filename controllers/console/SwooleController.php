@@ -5,15 +5,25 @@ namespace lb\controllers\console;
 use lb\applications\swoole\App;
 use lb\components\request\SwooleRequest;
 use lb\components\response\SwooleResponse;
+use lb\components\traits\PcntlSignal;
 use lb\components\utils\IdGenerator;
 use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
 
 class SwooleController extends ConsoleController
 {
+    use PcntlSignal;
+
+    /**
+     * Swoole Http Server
+     */
     public function http()
     {
-        $this->writeln('Start swoole server...');
+        $this->listenPcntlSignals([SIGINT, SIGTERM], function(){
+            dd('Swoole Http Server Exited.');
+        });
+
+        $this->writeln('Starting swoole http server...');
 
         $swooleConfig = Lb::app()->getSwooleConfig();
         $server = new HttpServer($swooleConfig['host'] ?? '127.0.0.1', $swooleConfig['port'] ?? '9501');
