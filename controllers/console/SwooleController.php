@@ -78,13 +78,13 @@ class SwooleController extends ConsoleController
         $server->on('receive', function ($serv, $fd, $from_id, $data) {
             $jsonData = JsonHelper::decode($data);
             if (isset($jsonData['handler'])) {
+                $jsonData['swoole_from_id'] = $from_id;
                 $handlerClass = $jsonData['handler'];
                 if (class_exists('\Throwable')) {
                     try {
                         $serv->send(
                             $fd,
-                            call_user_func_array([new $handlerClass, 'hanlder'],
-                                ['data' => $data, 'fromId' => $from_id])
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
                         );
                     } catch (\Throwable $e) {
                         $serv->send($fd, 'Exception:' . $e->getTraceAsString());
@@ -93,13 +93,14 @@ class SwooleController extends ConsoleController
                     try {
                         $serv->send(
                             $fd,
-                            call_user_func_array([new $handlerClass, 'hanlder'],
-                                ['data' => $data, 'fromId' => $from_id])
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
                         );
                     } catch (\Exception $e) {
                         $serv->send($fd, 'Exception:' . $e->getTraceAsString());
                     }
                 }
+            } else {
+                $serv->send($fd, 'Handler not exists');
             }
         });
 

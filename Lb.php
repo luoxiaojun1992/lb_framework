@@ -6,6 +6,7 @@ use FilecacheKit;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
+use lb\components\jobs\BaseJob;
 use lb\components\request\RequestContract;
 use lb\components\response\Response;
 use lb\components\response\ResponseContract;
@@ -585,7 +586,31 @@ class Lb extends BaseClass
      */
     public function uniqid($prefix = '')
     {
-        return IdGenerator::component()->generate($prefix);
+        if ($this->isSingle()) {
+            return IdGenerator::component()->generate($prefix);
+        }
+
+        return null;
+    }
+
+    /**
+     * Dispatch a job
+     *
+     * @param $job
+     * @param array $data
+     * @param string $handler
+     * @return mixed
+     */
+    public function dispatchJob($job, $data = [], $handler = 'handler')
+    {
+        if ($this->isSingle()) {
+            if (!is_object($job)) {
+                $job = new $job;
+            }
+            return call_user_func_array([$job, $handler], ['data' => $data]);
+        }
+
+        return null;
     }
 
     // Autoloader
