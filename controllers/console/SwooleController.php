@@ -74,30 +74,26 @@ class SwooleController extends ConsoleController
             $jsonData = JsonHelper::decode($data);
             if (isset($jsonData['handler'])) {
                 $handlerClass = $jsonData['handler'];
-                if (class_exists($handlerClass)) {
-                    if (class_exists('\Throwable')) {
-                        try {
-                            $serv->send(
-                                $fd,
-                                call_user_func_array([new $handlerClass, 'hanlder'],
-                                    ['data' => $data, 'fromId' => $from_id])
-                            );
-                        } catch (\Throwable $e) {
-                            $serv->send($fd, 'Exception:' . $e->getTraceAsString());
-                        }
-                    } else {
-                        try {
-                            $serv->send(
-                                $fd,
-                                call_user_func_array([new $handlerClass, 'hanlder'],
-                                    ['data' => $data, 'fromId' => $from_id])
-                            );
-                        } catch (\Exception $e) {
-                            $serv->send($fd, 'Exception:' . $e->getTraceAsString());
-                        }
+                if (class_exists('\Throwable')) {
+                    try {
+                        $serv->send(
+                            $fd,
+                            call_user_func_array([new $handlerClass, 'hanlder'],
+                                ['data' => $data, 'fromId' => $from_id])
+                        );
+                    } catch (\Throwable $e) {
+                        $serv->send($fd, 'Exception:' . $e->getTraceAsString());
                     }
                 } else {
-                    $serv->send($fd, 'Handler not exist.');
+                    try {
+                        $serv->send(
+                            $fd,
+                            call_user_func_array([new $handlerClass, 'hanlder'],
+                                ['data' => $data, 'fromId' => $from_id])
+                        );
+                    } catch (\Exception $e) {
+                        $serv->send($fd, 'Exception:' . $e->getTraceAsString());
+                    }
                 }
             }
         });
