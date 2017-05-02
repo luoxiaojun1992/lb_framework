@@ -116,6 +116,8 @@ class SwooleController extends ConsoleController
      */
     public function client()
     {
+        $this->writeln('Starting demo swoole tcp client...');
+
         $client = new TcpClient(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
