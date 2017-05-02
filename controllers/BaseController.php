@@ -124,7 +124,7 @@ abstract class BaseController extends BaseClass
      * @param $flashKey
      * @param $content
      */
-    protected function setFlash($flashKey, $content)
+    public function setFlash($flashKey, $content)
     {
         $this->response->setSession($flashKey, $content);
     }
@@ -136,7 +136,7 @@ abstract class BaseController extends BaseClass
      * @param $once
      * @return mixed
      */
-    protected function getFlash($flashKey, $once = true)
+    public function getFlash($flashKey, $once = true)
     {
         $content = $this->request->getSession($flashKey);
         if ($content && $once) {

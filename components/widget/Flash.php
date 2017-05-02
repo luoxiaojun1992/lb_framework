@@ -1,7 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: luoxiaojun
- * Date: 17/5/2
- * Time: 11:06
- */
+
+namespace lb\components\widget;
+
+use lb\controllers\BaseController;
+
+class Flash extends Base
+{
+    public static function render($flashKey, BaseController $controller)
+    {
+        return sprintf('<p>%s</p>', $controller->getFlash($flashKey));
+    }
+}
