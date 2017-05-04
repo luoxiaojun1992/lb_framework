@@ -11,7 +11,9 @@ use lb\components\utils\IdGenerator;
 use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
 use \Swoole\Server as TcpServer;
+use Swoole\Websocket\Server as WebsocketServer;
 use Swoole\Client as TcpClient;
+use WebSocket\Client;
 
 class SwooleController extends ConsoleController
 {
@@ -119,8 +121,8 @@ class SwooleController extends ConsoleController
         $this->writeln('Starting swoole udp server...');
 
         $udpServer = new TcpServer(
-            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
-            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            $this->swooleConfig['upd']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['upd']['port'] ?? self::DEFAULT_SWOOLE_PORT,
             SWOOLE_PROCESS,
             SWOOLE_SOCK_UDP
         );
@@ -171,6 +173,65 @@ class SwooleController extends ConsoleController
         });
 
         $udpServer->start();
+    }
+
+    /**
+     * Swoole Websocket Server
+     */
+    public function websocket()
+    {
+        $ws = new WebsocketServer(
+            $this->swooleConfig['ws']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['ws']['port'] ?? self::DEFAULT_SWOOLE_PORT
+        );
+
+        $ws->on('open', function ($ws, $request) {
+            $this->writeln('client-Connect.');
+        });
+
+        $ws->on('message', function ($ws, $frame) {
+            $jsonData = JsonHelper::decode($frame->data);
+            if (isset($jsonData['handler'])) {
+                $jsonData['swoole_frame'] = $frame;
+                $handlerClass = $jsonData['handler'];
+                if (class_exists('\Throwable')) {
+                    try {
+                        $ws->push(
+                            $frame->fd,
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
+                        );
+                    } catch (\Throwable $e) {
+                        $ws->push(
+                            $frame->fd,
+                            'Exception:' . $e->getTraceAsString()
+                        );
+                    }
+                } else {
+                    try {
+                        $ws->push(
+                            $frame->fd,
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
+                        );
+                    } catch (\Exception $e) {
+                        $ws->push(
+                            $frame->fd,
+                            'Exception:' . $e->getTraceAsString()
+                        );
+                    }
+                }
+            } else {
+                $ws->push(
+                    $frame->fd,
+                    'Handler not exists'
+                );
+            }
+        });
+
+        $ws->on('close', function ($ws, $fd) {
+            $this->writeln('client-closed');
+        });
+
+        $ws->start();
     }
 
     /**
@@ -225,9 +286,23 @@ class SwooleController extends ConsoleController
         });
 
         $client->connect(
-            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
-            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
-            $this->swooleConfig['tcp']['timeout'] ?? self::DEFAULT_SWOOLE_TIMEOUT
+            $this->swooleConfig['udp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['udp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            $this->swooleConfig['udp']['timeout'] ?? self::DEFAULT_SWOOLE_TIMEOUT
         );
+    }
+
+    /**
+     * Websocket Client Demo
+     */
+    public function websocketClient()
+    {
+        $client = new Client(
+            'ws://' .
+            ($this->swooleConfig['ws']['host'] ?? self::DEFAULT_SWOOLE_HOST) . ':' .
+            ($this->swooleConfig['ws']['port'] ?? self::DEFAULT_SWOOLE_PORT)
+        );
+        $client->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
+        $client->close();
     }
 }
