@@ -116,6 +116,8 @@ class SwooleController extends ConsoleController
      */
     public function udp()
     {
+        $this->writeln('Starting swoole udp server...');
+
         $udpServer = new TcpServer(
             $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
             $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
