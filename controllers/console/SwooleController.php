@@ -180,6 +180,8 @@ class SwooleController extends ConsoleController
      */
     public function websocket()
     {
+        $this->writeln('Starting swoole websocket server...');
+
         $ws = new WebsocketServer(
             $this->swooleConfig['ws']['host'] ?? self::DEFAULT_SWOOLE_HOST,
             $this->swooleConfig['ws']['port'] ?? self::DEFAULT_SWOOLE_PORT
@@ -297,12 +299,15 @@ class SwooleController extends ConsoleController
      */
     public function websocketClient()
     {
+        $this->writeln('Starting demo websocket client...');
+
         $client = new Client(
             'ws://' .
             ($this->swooleConfig['ws']['host'] ?? self::DEFAULT_SWOOLE_HOST) . ':' .
             ($this->swooleConfig['ws']['port'] ?? self::DEFAULT_SWOOLE_PORT)
         );
         $client->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
+        $this->writeln($client->receive());
         $client->close();
     }
 }
