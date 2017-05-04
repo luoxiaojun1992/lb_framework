@@ -114,7 +114,7 @@ class SwooleController extends ConsoleController
     /**
      * Swoole Tcp Client Demo
      */
-    public function client()
+    public function TcpClient()
     {
         $this->writeln('Starting demo swoole tcp client...');
 
