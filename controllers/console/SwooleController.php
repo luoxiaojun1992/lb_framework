@@ -112,13 +112,102 @@ class SwooleController extends ConsoleController
     }
 
     /**
+     * Swoole UDP Server
+     */
+    public function udp()
+    {
+        $udpServer = new TcpServer(
+            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            SWOOLE_PROCESS,
+            SWOOLE_SOCK_UDP
+        );
+
+        $udpServer->on('Packet', function ($serv, $data, $clientInfo) {
+            $clientAddress = $clientInfo['address'];
+            $clientPort = $clientInfo['port'];
+            $jsonData = JsonHelper::decode($data);
+            if (isset($jsonData['handler'])) {
+                $jsonData['swoole_client_info'] = $clientInfo;
+                $handlerClass = $jsonData['handler'];
+                if (class_exists('\Throwable')) {
+                    try {
+                        $serv->sendto(
+                            $clientAddress,
+                            $clientPort,
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
+                        );
+                    } catch (\Throwable $e) {
+                        $serv->sendto(
+                            $clientAddress,
+                            $clientPort,
+                            'Exception:' . $e->getTraceAsString()
+                        );
+                    }
+                } else {
+                    try {
+                        $serv->sendto(
+                            $clientAddress,
+                            $clientPort,
+                            Lb::app()->dispatchJob($handlerClass, $jsonData)
+                        );
+                    } catch (\Exception $e) {
+                        $serv->sendto(
+                            $clientAddress,
+                            $clientPort,
+                            'Exception:' . $e->getTraceAsString()
+                        );
+                    }
+                }
+            } else {
+                $serv->sendto(
+                    $clientAddress,
+                    $clientPort,
+                    'Handler not exists'
+                );
+            }
+        });
+
+        $udpServer->start();
+    }
+
+    /**
      * Swoole Tcp Client Demo
      */
-    public function TcpClient()
+    public function tcpClient()
     {
         $this->writeln('Starting demo swoole tcp client...');
 
         $client = new TcpClient(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
+
+        $client->on('connect', function($cli) {
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
+        });
+        $client->on('receive', function($cli, $data){
+            $this->writeln('Received: '.$data);
+        });
+        $client->on('error', function($cli){
+            $this->writeln('Connect failed');
+        });
+        $client->on("close", function($cli){
+            $this->writeln('Connection close');
+        });
+
+        $client->connect(
+            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            $this->swooleConfig['tcp']['timeout'] ?? self::DEFAULT_SWOOLE_TIMEOUT
+        );
+    }
+
+    /**
+     * Swoole UDP Client Demo
+     */
+    public function udpClient()
+    {
+        $this->writeln('Starting demo swoole udp client...');
+
+        $client = new TcpClient(SWOOLE_SOCK_UDP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
             $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
