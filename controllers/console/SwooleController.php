@@ -8,6 +8,7 @@ use lb\components\helpers\JsonHelper;
 use lb\components\jobs\SwooleTcpJob;
 use lb\components\request\SwooleRequest;
 use lb\components\response\SwooleResponse;
+use lb\components\swoole\Mqtt;
 use lb\components\utils\IdGenerator;
 use lb\Lb;
 use \Swoole\Http\Server as HttpServer;
@@ -247,6 +248,50 @@ class SwooleController extends ConsoleController implements Protocol
         });
 
         $ws->start();
+    }
+
+    /**
+     * Swoole Mqtt Server
+     */
+    public function mqtt()
+    {
+        $this->writeln('Starting swoole mqtt server...');
+
+        $serv = new TcpServer(
+            $this->swooleConfig['tcp']['host'] ?? self::DEFAULT_SWOOLE_HOST,
+            $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT,
+            SWOOLE_BASE
+        );
+        $serv->set(
+            array(
+                'open_mqtt_protocol' => 1,
+                'worker_num' => 1,
+            )
+        );
+        $serv->on('connect', function ($serv, $fd){
+            echo "Client:Connect.\n";
+        });
+        $serv->on('receive', function ($serv, $fd, $from_id, $data) {
+            $header = Mqtt::mqtt_get_header($data);
+            var_dump($header);
+            if ($header['type'] == 1) {
+                $resp = chr(32) . chr(2) . chr(0) . chr(0);//转换为二进制返回应该使用chr
+                Mqtt::event_connect(substr($data, 2));
+                $serv->send($fd, $resp);
+            } elseif ($header['type'] == 3) {
+                $offset = 2;
+                $topic = Mqtt::decodeString(substr($data, $offset));
+                $offset += strlen($topic) + 2;
+                $msg = substr($data, $offset);
+                echo "client msg: $topic\n---------------------------------\n$msg\n";
+                //file_put_contents(__DIR__.'/data.log', $data);
+            }
+            echo "received length=".strlen($data)."\n";
+        });
+        $serv->on('close', function ($serv, $fd) {
+            echo "Client: Close.\n";
+        });
+        $serv->start();
     }
 
     /**
