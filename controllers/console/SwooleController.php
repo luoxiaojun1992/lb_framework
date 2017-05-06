@@ -85,7 +85,7 @@ class SwooleController extends ConsoleController implements Protocol
         });
 
         $server->on('receive', function ($serv, $fd, $from_id, $data) {
-            $jsonData = JsonHelper::decode($data);
+            $jsonData = JsonHelper::decode(trim($data, self::EOF));
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_from_id'] = $from_id;
                 $handlerClass = $jsonData['handler'];
@@ -143,7 +143,7 @@ class SwooleController extends ConsoleController implements Protocol
         $udpServer->on('Packet', function ($serv, $data, $clientInfo) {
             $clientAddress = $clientInfo['address'];
             $clientPort = $clientInfo['port'];
-            $jsonData = JsonHelper::decode($data);
+            $jsonData = JsonHelper::decode(trim($data, self::EOF));
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_client_info'] = $clientInfo;
                 $handlerClass = $jsonData['handler'];
