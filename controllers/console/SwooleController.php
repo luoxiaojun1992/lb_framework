@@ -77,7 +77,7 @@ class SwooleController extends ConsoleController implements Protocol
         //防止粘包
         $server->set([
             'open_eof_split' => true,
-            'package_eof' => self::SWOOLE_TCP_EOF,
+            'package_eof' => self::EOF,
         ]);
 
         $server->on('connect', function ($serv, $fd){
@@ -85,7 +85,7 @@ class SwooleController extends ConsoleController implements Protocol
         });
 
         $server->on('receive', function ($serv, $fd, $from_id, $data) {
-            $jsonData = JsonHelper::decode(trim($data, self::SWOOLE_TCP_EOF));
+            $jsonData = JsonHelper::decode(str_replace(self::EOF, '', $data));
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_from_id'] = $from_id;
                 $handlerClass = $jsonData['handler'];
@@ -137,13 +137,13 @@ class SwooleController extends ConsoleController implements Protocol
         //防止粘包
         $udpServer->set([
             'open_eof_split' => true,
-            'package_eof' => self::SWOOLE_TCP_EOF,
+            'package_eof' => self::EOF,
         ]);
 
         $udpServer->on('Packet', function ($serv, $data, $clientInfo) {
             $clientAddress = $clientInfo['address'];
             $clientPort = $clientInfo['port'];
-            $jsonData = JsonHelper::decode(trim($data, self::SWOOLE_TCP_EOF));
+            $jsonData = JsonHelper::decode(str_replace(self::EOF, '', $data));
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_client_info'] = $clientInfo;
                 $handlerClass = $jsonData['handler'];
@@ -259,8 +259,8 @@ class SwooleController extends ConsoleController implements Protocol
         $client = new TcpClient(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
-            //发送数据中不能包含'#swoole_tcp_eof#'
-            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::SWOOLE_TCP_EOF . JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::SWOOLE_TCP_EOF);
+            //发送数据中不能包含'\r\n\r\n'
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::EOF);
         });
         $client->on('receive', function($cli, $data){
             $this->writeln('Received: '.$data);
@@ -289,8 +289,8 @@ class SwooleController extends ConsoleController implements Protocol
         $client = new TcpClient(SWOOLE_SOCK_UDP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
-            //发送数据中不能包含'#swoole_tcp_eof#'
-            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::SWOOLE_TCP_EOF);
+            //发送数据中不能包含'\r\n\r\n'
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::EOF);
         });
         $client->on('receive', function($cli, $data){
             $this->writeln('Received: '.$data);
