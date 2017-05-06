@@ -3,6 +3,7 @@
 namespace lb\controllers\console;
 
 use lb\applications\swoole\App;
+use lb\components\consts\Protocol;
 use lb\components\helpers\JsonHelper;
 use lb\components\jobs\SwooleTcpJob;
 use lb\components\request\SwooleRequest;
@@ -15,7 +16,7 @@ use Swoole\Websocket\Server as WebsocketServer;
 use Swoole\Client as TcpClient;
 use WebSocket\Client;
 
-class SwooleController extends ConsoleController
+class SwooleController extends ConsoleController implements Protocol
 {
     const DEFAULT_SWOOLE_HOST = '127.0.0.1';
     const DEFAULT_SWOOLE_PORT = '9501';
@@ -73,6 +74,12 @@ class SwooleController extends ConsoleController
             $this->swooleConfig['tcp']['port'] ?? self::DEFAULT_SWOOLE_PORT
         );
 
+        //防止粘包
+        $server->set([
+            'open_eof_split' => true,
+            'package_eof' => self::EOF,
+        ]);
+
         $server->on('connect', function ($serv, $fd){
             $this->writeln('Client:Connect.');
         });
@@ -126,6 +133,12 @@ class SwooleController extends ConsoleController
             SWOOLE_PROCESS,
             SWOOLE_SOCK_UDP
         );
+
+        //防止粘包
+        $udpServer->set([
+            'open_eof_split' => true,
+            'package_eof' => self::EOF,
+        ]);
 
         $udpServer->on('Packet', function ($serv, $data, $clientInfo) {
             $clientAddress = $clientInfo['address'];
@@ -246,7 +259,7 @@ class SwooleController extends ConsoleController
         $client = new TcpClient(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
-            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::EOF);
         });
         $client->on('receive', function($cli, $data){
             $this->writeln('Received: '.$data);
@@ -275,7 +288,7 @@ class SwooleController extends ConsoleController
         $client = new TcpClient(SWOOLE_SOCK_UDP, SWOOLE_SOCK_ASYNC);
 
         $client->on('connect', function($cli) {
-            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]));
+            $cli->send(JsonHelper::encode(['handler' => SwooleTcpJob::class]) . self::EOF);
         });
         $client->on('receive', function($cli, $data){
             $this->writeln('Received: '.$data);
