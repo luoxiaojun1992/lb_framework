@@ -11,6 +11,7 @@ class HttpHelperTest extends BaseTestCase
     protected $mime_type;
     protected $status_code;
     protected $status_code_message;
+    protected $url = 'http://test.io?foo=foo&bar=bar';
 
     public function setUp()
     {
@@ -37,5 +38,10 @@ class HttpHelperTest extends BaseTestCase
     public function testGetStatusCodeMessage()
     {
         $this->assertEquals($this->status_code_message, HttpHelper::get_status_code_message($this->status_code));
+    }
+
+    public function testParseQuery()
+    {
+        $this->assertEquals(['foo' => 'foo', 'bar' => 'bar'], HttpHelper::parseQuery($this->url));
     }
 }
