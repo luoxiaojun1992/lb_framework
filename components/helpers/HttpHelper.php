@@ -303,4 +303,20 @@ class HttpHelper extends  BaseClass
             ResponseKit::setHeader('Expires', gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
         }
     }
+
+    /**
+     * Parse Query String
+     *
+     * @param $url
+     * @param $callable
+     * @return array
+     */
+    public static function parseQuery($url, $callable = null)
+    {
+        parse_str(parse_url($url, PHP_URL_QUERY), $queryParams);
+        if ($callable) {
+            call_user_func_array($callable, ['queryParams' => $queryParams]);
+        }
+        return $queryParams;
+    }
 }
