@@ -55,7 +55,7 @@ class MysqlSession extends \SessionHandler
                 }
             } else {
                 $sql = 'INSERT INTO `lb_session` (`id`,`expire`,`data`) VALUES("' . $id . '", ' . $expire_time . ', "' . $sess_data . '")';
-                $statement = Dao::component()->prepare($sql, 'master');
+                $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     $res = $statement->execute();
                     if ($res) {

@@ -333,7 +333,7 @@ class ActiveRecord extends AbstractActiveRecord
     public function findBySql($sql)
     {
         if ($this->is_single) {
-            $statement = Dao::component()->prepare($sql, 'slave');
+            $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_SLAVE);
             if ($statement) {
                 $res = $statement->execute();
                 if ($res) {
@@ -403,7 +403,7 @@ class ActiveRecord extends AbstractActiveRecord
     public function countBySql($sql, $count_field)
     {
         if ($this->is_single) {
-            $statement = Dao::component()->prepare($sql, 'slave');
+            $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_SLAVE);
             if ($statement) {
                 $res = $statement->execute();
                 if ($res) {
@@ -538,7 +538,7 @@ class ActiveRecord extends AbstractActiveRecord
     {
         if ($this->is_single) {
             $res = false;
-            $statement = Dao::component()->prepare($sql, 'master');
+            $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_MASTER);
             if ($statement) {
                 $res = $statement->execute();
             }

@@ -259,7 +259,7 @@ class Dao extends BaseClass
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
-                $statement = $this->prepare($query_sql_statement, 'slave');
+                $statement = $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
                 if ($statement) {
                     try {
                         $res = $statement->execute();
@@ -269,7 +269,7 @@ class Dao extends BaseClass
                     } catch(\PDOException $e) {
                         if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006){
                             Connection::component(Connection::component()->containers, true);
-                            $statement = $this->prepare($query_sql_statement, 'slave');
+                            $statement = $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
                             if ($statement) {
                                 $res = $statement->execute();
                                 if ($res) {
@@ -292,14 +292,14 @@ class Dao extends BaseClass
     {
         $connection_component = Connection::component();
         switch ($nodeType) {
-            case 'slave':
+            case Connection::CONN_TYPE_SLAVE:
                 if ($connection_component->write_conn->inTransaction()) {
                     $conn = $connection_component->write_conn;
                 } else {
                     $conn = $connection_component->read_conn ?: $connection_component->write_conn;
                 }
                 break;
-            case 'master':
+            case Connection::CONN_TYPE_MASTER:
             default:
                 $conn = $connection_component->write_conn;
         }
@@ -370,14 +370,14 @@ class Dao extends BaseClass
             }
             if ($filtered_values) {
                 $insert_sql_statement = sprintf(static::INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_values));
-                $statement = $this->prepare($insert_sql_statement, 'master');
+                $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = $this->prepare($insert_sql_statement, 'master');
+                            $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -416,14 +416,14 @@ class Dao extends BaseClass
             }
             if ($filtered_multi_values) {
                 $insert_sql_statement = sprintf(static::MULTI_INSERT_INTO_SQL_TPL, $table, implode(',', $fields), implode(',', $filtered_multi_values));
-                $statement = $this->prepare($insert_sql_statement, 'master');
+                $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = $this->prepare($insert_sql_statement, 'master');
+                            $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -475,14 +475,14 @@ class Dao extends BaseClass
                     $update_sql_statement .= (' ' . $this->assembleConditionStatement());
                 }
 
-                $statement = $this->prepare($update_sql_statement, 'master');
+                $statement = $this->prepare($update_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
                         $result = $statement->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = $this->prepare($update_sql_statement, 'master');
+                            $statement = $this->prepare($update_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
                                 $result = $statement->execute();
                             }
@@ -511,14 +511,14 @@ class Dao extends BaseClass
                 $delete_sql_statement .= (' ' . $this->assembleConditionStatement());
             }
 
-            $statement = $this->prepare($delete_sql_statement, 'master');
+            $statement = $this->prepare($delete_sql_statement, Connection::CONN_TYPE_MASTER);
             if ($statement) {
                 try {
                     $result = $statement->execute();
                 } catch (\PDOException $e) {
                     if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                         Connection::component(Connection::component()->containers, true);
-                        $statement = $this->prepare($delete_sql_statement, 'master');
+                        $statement = $this->prepare($delete_sql_statement, Connection::CONN_TYPE_MASTER);
                         if ($statement) {
                             $result = $statement->execute();
                         }
@@ -620,21 +620,21 @@ class Dao extends BaseClass
 
     public function beginTransaction()
     {
-        $write_conn = $this->getConnByNodeType('master');
+        $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
         $write_conn->beginTransaction();
     }
 
     public function commit()
     {
-        $write_conn = $this->getConnByNodeType('master');
+        $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->commit();
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }
 
     public function rollBack()
     {
-        $write_conn = $this->getConnByNodeType('master');
+        $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->rollBack();
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }

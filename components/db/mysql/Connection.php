@@ -16,6 +16,9 @@ use lb\Lb;
 
 class Connection extends BaseClass
 {
+    const CONN_TYPE_MASTER = 'master';
+    const CONN_TYPE_SLAVE = 'slave';
+
     public $write_conn;
     public $read_conn;
     protected $_master_db;
@@ -66,8 +69,8 @@ class Connection extends BaseClass
         $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
         $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
         $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
-        $this->getDsn('master');
-        $this->getConnection('master');
+        $this->getDsn(self::CONN_TYPE_MASTER);
+        $this->getConnection(self::CONN_TYPE_MASTER);
     }
 
     protected function getSlaveConnection($server_hosts = [])
@@ -91,9 +94,9 @@ class Connection extends BaseClass
                     $this->_slave_username = $target_slave_config['username'] ?? '';
                     $this->_slave_password = $target_slave_config['password'] ?? '';
                     $this->_slave_options = $target_slave_config['options'] ?? [];
-                    $this->getDsn('slave');
+                    $this->getDsn(self::CONN_TYPE_SLAVE);
                     try {
-                        $this->getConnection('slave');
+                        $this->getConnection(self::CONN_TYPE_SLAVE);
                     } catch (\PDOException $e) {
                         unset($server_hosts[$slave_target_num]);
                         $this->getSlaveConnection($server_hosts);
@@ -107,10 +110,10 @@ class Connection extends BaseClass
     protected function getDsn($node_type)
     {
         switch ($node_type) {
-            case 'master':
+            case self::CONN_TYPE_MASTER:
                 $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
                 break;
-            case 'slave':
+            case self::CONN_TYPE_SLAVE:
                 $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
                 break;
             default:
@@ -121,10 +124,10 @@ class Connection extends BaseClass
     protected function getConnection($node_type)
     {
         switch ($node_type) {
-            case 'master':
+            case self::CONN_TYPE_MASTER:
                 $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
                 break;
-            case 'slave':
+            case self::CONN_TYPE_SLAVE:
                 $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
                 break;
             default:
