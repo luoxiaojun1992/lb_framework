@@ -297,10 +297,14 @@ class Dao extends BaseClass
                 $conn = $connection_component->write_conn;
                 break;
             case 'slave':
-                $conn = $connection_component->read_conn ? : $connection_component->write_conn;
+                if ($connection_component->write_conn->inTransaction()) {
+                    $conn = $connection_component->write_conn;
+                } else {
+                    $conn = $connection_component->read_conn ?: $connection_component->write_conn;
+                }
                 break;
             default:
-                $conn = false;
+                $conn = $connection_component->write_conn;
         }
         return $conn;
     }
@@ -617,23 +621,23 @@ class Dao extends BaseClass
         return $statement;
     }
 
-    public static function beginTransaction()
+    public function beginTransaction()
     {
-        $write_conn = Connection::component()->write_conn;
+        $write_conn = $this->getConnByNodeType('master');
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
         $write_conn->beginTransaction();
     }
 
-    public static function commit()
+    public function commit()
     {
-        $write_conn = Connection::component()->write_conn;
+        $write_conn = $this->getConnByNodeType('master');
         $write_conn->commit();
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }
 
-    public static function rollBack()
+    public function rollBack()
     {
-        $write_conn = Connection::component()->write_conn;
+        $write_conn = $this->getConnByNodeType('master');
         $write_conn->rollBack();
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
     }
