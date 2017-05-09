@@ -6,7 +6,6 @@ use lb\BaseClass;
 use lb\components\helpers\ArrayHelper;
 use lb\components\traits\BaseObject;
 use lb\Lb;
-use Monolog\Logger;
 
 class Dao extends BaseClass
 {
@@ -293,9 +292,6 @@ class Dao extends BaseClass
     {
         $connection_component = Connection::component();
         switch ($nodeType) {
-            case 'master':
-                $conn = $connection_component->write_conn;
-                break;
             case 'slave':
                 if ($connection_component->write_conn->inTransaction()) {
                     $conn = $connection_component->write_conn;
@@ -303,6 +299,7 @@ class Dao extends BaseClass
                     $conn = $connection_component->read_conn ?: $connection_component->write_conn;
                 }
                 break;
+            case 'master':
             default:
                 $conn = $connection_component->write_conn;
         }
