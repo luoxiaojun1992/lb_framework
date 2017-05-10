@@ -26,4 +26,18 @@ class MathsHelperTest extends BaseTestCase
         $this->assertGreaterThanOrEqual($min, $random_float);
         $this->assertLessThanOrEqual($max, $random_float);
     }
+
+    public function testTimes()
+    {
+        $this->assertEquals(8, MathsHelper::times(2, 4));
+        $this->assertEquals(8, MathsHelper::times(2, 4, true));
+        $this->assertEquals(6, MathsHelper::times(2, 3));
+    }
+
+    public function testDivide()
+    {
+        $this->assertEquals(2, MathsHelper::divide(8, 4));
+        $this->assertEquals(2, MathsHelper::divide(8, 4, true));
+        $this->assertEquals(2, MathsHelper::divide(6, 3));
+    }
 }
