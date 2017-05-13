@@ -106,8 +106,47 @@ class Redis extends BaseClass
      */
     public function set($key, $value, $expiration = null)
     {
+        return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @param $ttl
+     * @return bool
+     */
+    public function setnx($key, $value, $ttl = 0)
+    {
         if ($this->conn) {
-            return $this->conn->set($key, $value, $expiration);
+            if ($ttl) {
+                if ($this->multi()) {
+                    if (class_exists('\Throwable')) {
+                        try {
+                            if ($res = $this->_setnx($key, $value)) {
+                                $this->expire($key, $ttl);
+                            }
+                            $this->exec();
+                            return $res;
+                        } catch (\Throwable $e) {
+                            $this->discard();
+                            return false;
+                        }
+                    } else {
+                        try {
+                            if ($res = $this->_setnx($key, $value)) {
+                                $this->expire($key, $ttl);
+                            }
+                            $this->exec();
+                            return $res;
+                        } catch (\Exception $e) {
+                            $this->discard();
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                return $this->_setnx($key, $value);
+            }
         }
 
         return false;
@@ -118,13 +157,9 @@ class Redis extends BaseClass
      * @param $value
      * @return bool
      */
-    public function setnx($key, $value)
+    protected function _setnx($key, $value)
     {
-        if ($this->conn) {
-            return $this->conn->setnx($key, $value);
-        }
-
-        return false;
+        return $this->conn ? $this->conn->setnx($key, $value) : false;
     }
 
     /**
@@ -135,6 +170,50 @@ class Redis extends BaseClass
     {
         if ($this->conn) {
             $this->conn->delete($key);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $key
+     * @param $ttl
+     * @return bool
+     */
+    public function expire($key, $ttl)
+    {
+        return $this->conn ? $this->conn->expire($key, $ttl) : false;
+    }
+
+    /**
+     * @return null|\Redis
+     */
+    public function multi()
+    {
+        return $this->conn ? $this->conn->multi() : null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function exec()
+    {
+        if ($this->conn) {
+            $this->conn->exec();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function discard()
+    {
+        if ($this->conn) {
+            $this->conn->discard();
             return true;
         }
 
