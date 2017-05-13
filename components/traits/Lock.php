@@ -14,13 +14,11 @@ trait Lock
      */
     public function lock($key = self::class, $ttl = 0)
     {
-        if ($lock = $this->getLock($key)) {
-            return $lock;
+        // Lock is occupied
+        if ($this->getLock($key)) {
+            return false;
         }
-        if (RedisKit::setnx($this->getLockKey($key), $key, $ttl)) {
-            return $this->getLock($key);
-        }
-        return null;
+        return RedisKit::setnx($this->getLockKey($key), $key, $ttl);
     }
 
     /**

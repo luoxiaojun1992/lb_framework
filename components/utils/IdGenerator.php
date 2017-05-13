@@ -77,7 +77,8 @@ class IdGenerator extends BaseClass
     {
         $lock_key = $prefix ? $prefix . '@' . self::class : self::class;
         $stop_time = strtotime('+ 2 seconds');
-        while (!$this->lock($lock_key)) {
+        //After 5 seconds lock will be released
+        while (!$this->lock($lock_key, 5)) {
             if (time() > $stop_time) {
                 throw new \Exception('Failed to get generator lock.');
             }
