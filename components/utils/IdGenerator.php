@@ -85,8 +85,8 @@ class IdGenerator extends BaseClass
         $nextId = $prefix . $this->nextId();
         $lock_key = ($prefix ? $prefix . '@' . self::class : self::class) . $nextId;
 
-        //After 5 seconds lock will be released
-        while (!$this->lock($lock_key, 5)) {
+        //After 5 minutes lock will be released
+        while (!$this->lock($lock_key, 300)) {
             $nextId = $prefix . $this->nextId();
             $lock_key = ($prefix ? $prefix . '@' . self::class : self::class) . $nextId;
         }
