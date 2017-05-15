@@ -215,12 +215,7 @@ class Redis extends BaseClass
      */
     public function discard()
     {
-        if ($this->conn) {
-            $this->conn->discard();
-            return true;
-        }
-
-        return false;
+        return $this->conn ? $this->conn->discard() : false;
     }
 
     /**
@@ -229,11 +224,6 @@ class Redis extends BaseClass
      */
     public function watch($key)
     {
-        if ($this->conn) {
-            $this->conn->watch($key);
-            return true;
-        }
-
-        return false;
+        return $this->conn ? $this->conn->watch($key) : false;
     }
 }
