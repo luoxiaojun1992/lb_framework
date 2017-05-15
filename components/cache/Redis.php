@@ -119,7 +119,7 @@ class Redis extends BaseClass
     {
         if ($this->conn) {
             if ($ttl) {
-                if ($this->multi()) {
+                if ($this->watch($key) && $this->multi()) {
                     if (class_exists('\Throwable')) {
                         try {
                             if ($res = $this->_setnx($key, $value)) {
@@ -214,6 +214,20 @@ class Redis extends BaseClass
     {
         if ($this->conn) {
             $this->conn->discard();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $key
+     * @return bool
+     */
+    public function watch($key)
+    {
+        if ($this->conn) {
+            $this->conn->watch($key);
             return true;
         }
 
