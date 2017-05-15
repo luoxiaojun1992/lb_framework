@@ -123,8 +123,12 @@ class Redis extends BaseClass
                     if (class_exists('\Throwable')) {
                         try {
                             if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
-                                $this->exec();
-                                return true;
+                                $execResult = $this->exec();
+                                if (is_array($execResult)) {
+                                    return $execResult[0];
+                                } else {
+                                    return $execResult;
+                                }
                             } else {
                                 $this->discard();
                             }
@@ -134,8 +138,12 @@ class Redis extends BaseClass
                     } else {
                         try {
                             if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
-                                $this->exec();
-                                return true;
+                                $execResult = $this->exec();
+                                if (is_array($execResult)) {
+                                    return $execResult[0];
+                                } else {
+                                    return $execResult;
+                                }
                             } else {
                                 $this->discard();
                             }
@@ -199,12 +207,7 @@ class Redis extends BaseClass
      */
     public function exec()
     {
-        if ($this->conn) {
-            $this->conn->exec();
-            return true;
-        }
-
-        return false;
+        return $this->conn ? $this->conn->exec() : false;
     }
 
     /**
