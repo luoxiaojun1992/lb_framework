@@ -122,25 +122,25 @@ class Redis extends BaseClass
                 if ($this->watch($key) && $this->multi()) {
                     if (class_exists('\Throwable')) {
                         try {
-                            if ($res = $this->_setnx($key, $value)) {
-                                $this->expire($key, $ttl);
+                            if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
+                                $this->exec();
+                                return true;
+                            } else {
+                                $this->discard();
                             }
-                            $this->exec();
-                            return $res;
                         } catch (\Throwable $e) {
                             $this->discard();
-                            return false;
                         }
                     } else {
                         try {
-                            if ($res = $this->_setnx($key, $value)) {
-                                $this->expire($key, $ttl);
+                            if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
+                                $this->exec();
+                                return true;
+                            } else {
+                                $this->discard();
                             }
-                            $this->exec();
-                            return $res;
                         } catch (\Exception $e) {
                             $this->discard();
-                            return false;
                         }
                     }
                 }
