@@ -226,4 +226,33 @@ class Redis extends BaseClass
     {
         return $this->conn ? $this->conn->watch($key) : false;
     }
+
+    /**
+     * @param $key
+     * @return int
+     */
+    public function scard($key)
+    {
+        return $this->conn ? $this->conn->sCard($key) : 0;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return bool
+     */
+    public function sismember($key, $value)
+    {
+        return $this->conn ? $this->conn->sIsMember($key, $value) : false;
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return int
+     */
+    public function sadd($key, $value)
+    {
+        return $this->conn ? $this->conn->sAdd($key, $value) : 0;
+    }
 }
