@@ -63,7 +63,6 @@ class {{%className}} extends ActiveRecord
     }
     
 {{%setter}}
-
 {{%getter}}
 }
 

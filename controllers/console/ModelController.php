@@ -99,8 +99,8 @@ class ModelController extends ConsoleController implements ErrorMsg
     {
         \$this->{$attrName} = \$value;
     }
-
 EOF;
+                $setter .= (str_repeat(PHP_EOL, 2));
 
                 //Getter
                 $getter .= <<<EOF
@@ -110,6 +110,7 @@ EOF;
     }
 
 EOF;
+                $getter .= (str_repeat(PHP_EOL, 2));
 
                 if ($field['Key'] == 'PRI') {
                     //Primary Key
