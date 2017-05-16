@@ -99,6 +99,7 @@ class ModelController extends ConsoleController implements ErrorMsg
     public function set{$camelAttrName}(\$value)
     {
         \$this->{$attrName} = \$value;
+        return \$this;
     }
 EOF;
                 $setter .= (str_repeat(PHP_EOL, 2));
