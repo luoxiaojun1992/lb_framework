@@ -83,11 +83,34 @@ class ModelController extends ConsoleController implements ErrorMsg
             $primaryKeyComment = '';
             $propertyComments = '';
 
+            $setter = '';
+            $getter = '';
+
             foreach ($fields as $field) {
                 $attrName = $field['Field'];
                 $defaultValue = $this->formatValue($field['Default'], $field['Type']);
                 $label = $this->formatLabel($attrName);
                 $commentType = $this->getCommentType($field['Type']);
+                $camelAttrName = $this->formatAttr($attrName);
+
+                //Setter
+                $setter .= <<<EOF
+    public function set{$camelAttrName}(\$value)
+    {
+        \$this->{$attrName} = \$value;
+    }
+
+EOF;
+
+                //Getter
+                $getter .= <<<EOF
+    public function get{$camelAttrName}()
+    {
+        return \$this->{$attrName};
+    }
+
+EOF;
+
                 if ($field['Key'] == 'PRI') {
                     //Primary Key
                     $primaryKey = $attrName;
@@ -194,6 +217,27 @@ EOF;
                 }
             }
             $attrName = trim($attrName);
+        }
+
+        return $attrName;
+    }
+
+    /**
+     * Format attr name
+     *
+     * @param $attrName
+     * @return string
+     */
+    protected function formatAttr($attrName)
+    {
+        if (strpos($attrName, '_') !== false) {
+            $tempArr = explode('_', $attrName);
+            foreach ($tempArr as $key => $item) {
+                $tempArr[$key] = ucfirst(strtolower($item));
+            }
+            $attrName = implode('', $tempArr);
+        } else {
+            $attrName = ucfirst($attrName);
         }
 
         return $attrName;

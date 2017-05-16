@@ -10,6 +10,8 @@ interface CodeTpl
     const LABELS_TAG = '{{%labels}}';
     const PRIMARY_KEY_TAG = '{{%primaryKey}}';
     const PROPERTY_COMMENTS_TAG = '{{%propertyComments}}';
+    const SETTER = '{{%setter}}';
+    const GETTER = '{{%getter}}';
 
     const MODEL_TPL = <<<'EOF'
 <?php
@@ -59,6 +61,10 @@ class {{%className}} extends ActiveRecord
 
         return parent::beforeUpdate();
     }
+    
+{{%setter}}
+
+{{%getter}}
 }
 
 EOF;
