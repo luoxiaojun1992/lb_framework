@@ -8,21 +8,21 @@ use lb\Lb;
 
 class RedisQueue extends BaseQueue
 {
-    /** @var \Redis */
+    /** @var Redis */
     private $conn;
     private $key = 'queue';
     private $delayed_key = 'queue:delayed';
 
     public function push(Job $job)
     {
-        $this->getConn()->rPush($this->getKey(), $this->serialize($job));
+        $this->getConn()->rpush($this->getKey(), $this->serialize($job));
     }
 
     public function pull()
     {
         $conn = $this->getConn();
         // Migrating Delayed Queues
-        $delayed_queues = $conn->zRange($this->getDelayedKey(), 0, -1);
+        $delayed_queues = $conn->zrange($this->getDelayedKey(), 0, -1);
         foreach ($delayed_queues as $delayed_queue) {
             if ($delayed_queue) {
                 /** @var Job $job */
@@ -30,9 +30,9 @@ class RedisQueue extends BaseQueue
                 if ($job->getExecuteAt() <= date('Y-m-d H:i:s')) {
                     $conn->watch($this->getDelayedKey() . '@' . $job->getId());
                     $conn->multi();
-                    $conn->zRem($this->getDelayedKey(), $delayed_queue);
-                    $this->push($job);
                     try {
+                        $conn->zrem($this->getDelayedKey(), $delayed_queue);
+                        $this->push($job);
                         $conn->exec();
                     } catch (\Exception $e) {
                         $conn->discard();
@@ -41,7 +41,7 @@ class RedisQueue extends BaseQueue
             }
         }
 
-        $serialized_job = $conn->lPop($this->getKey());
+        $serialized_job = $conn->lpop($this->getKey());
         if (!$serialized_job) {
             return null;
         }
@@ -61,7 +61,7 @@ class RedisQueue extends BaseQueue
 
     public function init()
     {
-        $this->setConn(Redis::component()->conn);
+        $this->setConn(Redis::component());
         $queue_config = Lb::app()->getQueueConfig();
         if (isset($queue_config['queue'])) {
             $this->setKey($queue_config['queue']);

@@ -95,7 +95,12 @@ class Redis extends BaseClass
      */
     public function get($key)
     {
-        return $this->conn ? $this->conn->get($key) : '';
+        try {
+            return $this->conn ? $this->conn->get($key) : '';
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->get($key) : '';
+        }
     }
 
     /**
@@ -106,7 +111,12 @@ class Redis extends BaseClass
      */
     public function set($key, $value, $expiration = null)
     {
-        return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
+        try {
+            return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->get($key) : '';
+        }
     }
 
     /**
@@ -167,7 +177,12 @@ class Redis extends BaseClass
      */
     protected function _setnx($key, $value)
     {
-        return $this->conn ? $this->conn->setnx($key, $value) : false;
+        try {
+            return $this->conn ? $this->conn->setnx($key, $value) : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->setnx($key, $value) : false;
+        }
     }
 
     /**
@@ -177,7 +192,12 @@ class Redis extends BaseClass
     public function delete($key)
     {
         if ($this->conn) {
-            $this->conn->delete($key);
+            try {
+                $this->conn->delete($key);
+            } catch (\Exception $e) {
+                self::component($this->containers, true);
+                $this->conn->delete($key);
+            }
             return true;
         }
 
@@ -191,7 +211,12 @@ class Redis extends BaseClass
      */
     public function expire($key, $ttl)
     {
-        return $this->conn ? $this->conn->expire($key, $ttl) : false;
+        try {
+            return $this->conn ? $this->conn->expire($key, $ttl) : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->expire($key, $ttl) : false;
+        }
     }
 
     /**
@@ -199,7 +224,12 @@ class Redis extends BaseClass
      */
     public function multi()
     {
-        return $this->conn ? $this->conn->multi() : null;
+        try {
+            return $this->conn ? $this->conn->multi() : null;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->multi() : null;
+        }
     }
 
     /**
@@ -207,7 +237,12 @@ class Redis extends BaseClass
      */
     public function exec()
     {
-        return $this->conn ? $this->conn->exec() : false;
+        try {
+            return $this->conn ? $this->conn->exec() : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->exec() : false;
+        }
     }
 
     /**
@@ -215,7 +250,12 @@ class Redis extends BaseClass
      */
     public function discard()
     {
-        return $this->conn ? $this->conn->discard() : false;
+        try {
+            return $this->conn ? $this->conn->discard() : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->discard() : false;
+        }
     }
 
     /**
@@ -224,7 +264,12 @@ class Redis extends BaseClass
      */
     public function watch($key)
     {
-        return $this->conn ? $this->conn->watch($key) : false;
+        try {
+            return $this->conn ? $this->conn->watch($key) : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->watch($key) : false;
+        }
     }
 
     /**
@@ -233,7 +278,12 @@ class Redis extends BaseClass
      */
     public function scard($key)
     {
-        return $this->conn ? $this->conn->sCard($key) : 0;
+        try {
+            return $this->conn ? $this->conn->sCard($key) : 0;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->sCard($key) : 0;
+        }
     }
 
     /**
@@ -243,7 +293,12 @@ class Redis extends BaseClass
      */
     public function sismember($key, $value)
     {
-        return $this->conn ? $this->conn->sIsMember($key, $value) : false;
+        try {
+            return $this->conn ? $this->conn->sIsMember($key, $value) : false;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->sIsMember($key, $value) : false;
+        }
     }
 
     /**
@@ -253,6 +308,71 @@ class Redis extends BaseClass
      */
     public function sadd($key, $value)
     {
-        return $this->conn ? $this->conn->sAdd($key, $value) : 0;
+        try {
+            return $this->conn ? $this->conn->sAdd($key, $value) : 0;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->sAdd($key, $value) : 0;
+        }
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return int
+     */
+    public function rpush($key, $value)
+    {
+        try {
+            return $this->conn ? $this->conn->rPush($key, $value) : 0;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->rPush($key, $value) : 0;
+        }
+    }
+
+    /**
+     * @param $key
+     * @param $start
+     * @param $end
+     * @return array
+     */
+    public function zrange($key, $start, $end)
+    {
+        try {
+            return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
+        }
+    }
+
+    /**
+     * @param $key
+     * @param $member
+     * @return int
+     */
+    public function zrem($key, $member)
+    {
+        try {
+            return $this->conn ? $this->conn->zRem($key, $member) : 0;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->zRem($key, $member) : 0;
+        }
+    }
+
+    /**
+     * @param $key
+     * @return null|string
+     */
+    public function lpop($key)
+    {
+        try {
+            return $this->conn ? $this->conn->lPop($key) : null;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->lPop($key) : null;
+        }
     }
 }
