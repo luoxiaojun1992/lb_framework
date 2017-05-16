@@ -108,7 +108,6 @@ EOF;
     {
         return \$this->{$attrName};
     }
-
 EOF;
                 $getter .= (str_repeat(PHP_EOL, 2));
 
@@ -160,7 +159,7 @@ EOF;
                 $modelTpl);
             $modelTpl = str_replace(CodeTpl::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
             $modelTpl = str_replace(CodeTpl::SETTER, $setter, $modelTpl);
-            $modelTpl = str_replace(CodeTpl::GETTER, $getter, $modelTpl);
+            $modelTpl = str_replace(CodeTpl::GETTER, rtrim($getter, PHP_EOL), $modelTpl);
         }
 
         return str_replace(CodeTpl::TABLE_NAME_TAG, $tableName, $modelTpl);
