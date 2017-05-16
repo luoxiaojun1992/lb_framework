@@ -6,6 +6,7 @@ use lb\components\consts\CodeTpl;
 use lb\components\consts\ErrorMsg;
 use lb\components\db\mysql\Connection;
 use lb\components\error_handlers\ParamException;
+use lb\components\helpers\StringHelper;
 use lb\Lb;
 
 /**
@@ -213,8 +214,7 @@ EOF;
             $attrName = ucfirst($attrName);
             $cloneAttrName = $attrName;
             for ($i = 0; $i < mb_strlen($cloneAttrName, 'UTF8'); ++$i) {
-                $asciiCode = ord($cloneAttrName[$i]);
-                if ($asciiCode >= 65 && $asciiCode <= 90) {
+                if (StringHelper::isCapital($cloneAttrName[$i])) {
                     str_replace($cloneAttrName[$i], ' ' . $cloneAttrName[$i], $attrName);
                 }
             }
@@ -232,17 +232,7 @@ EOF;
      */
     protected function formatAttr($attrName)
     {
-        if (strpos($attrName, '_') !== false) {
-            $tempArr = explode('_', $attrName);
-            foreach ($tempArr as $key => $item) {
-                $tempArr[$key] = ucfirst(strtolower($item));
-            }
-            $attrName = implode('', $tempArr);
-        } else {
-            $attrName = ucfirst($attrName);
-        }
-
-        return $attrName;
+        return StringHelper::camel($attrName);
     }
 
     /**

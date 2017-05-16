@@ -104,4 +104,25 @@ class StringHelper extends BaseClass
         else
             return $str;
     }
+
+    public static function isCapital($char)
+    {
+        $ascii = ord($char);
+        return $ascii >= ord('A') && $ascii <= ord('Z');
+    }
+
+    public static function camel($str)
+    {
+        if (strpos($str, '_') !== false) {
+            $tempArr = explode('_', $str);
+            foreach ($tempArr as $key => $item) {
+                $tempArr[$key] = ucfirst(strtolower($item));
+            }
+            $str = implode('', $tempArr);
+        } else {
+            $str = ucfirst($str);
+        }
+
+        return $str;
+    }
 }
