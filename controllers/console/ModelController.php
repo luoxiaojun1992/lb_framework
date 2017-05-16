@@ -158,6 +158,8 @@ EOF;
                 rtrim($primaryKeyComment . $propertyComments, PHP_EOL),
                 $modelTpl);
             $modelTpl = str_replace(CodeTpl::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
+            $modelTpl = str_replace(CodeTpl::SETTER, $setter, $modelTpl);
+            $modelTpl = str_replace(CodeTpl::GETTER, $getter, $modelTpl);
         }
 
         return str_replace(CodeTpl::TABLE_NAME_TAG, $tableName, $modelTpl);
