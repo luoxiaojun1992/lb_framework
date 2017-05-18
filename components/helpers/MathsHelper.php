@@ -29,7 +29,7 @@ class MathsHelper extends BaseClass
         return $base / $div;
     }
 
-    public static function randomProbility($probilities)
+    public static function getTargetByProbility($probilities)
     {
         asort($probilities);
         $randomFloat = self::randomFloat(0, max($probilities));
