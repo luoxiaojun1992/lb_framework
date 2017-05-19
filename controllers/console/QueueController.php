@@ -29,7 +29,7 @@ class QueueController extends ConsoleController
                 $job->handle();
             }
 
-            usleep(500000);
+            usleep(10000);
         }
     }
 }
