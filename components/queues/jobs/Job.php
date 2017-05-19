@@ -105,14 +105,14 @@ class Job implements JobInterface
                     (new $handler_class)->handle($this);
                 } catch (\Throwable $e) {
                     $this->canTry() && Lb::app()->queuePush($this);
-                    echo $e->getTraceAsString() . PHP_EOL;
+                    throw $e;
                 }
             } else {
                 try {
                     (new $handler_class)->handle($this);
                 } catch (\Exception $e) {
                     $this->canTry() && Lb::app()->queuePush($this);
-                    echo $e->getTraceAsString() . PHP_EOL;
+                    throw $e;
                 }
             }
             Lb::app()->stop();
