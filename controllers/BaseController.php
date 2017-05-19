@@ -20,7 +20,7 @@ abstract class BaseController extends BaseClass
 
     protected $middleware = [];
 
-    public function __construct($controllerId, $actionId, $request = null, $response = null)
+    public function __construct($controllerId, $actionId, RequestContract $request = null, ResponseContract $response = null)
     {
         $this->setControllerId($controllerId)
             ->setActionId($actionId)
