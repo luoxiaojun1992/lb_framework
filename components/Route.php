@@ -31,6 +31,7 @@ class Route extends BaseClass
         'queue',
         'model',
         'swoole',
+        'seed',
     ];
 
     /**
