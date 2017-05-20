@@ -75,7 +75,8 @@
     "jeremeamia/SuperClosure": "*",
     "luoxiaojun1992/nsqphp": "*",
     "stomp-php/stomp-php": "*",
-    "amphp/amp": "*"
+    "amphp/amp": "*",
+    "amphp/process" : "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
