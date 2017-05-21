@@ -368,12 +368,11 @@ trait Config
             $this->config = include_once(CONFIG_FILE);
         }
 
-        yield;
-
         // Inject Config Container
         $config_container = ConfigContainer::component();
         foreach ($this->config as $config_name => $config_content) {
             $config_container->set($config_name, $config_content);
+            yield;
         }
         $this->config = [];
         Lb::app()->containers['config'] = $config_container;

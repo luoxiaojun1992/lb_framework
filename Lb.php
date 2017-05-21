@@ -821,7 +821,10 @@ class Lb extends BaseClass
         require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
 
         // Init Config
-        Scheduler::component()->newTask($this->initConfig());
+        /** @var Scheduler $scheduler */
+        $scheduler = Scheduler::component();
+        $scheduler->newTask($this->initConfig());
+        $scheduler->run();
 
         // Set mb internal encoding
         mb_internal_encoding(Lb::app()->getMbInternalEncoding() ?: 'UTF-8');
