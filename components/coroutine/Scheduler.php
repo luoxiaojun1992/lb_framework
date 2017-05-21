@@ -3,9 +3,12 @@
 namespace lb\components\coroutine;
 
 use lb\BaseClass;
+use lb\components\traits\Singleton;
 
 class Scheduler extends BaseClass
 {
+    use Singleton;
+
     protected $maxTaskId = 0;
     protected $taskMap = []; // taskId => task
     protected $taskQueue;
