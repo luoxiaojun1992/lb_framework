@@ -74,9 +74,7 @@
     "php-ai/php-ml": "*",
     "jeremeamia/SuperClosure": "*",
     "luoxiaojun1992/nsqphp": "*",
-    "stomp-php/stomp-php": "*",
-    "amphp/amp": "*",
-    "amphp/process" : "*"
+    "stomp-php/stomp-php": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
