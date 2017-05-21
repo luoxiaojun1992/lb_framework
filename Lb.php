@@ -3,6 +3,7 @@
 namespace lb;
 
 use FilecacheKit;
+use lb\components\coroutine\Scheduler;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
@@ -820,7 +821,7 @@ class Lb extends BaseClass
         require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
 
         // Init Config
-        $this->initConfig();
+        Scheduler::component()->newTask($this->initConfig());
 
         // Set mb internal encoding
         mb_internal_encoding(Lb::app()->getMbInternalEncoding() ?: 'UTF-8');
