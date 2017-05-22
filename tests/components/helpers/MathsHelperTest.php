@@ -40,4 +40,10 @@ class MathsHelperTest extends BaseTestCase
         $this->assertEquals(2, MathsHelper::divide(8, 4, true));
         $this->assertEquals(2, MathsHelper::divide(6, 3));
     }
+
+    public function testIs2Pow()
+    {
+        $this->assertTrue(MathsHelper::is2pow(16));
+        $this->assertFalse(MathsHelper::is2pow(18));
+    }
 }

@@ -41,4 +41,9 @@ class MathsHelper extends BaseClass
 
         return false;
     }
+
+    public static function is2pow($number)
+    {
+        return !($number & ($number - 1));
+    }
 }
