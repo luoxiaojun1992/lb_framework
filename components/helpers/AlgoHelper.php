@@ -45,21 +45,27 @@ class AlgoHelper extends BaseClass
         return $tempArr;
     }
 
-    public static function dijkstra($G)
+    public static function dijkstra($G, $startNode = 0)
     {
         $totalNode = count($G);
 
         // 存储已经选择节点和剩余节点
-        $U = [0];
-        $V = range(1, $totalNode - 1);
+        $U = [$startNode];
+        $V = [];
+        for ($j = 0; $j < $totalNode; ++$j) {
+            if ($j == $startNode) {
+                continue;
+            }
+            $V[] = $j;
+        }
 
         // 存储路径上节点距离源点的最小距离
         $d = [];
 
         //初始化图中节点与源点0的最小距离
         for ($i = 1; $i < $totalNode; $i++) {
-            if ($G[0][$i] > 0) {
-                $d[$i] = $G[0][$i];
+            if ($G[$startNode][$i] > 0) {
+                $d[$i] = $G[$startNode][$i];
             } else {
                 $d[$i] = 1000000;
             }
@@ -69,7 +75,7 @@ class AlgoHelper extends BaseClass
         for ($l = 0; $l < ($totalNode - 1); $l++) {
             // 查找剩余节点中距离源点最近的节点v
             $current_min = 100000;
-            $current_min_v = 0;
+            $current_min_v = $startNode;
             foreach ($V as $k => $v) {
                 if($d[$v] < $current_min) {
                     $current_min = $d[$v];
@@ -83,7 +89,7 @@ class AlgoHelper extends BaseClass
 
             //更新
             foreach($V as $k => $u) {
-                if ($G[$current_min_v][$u] !=0 && $d[$u] > $d[$current_min_v] + $G[$current_min_v][$u]) {
+                if ($G[$current_min_v][$u] != 0 && $d[$u] > $d[$current_min_v] + $G[$current_min_v][$u]) {
                     $d[$u] = $d[$current_min_v] + $G[$current_min_v][$u];
                 }
             }
