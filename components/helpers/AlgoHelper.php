@@ -63,7 +63,11 @@ class AlgoHelper extends BaseClass
         $d = [];
 
         //初始化图中节点与源点的最小距离
-        for ($i = 1; $i < $totalNode; $i++) {
+        for ($i = 0; $i < $totalNode; $i++) {
+            if ($i == $startNode) {
+                continue;
+            }
+
             if ($G[$startNode][$i] > 0) {
                 $d[$i] = $G[$startNode][$i];
             } else {
