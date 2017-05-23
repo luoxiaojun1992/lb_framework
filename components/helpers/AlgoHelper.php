@@ -44,4 +44,55 @@ class AlgoHelper extends BaseClass
         }
         return $tempArr;
     }
+
+    public static function dijkstra($G)
+    {
+        $totalNode = count($G);
+
+        // 存储已经选择节点和剩余节点
+        $U = [0];
+        $V = range(1, $totalNode - 1);
+
+        // 存储路径上节点距离源点的最小距离
+        $d = [];
+
+        //初始化图中节点与源点0的最小距离
+        for ($i = 1; $i < $totalNode; $i++) {
+            if ($G[0][$i] > 0) {
+                $d[$i] = $G[0][$i];
+            } else {
+                $d[$i] = 1000000;
+            }
+        }
+
+        // n-1次循环完成转移节点任务
+        for ($l = 0; $l < ($totalNode - 1); $l++) {
+            // 查找剩余节点中距离源点最近的节点v
+            $current_min = 100000;
+            $current_min_v = 0;
+            foreach ($V as $k => $v) {
+                if($d[$v] < $current_min) {
+                    $current_min = $d[$v];
+                    $current_min_v = $v;
+                }
+            }
+
+            //从V中更新顶点到U中
+            array_push($U,$current_min_v);
+            array_splice($V,array_search($current_min_v,$V),1);
+
+            //更新
+            foreach($V as $k => $u) {
+                if ($G[$current_min_v][$u] !=0 && $d[$u] > $d[$current_min_v] + $G[$current_min_v][$u]) {
+                    $d[$u] = $d[$current_min_v] + $G[$current_min_v][$u];
+                }
+            }
+
+        }
+
+        foreach ($d as $k => $u) {
+            echo $k.'=>' . $u . '<br>';
+        }
+
+    }
 }
