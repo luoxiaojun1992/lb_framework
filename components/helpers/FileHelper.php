@@ -2,6 +2,7 @@
 
 namespace lb\components\helpers;
 
+use GuzzleHttp\Client;
 use lb\BaseClass;
 use lb\components\consts\IO;
 use lb\Lb;
@@ -110,5 +111,13 @@ class FileHelper extends BaseClass implements IO
             $errors = $file->getErrors();
             return ['result' => 'failed', 'errors' => $errors];
         }
+    }
+
+    public static function send($filePath, $remoteFileSystem)
+    {
+        $client = new Client();
+        $resource = fopen($filePath, 'rb');
+        $res = $client->put($remoteFileSystem, ['body' => $resource]);
+        return $res->getStatusCode() == 200;
     }
 }
