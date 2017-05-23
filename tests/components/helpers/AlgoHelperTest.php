@@ -88,4 +88,25 @@ class AlgoHelperTest extends BaseTestCase
     {
         $this->assertEquals($this->reversedTree, AlgoHelper::reverseTree($this->binaryTree));
     }
+
+    public function testDijkstra()
+    {
+        $G = [
+            array(0,1,2,0,0,0,0),
+            array(0,0,0,1,2,0,0),
+            array(0,0,0,0,0,2,0),
+            array(0,0,0,0,0,1,3),
+            array(0,0,0,0,0,0,3),
+            array(0,0,0,0,0,0,1),
+            array(0,0,0,0,0,0,0),
+        ];
+        $this->assertEquals([
+            1 => 1,
+            2 => 2,
+            3 => 2,
+            4 => 3,
+            5 => 3,
+            6 => 4,
+        ], AlgoHelper::dijkstra($G));
+    }
 }

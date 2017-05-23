@@ -90,9 +90,6 @@ class AlgoHelper extends BaseClass
 
         }
 
-        foreach ($d as $k => $u) {
-            echo $k.'=>' . $u . '<br>';
-        }
-
+        return $d;
     }
 }
