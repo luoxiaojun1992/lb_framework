@@ -49,7 +49,7 @@ class AlgoHelper extends BaseClass
     {
         $totalNode = count($G);
 
-        // 存储已经选择节点和剩余节点
+        //存储已经选择节点和剩余节点
         $U = [$startNode];
         $V = [];
         for ($j = 0; $j < $totalNode; ++$j) {
@@ -59,10 +59,10 @@ class AlgoHelper extends BaseClass
             $V[] = $j;
         }
 
-        // 存储路径上节点距离源点的最小距离
+        //存储路径上节点距离源点的最小距离
         $d = [];
 
-        //初始化图中节点与源点0的最小距离
+        //初始化图中节点与源点的最小距离
         for ($i = 1; $i < $totalNode; $i++) {
             if ($G[$startNode][$i] > 0) {
                 $d[$i] = $G[$startNode][$i];
@@ -71,9 +71,9 @@ class AlgoHelper extends BaseClass
             }
         }
 
-        // n-1次循环完成转移节点任务
+        //n-1次循环完成转移节点任务
         for ($l = 0; $l < ($totalNode - 1); $l++) {
-            // 查找剩余节点中距离源点最近的节点v
+            //查找剩余节点中距离源点最近的节点v
             $current_min = 100000;
             $current_min_v = $startNode;
             foreach ($V as $k => $v) {
