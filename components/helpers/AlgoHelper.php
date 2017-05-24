@@ -45,7 +45,7 @@ class AlgoHelper extends BaseClass
         return $tempArr;
     }
 
-    public static function dijkstra($G, $startNode = 0)
+    public static function dijkstra($G, &$d, $startNode = 0)
     {
         $totalNode = count($G);
 
@@ -57,6 +57,7 @@ class AlgoHelper extends BaseClass
                 continue;
             }
             $V[] = $j;
+            yield;
         }
 
         //存储路径上节点距离源点的最小距离
@@ -73,6 +74,7 @@ class AlgoHelper extends BaseClass
             } else {
                 $d[$i] = 1000000;
             }
+            yield;
         }
 
         //n-1次循环完成转移节点任务
@@ -85,6 +87,7 @@ class AlgoHelper extends BaseClass
                     $current_min = $d[$v];
                     $current_min_v = $v;
                 }
+                yield;
             }
 
             //从V中更新顶点到U中
@@ -96,10 +99,10 @@ class AlgoHelper extends BaseClass
                 if ($G[$current_min_v][$u] != 0 && $d[$u] > $d[$current_min_v] + $G[$current_min_v][$u]) {
                     $d[$u] = $d[$current_min_v] + $G[$current_min_v][$u];
                 }
+                yield;
             }
 
+            yield;
         }
-
-        return $d;
     }
 }

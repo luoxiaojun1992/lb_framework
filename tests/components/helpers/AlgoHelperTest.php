@@ -2,6 +2,7 @@
 
 namespace lb\tests\components\helpers;
 
+use lb\components\coroutine\Scheduler;
 use lb\components\helpers\AlgoHelper;
 use lb\tests\BaseTestCase;
 
@@ -101,6 +102,13 @@ class AlgoHelperTest extends BaseTestCase
             [0,0,0,0,0,0,1],
             [0,0,0,0,0,0,0],
         ];
+
+        /** @var Scheduler $scheduler */
+        $scheduler = Scheduler::component();
+        $scheduler->newTask(AlgoHelper::dijkstra($G, $d1));
+        $scheduler->newTask(AlgoHelper::dijkstra($G, $d2, 1));
+        $scheduler->run();
+
         $this->assertEquals([
             1 => 1,
             2 => 2,
@@ -108,6 +116,15 @@ class AlgoHelperTest extends BaseTestCase
             4 => 3,
             5 => 3,
             6 => 4,
-        ], AlgoHelper::dijkstra($G));
+        ], $d1);
+
+        $this->assertEquals([
+            0 => 1000000,
+            2 => 1000000,
+            3 => 1,
+            4 => 2,
+            5 => 2,
+            6 => 3,
+        ], $d2);
     }
 }
