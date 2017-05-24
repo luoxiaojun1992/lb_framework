@@ -107,6 +107,8 @@ class AlgoHelperTest extends BaseTestCase
         $scheduler = Scheduler::component();
         $scheduler->newTask(AlgoHelper::dijkstra($G, $d1));
         $scheduler->newTask(AlgoHelper::dijkstra($G, $d2, 1));
+        $scheduler->newTask(AlgoHelper::dijkstra($G, $d3, 3));
+        $scheduler->newTask(AlgoHelper::dijkstra($G, $d4, 5));
         $scheduler->run();
 
         $this->assertEquals([
@@ -126,5 +128,23 @@ class AlgoHelperTest extends BaseTestCase
             5 => 2,
             6 => 3,
         ], $d2);
+
+        $this->assertEquals([
+            0 => 1000000,
+            1 => 1000000,
+            2 => 1000000,
+            4 => 1000000,
+            5 => 1,
+            6 => 2,
+        ], $d3);
+
+        $this->assertEquals([
+            0 => 1000000,
+            1 => 1000000,
+            2 => 1000000,
+            3 => 1000000,
+            4 => 1000000,
+            6 => 1,
+        ], $d4);
     }
 }
