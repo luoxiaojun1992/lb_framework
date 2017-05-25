@@ -32,6 +32,7 @@ class Route extends BaseClass
         'model',
         'swoole',
         'seed',
+        'deploy',
     ];
 
     /**
