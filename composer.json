@@ -75,6 +75,7 @@
     "jeremeamia/SuperClosure": "*",
     "luoxiaojun1992/nsqphp": "*",
     "stomp-php/stomp-php": "*",
+    "pear/pear": "*",
     "pear/console_getopt": "*"
   },
   "autoload": {
