@@ -10,6 +10,11 @@ class ServerController extends ConsoleController
     const EXIT_CODE_NO_ROUTING_FILE = 3;
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER = 4;
     const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
+
+    /**
+     * @var string host to serve on
+     */
+    public $host = '127.0.0.1';
     /**
      * @var int port to serve on.
      */
@@ -31,12 +36,33 @@ class ServerController extends ConsoleController
      *
      * @return int
      */
-    public function index($address = 'localhost')
+    public function index()
     {
-        $documentRoot = $this->docroot;
-        if (strpos($address, ':') === false) {
-            $address = $address . ':' . $this->port;
+        $argv = \Console_Getopt::readPHPArgv();
+        $opts = \Console_Getopt::getopt(array_slice($argv, 2, count($argv) - 2), 'h::p::d::r::', null, true);
+        if (!empty($opts[0]) && is_array($opts[0])) {
+            foreach ($opts[0] as $val) {
+                if (!empty($val[0]) && !empty($val[1]) && is_string($val[0]) && is_string($val[1])) {
+                    switch ($val[0]) {
+                        case 'h':
+                            $this->host = $val[1];
+                            break;
+                        case 'p':
+                            $this->port = $val[1];
+                            break;
+                        case 'd':
+                            $this->docroot = $val[1];
+                            break;
+                        case 'r':
+                            $this->router = $val[1];
+                            break;
+                    }
+                }
+            }
         }
+
+        $documentRoot = $this->docroot;
+        $address = $this->host . ':' . $this->port;
         if (!is_dir($documentRoot)) {
             Lb::app()->stop("Document root \"$documentRoot\" does not exist.\n", self::EXIT_CODE_NO_DOCUMENT_ROOT);
         }
