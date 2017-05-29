@@ -9,7 +9,7 @@ class Writer extends BaseClass
 {
     public static function write($content, \Closure $writeAction, ResponseContract $response)
     {
-        Bucket::component(1000000, 1000000, 1000)->wait(strlen($content));
+        Bucket::component(1000000, 1, 1000)->wait(strlen($content));
         call_user_func_array($writeAction, ['content' => $content, 'response' => $response]);
     }
 }

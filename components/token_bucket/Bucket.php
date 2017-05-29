@@ -25,7 +25,7 @@ class Bucket extends BaseClass
 
     protected $avail;
 
-    protected $availTick;
+    protected $availTick = 0;
 
     public function __construct($capacity, $quantum, $fillInterval)
     {
@@ -62,13 +62,21 @@ class Bucket extends BaseClass
 
     protected function take($count, $maxWait = self::INFINITY_DURATION)
     {
+        $lockKey = 'token_bucket_rate_limit';
+
+        while(!$this->lock($lockKey, 10)) {
+            //
+        }
+
         if ($count <= 0) {
+            $this->unlock($lockKey);
             return 0;
         }
 
         $avail = $this->avail - $count;
         if ($avail >= 0) {
             $this->avail = $avail;
+            $this->unlock($lockKey);
             return 0;
         }
 
@@ -76,10 +84,12 @@ class Bucket extends BaseClass
         $endTime = $this->startTime + (intval($endTick) * $this->fillInterval);
         $waitTime = $endTime - self::now();
         if ($waitTime > $maxWait) {
+            $this->unlock($lockKey);
             return 0;
         }
 
         $this->avail = $avail;
+        $this->unlock($lockKey);
         return $waitTime;
     }
 

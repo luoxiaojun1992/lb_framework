@@ -13,7 +13,7 @@ class Reader extends BaseClass
         if (($contentLength = strlen($content)) <= 0) {
             return $content;
         }
-        Bucket::component(1000000, 1000000, 1000)->wait($contentLength);
+        Bucket::component(1000000, 1, 1000)->wait($contentLength);
         return $content;
     }
 }
