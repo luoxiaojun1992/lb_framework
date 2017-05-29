@@ -2,9 +2,10 @@
 
 namespace lb\components\token_bucket;
 
+use lb\BaseClass;
 use lb\components\request\RequestContract;
 
-class Reader
+class Reader extends BaseClass
 {
     public static function read(\Closure $readAction, RequestContract $request)
     {
@@ -12,7 +13,7 @@ class Reader
         if (($contentLength = strlen($content)) <= 0) {
             return $content;
         }
-        Bucket::component()->wait($contentLength);
+        Bucket::component(1000000, 1000000, 1000)->wait($contentLength);
         return $content;
     }
 }
