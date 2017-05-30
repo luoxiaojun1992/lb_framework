@@ -10,15 +10,19 @@ trait Lock
     /**
      * @param $key
      * @param int $ttl
+     * @param bool $spinning
      * @return bool|null|string
      */
-    public function lock($key = self::class, $ttl = 0)
+    public function lock($key = self::class, $ttl = 0, $spinning = false)
     {
-        // Lock is occupied
-        if ($this->getLock($key)) {
-            return false;
+        $result = false;
+        while (!$result) {
+            $result = RedisKit::setnx($this->getLockKey($key), $key, $ttl);
+            if (!$spinning) {
+                return $result;
+            }
         }
-        return RedisKit::setnx($this->getLockKey($key), $key, $ttl);
+        return $result;
     }
 
     /**

@@ -64,9 +64,7 @@ class Bucket extends BaseClass
     {
         $lockKey = 'token_bucket_rate_limit';
 
-        while(!$this->lock($lockKey, 10)) {
-            //
-        }
+        $this->lock($lockKey, 10, true);
 
         if ($count <= 0) {
             $this->unlock($lockKey);
