@@ -18,6 +18,7 @@ class Redis extends BaseClass
     protected $_timeout = 0.01;
     protected $_password;
     protected $_database = 0;
+    protected $_key_prefix = '';
     public $containers = [];
 
     const CACHE_TYPE = 'redis';
@@ -53,6 +54,7 @@ class Redis extends BaseClass
                     $this->_timeout = $target_cache_config['timeout'] ?? $this->_timeout;
                     $this->_password = $target_cache_config['password'] ?? $this->_password;
                     $this->_database = $target_cache_config['database'] ?? $this->_database;
+                    $this->_key_prefix = $target_cache_config['key_prefix'] ?? $this->_key_prefix;
                     try {
                         $this->getConnection();
                     } catch (\Exception $e) {
@@ -95,6 +97,7 @@ class Redis extends BaseClass
      */
     public function get($key)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->get($key) : '';
         } catch (\Exception $e) {
@@ -111,6 +114,7 @@ class Redis extends BaseClass
      */
     public function set($key, $value, $expiration = null)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
         } catch (\Exception $e) {
@@ -127,6 +131,7 @@ class Redis extends BaseClass
      */
     public function setnx($key, $value, $ttl = 0)
     {
+        $this->get($key);
         if ($this->conn) {
             if ($ttl) {
                 if ($this->watch($key) && $this->multi()) {
@@ -192,6 +197,7 @@ class Redis extends BaseClass
     public function delete($key)
     {
         if ($this->conn) {
+            $this->get($key);
             try {
                 $this->conn->delete($key);
             } catch (\Exception $e) {
@@ -211,6 +217,7 @@ class Redis extends BaseClass
      */
     public function expire($key, $ttl)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->expire($key, $ttl) : false;
         } catch (\Exception $e) {
@@ -264,6 +271,7 @@ class Redis extends BaseClass
      */
     public function watch($key)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->watch($key) : false;
         } catch (\Exception $e) {
@@ -278,6 +286,7 @@ class Redis extends BaseClass
      */
     public function scard($key)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->sCard($key) : 0;
         } catch (\Exception $e) {
@@ -293,6 +302,7 @@ class Redis extends BaseClass
      */
     public function sismember($key, $value)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->sIsMember($key, $value) : false;
         } catch (\Exception $e) {
@@ -308,6 +318,7 @@ class Redis extends BaseClass
      */
     public function sadd($key, $value)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->sAdd($key, $value) : 0;
         } catch (\Exception $e) {
@@ -323,6 +334,7 @@ class Redis extends BaseClass
      */
     public function rpush($key, $value)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->rPush($key, $value) : 0;
         } catch (\Exception $e) {
@@ -339,6 +351,7 @@ class Redis extends BaseClass
      */
     public function zrange($key, $start, $end)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
         } catch (\Exception $e) {
@@ -354,6 +367,7 @@ class Redis extends BaseClass
      */
     public function zrem($key, $member)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->zRem($key, $member) : 0;
         } catch (\Exception $e) {
@@ -368,11 +382,20 @@ class Redis extends BaseClass
      */
     public function lpop($key)
     {
+        $this->get($key);
         try {
             return $this->conn ? $this->conn->lPop($key) : null;
         } catch (\Exception $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->lPop($key) : null;
         }
+    }
+
+    protected function getKey(&$key)
+    {
+        if (stripos($key, $this->_key_prefix) !== 0) {
+            $key = $this->_key_prefix . $key;
+        }
+        return $key;
     }
 }

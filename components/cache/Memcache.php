@@ -12,6 +12,7 @@ class Memcache extends BaseClass
 
     public $conn = false;
     protected $_servers = [];
+    protected $_key_prefix = '';
     public $containers = [];
 
     const CACHE_TYPE = 'memcache';
@@ -23,6 +24,7 @@ class Memcache extends BaseClass
             $cache_config = $this->containers['config']->get(static::CACHE_TYPE);
             if ($cache_config) {
                 $this->_servers = isset($cache_config['servers']) ? $cache_config['servers'] : [];
+                $this->_key_prefix = isset($cache_config['key_prefix']) ? $cache_config['key_prefix'] : '';
                 $this->getConnection();
             }
         }
@@ -50,12 +52,14 @@ class Memcache extends BaseClass
 
     public function get($key)
     {
+        $this->getKey($key);
         return $this->conn ? $this->conn->get($key) : '';
     }
 
     public function set($key, $value, $expiration = null)
     {
         if ($this->conn) {
+            $this->get($key);
             $this->conn->add($key, $value, $expiration);
         }
     }
@@ -63,7 +67,16 @@ class Memcache extends BaseClass
     public function delete($key)
     {
         if ($this->conn) {
+            $this->get($key);
             $this->conn->delete($key);
         }
+    }
+
+    protected function getKey(&$key)
+    {
+        if (stripos($key, $this->_key_prefix) !== 0) {
+            $key = $this->_key_prefix . $key;
+        }
+        return $key;
     }
 }

@@ -19,6 +19,8 @@ class Filecache extends BaseClass
     //Cache file extension
     public $cache_extension = '.cache';
 
+    public $key_prefix = '';
+
     public $containers = [];
 
     const CACHE_TYPE = 'filecache';
@@ -35,6 +37,7 @@ class Filecache extends BaseClass
                 $this->cache_path = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime/cache';
                 $this->cache_time = isset($cache_config['cache_time']) ? $cache_config['cache_time'] : $this->cache_time;
                 $this->cache_extension = isset($cache_config['cache_extension']) ? $cache_config['cache_extension'] : $this->cache_extension;
+                $this->key_prefix = isset($cache_config['key_prefix']) ? $cache_config['key_prefix'] : $this->key_prefix;
                 if (!is_dir($this->cache_path)) {
                     mkdir($this->cache_path, 0777, true);
                 }
@@ -45,6 +48,7 @@ class Filecache extends BaseClass
     //增加一对缓存数据
     public function add($key, $value, $cache_time = 86400)
     {
+        $this->getKey($key);
         if ($cache_time != $this->cache_time) {
             $this->cache_time = $cache_time;
         }
@@ -58,6 +62,7 @@ class Filecache extends BaseClass
     //删除对应的一个缓存
     public function delete($key)
     {
+        $this->getKey($key);
         $filename = $this->_get_cache_file($key);
         if (file_exists($filename)) {
             unlink($filename);
@@ -67,6 +72,7 @@ class Filecache extends BaseClass
     //获取缓存
     public function get($key)
     {
+        $this->getKey($key);
         $value = '';
         if ($this->_has_cache($key)) {
             $filename = $this->_get_cache_file($key);
@@ -139,5 +145,13 @@ class Filecache extends BaseClass
         } else {
             return (static::$instance = new static($containers ? : Lb::app()->containers));
         }
+    }
+
+    protected function getKey(&$key)
+    {
+        if (stripos($key, $this->key_prefix) !== 0) {
+            $key = $this->key_prefix . $key;
+        }
+        return $key;
     }
 }
