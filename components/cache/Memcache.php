@@ -59,7 +59,7 @@ class Memcache extends BaseClass
     public function set($key, $value, $expiration = null)
     {
         if ($this->conn) {
-            $this->get($key);
+            $this->getKey($key);
             $this->conn->add($key, $value, $expiration);
         }
     }
@@ -67,7 +67,7 @@ class Memcache extends BaseClass
     public function delete($key)
     {
         if ($this->conn) {
-            $this->get($key);
+            $this->getKey($key);
             $this->conn->delete($key);
         }
     }
