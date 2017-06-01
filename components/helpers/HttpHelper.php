@@ -8,6 +8,11 @@ use ResponseKit;
 
 class HttpHelper extends  BaseClass
 {
+    const STATUS_OK = 200;
+    const STATUS_BAD_REQUEST = 400;
+    const STATUS_NOT_FOUND = 404;
+    const STATUS_GATEWAY_TIMEOUT = 504;
+
     const MIME_TYPES = array (
         'apk'     => 'application/vnd.android.package-archive',
         '3gp'     => 'video/3gpp',
@@ -239,7 +244,7 @@ class HttpHelper extends  BaseClass
         $codes = Array(
             100 => 'Continue',
             101 => 'Switching Protocols',
-            200 => 'OK',
+            self::STATUS_OK => 'OK',
             201 => 'Created',
             202 => 'Accepted',
             203 => 'Non-Authoritative Information',
@@ -254,11 +259,11 @@ class HttpHelper extends  BaseClass
             305 => 'Use Proxy',
             306 => '(Unused)',
             307 => 'Temporary Redirect',
-            400 => 'Bad Request',
+            self::STATUS_BAD_REQUEST => 'Bad Request',
             401 => 'Unauthorized',
             402 => 'Payment Required',
             403 => 'Forbidden',
-            404 => 'Not Found',
+            self::STATUS_NOT_FOUND => 'Not Found',
             405 => 'Method Not Allowed',
             406 => 'Not Acceptable',
             407 => 'Proxy Authentication Required',
@@ -276,7 +281,7 @@ class HttpHelper extends  BaseClass
             501 => 'Not Implemented',
             502 => 'Bad Gateway',
             503 => 'Service Unavailable',
-            504 => 'Gateway Timeout',
+            self::STATUS_GATEWAY_TIMEOUT => 'Gateway Timeout',
             505 => 'HTTP Version Not Supported'
         );
 
