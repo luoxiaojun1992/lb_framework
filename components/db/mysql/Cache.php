@@ -11,8 +11,12 @@ trait Cache
     public function getCache($args)
     {
         $mysqlCacheConfig = Lb::app()->getMysqlCacheConfig();
-        return JsonHelper::decode(
-            Lb::app()->getCache($this->getCacheKey($args), $mysqlCacheConfig['cache_type'] ?? FilecacheKit::CACHE_TYPE)
+        return json_decode(
+            Lb::app()->getCache(
+                $this->getCacheKey($args),
+                $mysqlCacheConfig['cache_type'] ?? FilecacheKit::CACHE_TYPE
+            ),
+            true
         );
     }
 
