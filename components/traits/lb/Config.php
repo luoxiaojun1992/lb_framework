@@ -360,6 +360,16 @@ trait Config
     }
 
     /**
+     * Get mysql cache config
+     *
+     * @return string
+     */
+    public function getMysqlCacheConfig()
+    {
+        return $this->getConfigByName('mysql_cache') ? : [];
+    }
+
+    /**
      * Init Configuration
      */
     protected function initConfig()

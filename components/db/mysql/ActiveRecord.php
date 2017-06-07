@@ -149,39 +149,50 @@ class ActiveRecord extends AbstractActiveRecord
 
     /**
      * @param $primary_key
+     * @param $expire
      * @return bool|ActiveRecord
      */
-    public function findByPk($primary_key)
+    public function findByPk($primary_key, $expire = null)
     {
         if ($this->is_single) {
-            $dao = Dao::component()
-                ->select(['*'])
-                ->from(static::TABLE_NAME)
-                ->where([$this->_primary_key => $primary_key])
-                ->limit(1);
-
-            $is_related_model_exists = false;
-            if ($this->relations && count($this->relations) >= 3) {
-                list($self_field, $joined_table, $joined_table_field) = $this->relations;
-                $related_model_class = 'app\models\\' . ucfirst($joined_table);
-                if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
-                    $is_related_model_exists = true;
-                    $related_model_fields = (new $related_model_class())->getFields();
-                    foreach ($related_model_fields as $key => $related_model_field) {
-                        $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
-                    }
-                    $self_fields = $this->getFields();
-                    foreach ($self_fields as $key => $field) {
-                        $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
-                    }
-                    $fields = array_merge($related_model_fields, $self_fields);
-                    $dao->select($fields)
-                        ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
-                }
+            $attributes = [];
+            if (method_exists($this, 'getCache')) {
+                $attributes = $this->getCache(func_get_args());
             }
+            if (!$attributes) {
+                $dao = Dao::component()
+                    ->select(['*'])
+                    ->from(static::TABLE_NAME)
+                    ->where([$this->_primary_key => $primary_key])
+                    ->limit(1);
 
-            $attributes = $dao->find();
+                $is_related_model_exists = false;
+                if ($this->relations && count($this->relations) >= 3) {
+                    list($self_field, $joined_table, $joined_table_field) = $this->relations;
+                    $related_model_class = 'app\models\\' . ucfirst($joined_table);
+                    if (array_key_exists($self_field, $this->_attributes) && class_exists($related_model_class)) {
+                        $is_related_model_exists = true;
+                        $related_model_fields = (new $related_model_class())->getFields();
+                        foreach ($related_model_fields as $key => $related_model_field) {
+                            $related_model_fields[$key] = implode('.', [$joined_table, $related_model_field]) . ' AS ' . implode('_', [$joined_table, $related_model_field]);
+                        }
+                        $self_fields = $this->getFields();
+                        foreach ($self_fields as $key => $field) {
+                            $self_fields[$key] = implode('.', [static::TABLE_NAME, $field]);
+                        }
+                        $fields = array_merge($related_model_fields, $self_fields);
+                        $dao->select($fields)
+                            ->join($joined_table, [$self_field => implode('.', [$joined_table, $joined_table_field])]);
+                    }
+                }
+
+                $attributes = $dao->find();
+            }
             if ($attributes) {
+                if (method_exists($this, 'setCache')) {
+                    $this->setCache(func_get_args(), $attributes, $expire);
+                }
+
                 $model_class = get_class($this);
                 if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
                     $related_model = new $related_model_class();
@@ -254,13 +265,30 @@ class ActiveRecord extends AbstractActiveRecord
      * @param array $group_fields
      * @param array $orders
      * @param string $limit
+     * @param integer $expire
      * @return array|ActiveRecord[]|ActiveRecord
      */
-    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '')
+    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '', $expire = null)
     {
         if ($this->is_single) {
-            $result = $this->getDaoByConditions($is_related_model_exists, $conditions, $group_fields, $orders, $limit)->findAll();
+            $result = [];
+            if (method_exists($this, 'getCache')) {
+                $result = $this->getCache(func_get_args());
+            }
+            if (!$result) {
+                $result = $this->getDaoByConditions(
+                    $is_related_model_exists,
+                    $conditions,
+                    $group_fields,
+                    $orders,
+                    $limit
+                )->findAll();
+            }
             if ($result) {
+                if (method_exists($this, 'setCache')) {
+                    $this->setCache(func_get_args(), $result, $expire);
+                }
+
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
