@@ -16,7 +16,6 @@ class MoneyHelper extends BaseClass
      *             有的系统要求输出"壹仟玖佰陆拾元零叁角"，实际上"壹仟玖佰陆拾元叁角"也是对的
      * @return string
      */
-
     public static function num2rmb($number = 0, $int_unit = '元', $is_round = true, $is_extra_zero = false)
     {
         // 将数字切分成两段
