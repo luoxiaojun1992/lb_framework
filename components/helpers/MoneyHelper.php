@@ -86,4 +86,41 @@ class MoneyHelper extends BaseClass
         }
         return $res;
     }
+
+    /**
+     * 元转分
+     *
+     * @param $amount
+     * @return mixed
+     */
+    public static function yuanToFen($amount)
+    {
+        return $amount * 100;
+    }
+
+    /**
+     * 分转元
+     *
+     * @param $amount
+     * @return float
+     */
+    public static function fenToYuan($amount)
+    {
+        return $amount / 100;
+    }
+
+    /**
+     * 元相加运算，不损失精度
+     *
+     * @param $yuanAmounts
+     * @return int
+     */
+    public static function yuanAdd(...$yuanAmounts)
+    {
+        $fenAmountTotal = 0;
+        foreach ($yuanAmounts as $yuanAmount) {
+            $fenAmountTotal += intval(self::yuanToFen(round($yuanAmount, 2)));
+        }
+        return self::fenToYuan($fenAmountTotal);
+    }
 }
