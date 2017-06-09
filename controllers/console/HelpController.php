@@ -3,21 +3,38 @@
 namespace lb\controllers\console;
 
 use lb\Lb;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\ParserFactory;
 
 class HelpController extends ConsoleController
 {
     public function index()
     {
+        $this->writeln('Lb Console Help:');
+
         $files = array_merge(
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/controllers/console'),
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/vendor/lbsoft/lb_framework/controllers/console')
         );
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        print_r($parser->parse(file_get_contents($files[0])));
+        foreach ($files as $file) {
+            $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+            $stmts = $parser->parse(file_get_contents($file));
+            foreach ($stmts[0]->stmts as $stmt) {
+                if ($stmt instanceof Class_) {
+                    $className = str_replace('controller', '', strtolower($stmt->name));
+                    foreach ($stmt->stmts as $stmt2) {
+                        if ($stmt2 instanceof ClassMethod && $stmt2->flags == 1) {
+                            $this->writeln($className . '/' . $stmt2->name);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
 
-        $this->writeln('Building...');
+        //todo parse cache
     }
 
     protected function readConsoleControllers($dir)
