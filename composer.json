@@ -76,7 +76,8 @@
     "luoxiaojun1992/nsqphp": "*",
     "stomp-php/stomp-php": "*",
     "pear/pear": "*",
-    "pear/console_getopt": "*"
+    "pear/console_getopt": "*",
+    "nikic/php-parser": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
