@@ -3,6 +3,7 @@
 namespace lb\controllers\console;
 
 use lb\Lb;
+use PhpParser\ParserFactory;
 
 class HelpController extends ConsoleController
 {
@@ -12,7 +13,10 @@ class HelpController extends ConsoleController
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/controllers/console'),
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/vendor/lbsoft/lb_framework/controllers/console')
         );
-        var_dump($files);
+
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        print_r($parser->parse(file_get_contents($files[0])));
+
         $this->writeln('Building...');
     }
 
