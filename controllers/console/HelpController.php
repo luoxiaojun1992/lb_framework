@@ -31,7 +31,7 @@ class HelpController extends ConsoleController
             foreach ($stmts[0]->stmts as $stmt) {
                 if ($stmt instanceof Class_) {
                     $className = str_replace('controller', '', strtolower($stmt->name));
-                    $child = [];
+                    $children = [];
                     foreach ($stmt->stmts as $stmt2) {
                         if ($stmt2 instanceof ClassMethod && $stmt2->flags == 1) {
                             $methodName = $stmt2->name;
@@ -43,11 +43,10 @@ class HelpController extends ConsoleController
                                 $commets = explode(PHP_EOL, $commentText);
                                 $methodName .= (' "' . trim(str_replace('*', '', $commets[1])) . '"');
                             }
-                            $child[] = ['value' => $methodName, 'children' => []];
+                            $children[] = ['value' => $methodName, 'children' => []];
                         }
                     }
-                    $node = ['value' => $className, 'children' => $child];
-                    $tree[] = $node;
+                    $tree[] = ['value' => $className, 'children' => $children];
                     break;
                 }
             }
