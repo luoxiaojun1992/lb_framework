@@ -4,12 +4,16 @@ namespace lb\controllers\console;
 
 use lb\components\helpers\AlgoHelper;
 use lb\Lb;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\ParserFactory;
 
 class HelpController extends ConsoleController
 {
+    /**
+     * Console Help
+     */
     public function index()
     {
         $this->writeln('Lb Console Help:' . PHP_EOL);
@@ -30,7 +34,16 @@ class HelpController extends ConsoleController
                     $child = [];
                     foreach ($stmt->stmts as $stmt2) {
                         if ($stmt2 instanceof ClassMethod && $stmt2->flags == 1) {
-                            $child[] = ['value' => $stmt2->name, 'children' => []];
+                            $methodName = $stmt2->name;
+                            $attributes = $stmt2->getAttributes();
+                            if (isset($attributes['comments'])) {
+                                /** @var Doc $comment */
+                                $comment = $attributes['comments'][0];
+                                $commentText = $comment->getReformattedText();
+                                $commets = explode(PHP_EOL, $commentText);
+                                $methodName .= (' "' . trim(str_replace('*', '', $commets[1])) . '"');
+                            }
+                            $child[] = ['value' => $methodName, 'children' => []];
                         }
                     }
                     $node = ['value' => $className, 'children' => $child];
