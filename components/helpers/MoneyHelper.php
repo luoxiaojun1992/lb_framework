@@ -93,7 +93,7 @@ class MoneyHelper extends BaseClass
      * @param $amount
      * @return mixed
      */
-    public static function yuanToFen($amount)
+    public static function yuan2Fen($amount)
     {
         return $amount * 100;
     }
@@ -104,7 +104,7 @@ class MoneyHelper extends BaseClass
      * @param $amount
      * @return float
      */
-    public static function fenToYuan($amount)
+    public static function fen2Yuan($amount)
     {
         return $amount / 100;
     }
@@ -119,8 +119,8 @@ class MoneyHelper extends BaseClass
     {
         $fenAmountTotal = 0;
         foreach ($yuanAmounts as $yuanAmount) {
-            $fenAmountTotal += intval(self::yuanToFen(round($yuanAmount, 2)));
+            $fenAmountTotal += intval(self::yuan2Fen(round($yuanAmount, 2)));
         }
-        return self::fenToYuan($fenAmountTotal);
+        return self::fen2Yuan($fenAmountTotal);
     }
 }
