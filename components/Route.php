@@ -34,6 +34,7 @@ class Route extends BaseClass
         'seed',
         'deploy',
         'server',
+        'help',
     ];
 
     /**
