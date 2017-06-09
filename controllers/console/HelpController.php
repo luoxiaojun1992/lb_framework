@@ -12,7 +12,7 @@ class HelpController extends ConsoleController
 {
     public function index()
     {
-        $this->writeln('Lb Console Help:');
+        $this->writeln('Lb Console Help:' . PHP_EOL);
 
         $files = array_merge(
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/controllers/console'),
@@ -49,9 +49,9 @@ class HelpController extends ConsoleController
     {
         AlgoHelper::depthFirst($tree, function ($node) {
             if ($node['children']) {
-                $this->writeln($node['value']);
+                $this->writeln($node['value'] . PHP_EOL);
             } else {
-                $this->writeln("\t" . $node['value']);
+                $this->writeln("|-------" . $node['value'] . PHP_EOL);
             }
         });
     }

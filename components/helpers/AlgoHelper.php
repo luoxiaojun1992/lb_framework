@@ -12,7 +12,7 @@ class AlgoHelper extends BaseClass
             call_user_func_array($callback, ['node' => $node]);
             $children = $node['children'];
             if ($children) {
-                self::depthFirst($children);
+                self::depthFirst($children, $callback);
             }
         }
     }
