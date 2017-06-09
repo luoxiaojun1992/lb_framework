@@ -6,10 +6,10 @@ use lb\BaseClass;
 
 class AlgoHelper extends BaseClass
 {
-    public static function depthFirst($binaryTree)
+    public static function depthFirst($binaryTree, \Closure $callback = null)
     {
         foreach ($binaryTree as $node) {
-            var_dump($node['value']);
+            call_user_func_array($callback, ['node' => $node]);
             $children = $node['children'];
             if ($children) {
                 self::depthFirst($children);
