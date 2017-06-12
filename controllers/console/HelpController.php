@@ -30,10 +30,10 @@ class HelpController extends ConsoleController
             $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
             $fileContent = file_get_contents($file);
             $cacheKey = md5($fileContent);
-            if ($cacheTree = Lb::app()->getCache($cacheKey)) {
-                $tree = array_merge($tree, JsonHelper::decode($cacheKey));
+            if ($classNodeCache = Lb::app()->getCache($cacheKey)) {
+                $tree[] = JsonHelper::decode($classNodeCache);
             } else {
-                $tempTree = [];
+                $classNode = [];
                 $stmts = $parser->parse($fileContent);
                 foreach ($stmts[0]->stmts as $stmt) {
                     if ($stmt instanceof Class_) {
@@ -53,18 +53,18 @@ class HelpController extends ConsoleController
                                 $children[] = ['value' => $methodName, 'children' => []];
                             }
                         }
-                        $tempTree[] = ['value' => $className, 'children' => $children];
+                        $classNode = ['value' => $className, 'children' => $children];
                         break;
                     }
                 }
-                $tree = array_merge($tree, $tempTree);
-                Lb::app()->setCache($cacheKey, JsonHelper::encode($tempTree));
+                if ($classNode) {
+                    $tree[] = $classNode;
+                    Lb::app()->setCache($cacheKey, JsonHelper::encode($classNode));
+                }
             }
         }
 
         $this->dumpTree($tree);
-
-        //todo parse cache
     }
 
     protected function dumpTree($tree)
