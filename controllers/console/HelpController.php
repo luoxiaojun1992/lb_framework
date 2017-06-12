@@ -33,7 +33,7 @@ class HelpController extends ConsoleController
 
         foreach ($files as $file) {
             $fileContent = file_get_contents($file);
-            $cacheKey = md5($fileContent);
+            $cacheKey = 'console_help_cache_' . md5($fileContent);
             if ($classNodeCache = Lb::app()->getCache($cacheKey, $cacheType)) {
                 $tree[] = JsonHelper::decode($classNodeCache);
             } else {
