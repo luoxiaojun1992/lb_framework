@@ -9,6 +9,7 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\ParserFactory;
+use FilecacheKit;
 
 class HelpController extends ConsoleController
 {
@@ -26,11 +27,15 @@ class HelpController extends ConsoleController
 
         $tree = [];
 
+        $consoleHelpCacheConfig = Lb::app()->getConsoleHelpCacheConfig();
+        $cacheType = $consoleHelpCacheConfig['cache_type'] ?? FilecacheKit::CACHE_TYPE;
+        $expire = $consoleHelpCacheConfig['expire'] ?? 86400;
+
         foreach ($files as $file) {
             $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
             $fileContent = file_get_contents($file);
             $cacheKey = md5($fileContent);
-            if ($classNodeCache = Lb::app()->getCache($cacheKey)) {
+            if ($classNodeCache = Lb::app()->getCache($cacheKey, $cacheType)) {
                 $tree[] = JsonHelper::decode($classNodeCache);
             } else {
                 $classNode = [];
@@ -59,7 +64,7 @@ class HelpController extends ConsoleController
                 }
                 if ($classNode) {
                     $tree[] = $classNode;
-                    Lb::app()->setCache($cacheKey, JsonHelper::encode($classNode));
+                    Lb::app()->setCache($cacheKey, JsonHelper::encode($classNode), $cacheType, $expire);
                 }
             }
         }

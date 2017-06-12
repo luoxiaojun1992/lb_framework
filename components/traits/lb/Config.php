@@ -370,6 +370,16 @@ trait Config
     }
 
     /**
+     * Get console help cache config
+     *
+     * @return string
+     */
+    public function getConsoleHelpCacheConfig()
+    {
+        return $this->getConfigByName('console_help_cache') ? : [];
+    }
+
+    /**
      * Init Configuration
      */
     protected function initConfig()
