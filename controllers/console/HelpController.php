@@ -32,13 +32,13 @@ class HelpController extends ConsoleController
         $expire = $consoleHelpCacheConfig['expire'] ?? 86400;
 
         foreach ($files as $file) {
-            $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
             $fileContent = file_get_contents($file);
             $cacheKey = md5($fileContent);
             if ($classNodeCache = Lb::app()->getCache($cacheKey, $cacheType)) {
                 $tree[] = JsonHelper::decode($classNodeCache);
             } else {
                 $classNode = [];
+                $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
                 $stmts = $parser->parse($fileContent);
                 foreach ($stmts[0]->stmts as $stmt) {
                     if ($stmt instanceof Class_) {
