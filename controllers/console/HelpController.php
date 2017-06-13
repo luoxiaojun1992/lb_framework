@@ -18,7 +18,24 @@ class HelpController extends ConsoleController
      */
     public function index()
     {
-        $this->writeln('Lb Console Help:' . PHP_EOL);
+        $isRefresh = false;
+        $argv = \Console_Getopt::readPHPArgv();
+        $opts = \Console_Getopt::getopt(array_slice($argv, 2, count($argv) - 2), 'u::', null, true);
+        if (!empty($opts[0]) && is_array($opts[0])) {
+            foreach ($opts[0] as $val) {
+                if (!empty($val[0]) && !empty($val[1]) && is_string($val[0]) && is_string($val[1])) {
+                    switch ($val[0]) {
+                        case 'u':
+                            $isRefresh = boolval($val[1]);
+                            break;
+                    }
+                }
+            }
+        }
+
+        if (!$isRefresh) {
+            $this->writeln('Lb Console Help:' . PHP_EOL);
+        }
 
         $files = array_merge(
             $this->readConsoleControllers(Lb::app()->getRootDir() . '/controllers/console'),
@@ -34,7 +51,7 @@ class HelpController extends ConsoleController
         foreach ($files as $file) {
             $fileContent = file_get_contents($file);
             $cacheKey = 'console_help_cache_' . md5($fileContent);
-            if ($classNodeCache = Lb::app()->getCache($cacheKey, $cacheType)) {
+            if (!$isRefresh && ($classNodeCache = Lb::app()->getCache($cacheKey, $cacheType))) {
                 $tree[] = JsonHelper::decode($classNodeCache);
             } else {
                 $classNode = [];
@@ -69,7 +86,9 @@ class HelpController extends ConsoleController
             }
         }
 
-        $this->dumpTree($tree);
+        if (!$isRefresh) {
+            $this->dumpTree($tree);
+        }
     }
 
     protected function dumpTree($tree)
