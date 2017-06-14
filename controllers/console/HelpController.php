@@ -19,17 +19,11 @@ class HelpController extends ConsoleController
     public function index()
     {
         $isRefresh = false;
-        $argv = \Console_Getopt::readPHPArgv();
-        $opts = \Console_Getopt::getopt(array_slice($argv, 2, count($argv) - 2), 'u::', null, true);
-        if (!empty($opts[0]) && is_array($opts[0])) {
-            foreach ($opts[0] as $val) {
-                if (!empty($val[0]) && !empty($val[1]) && is_string($val[0]) && is_string($val[1])) {
-                    switch ($val[0]) {
-                        case 'u':
-                            $isRefresh = boolval($val[1]);
-                            break;
-                    }
-                }
+        foreach ($this->getOptions('u::') as $optionName => $optionValue) {
+            switch ($optionName) {
+                case 'u':
+                    $isRefresh = boolval($optionValue);
+                    break;
             }
         }
 
