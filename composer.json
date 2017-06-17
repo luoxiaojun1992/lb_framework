@@ -77,7 +77,8 @@
     "stomp-php/stomp-php": "*",
     "pear/pear": "*",
     "pear/console_getopt": "*",
-    "nikic/php-parser": "*"
+    "nikic/php-parser": "*",
+    "etsy/phan": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
