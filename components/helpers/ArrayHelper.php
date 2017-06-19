@@ -7,6 +7,7 @@ use lb\Lb;
 
 /**
  * Class ArrayHelper
+ *
  * @package lb\components\helpers
  */
 class ArrayHelper extends BaseClass
