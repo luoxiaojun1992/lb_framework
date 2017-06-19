@@ -6,6 +6,10 @@ use lb\BaseClass;
 
 class AlgoHelper extends BaseClass
 {
+    /**
+     * @param $binaryTree
+     * @param \Closure|null $callback
+     */
     public static function depthFirst($binaryTree, \Closure $callback = null)
     {
         foreach ($binaryTree as $node) {
@@ -17,6 +21,9 @@ class AlgoHelper extends BaseClass
         }
     }
 
+    /**
+     * @param $binaryTree
+     */
     public static function breadthFirst($binaryTree)
     {
         $children = [];
@@ -32,6 +39,10 @@ class AlgoHelper extends BaseClass
         }
     }
 
+    /**
+     * @param $binaryTree
+     * @return array
+     */
     public static function reverseTree($binaryTree)
     {
         $tempArr = [];
@@ -45,6 +56,12 @@ class AlgoHelper extends BaseClass
         return $tempArr;
     }
 
+    /**
+     * @param $G
+     * @param $d
+     * @param int $startNode
+     * @return \Generator
+     */
     public static function dijkstra($G, &$d, $startNode = 0)
     {
         $totalNode = count($G);
@@ -91,8 +108,8 @@ class AlgoHelper extends BaseClass
             }
 
             //从V中更新顶点到U中
-            array_push($U,$current_min_v);
-            array_splice($V,array_search($current_min_v,$V),1);
+            array_push($U, $current_min_v);
+            array_splice($V, array_search($current_min_v, $V), 1);
 
             //更新
             foreach($V as $k => $u) {
