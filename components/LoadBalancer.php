@@ -13,7 +13,7 @@ class LoadBalancer extends BaseClass
             if (strpos($hosts, ',') !== false) {
                 $hosts = explode(',', $hosts);
             } else {
-                return null;
+                return $hosts;
             }
         }
 
