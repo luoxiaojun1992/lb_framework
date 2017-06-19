@@ -4,6 +4,11 @@ namespace lb\components\helpers;
 
 use lb\BaseClass;
 
+/**
+ * Class AlgoHelper
+ *
+ * @package lb\components\helpers
+ */
 class AlgoHelper extends BaseClass
 {
     /**

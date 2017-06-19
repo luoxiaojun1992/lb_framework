@@ -5,8 +5,16 @@ namespace lb\components\helpers;
 use lb\BaseClass;
 use lb\Lb;
 
+/**
+ * Class ArrayHelper
+ * @package lb\components\helpers
+ */
 class ArrayHelper extends BaseClass
 {
+    /**
+     * @param $array
+     * @return int
+     */
     public static function array_depth($array)
     {
         if (is_array($array)) {
@@ -26,6 +34,10 @@ class ArrayHelper extends BaseClass
         return 0;
     }
 
+    /**
+     * @param $array
+     * @return bool
+     */
     public static function is_multi_array($array)
     {
         $result = false;
@@ -35,6 +47,10 @@ class ArrayHelper extends BaseClass
         return $result;
     }
 
+    /**
+     * @param $array
+     * @return mixed
+     */
     public static function toString($array)
     {
         if (is_array($array)) {
@@ -45,6 +61,12 @@ class ArrayHelper extends BaseClass
         return $string;
     }
 
+    /**
+     * @param $array
+     * @param $key
+     * @param $value
+     * @return array
+     */
     public static function listData($array, $key, $value)
     {
         $listData = [];
@@ -56,6 +78,10 @@ class ArrayHelper extends BaseClass
         return $listData;
     }
 
+    /**
+     * @param $array
+     * @param string $func
+     */
     public static function debug($array, $func = 'var_dump')
     {
         echo '<pre>';
