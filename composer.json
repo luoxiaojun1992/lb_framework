@@ -46,7 +46,7 @@
     "qiniu/php-sdk": "*",
     "elasticsearch/elasticsearch": "*",
     "denissimon/prediction-builder": "*",
-    "centraldesktop/protobuf-php": "*",
+    "allegro/php-protobuf": "*",
     "workerman/workerman": "*",
     "nervo/yuicompressor": "*",
     "ucsdmath/validation": "*",
