@@ -47,6 +47,7 @@
     "elasticsearch/elasticsearch": "*",
     "denissimon/prediction-builder": "*",
     "allegro/php-protobuf": "*",
+    "google/protobuf": "*",
     "workerman/workerman": "*",
     "nervo/yuicompressor": "*",
     "ucsdmath/validation": "*",
