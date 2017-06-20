@@ -48,6 +48,7 @@
     "denissimon/prediction-builder": "*",
     "allegro/php-protobuf": "*",
     "google/protobuf": "*",
+    "grpc/grpc": "*",
     "workerman/workerman": "*",
     "nervo/yuicompressor": "*",
     "ucsdmath/validation": "*",
