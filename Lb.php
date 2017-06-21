@@ -976,7 +976,11 @@ class Lb extends BaseClass
 
         // Route
         $rpc_config = Lb::app()->getRpcConfig();
-        if (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
+        $thriftConfig = Lb::app()->getThriftConfig();
+        if (isset($thriftConfig[$routeInfo['controller']][$routeInfo['action']]) &&
+            $thriftConfig[$routeInfo['controller']][$routeInfo['action']]) {
+            Route::thrift($routeInfo);
+        } elseif (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
             $rpc_config[$routeInfo['controller']][$routeInfo['action']]) {
             Route::rpc($routeInfo, $request, $response);
         } else {

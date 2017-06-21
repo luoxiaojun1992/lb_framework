@@ -10,6 +10,9 @@ use lb\components\events\AopEvent;
 use lb\components\request\RequestContract;
 use lb\controllers\BaseController;
 use lb\Lb;
+use Thrift\Protocol\TBinaryProtocol;
+use Thrift\Transport\TBufferedTransport;
+use Thrift\Transport\TPhpStream;
 
 class Route extends BaseClass
 {
@@ -136,6 +139,41 @@ class Route extends BaseClass
         } else {
             throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
+    }
+
+    /**
+     * @param array $routeInfo
+     * @throws HttpException
+     */
+    public static function thrift(Array $routeInfo)
+    {
+        header('Content-Type', 'application/x-thrift');
+
+        $thriftConfig = Lb::app()->getThriftConfig();
+        if (empty($thriftConfig[$routeInfo['controller']][$routeInfo['action']])) {
+            throw new HttpException(self::PAGE_NOT_FOUND, 404);
+        }
+
+        $config = $thriftConfig[$routeInfo['controller']][$routeInfo['action']];
+        if (empty($config['service']) || empty($config['service_impl'])) {
+            throw new HttpException(self::PAGE_NOT_FOUND, 404);
+        }
+
+        $serviceImpl = $config['service_impl'];
+        $handler = new $serviceImpl();
+
+        $service = $config['service'];
+        $serviceArr = explode('\\', $service);
+        $serviceName = ucfirst(array_pop($serviceArr));
+        $processorName = '\\' . trim(implode('\\', array_merge($serviceArr, [$serviceName . 'Processor'])), '\\');
+        $processor = new $processorName($handler);
+
+        $transport = new TBufferedTransport(new TPhpStream(TPhpStream::MODE_R | TPhpStream::MODE_W));
+        $protocol = new TBinaryProtocol($transport, true, true);
+
+        $transport->open();
+        $processor->process($protocol, $protocol);
+        $transport->close();
     }
 
     /**

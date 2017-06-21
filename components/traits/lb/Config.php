@@ -145,6 +145,16 @@ trait Config
     }
 
     /**
+     * Get Thrift Config
+     *
+     * @return array
+     */
+    public function getThriftConfig()
+    {
+        return $this->getConfigByName('thrift');
+    }
+
+    /**
      * Get Api Doc Config
      *
      * @return array
