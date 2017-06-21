@@ -135,23 +135,33 @@ trait Config
     }
 
     /**
-     * Get RPC Config
+     * Get Hprose Config
      *
      * @return array
      */
-    public function getRpcConfig()
+    public function getHproseConfig()
     {
-        return $this->getConfigByName('rpc');
+        return $this->getConfigByName('hprose');
     }
 
     /**
-     * Get Thrift Config
+     * Get Thrift Provider Config
      *
      * @return array
      */
-    public function getThriftConfig()
+    public function getThriftProviderConfig()
     {
-        return $this->getConfigByName('thrift');
+        return $this->getConfigByName('thrift_provider');
+    }
+
+    /**
+     * Get Thrift Services Config
+     *
+     * @return array
+     */
+    public function getThriftServicesConfig()
+    {
+        return $this->getConfigByName('thrift_services');
     }
 
     /**

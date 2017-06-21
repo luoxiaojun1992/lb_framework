@@ -975,14 +975,14 @@ class Lb extends BaseClass
         }
 
         // Route
-        $rpc_config = Lb::app()->getRpcConfig();
-        $thriftConfig = Lb::app()->getThriftConfig();
-        if (isset($thriftConfig[$routeInfo['controller']][$routeInfo['action']]) &&
-            $thriftConfig[$routeInfo['controller']][$routeInfo['action']]) {
+        $hproseConfig = Lb::app()->getHproseConfig();
+        $thriftProviderConfig = Lb::app()->getThriftProviderConfig();
+        if (isset($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) &&
+            $thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) {
             Route::thrift($routeInfo);
-        } elseif (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
-            $rpc_config[$routeInfo['controller']][$routeInfo['action']]) {
-            Route::rpc($routeInfo, $request, $response);
+        } elseif (isset($hproseConfig[$routeInfo['controller']][$routeInfo['action']]) &&
+            $hproseConfig[$routeInfo['controller']][$routeInfo['action']]) {
+            Route::hprose($routeInfo, $request, $response);
         } else {
             ob_start();
             Route::runWebAction($routeInfo, $request, $response);

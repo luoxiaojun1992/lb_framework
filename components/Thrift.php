@@ -4,6 +4,7 @@ namespace lb\components;
 
 use lb\BaseClass;
 use lb\components\traits\Singleton;
+use lb\Lb;
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TBufferedTransport;
 use Thrift\Transport\THttpClient;
@@ -23,8 +24,12 @@ class Thrift extends BaseClass
         //
     }
 
-    public function with($host, $endpoint, $service)
+    public function with($service)
     {
+        $thriftServicesConfig = Lb::app()->getThriftServicesConfig();
+        $host = $thriftServicesConfig[$service]['gateway'];
+        $endpoint = $thriftServicesConfig[$service]['endpoint'];
+
         $port = 80;
         if (strpos($host, ':')) {
             list($host, $port) = explode(':', $host);

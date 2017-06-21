@@ -114,7 +114,7 @@ class Route extends BaseClass
      * @param $response
      * @throws HttpException
      */
-    public static function rpc(Array $route_info, $request = null, $response = null)
+    public static function hprose(Array $route_info, $request = null, $response = null)
     {
         require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
         $controller_id = $route_info['controller'];
@@ -149,12 +149,12 @@ class Route extends BaseClass
     {
         header('Content-Type', 'application/x-thrift');
 
-        $thriftConfig = Lb::app()->getThriftConfig();
-        if (empty($thriftConfig[$routeInfo['controller']][$routeInfo['action']])) {
+        $thriftProviderConfig = Lb::app()->getThriftProviderConfig();
+        if (empty($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']])) {
             throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
 
-        $config = $thriftConfig[$routeInfo['controller']][$routeInfo['action']];
+        $config = $thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']];
         if (empty($config['service']) || empty($config['service_impl'])) {
             throw new HttpException(self::PAGE_NOT_FOUND, 404);
         }
