@@ -81,7 +81,8 @@
     "pear/console_getopt": "*",
     "nikic/php-parser": "*",
     "etsy/phan": "*",
-    "squizlabs/php_codesniffer": "*"
+    "squizlabs/php_codesniffer": "*",
+    "apache/thrift": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
