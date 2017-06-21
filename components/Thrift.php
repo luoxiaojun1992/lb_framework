@@ -30,23 +30,27 @@ class Thrift extends BaseClass
             list($host, $port) = explode(':', $host);
         }
 
-        $serviceArr = explode('/', $service);
+        $serviceArr = explode('\\', $service);
         $serviceName = ucfirst(array_pop($serviceArr));
-
         $this->socket = new THttpClient($host, $port, $endpoint);
         $this->transport = new TBufferedTransport($this->socket, 1024, 1024);
         $this->protocol = new TBinaryProtocol($this->transport);
 
         $clientName = '\\' . trim(implode('\\', array_merge($serviceArr, [$serviceName . 'Client'])), '\\');
         $this->client = new $clientName($this->protocol);
+
+        return $this;
     }
 
     public function __call($name, $arguments)
     {
         $this->transport->open();
 
-        call_user_func_array([$this->client, $name], $arguments);
+        $refecltionMethod = new \ReflectionMethod($this->client, $name);
+        $res = $refecltionMethod->invokeArgs($this->client, $arguments);
 
         $this->transport->close();
+
+        return $res;
     }
 }
