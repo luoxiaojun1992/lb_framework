@@ -35,12 +35,12 @@ class Thrift extends BaseClass
             list($host, $port) = explode(':', $host);
         }
 
-        $serviceArr = explode('\\', $service);
-        $serviceName = ucfirst(array_pop($serviceArr));
         $this->socket = new THttpClient($host, $port, $endpoint);
         $this->transport = new TBufferedTransport($this->socket, 1024, 1024);
         $this->protocol = new TBinaryProtocol($this->transport);
 
+        $serviceArr = explode('\\', $service);
+        $serviceName = ucfirst(array_pop($serviceArr));
         $clientName = '\\' . trim(implode('\\', array_merge($serviceArr, [$serviceName . 'Client'])), '\\');
         $this->client = new $clientName($this->protocol);
 
