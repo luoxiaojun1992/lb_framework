@@ -94,7 +94,7 @@ trait Config
     /**
      * Get Custom Configuration
      *
-     * @param string $name
+     * @param  string $name
      * @return array|null
      */
     public function getCustomConfig($name = '')
@@ -116,7 +116,7 @@ trait Config
     /**
      * Get DB Config
      *
-     * @param $db_type
+     * @param  $db_type
      * @return array
      */
     public function getDbConfig($db_type)
@@ -209,7 +209,7 @@ trait Config
     /**
      * Get Configuration By Name
      *
-     * @param $config_name
+     * @param  $config_name
      * @return array
      */
     public function getConfigByName($config_name)
@@ -225,7 +225,7 @@ trait Config
     /**
      * Get Url Manager Config By Item Name
      *
-     * @param $item
+     * @param  $item
      * @return bool
      */
     public function getUrlManagerConfig($item)
@@ -260,8 +260,8 @@ trait Config
     /**
      * Get Js Files
      *
-     * @param $controller_id
-     * @param $template_id
+     * @param  $controller_id
+     * @param  $template_id
      * @return array
      */
     public function getJsFiles($controller_id, $template_id)
@@ -277,8 +277,8 @@ trait Config
     /**
      * Get Css Files
      *
-     * @param $controller_id
-     * @param $template_id
+     * @param  $controller_id
+     * @param  $template_id
      * @return array
      */
     public function getCssFiles($controller_id, $template_id)
@@ -417,7 +417,7 @@ trait Config
     protected function initConfig()
     {
         if (defined('CONFIG_FILE') && file_exists(CONFIG_FILE)) {
-            $this->config = include_once(CONFIG_FILE);
+            $this->config = include_once CONFIG_FILE;
         }
 
         // Inject Config Container
