@@ -145,13 +145,24 @@ trait Config
     }
 
     /**
+     * Get Thrift Config
+     *
+     * @return array
+     */
+    public function getThriftConfig()
+    {
+        return $this->getConfigByName('thrift');
+    }
+
+    /**
      * Get Thrift Provider Config
      *
      * @return array
      */
     public function getThriftProviderConfig()
     {
-        return $this->getConfigByName('thrift_provider');
+        $thriftConfig = $this->getThriftConfig();
+        return !empty($thriftConfig['provider']) ? $thriftConfig['provider'] : [];
     }
 
     /**
@@ -161,7 +172,8 @@ trait Config
      */
     public function getThriftServicesConfig()
     {
-        return $this->getConfigByName('thrift_services');
+        $thriftConfig = $this->getThriftConfig();
+        return !empty($thriftConfig['services']) ? $thriftConfig['services'] : [];
     }
 
     /**
