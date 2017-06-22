@@ -977,11 +977,9 @@ class Lb extends BaseClass
         // Route
         $hproseConfig = Lb::app()->getHproseConfig();
         $thriftProviderConfig = Lb::app()->getThriftProviderConfig();
-        if (isset($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) &&
-            $thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) {
+        if (!empty($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']])) {
             Route::thrift($routeInfo);
-        } elseif (isset($hproseConfig[$routeInfo['controller']][$routeInfo['action']]) &&
-            $hproseConfig[$routeInfo['controller']][$routeInfo['action']]) {
+        } elseif (!empty($hproseConfig[$routeInfo['controller']][$routeInfo['action']])) {
             Route::hprose($routeInfo, $request, $response);
         } else {
             ob_start();

@@ -170,13 +170,11 @@ class SwooleLb extends Lb
         }
 
         // Route
-        $rpc_config = Lb::app()->getHproseConfig();
+        $hproseConfig = Lb::app()->getHproseConfig();
         $thriftProviderConfig = Lb::app()->getThriftProviderConfig();
-        if (isset($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) &&
-            $thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']]) {
+        if (!empty($thriftProviderConfig[$routeInfo['controller']][$routeInfo['action']])) {
             Route::thrift($routeInfo);
-        } elseif (isset($rpc_config[$routeInfo['controller']][$routeInfo['action']]) &&
-            $rpc_config[$routeInfo['controller']][$routeInfo['action']]) {
+        } elseif (!empty($hproseConfig[$routeInfo['controller']][$routeInfo['action']])) {
             Route::hprose($routeInfo, $request, $response);
         } else {
             ob_start();
@@ -209,16 +207,7 @@ class SwooleLb extends Lb
     {
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
-        switch ($cache_type) {
-            case FilecacheKit::CACHE_TYPE:
-                return Lb::app()->fileCacheGet($page_cache_key);
-            case MemcacheKit::CACHE_TYPE:
-                return Lb::app()->memcacheGet($page_cache_key);
-            case RedisKit::CACHE_TYPE:
-                return Lb::app()->redisGet($page_cache_key);
-            default:
-                return Lb::app()->fileCacheGet($page_cache_key);
-        }
+        return Lb::app()->getCache($page_cache_key, $cache_type);
     }
 
     /**
@@ -232,19 +221,7 @@ class SwooleLb extends Lb
     {
         $route_info = $this->route_info;
         $page_cache_key = implode('_', ['page_cache', $route_info['controller'], $route_info['action']]);
-        switch ($cache_type) {
-            case FilecacheKit::CACHE_TYPE:
-                Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
-                break;
-            case MemcacheKit::CACHE_TYPE:
-                Lb::app()->memcacheSet($page_cache_key, $page_cache, $expire);
-                break;
-            case RedisKit::CACHE_TYPE:
-                Lb::app()->redisSet($page_cache_key, $page_cache, $expire);
-                break;
-            default:
-                Lb::app()->fileCacheSet($page_cache_key, $page_cache, $expire);
-        }
+        Lb::app()->setCache($page_cache_key, $page_cache, $cache_type, $expire);
     }
 
     /**
