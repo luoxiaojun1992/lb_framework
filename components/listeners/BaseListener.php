@@ -6,6 +6,9 @@ use lb\components\events\BaseEvent;
 
 class BaseListener implements ListenerInterface
 {
+    //Handling By Async Queue
+    public static $useQueue = false;
+
     public $event_data;
 
     public function handler(BaseEvent $event)

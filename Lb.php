@@ -572,10 +572,10 @@ class Lb extends BaseClass
     }
 
     // Trigger Event
-    public function trigger($event_name, $event = null)
+    public function trigger($event_name, $event = null, $ignoreQueue = false)
     {
         if ($this->isSingle()) {
-            BaseObserver::trigger($event_name, $event);
+            BaseObserver::trigger($event_name, $event, $ignoreQueue);
         }
     }
 

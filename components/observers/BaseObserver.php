@@ -5,6 +5,9 @@ namespace lb\components\observers;
 use lb\components\events\BaseEvent;
 use lb\components\listeners\BaseListener;
 use lb\components\listeners\ListenerInterface;
+use lb\components\queues\handlers\EventHandler;
+use lb\components\queues\jobs\Job;
+use lb\Lb;
 
 class BaseObserver implements ObserverInterface
 {
@@ -15,7 +18,7 @@ class BaseObserver implements ObserverInterface
         static::$event_listeners[] = [$event_name, $listener, $data];
     }
 
-    public static function trigger($event_name, $event = null)
+    public static function trigger($event_name, $event = null, $ignoreQueue = false)
     {
         foreach(static::$event_listeners as $event_listener) {
             if ($event_listener[0] == $event_name) {
@@ -24,9 +27,13 @@ class BaseObserver implements ObserverInterface
                     $event->setData($data);
                 }
 
-                /** @var ListenerInterface $listener */
+                /** @var BaseListener $listener */
                 $listener = $event_listener[1];
-                $listener->handler($event);
+                if (!$ignoreQueue && $listener::$useQueue) {
+                    Lb::app()->queuePush(new Job(EventHandler::class, ['event_name' => $event_name, 'event' => $event]));
+                } else {
+                    $listener->handler($event);
+                }
             }
         }
     }
