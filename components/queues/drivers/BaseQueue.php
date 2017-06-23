@@ -44,6 +44,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
             case self::SERIALIZER_JSON:
                 break;
             case self::SERIALIZER_PHP:
+                //todo not allowed to contain closure
                 return Lb::app()->serialize($unserialized_data);
         }
 
@@ -62,6 +63,7 @@ abstract class BaseQueue extends BaseClass implements QueueInterface
             case self::SERIALIZER_JSON:
                 break;
             case self::SERIALIZER_PHP:
+                //todo not allowed to contain closure
                 return Lb::app()->unserialize($serialized_data);
         }
 
