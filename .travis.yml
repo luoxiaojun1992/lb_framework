@@ -4,4 +4,4 @@ php:
       - '7.1'
       - hhvm
       - nightly
-script: echo 'ok'
+script: echo 'build ok'
