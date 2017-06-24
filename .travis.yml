@@ -11,5 +11,6 @@ before_script:
       - make
       - make install
       - echo "extension = ast.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      - cd ..
       - composer install -vvv
 script: phpunit tests
