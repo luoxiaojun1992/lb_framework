@@ -4,7 +4,7 @@ php:
       - '7.1'
       - nightly
 before_script:
-      - git clone git@github.com:nikic/php-ast.git
+      - git clone https://github.com/nikic/php-ast.git
       - cd php-ast
       - phpize
       - ./configure
