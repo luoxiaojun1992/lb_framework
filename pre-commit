@@ -2,3 +2,4 @@
 
 git diff --cached --name-only | grep ".php$" | grep -v "^views/" | awk '{cmd="./vendor/bin/phpcbf "$0;system(cmd)}'
 
+./vendor/bin/phpunit ./tests
