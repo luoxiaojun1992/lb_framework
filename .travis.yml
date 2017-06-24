@@ -4,6 +4,12 @@ php:
       - '7.1'
       - nightly
 before_script:
-      - pecl install ast
+      - git clone git@github.com:nikic/php-ast.git
+      - cd php-ast
+      - phpize
+      - ./configure
+      - make
+      - make install
+      - echo "extension = ast.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       - composer install -vvv
 script: phpunit tests
