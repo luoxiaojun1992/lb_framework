@@ -13,4 +13,4 @@ before_script:
       - echo "extension = ast.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
       - cd ..
       - composer install -vvv
-script: phpunit tests
+script: ./vendor/bin/phpunit tests
