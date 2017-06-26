@@ -2,11 +2,78 @@
 
 namespace lb\components\widget;
 
-use lb\Lb;
+use lb\components\traits\Singleton;
 
 class Grid extends Base
 {
-    public static function render($data_provider, $options, $htmlOptions = [])
+    use Singleton;
+
+    protected $dataProvider;
+    protected $options;
+    protected $htmlOptions = [];
+
+    public function __construct()
+    {
+        $this->setDataProvider(null);
+        $this->setOptions(null);
+        $this->setHtmlOptions([]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataProvider()
+    {
+        return $this->dataProvider;
+    }
+
+    /**
+     * @param mixed $dataProvider
+     * @return $this;
+     */
+    public function setDataProvider($dataProvider)
+    {
+        $this->dataProvider = $dataProvider;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param mixed $options
+     * @return $this;
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHtmlOptions(): array
+    {
+        return $this->htmlOptions;
+    }
+
+    /**
+     * @param array $htmlOptions
+     * @return $this;
+     */
+    public function setHtmlOptions(array $htmlOptions)
+    {
+        $this->htmlOptions = $htmlOptions;
+        return $this;
+    }
+
+    public function render()
     {
         $grid_tpl = <<<Grid
 <table %s>
@@ -16,8 +83,8 @@ class Grid extends Base
 Grid;
 
         $tableHtmlOptions = [];
-        if ($htmlOptions) {
-            foreach ($htmlOptions as $attribute_name => $attribute_value) {
+        if ($this->getHtmlOptions()) {
+            foreach ($this->getHtmlOptions() as $attribute_name => $attribute_value) {
                 $tableHtmlOptions[] = "$attribute_name=\"{$attribute_value}\"";
             }
         }
@@ -25,7 +92,7 @@ Grid;
 
         $thead_tpl = '<tr>%s</tr>';
         $thead = [];
-        foreach ($options as $option) {
+        foreach ($this->getOptions() as $option) {
             if (isset($option['label'])) {
                 $thead[] = "<td>{$option['label']}</td>";
             } else {
@@ -35,9 +102,9 @@ Grid;
         $thead_html = sprintf($thead_tpl, implode('', $thead));
 
         $tbody = [];
-        foreach ($data_provider as $data) {
+        foreach ($this->getDataProvider() as $data) {
             $tmpStr = '<tr>';
-            foreach ($options as $option) {
+            foreach ($this->getOptions() as $option) {
                 if (isset($option['attribute'])) {
                     $data_value = $data->{$option['attribute']};
                     if ($data_value !== false) {

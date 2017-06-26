@@ -80,7 +80,10 @@ Grid;
 
         $htmlOptions = ['class' => 'test'];
 
-        $actualGrid = Grid::render($dataProvider, $options, $htmlOptions);
+        $actualGrid = Grid::component()->setDataProvider($dataProvider)
+            ->setHtmlOptions($htmlOptions)
+            ->setOptions($options)
+            ->render();
 
         $this->assertEquals($expectedGrid, $actualGrid);
     }
