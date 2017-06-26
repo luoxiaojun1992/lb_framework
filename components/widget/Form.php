@@ -24,6 +24,16 @@ EndForm;
     protected $attributes = [];
     protected $csrfToken = '';
 
+    public function init()
+    {
+        $this->setId('');
+        $this->setMethod('post');
+        $this->setAction('');
+        $this->setClass('');
+        $this->setAttributes([]);
+        $this->setCsrfToken('');
+    }
+
     /**
      * @return object
      */
@@ -31,12 +41,7 @@ EndForm;
     {
         if (static::$instance instanceof static) {
             $instance = static::$instance;
-            $instance->setId('');
-            $instance->setMethod('post');
-            $instance->setAction('');
-            $instance->setClass('');
-            $instance->setAttributes([]);
-            $instance->setCsrfToken('');
+            $instance->init();
             return $instance;
         } else {
             return (static::$instance = new static());

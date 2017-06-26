@@ -12,6 +12,13 @@ class Grid extends Base
     protected $options;
     protected $htmlOptions = [];
 
+    public function init()
+    {
+        $this->setDataProvider(null);
+        $this->setOptions(null);
+        $this->setHtmlOptions([]);
+    }
+
     /**
      * @return object
      */
@@ -19,9 +26,7 @@ class Grid extends Base
     {
         if (static::$instance instanceof static) {
             $instance = static::$instance;
-            $instance->setDataProvider(null);
-            $instance->setOptions(null);
-            $instance->setHtmlOptions([]);
+            $instance->init();
             return $instance;
         } else {
             return (static::$instance = new static());
