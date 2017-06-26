@@ -9,10 +9,22 @@ class Pagination extends Base
 {
     use Singleton;
 
+    protected $uri;
+    protected $url;
     protected $page;
     protected $dataTotal;
     protected $pageSize = 10;
     protected $pageLen = 10;
+
+    public function __construct()
+    {
+        $this->setUri(null);
+        $this->setUrl(null);
+        $this->setPage(null);
+        $this->setDataTotal(null);
+        $this->setPageSize(10);
+        $this->setPageLen(10);
+    }
 
     /**
      * @return mixed
@@ -20,6 +32,42 @@ class Pagination extends Base
     public function getPage()
     {
         return $this->page;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param mixed $url
+     * @return $this;
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @param mixed $uri
+     * @return $this
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+        return $this;
     }
 
     /**
@@ -128,27 +176,20 @@ Pagination;
         }
 
         $page_code = '';
-        $uri = Lb::app()->getUri();
+        $url = $this->getUrl();
+        $uri = !$url ? ($this->getUri() ? : Lb::app()->getUri()) : '';
         if ($this->getPage() > 1) {
-            $page_code .= "<li>
-      <a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $this->getPage() - 1]) . "\" aria-label=\"Previous\">
-        <span aria-hidden=\"true\">&laquo;</span>
-      </a>
-    </li>";
+            $page_code .= "<li><a href=\"" . ($url ? Lb::app()->createRelativeUrl($url, ['page' => $this->getPage() - 1]) : Lb::app()->createAbsoluteUrl($uri, ['page' => $this->getPage() - 1])) . "\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>";
         }
         for ($i = $init; $i <= $max; ++$i) {
             if ($this->getPage() != $i) {
-                $page_code .= "<li><a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $i]) . "\">{$i}</a></li>";
+                $page_code .= "<li><a href=\"" . ($url ? Lb::app()->createRelativeUrl($url, ['page' => $i]) : Lb::app()->createAbsoluteUrl($uri, ['page' => $i])) . "\">{$i}</a></li>";
             } else {
-                $page_code .= "<li class=\"active\"><a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $i]) . "\">{$i} <span class=\"sr-only\">(current)</span></a></li>";
+                $page_code .= "<li class=\"active\"><a href=\"" . ($url ? Lb::app()->createRelativeUrl($url, ['page' => $i]) : Lb::app()->createAbsoluteUrl($uri, ['page' => $i])) . "\">{$i} <span class=\"sr-only\">(current)</span></a></li>";
             }
         }
         if ($this->getPage() < $page_total) {
-            $page_code .= "<li>
-      <a href=\"" . Lb::app()->createAbsoluteUrl($uri, ['page' => $this->getPage() + 1]) . "\" aria-label=\"Next\">
-        <span aria-hidden=\"true\">&raquo;</span>
-      </a>
-    </li>";
+            $page_code .= "<li><a href=\"" . ($url ? Lb::app()->createRelativeUrl($url, ['page' => $this->getPage() + 1]) : Lb::app()->createAbsoluteUrl($uri, ['page' => $this->getPage() + 1])) . "\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>";
         }
 
         return sprintf($pagination_tpl, $page_code);
