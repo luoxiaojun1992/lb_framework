@@ -26,7 +26,12 @@ Form;
         }
         $expectedForm = sprintf($form_tpl, $id, $method, $action, $class, implode(' ', $attributes_code));
 
-        $actualForm = Form::render($id, $method, $action, $class, $attributes);
+        $actualForm = Form::component()->setId($id)
+            ->setMethod($method)
+            ->setAction($action)
+            ->setClass($class)
+            ->setAttributes($attributes)
+            ->render();
 
         $this->assertEquals($expectedForm, $actualForm);
     }
@@ -39,7 +44,7 @@ Form;
 EndForm;
         $csrf_token = Security::generateCsrfToken();
         $expectedEndForm = sprintf($end_form_tpl, $csrf_token);
-        $actualEndForm = Form::endForm($csrf_token);
+        $actualEndForm = Form::component()->setCsrfToken($csrf_token)->endForm();
         $this->assertEquals($expectedEndForm, $actualEndForm);
     }
 }

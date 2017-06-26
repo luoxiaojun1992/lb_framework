@@ -16,14 +16,23 @@ class Pagination extends Base
     protected $pageSize = 10;
     protected $pageLen = 10;
 
-    public function __construct()
+    /**
+     * @return object
+     */
+    public static function component()
     {
-        $this->setUri(null);
-        $this->setUrl(null);
-        $this->setPage(null);
-        $this->setDataTotal(null);
-        $this->setPageSize(10);
-        $this->setPageLen(10);
+        if (static::$instance instanceof static) {
+            $instance = static::$instance;
+            $instance->setUri(null);
+            $instance->setUrl(null);
+            $instance->setPage(null);
+            $instance->setDataTotal(null);
+            $instance->setPageSize(10);
+            $instance->setPageLen(10);
+            return $instance;
+        } else {
+            return (static::$instance = new static());
+        }
     }
 
     /**

@@ -12,11 +12,20 @@ class Grid extends Base
     protected $options;
     protected $htmlOptions = [];
 
-    public function __construct()
+    /**
+     * @return object
+     */
+    public static function component()
     {
-        $this->setDataProvider(null);
-        $this->setOptions(null);
-        $this->setHtmlOptions([]);
+        if (static::$instance instanceof static) {
+            $instance = static::$instance;
+            $instance->setDataProvider(null);
+            $instance->setOptions(null);
+            $instance->setHtmlOptions([]);
+            return $instance;
+        } else {
+            return (static::$instance = new static());
+        }
     }
 
     /**
