@@ -82,7 +82,8 @@
     "nikic/php-parser": "*",
     "etsy/phan": "*",
     "squizlabs/php_codesniffer": "*",
-    "apache/thrift": "*"
+    "apache/thrift": "*",
+    "lcobucci/jwt": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
