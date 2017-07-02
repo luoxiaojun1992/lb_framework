@@ -629,8 +629,8 @@ class Dao extends BaseClass
     public function beginTransaction()
     {
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
-        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
         if (!$this->_level) {
+            $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
             $write_conn->beginTransaction();
         } else {
             $write_conn->exec('SAVEPOINT trans'.$this->_level);
