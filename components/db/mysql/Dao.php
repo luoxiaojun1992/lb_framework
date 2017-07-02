@@ -27,6 +27,8 @@ class Dao extends BaseClass
     protected $_join_condition = [];
     protected $_join_type = self::JOIN_TYPE_LEFT;
 
+    protected $_level = 0;
+
     //Join Type
     const JOIN_TYPE_LEFT = 'LEFT';
     const JOIN_TYPE_RIGHT = 'RIGHT';
@@ -620,22 +622,46 @@ class Dao extends BaseClass
 
     public function beginTransaction()
     {
+        /** @var \PDO $write_conn */
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
-        $write_conn->beginTransaction();
+        if (!$this->_level) {
+            $write_conn->beginTransaction();
+        } else {
+            $write_conn->exec('SAVEPOINT trans'.$this->_level);
+        }
+        $this->_level++;
     }
 
     public function commit()
     {
+        /** @var \PDO $write_conn */
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
-        $write_conn->commit();
-        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
+        if ($write_conn->inTransaction()) {
+            $currentLevel = $this->_level - 1;
+            if (!$currentLevel) {
+                $write_conn->commit();
+                $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
+            } else {
+                $write_conn->exec('RELEASE SAVEPOINT trans' . $currentLevel);
+            }
+            $this->_level--;
+        }
     }
 
     public function rollBack()
     {
+        /** @var \PDO $write_conn */
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
-        $write_conn->rollBack();
-        $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
+        if ($write_conn->inTransaction()) {
+            $currentLevel = $this->_level - 1;
+            if (!$currentLevel) {
+                $write_conn->rollBack();
+                $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
+            } else {
+                $write_conn->exec('ROLLBACK TO trans' . $currentLevel);
+            }
+            $this->_level--;
+        }
     }
 }
