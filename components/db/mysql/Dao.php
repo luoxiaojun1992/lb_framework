@@ -11,7 +11,9 @@ class Dao extends BaseClass
 {
     use BaseObject;
 
-    /** @var  Dao */
+    /**
+     * @var  Dao 
+     */
     protected static $instance;
     protected $_table = '';
     protected $_fields = [];
@@ -59,9 +61,12 @@ class Dao extends BaseClass
     public static function component()
     {
         if (static::$instance instanceof static) {
-            /** @var Dao $instance */
+            /**
+ * @var Dao $instance 
+*/
             $instance = static::$instance;
-            $instance->setProperties([
+            $instance->setProperties(
+                [
                 '_table' => '',
                 '_fields' => [],
                 '_conditions' => [],
@@ -72,7 +77,8 @@ class Dao extends BaseClass
                 '_joined_table' => '',
                 '_join_condition' => [],
                 '_join_type' => self::JOIN_TYPE_LEFT,
-            ]);
+                ]
+            );
             return $instance;
         } else {
             return (static::$instance = new static());
@@ -180,7 +186,7 @@ class Dao extends BaseClass
     /**
      * @param $joined_table
      * @param $condition
-     * @param string $type
+     * @param string       $type
      * @return bool|Dao
      */
     public function join($joined_table, $condition, $type = 'LEFT')
@@ -240,7 +246,7 @@ class Dao extends BaseClass
      * Chunk query
      *
      * @param \Closure $callBack
-     * @param int $limit
+     * @param int      $limit
      */
     public function chunk(\Closure $callBack, $limit = 10000)
     {
@@ -269,7 +275,7 @@ class Dao extends BaseClass
                             $result = $statement;
                         }
                     } catch(\PDOException $e) {
-                        if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006){
+                        if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
                             $statement = $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
                             if ($statement) {
@@ -294,16 +300,16 @@ class Dao extends BaseClass
     {
         $connection_component = Connection::component();
         switch ($nodeType) {
-            case Connection::CONN_TYPE_SLAVE:
-                if ($connection_component->write_conn->inTransaction()) {
-                    $conn = $connection_component->write_conn;
-                } else {
-                    $conn = $connection_component->read_conn ?: $connection_component->write_conn;
-                }
-                break;
-            case Connection::CONN_TYPE_MASTER:
-            default:
+        case Connection::CONN_TYPE_SLAVE:
+            if ($connection_component->write_conn->inTransaction()) {
                 $conn = $connection_component->write_conn;
+            } else {
+                $conn = $connection_component->read_conn ?: $connection_component->write_conn;
+            }
+            break;
+        case Connection::CONN_TYPE_MASTER:
+        default:
+            $conn = $connection_component->write_conn;
         }
         return $conn;
     }
@@ -622,7 +628,9 @@ class Dao extends BaseClass
 
     public function beginTransaction()
     {
-        /** @var \PDO $write_conn */
+        /**
+ * @var \PDO $write_conn 
+*/
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
         if (!$this->_level) {
@@ -635,7 +643,9 @@ class Dao extends BaseClass
 
     public function commit()
     {
-        /** @var \PDO $write_conn */
+        /**
+ * @var \PDO $write_conn 
+*/
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         if ($write_conn->inTransaction()) {
             $currentLevel = $this->_level - 1;
