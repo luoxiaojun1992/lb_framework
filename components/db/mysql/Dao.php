@@ -61,9 +61,6 @@ class Dao extends BaseClass
     public static function component()
     {
         if (static::$instance instanceof static) {
-            /**
- * @var Dao $instance 
-*/
             $instance = static::$instance;
             $instance->setProperties(
                 [
