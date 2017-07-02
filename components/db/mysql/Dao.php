@@ -294,7 +294,7 @@ class Dao extends BaseClass
 
     /**
      * @param $nodeType
-     * @return bool
+     * @return \PDO
      */
     protected function getConnByNodeType($nodeType)
     {
@@ -628,9 +628,6 @@ class Dao extends BaseClass
 
     public function beginTransaction()
     {
-        /**
- * @var \PDO $write_conn 
-*/
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, false);
         if (!$this->_level) {
@@ -643,9 +640,6 @@ class Dao extends BaseClass
 
     public function commit()
     {
-        /**
- * @var \PDO $write_conn 
-*/
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         if ($write_conn->inTransaction()) {
             $currentLevel = $this->_level - 1;
@@ -661,7 +655,6 @@ class Dao extends BaseClass
 
     public function rollBack()
     {
-        /** @var \PDO $write_conn */
         $write_conn = $this->getConnByNodeType(Connection::CONN_TYPE_MASTER);
         if ($write_conn->inTransaction()) {
             $currentLevel = $this->_level - 1;
