@@ -195,9 +195,9 @@ class FileHelper extends BaseClass implements IO
     /**
      * Copy a file or a directory
      *
-     * @param $src
-     * @param $dst
-     * @param null $context
+     * @param  $src
+     * @param  $dst
+     * @param  null $context
      * @return bool
      */
     public static function copy($src, $dst, $context = null)
@@ -208,9 +208,9 @@ class FileHelper extends BaseClass implements IO
     /**
      * Move a file or a directory
      *
-     * @param $oldName
-     * @param $newName
-     * @param null $context
+     * @param  $oldName
+     * @param  $newName
+     * @param  null    $context
      * @return bool
      */
     public static function move($oldName, $newName, $context = null)
@@ -221,9 +221,9 @@ class FileHelper extends BaseClass implements IO
     /**
      * Rename a file or a directory
      *
-     * @param $oldName
-     * @param $newName
-     * @param null $context
+     * @param  $oldName
+     * @param  $newName
+     * @param  null    $context
      * @return bool
      */
     public static function rename($oldName, $newName, $context = null)
@@ -234,7 +234,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * File exists
      *
-     * @param $fileName
+     * @param  $fileName
      * @return bool
      */
     public static function fileExists($fileName)
@@ -245,7 +245,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * Directory exists
      *
-     * @param $directory
+     * @param  $directory
      * @return bool
      */
     public static function dirExists($directory)
@@ -256,7 +256,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * Resource exists
      *
-     * @param $resource
+     * @param  $resource
      * @return bool
      */
     public static function resourceExists($resource)
