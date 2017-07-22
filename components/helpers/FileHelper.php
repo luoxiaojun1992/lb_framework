@@ -53,7 +53,7 @@ class FileHelper extends BaseClass implements IO
             //兼容IE11
             $ua = Lb::app()->getUserAgent();
             $encoded_filename = urlencode($file_name);
-            if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)){
+            if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)) {
                 header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
             } else if (preg_match("/Firefox/", $ua)) {
                 header('Content-Disposition: attachment; filename*="utf8\'\'' . $file_name . '"');
@@ -118,8 +118,8 @@ class FileHelper extends BaseClass implements IO
     /**
      * Send file
      *
-     * @param $filePath
-     * @param $remoteFileSystem
+     * @param  $filePath
+     * @param  $remoteFileSystem
      * @return bool
      */
     public static function send($filePath, $remoteFileSystem)
