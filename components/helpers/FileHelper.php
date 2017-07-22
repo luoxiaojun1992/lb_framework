@@ -14,7 +14,7 @@ use ResponseKit;
 class FileHelper extends BaseClass implements IO
 {
     /**
-     * Delete file
+     * Delete a file
      *
      * @param  $file_path
      * @return bool
@@ -22,7 +22,7 @@ class FileHelper extends BaseClass implements IO
     public static function delete($file_path)
     {
         $result = false;
-        if (file_exists($file_path)) {
+        if (self::fileExists($file_path)) {
             $result = unlink($file_path);
         }
         return $result;
@@ -59,7 +59,7 @@ class FileHelper extends BaseClass implements IO
     }
 
     /**
-     * Download file
+     * Download a file
      *
      * @param $file_path
      * @param $file_name
@@ -110,7 +110,7 @@ class FileHelper extends BaseClass implements IO
     }
 
     /**
-     * Upload file
+     * Upload a file
      *
      * @param  $file_name
      * @param  $saved_file_path
@@ -169,7 +169,7 @@ class FileHelper extends BaseClass implements IO
     }
 
     /**
-     * Send file
+     * Send a file
      *
      * @param  $filePath
      * @param  $remoteFileSystem
@@ -182,7 +182,7 @@ class FileHelper extends BaseClass implements IO
     }
 
     /**
-     * Receive file
+     * Receive a file
      *
      * @param $savePath
      * @param RequestContract|null $request
@@ -192,18 +192,75 @@ class FileHelper extends BaseClass implements IO
         file_put_contents($savePath, $request ? $request->getRawContent() : RequestKit::getRawContent());
     }
 
-    public static function copy()
+    /**
+     * Copy a file or a directory
+     *
+     * @param $src
+     * @param $dst
+     * @param null $context
+     * @return bool
+     */
+    public static function copy($src, $dst, $context = null)
     {
-        //
+        return self::resourceExists($src) ? copy($src, $dst, $context) : false;
     }
 
-    public static function move()
+    /**
+     * Move a file or a directory
+     *
+     * @param $oldName
+     * @param $newName
+     * @param null $context
+     * @return bool
+     */
+    public static function move($oldName, $newName, $context = null)
     {
-        //
+        return self::rename($oldName, $newName, $context);
     }
 
-    public static function rename()
+    /**
+     * Rename a file or a directory
+     *
+     * @param $oldName
+     * @param $newName
+     * @param null $context
+     * @return bool
+     */
+    public static function rename($oldName, $newName, $context = null)
     {
-        //
+        return self::resourceExists($oldName) ? rename($oldName, $newName, $context) : false;
+    }
+
+    /**
+     * File exists
+     *
+     * @param $fileName
+     * @return bool
+     */
+    public static function fileExists($fileName)
+    {
+        return file_exists($fileName);
+    }
+
+    /**
+     * Directory exists
+     *
+     * @param $directory
+     * @return bool
+     */
+    public static function dirExists($directory)
+    {
+        return is_dir($directory);
+    }
+
+    /**
+     * Resource exists
+     *
+     * @param $resource
+     * @return bool
+     */
+    public static function resourceExists($resource)
+    {
+        return self::fileExists($resource) || self::dirExists($resource);
     }
 }
