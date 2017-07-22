@@ -191,4 +191,19 @@ class FileHelper extends BaseClass implements IO
     {
         file_put_contents($savePath, $request ? $request->getRawContent() : RequestKit::getRawContent());
     }
+
+    public static function copy()
+    {
+        //
+    }
+
+    public static function move()
+    {
+        //
+    }
+
+    public static function rename()
+    {
+        //
+    }
 }
