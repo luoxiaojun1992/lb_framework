@@ -6,8 +6,10 @@ use GuzzleHttp\Client;
 use lb\BaseClass;
 use lb\components\consts\IO;
 use lb\components\request\RequestContract;
+use lb\components\response\ResponseContract;
 use lb\Lb;
 use RequestKit;
+use ResponseKit;
 
 class FileHelper extends BaseClass implements IO
 {
@@ -61,32 +63,49 @@ class FileHelper extends BaseClass implements IO
      *
      * @param $file_path
      * @param $file_name
+     * @param $response
      */
-    public static function download($file_path, $file_name)
+    public static function download($file_path, $file_name, ResponseContract $response = null)
     {
         if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
             $file_size = filesize($file_path);
             $fp = fopen($file_path, self::READ_BINARY);
-            Header('Content-type: application/octet-stream');
-            Header('Accept-Ranges: bytes');
-            Header('Accept-Length: ' . $file_size);
-            Header('Content-Disposition: attachment; filename=' . $file_name);
-            Header("Expires:-1");
-            Header("Cache-Control:no_cache");
-            Header("Pragma:no-cache");
+            self::header('Content-type', 'application/octet-stream', $response);
+            self::header('Accept-Ranges', 'bytes', $response);
+            self::header('Accept-Length', $file_size, $response);
+            self::header('Content-Disposition', 'attachment; filename=' . $file_name, $response);
+            self::header('Expires', '-1', $response);
+            self::header('Cache-Control', 'no_cache', $response);
+            self::header('Pragma', 'no-cache', $response);
             //兼容IE11
             $ua = Lb::app()->getUserAgent();
             $encoded_filename = urlencode($file_name);
             if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)) {
-                header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+                self::header('Content-Disposition', 'attachment; filename="' . $encoded_filename . '"', $response);
             } else if (preg_match("/Firefox/", $ua)) {
-                header('Content-Disposition: attachment; filename*="utf8\'\'' . $file_name . '"');
+                self::header('Content-Disposition', 'attachment; filename*="utf8\'\'' . $file_name . '"', $response);
             } else {
-                header('Content-Disposition: attachment; filename="' . $file_name . '"');
+                self::header('Content-Disposition', 'attachment; filename="' . $file_name . '"', $response);
             }
             echo fread($fp, $file_size);
             fclose($fp);
             exit;
+        }
+    }
+
+    /**
+     * Set header
+     *
+     * @param $headerKey
+     * @param $headerValue
+     * @param ResponseContract|null $response
+     */
+    protected static function header($headerKey, $headerValue, ResponseContract $response = null)
+    {
+        if ($response) {
+            $response->setHeader($headerKey, $headerValue);
+        } else {
+            ResponseKit::setHeader($headerKey, $headerValue);
         }
     }
 
