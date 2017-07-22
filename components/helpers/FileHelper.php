@@ -11,6 +11,12 @@ use RequestKit;
 
 class FileHelper extends BaseClass implements IO
 {
+    /**
+     * Delete file
+     *
+     * @param $file_path
+     * @return bool
+     */
     public static function delete($file_path)
     {
         $result = false;
@@ -20,6 +26,12 @@ class FileHelper extends BaseClass implements IO
         return $result;
     }
 
+    /**
+     * Get file extension
+     *
+     * @param $file_path
+     * @return string
+     */
     public static function getExtensionName($file_path)
     {
         $file_extension_name = '';
@@ -29,6 +41,12 @@ class FileHelper extends BaseClass implements IO
         return $file_extension_name;
     }
 
+    /**
+     * Get file size
+     *
+     * @param $file_path
+     * @return int|string
+     */
     public static function getSize($file_path)
     {
         $file_size = '';
@@ -38,6 +56,12 @@ class FileHelper extends BaseClass implements IO
         return $file_size;
     }
 
+    /**
+     * Download file
+     *
+     * @param $file_path
+     * @param $file_name
+     */
     public static function download($file_path, $file_name)
     {
         if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
@@ -66,6 +90,16 @@ class FileHelper extends BaseClass implements IO
         }
     }
 
+    /**
+     * Upload file
+     *
+     * @param $file_name
+     * @param $saved_file_path
+     * @param null $uploaded_file_type_limit
+     * @param null $uploaded_file_size_limit
+     * @param null $uploaded_file_ext_limit
+     * @return array
+     */
     public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null, $uploaded_file_ext_limit = null)
     {
         $storage = new \Upload\Storage\FileSystem($saved_file_path);
