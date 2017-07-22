@@ -7,6 +7,7 @@ use lb\BaseClass;
 use lb\components\consts\IO;
 use lb\components\request\RequestContract;
 use lb\Lb;
+use RequestKit;
 
 class FileHelper extends BaseClass implements IO
 {
@@ -114,20 +115,27 @@ class FileHelper extends BaseClass implements IO
         }
     }
 
+    /**
+     * Send file
+     *
+     * @param $filePath
+     * @param $remoteFileSystem
+     * @return bool
+     */
     public static function send($filePath, $remoteFileSystem)
     {
-        $client = new Client();
-        $resource = fopen($filePath, 'rb');
-        $res = $client->put($remoteFileSystem, ['body' => $resource]);
-        return $res->getStatusCode() == 200;
+        return (new Client())->put($remoteFileSystem, ['body' => fopen($filePath, self::READ_BINARY)])
+            ->getStatusCode() == HttpHelper::STATUS_OK;
     }
 
+    /**
+     * Receive file
+     *
+     * @param $savePath
+     * @param RequestContract|null $request
+     */
     public static function receive($savePath, RequestContract $request = null)
     {
-        if ($request) {
-            file_put_contents($savePath, $request->getRawContent());
-        } else {
-            file_put_contents($savePath, file_get_contents('php://input'));
-        }
+        file_put_contents($savePath, $request ? $request->getRawContent() : RequestKit::getRawContent());
     }
 }
