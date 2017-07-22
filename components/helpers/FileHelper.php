@@ -14,7 +14,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * Delete file
      *
-     * @param $file_path
+     * @param  $file_path
      * @return bool
      */
     public static function delete($file_path)
@@ -29,7 +29,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * Get file extension
      *
-     * @param $file_path
+     * @param  $file_path
      * @return string
      */
     public static function getExtensionName($file_path)
@@ -44,7 +44,7 @@ class FileHelper extends BaseClass implements IO
     /**
      * Get file size
      *
-     * @param $file_path
+     * @param  $file_path
      * @return int|string
      */
     public static function getSize($file_path)
@@ -93,11 +93,11 @@ class FileHelper extends BaseClass implements IO
     /**
      * Upload file
      *
-     * @param $file_name
-     * @param $saved_file_path
-     * @param null $uploaded_file_type_limit
-     * @param null $uploaded_file_size_limit
-     * @param null $uploaded_file_ext_limit
+     * @param  $file_name
+     * @param  $saved_file_path
+     * @param  null            $uploaded_file_type_limit
+     * @param  null            $uploaded_file_size_limit
+     * @param  null            $uploaded_file_ext_limit
      * @return array
      */
     public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null, $uploaded_file_ext_limit = null)
