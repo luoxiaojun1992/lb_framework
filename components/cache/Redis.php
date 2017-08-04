@@ -391,6 +391,24 @@ class Redis extends BaseClass
         }
     }
 
+    /**
+     * @param $key
+     * @param int $step
+     * @return int
+     */
+    public function incr($key, $step = 1)
+    {
+        $this->getKey($key);
+        //todo retry refactor
+        //todo unit test
+        try {
+            return $this->conn ? $this->conn->incrBy($key, $step) : 0;
+        } catch (\Exception $e) {
+            self::component($this->containers, true);
+            return $this->conn ? $this->conn->incrBy($key, $step) : 0;
+        }
+    }
+
     protected function getKey(&$key)
     {
         if (stripos($key, $this->_key_prefix) !== 0) {
