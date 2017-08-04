@@ -401,11 +401,15 @@ class Redis extends BaseClass
         $this->getKey($key);
         //todo retry refactor
         //todo unit test
+        $redisConn = $this->conn;
+        $handleFunc = function () use ($redisConn, $key, $step) {
+            return $redisConn ? $redisConn->incrBy($key, $step) : 0;
+        };
         try {
-            return $this->conn ? $this->conn->incrBy($key, $step) : 0;
+            return call_user_func($handleFunc);
         } catch (\Exception $e) {
             self::component($this->containers, true);
-            return $this->conn ? $this->conn->incrBy($key, $step) : 0;
+            return call_user_func($handleFunc);
         }
     }
 
