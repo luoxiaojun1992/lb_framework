@@ -6,19 +6,34 @@ use GuzzleHttp\Client;
 use lb\BaseClass;
 use lb\components\consts\IO;
 use lb\components\request\RequestContract;
+use lb\components\response\ResponseContract;
 use lb\Lb;
+use RequestKit;
+use ResponseKit;
 
 class FileHelper extends BaseClass implements IO
 {
+    /**
+     * Delete a file
+     *
+     * @param  $file_path
+     * @return bool
+     */
     public static function delete($file_path)
     {
         $result = false;
-        if (file_exists($file_path)) {
+        if (self::fileExists($file_path)) {
             $result = unlink($file_path);
         }
         return $result;
     }
 
+    /**
+     * Get file extension
+     *
+     * @param  $file_path
+     * @return string
+     */
     public static function getExtensionName($file_path)
     {
         $file_extension_name = '';
@@ -28,6 +43,12 @@ class FileHelper extends BaseClass implements IO
         return $file_extension_name;
     }
 
+    /**
+     * Get file size
+     *
+     * @param  $file_path
+     * @return int|string
+     */
     public static function getSize($file_path)
     {
         $file_size = '';
@@ -37,27 +58,34 @@ class FileHelper extends BaseClass implements IO
         return $file_size;
     }
 
-    public static function download($file_path, $file_name)
+    /**
+     * Download a file
+     *
+     * @param $file_path
+     * @param $file_name
+     * @param $response
+     */
+    public static function download($file_path, $file_name, ResponseContract $response = null)
     {
         if (file_exists(iconv('UTF-8', 'GB2312', $file_path))) {
             $file_size = filesize($file_path);
             $fp = fopen($file_path, self::READ_BINARY);
-            Header('Content-type: application/octet-stream');
-            Header('Accept-Ranges: bytes');
-            Header('Accept-Length: ' . $file_size);
-            Header('Content-Disposition: attachment; filename=' . $file_name);
-            Header("Expires:-1");
-            Header("Cache-Control:no_cache");
-            Header("Pragma:no-cache");
+            self::header('Content-type', 'application/octet-stream', $response);
+            self::header('Accept-Ranges', 'bytes', $response);
+            self::header('Accept-Length', $file_size, $response);
+            self::header('Content-Disposition', 'attachment; filename=' . $file_name, $response);
+            self::header('Expires', '-1', $response);
+            self::header('Cache-Control', 'no_cache', $response);
+            self::header('Pragma', 'no-cache', $response);
             //兼容IE11
             $ua = Lb::app()->getUserAgent();
             $encoded_filename = urlencode($file_name);
-            if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)){
-                header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+            if(preg_match("/MSIE/is", $ua) || preg_match(preg_quote("/Trident/7.0/is"), $ua)) {
+                self::header('Content-Disposition', 'attachment; filename="' . $encoded_filename . '"', $response);
             } else if (preg_match("/Firefox/", $ua)) {
-                header('Content-Disposition: attachment; filename*="utf8\'\'' . $file_name . '"');
+                self::header('Content-Disposition', 'attachment; filename*="utf8\'\'' . $file_name . '"', $response);
             } else {
-                header('Content-Disposition: attachment; filename="' . $file_name . '"');
+                self::header('Content-Disposition', 'attachment; filename="' . $file_name . '"', $response);
             }
             echo fread($fp, $file_size);
             fclose($fp);
@@ -65,6 +93,32 @@ class FileHelper extends BaseClass implements IO
         }
     }
 
+    /**
+     * Set header
+     *
+     * @param $headerKey
+     * @param $headerValue
+     * @param ResponseContract|null $response
+     */
+    protected static function header($headerKey, $headerValue, ResponseContract $response = null)
+    {
+        if ($response) {
+            $response->setHeader($headerKey, $headerValue);
+        } else {
+            ResponseKit::setHeader($headerKey, $headerValue);
+        }
+    }
+
+    /**
+     * Upload a file
+     *
+     * @param  $file_name
+     * @param  $saved_file_path
+     * @param  null            $uploaded_file_type_limit
+     * @param  null            $uploaded_file_size_limit
+     * @param  null            $uploaded_file_ext_limit
+     * @return array
+     */
     public static function upload($file_name, $saved_file_path, $uploaded_file_type_limit = null, $uploaded_file_size_limit = null, $uploaded_file_ext_limit = null)
     {
         $storage = new \Upload\Storage\FileSystem($saved_file_path);
@@ -114,20 +168,99 @@ class FileHelper extends BaseClass implements IO
         }
     }
 
+    /**
+     * Send a file
+     *
+     * @param  $filePath
+     * @param  $remoteFileSystem
+     * @return bool
+     */
     public static function send($filePath, $remoteFileSystem)
     {
-        $client = new Client();
-        $resource = fopen($filePath, 'rb');
-        $res = $client->put($remoteFileSystem, ['body' => $resource]);
-        return $res->getStatusCode() == 200;
+        return (new Client())->put($remoteFileSystem, ['body' => fopen($filePath, self::READ_BINARY)])
+            ->getStatusCode() == HttpHelper::STATUS_OK;
     }
 
+    /**
+     * Receive a file
+     *
+     * @param $savePath
+     * @param RequestContract|null $request
+     */
     public static function receive($savePath, RequestContract $request = null)
     {
-        if ($request) {
-            file_put_contents($savePath, $request->getRawContent());
-        } else {
-            file_put_contents($savePath, file_get_contents('php://input'));
-        }
+        file_put_contents($savePath, $request ? $request->getRawContent() : RequestKit::getRawContent());
+    }
+
+    /**
+     * Copy a file or a directory
+     *
+     * @param  $src
+     * @param  $dst
+     * @param  null $context
+     * @return bool
+     */
+    public static function copy($src, $dst, $context = null)
+    {
+        return self::resourceExists($src) ? copy($src, $dst, $context) : false;
+    }
+
+    /**
+     * Move a file or a directory
+     *
+     * @param  $oldName
+     * @param  $newName
+     * @param  null    $context
+     * @return bool
+     */
+    public static function move($oldName, $newName, $context = null)
+    {
+        return self::rename($oldName, $newName, $context);
+    }
+
+    /**
+     * Rename a file or a directory
+     *
+     * @param  $oldName
+     * @param  $newName
+     * @param  null    $context
+     * @return bool
+     */
+    public static function rename($oldName, $newName, $context = null)
+    {
+        return self::resourceExists($oldName) ? rename($oldName, $newName, $context) : false;
+    }
+
+    /**
+     * File exists
+     *
+     * @param  $fileName
+     * @return bool
+     */
+    public static function fileExists($fileName)
+    {
+        return file_exists($fileName);
+    }
+
+    /**
+     * Directory exists
+     *
+     * @param  $directory
+     * @return bool
+     */
+    public static function dirExists($directory)
+    {
+        return is_dir($directory);
+    }
+
+    /**
+     * Resource exists
+     *
+     * @param  $resource
+     * @return bool
+     */
+    public static function resourceExists($resource)
+    {
+        return self::fileExists($resource) || self::dirExists($resource);
     }
 }
