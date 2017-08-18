@@ -9,7 +9,7 @@ trait Lock
 {
     /**
      * @param $key
-     * @param int $ttl
+     * @param int  $ttl
      * @param bool $spinning
      * @return bool|null|string
      */
