@@ -64,7 +64,9 @@ class Bucket extends BaseClass
     {
         $lockKey = 'token_bucket_rate_limit';
 
-        $this->lock($lockKey, 10, true);
+        if (!$this->lock($lockKey, 600, true, 600)) {
+            return $maxWait;
+        }
 
         if ($count <= 0) {
             $this->unlock($lockKey);
