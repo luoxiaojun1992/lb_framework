@@ -12,6 +12,7 @@ use lb\components\traits\Singleton;
 use lb\Lb;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use RedisKit;
 
 class Log extends BaseClass implements Event
 {
@@ -28,7 +29,7 @@ class Log extends BaseClass implements Event
         $handler = new StreamHandler(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR .
             'log' . DIRECTORY_SEPARATOR .'system' . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', Logger::NOTICE);
         $log_config = Lb::app()->getLogConfig();
-        if ($log_config && isset($log_config['type'])) {
+        if (!empty($log_config['type'])) {
             switch($log_config['type']) {
                 case self::LOG_TYPE_MYSQL:
                     $handler = new PDOHandler(Connection::component()->write_conn, Logger::NOTICE);
@@ -66,9 +67,20 @@ class Log extends BaseClass implements Event
      * @param $level
      * @param string $role
      */
-    public function record($message = '', $context = [], $level = Logger::NOTICE, $role = 'system')
+    public function record($message = '', $context = [], $level = Logger::NOTICE, $role = 'system', $times = 0, $ttl = 0)
     {
         if (isset($this->loggers[$role])) {
+            if ($times > 0 && $ttl > 0) {
+                $cacheKey = md5($message);
+                $cnt = RedisKit::incr($cacheKey);
+                if ($cnt == 1) {
+                    RedisKit::expire($cacheKey, $ttl);
+                }
+                if ($cnt > $times) {
+                    return;
+                }
+            }
+
             $this->loggers[$role]->addRecord($level, $message, $context);
             Lb::app()->trigger(self::LOG_WRITE_EVENT, new LogWriteEvent([
                 'level' => $level,
