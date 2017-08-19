@@ -26,17 +26,19 @@ class Log extends BaseClass implements Event
 
     public function __construct()
     {
-        $handler = new StreamHandler(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR .
-            'log' . DIRECTORY_SEPARATOR .'system' . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', Logger::NOTICE);
+        $handler = new StreamHandler(
+            Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR .
+            'log' . DIRECTORY_SEPARATOR .'system' . DIRECTORY_SEPARATOR . date('Y-m-d') . '.log', Logger::NOTICE
+        );
         $log_config = Lb::app()->getLogConfig();
         if (!empty($log_config['type'])) {
             switch($log_config['type']) {
-                case self::LOG_TYPE_MYSQL:
-                    $handler = new PDOHandler(Connection::component()->write_conn, Logger::NOTICE);
-                    break;
-                case self::LOG_TYPE_QUEUE:
-                    $handler = new QueueHandler(Logger::NOTICE);
-                    break;
+            case self::LOG_TYPE_MYSQL:
+                $handler = new PDOHandler(Connection::component()->write_conn, Logger::NOTICE);
+                break;
+            case self::LOG_TYPE_QUEUE:
+                $handler = new QueueHandler(Logger::NOTICE);
+                break;
             }
         }
 
@@ -63,9 +65,11 @@ class Log extends BaseClass implements Event
 
     /**
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param $level
      * @param string $role
+     * @param $times
+     * @param $ttl
      */
     public function record($message = '', $context = [], $level = Logger::NOTICE, $role = 'system', $times = 0, $ttl = 0)
     {
@@ -82,13 +86,17 @@ class Log extends BaseClass implements Event
             }
 
             $this->loggers[$role]->addRecord($level, $message, $context);
-            Lb::app()->trigger(self::LOG_WRITE_EVENT, new LogWriteEvent([
-                'level' => $level,
-                'message' => $message,
-                'context' => $context,
-                'role' => $role,
-                'time' => time(),
-            ]));
+            Lb::app()->trigger(
+                self::LOG_WRITE_EVENT, new LogWriteEvent(
+                    [
+                    'level' => $level,
+                    'message' => $message,
+                    'context' => $context,
+                    'role' => $role,
+                    'time' => time(),
+                    ]
+                )
+            );
         }
     }
 }
