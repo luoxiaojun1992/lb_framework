@@ -235,16 +235,16 @@ class QueryBuilder extends BaseClass
                     $model_class = get_class($this->_model);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
                         /**
- * @var ActiveRecord $related_model 
-*/
+                         * @var ActiveRecord $related_model
+                         */
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
                     /**
- * @var ActiveRecord $model 
-*/
+                     * @var ActiveRecord $model
+                     */
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
