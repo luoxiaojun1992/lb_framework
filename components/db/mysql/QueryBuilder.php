@@ -304,7 +304,7 @@ class QueryBuilder extends BaseClass
      * @param \Closure $callback
      * @param int      $limit
      */
-    public function chunkByConditions(
+    public function chunk(
         \Closure $callback,
         $limit = 10000
     ) {
@@ -400,15 +400,6 @@ class QueryBuilder extends BaseClass
     }
 
     /**
-     * @param \Closure $callback
-     * @param int      $limit
-     */
-    public function chunk(\Closure $callback, $limit = 10000)
-    {
-        return $this->chunkByConditions($callback, $limit);
-    }
-
-    /**
      * @param null $cacheExpire
      * @return array|ActiveRecord|ActiveRecord[]
      */
@@ -421,19 +412,11 @@ class QueryBuilder extends BaseClass
     /**
      * @return int
      */
-    public function countByConditions()
+    public function count()
     {
         if ($this->is_single) {
             return $this->getDaoByConditions()->count();
         }
         return 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return $this->countByConditions();
     }
 }
