@@ -405,8 +405,7 @@ class QueryBuilder extends BaseClass
      */
     public function one($cacheExpire = null)
     {
-        $this->setLimit('1');
-        return $this->findByConditions($cacheExpire);
+        return $this->limit('1')->findByConditions($cacheExpire);
     }
 
     /**
