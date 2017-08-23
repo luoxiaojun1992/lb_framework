@@ -37,11 +37,13 @@ class QueryBuilder extends BaseClass
     }
 
     /**
-     * @param mixed $groupFields
+     * @param $groupFields
+     * @return $this
      */
-    public function setGroupFields($groupFields)
+    public function setGroupFields($groupFields = [])
     {
         $this->_groupFields = $groupFields;
+        return $this;
     }
 
     /**
@@ -54,10 +56,12 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param mixed $orders
+     * @return $this
      */
-    public function setOrders($orders)
+    public function setOrders($orders = [])
     {
         $this->_orders = $orders;
+        return $this;
     }
 
     /**
@@ -70,10 +74,12 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param mixed $limit
+     * @return $this
      */
-    public function setLimit($limit)
+    public function setLimit($limit = '')
     {
         $this->_limit = $limit;
+        return $this;
     }
 
     /**
@@ -86,10 +92,12 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param mixed $conditions
+     * @return $this
      */
-    public function setConditions($conditions)
+    public function setConditions($conditions = [])
     {
         $this->_conditions = $conditions;
+        return $this;
     }
 
     /**
@@ -102,10 +110,12 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param Dao $dao
+     * @return $this
      */
     public function setDao(Dao $dao)
     {
         $this->_dao = $dao;
+        return $this;
     }
 
     /**
@@ -118,10 +128,12 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param mixed $model
+     * @return $this
      */
     public function setModel($model)
     {
         $this->_model = $model;
+        return $this;
     }
 
     /**
@@ -138,7 +150,11 @@ class QueryBuilder extends BaseClass
                  * @var QueryBuilder $instance
                  */
                 $instance = static::$instance;
-                $instance->setDao(Dao::component());
+                $instance->setDao(Dao::component())
+                    ->setConditions()
+                    ->setGroupFields()
+                    ->setOrders()
+                    ->setLimit();
             } else {
                 return (static::$instance = new static($model));
             }
@@ -153,8 +169,8 @@ class QueryBuilder extends BaseClass
      */
     public function __construct(AbstractActiveRecord $model)
     {
-        $this->setModel($model);
-        $this->setDao(Dao::component());
+        $this->setModel($model)
+            ->setDao(Dao::component());
     }
 
     /**
@@ -307,32 +323,34 @@ class QueryBuilder extends BaseClass
      */
     public function where(Array $conditions = [])
     {
-        $this->setConditions(array_merge($this->getConditions(), $conditions));
-        return $this;
+        return $this->setConditions(array_merge($this->getConditions(), $conditions));
     }
 
     /**
      * @param array $groupFields
+     * @return $this
      */
     public function group(Array $groupFields = [])
     {
-        $this->setGroupFields(array_merge($this->getGroupFields(), $groupFields));
+        return $this->setGroupFields(array_merge($this->getGroupFields(), $groupFields));
     }
 
     /**
      * @param array $orders
+     * @return $this
      */
     public function order(Array $orders)
     {
-        $this->setOrders(array_merge($this->getOrders(), $orders));
+        return $this->setOrders(array_merge($this->getOrders(), $orders));
     }
 
     /**
      * @param string $limit
+     * @return $this
      */
     public function limit($limit = '')
     {
-        $this->setLimit($limit);
+        return $this->setLimit($limit);
     }
 
     /**
