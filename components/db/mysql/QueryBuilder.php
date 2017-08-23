@@ -28,6 +28,26 @@ class QueryBuilder extends BaseClass
 
     protected $_limit;
 
+    protected $_select;
+
+    /**
+     * @return mixed
+     */
+    public function getSelect()
+    {
+        return $this->_select;
+    }
+
+    /**
+     * @param mixed $select
+     * @return $this
+     */
+    public function setSelect($select = ['*'])
+    {
+        $this->_select = $select;
+        return $this;
+    }
+
     /**
      * @return mixed
      */
@@ -154,7 +174,8 @@ class QueryBuilder extends BaseClass
                     ->setConditions()
                     ->setGroupFields()
                     ->setOrders()
-                    ->setLimit();
+                    ->setLimit()
+                    ->setSelect();
             } else {
                 return (static::$instance = new static($model));
             }
@@ -170,7 +191,12 @@ class QueryBuilder extends BaseClass
     public function __construct(AbstractActiveRecord $model)
     {
         $this->setModel($model)
-            ->setDao(Dao::component());
+            ->setDao(Dao::component())
+            ->setConditions()
+            ->setGroupFields()
+            ->setOrders()
+            ->setLimit()
+            ->setSelect();
     }
 
     /**
@@ -182,7 +208,7 @@ class QueryBuilder extends BaseClass
     protected function getDaoByConditions(&$isRelatedModelExists = false, &$relatedModelClass = null, &$selfField = null)
     {
         if ($this->is_single) {
-            $dao = Dao::component()->select(['*'])->from($this->_model->getTableName());
+            $dao = Dao::component()->select($this->getSelect())->from($this->_model->getTableName());
             if (is_array($this->getConditions()) && $this->getConditions()) {
                 $dao->where($this->getConditions());
             }
@@ -211,8 +237,10 @@ class QueryBuilder extends BaseClass
                         $self_fields[$key] = implode('.', [$this->_model->getTableName(), $field]);
                     }
                     $fields = array_merge($related_model_fields, $self_fields);
-                    $dao->select($fields)
-                        ->join($joined_table, [$selfField => implode('.', [$joined_table, $joined_table_field])]);
+                    if (in_array('*', $this->getSelect())) {
+                        $dao->select($fields);
+                    }
+                    $dao->join($joined_table, [$selfField => implode('.', [$joined_table, $joined_table_field])]);
                 }
             }
 
@@ -351,6 +379,15 @@ class QueryBuilder extends BaseClass
     public function limit($limit = '')
     {
         return $this->setLimit($limit);
+    }
+
+    /**
+     * @param array $select
+     * @return $this
+     */
+    public function select(Array $select = ['*'])
+    {
+        return $this->setSelect($select);
     }
 
     /**
