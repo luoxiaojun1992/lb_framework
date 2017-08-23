@@ -13,6 +13,97 @@ class QueryBuilder extends BaseClass
     /** @var  AbstractActiveRecord */
     protected $_model;
 
+    /** @var  Dao */
+    protected $_dao;
+
+    protected $_conditions;
+
+    protected $_groupFields;
+
+    protected $_orders;
+
+    protected $_limit;
+
+    /**
+     * @return mixed
+     */
+    public function getGroupFields()
+    {
+        return $this->_groupFields;
+    }
+
+    /**
+     * @param mixed $groupFields
+     */
+    public function setGroupFields($groupFields)
+    {
+        $this->_groupFields = $groupFields;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrders()
+    {
+        return $this->_orders;
+    }
+
+    /**
+     * @param mixed $orders
+     */
+    public function setOrders($orders)
+    {
+        $this->_orders = $orders;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimit()
+    {
+        return $this->_limit;
+    }
+
+    /**
+     * @param mixed $limit
+     */
+    public function setLimit($limit)
+    {
+        $this->_limit = $limit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConditions()
+    {
+        return $this->_conditions;
+    }
+
+    /**
+     * @param mixed $conditions
+     */
+    public function setConditions($conditions)
+    {
+        $this->_conditions = $conditions;
+    }
+
+    /**
+     * @return Dao
+     */
+    public function getDao(): Dao
+    {
+        return $this->_dao;
+    }
+
+    /**
+     * @param Dao $dao
+     */
+    public function setDao(Dao $dao)
+    {
+        $this->_dao = $dao;
+    }
+
     /**
      * @return mixed
      */
@@ -39,11 +130,11 @@ class QueryBuilder extends BaseClass
     {
         if (property_exists(get_called_class(), 'instance')) {
             if (static::$instance instanceof static) {
-                return static::$instance;
+                /** @var QueryBuilder $instance */
+                $instance = static::$instance;
+                $instance->setDao(Dao::component());
             } else {
-                $newQueryBuilder = new static($model);
-                static::$instance = $newQueryBuilder;
-                return static::$instance;
+                return (static::$instance = new static($model));
             }
         }
         return false;
@@ -56,19 +147,35 @@ class QueryBuilder extends BaseClass
     public function __construct(AbstractActiveRecord $model)
     {
         $this->setModel($model);
+        $this->setDao(Dao::component());
     }
 
     /**
      * @param $isRelatedModelExists
+     * @param array $conditions
      * @param $relatedModelClass
      * @param $selfField
+     * @param array $group_fields
+     * @param array $orders
+     * @param string $limit
      * @return bool|Dao|null
      */
-    protected function getDaoByAll(&$isRelatedModelExists, &$relatedModelClass, &$selfField)
+    protected function getDaoByConditions(&$isRelatedModelExists, &$relatedModelClass, &$selfField, $conditions = [], $group_fields = [], $orders = [], $limit = '')
     {
         if ($this->is_single) {
-            $dao = Dao::component()->select(['*'])
-                ->from($this->_model->getTableName());
+            $dao = Dao::component()->select(['*'])->from($this->_model->getTableName());
+            if (is_array($conditions) && $conditions) {
+                $dao->where($conditions);
+            }
+            if (is_array($group_fields) && $group_fields) {
+                $dao->group($group_fields);
+            }
+            if (is_array($orders) && $orders) {
+                $dao->order($orders);
+            }
+            if ($limit) {
+                $dao->limit($limit);
+            }
 
             $isRelatedModelExists = false;
             if ($this->_model->getRelations() && count($this->_model->getRelations()) >= 3) {
@@ -97,13 +204,35 @@ class QueryBuilder extends BaseClass
     }
 
     /**
-     * @return array|ActiveRecord|ActiveRecord[]
+     * @param array $conditions
+     * @param array $group_fields
+     * @param array $orders
+     * @param string $limit
+     * @param integer $expire
+     * @return array|ActiveRecord[]|ActiveRecord
      */
-    public function all()
+    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '', $expire = null)
     {
         if ($this->is_single) {
-            $result = $this->getDaoByAll($is_related_model_exists, $related_model_class, $self_field)->findAll();
+            $is_related_model_exists = false;
+            $result = [];
+            if (method_exists($this->_model, 'getCache')) {
+                $result = $this->_model->getCache(func_get_args());
+            }
+            if (!$result) {
+                $result = $this->getDaoByConditions(
+                    $is_related_model_exists,
+                    $conditions,
+                    $group_fields,
+                    $orders,
+                    $limit
+                )->findAll();
+            }
             if ($result) {
+                if (method_exists($this->_model, 'setCache')) {
+                    $this->_model->setCache(func_get_args(), $result, $expire);
+                }
+
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this->_model);
@@ -124,5 +253,48 @@ class QueryBuilder extends BaseClass
             }
         }
         return [];
+    }
+
+    /**
+     * @param array $conditions
+     * @return $this
+     */
+    public function where(Array $conditions = [])
+    {
+        $this->setConditions(array_merge($this->getConditions(), $conditions));
+        return $this;
+    }
+
+    /**
+     * @param array $groupFields
+     */
+    public function group(Array $groupFields = [])
+    {
+        $this->setGroupFields($groupFields);
+    }
+
+    /**
+     * @param array $orders
+     */
+    public function order(Array $orders)
+    {
+        $this->setOrders($orders);
+    }
+
+
+
+    public function all()
+    {
+        return $this->findByConditions($this->_conditions);
+    }
+
+    public function chunk()
+    {
+
+    }
+
+    public function one()
+    {
+
     }
 }
