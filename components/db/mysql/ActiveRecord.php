@@ -83,11 +83,12 @@ class ActiveRecord extends AbstractActiveRecord
     /**
      * Get a instance of query builder
      *
+     * @param $queryBuilderClassName
      * @return mixed
      */
-    public static function find()
+    public static function find($queryBuilderClassName)
     {
-        return call_user_func([self::className() . 'Query', 'find'], ['model' => self::model()]);
+        return call_user_func([$queryBuilderClassName, 'find'], ['model' => self::model()]);
     }
 
     /**

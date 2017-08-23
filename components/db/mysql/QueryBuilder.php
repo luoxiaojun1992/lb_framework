@@ -152,29 +152,25 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param $isRelatedModelExists
-     * @param array $conditions
      * @param $relatedModelClass
      * @param $selfField
-     * @param array $group_fields
-     * @param array $orders
-     * @param string $limit
      * @return bool|Dao|null
      */
-    protected function getDaoByConditions(&$isRelatedModelExists, &$relatedModelClass, &$selfField, $conditions = [], $group_fields = [], $orders = [], $limit = '')
+    protected function getDaoByConditions(&$isRelatedModelExists = false, &$relatedModelClass = null, &$selfField = null)
     {
         if ($this->is_single) {
             $dao = Dao::component()->select(['*'])->from($this->_model->getTableName());
-            if (is_array($conditions) && $conditions) {
-                $dao->where($conditions);
+            if (is_array($this->getConditions()) && $this->getConditions()) {
+                $dao->where($this->getConditions());
             }
-            if (is_array($group_fields) && $group_fields) {
-                $dao->group($group_fields);
+            if (is_array($this->getGroupFields()) && $this->getGroupFields()) {
+                $dao->group($this->getGroupFields());
             }
-            if (is_array($orders) && $orders) {
-                $dao->order($orders);
+            if (is_array($this->getOrders()) && $this->getOrders()) {
+                $dao->order($this->getOrders());
             }
-            if ($limit) {
-                $dao->limit($limit);
+            if ($this->getLimit()) {
+                $dao->limit($this->getLimit());
             }
 
             $isRelatedModelExists = false;
@@ -204,14 +200,10 @@ class QueryBuilder extends BaseClass
     }
 
     /**
-     * @param array $conditions
-     * @param array $group_fields
-     * @param array $orders
-     * @param string $limit
      * @param integer $expire
      * @return array|ActiveRecord[]|ActiveRecord
      */
-    public function findByConditions($conditions = [], $group_fields = [], $orders = [], $limit = '', $expire = null)
+    public function findByConditions($expire = null)
     {
         if ($this->is_single) {
             $is_related_model_exists = false;
@@ -222,10 +214,8 @@ class QueryBuilder extends BaseClass
             if (!$result) {
                 $result = $this->getDaoByConditions(
                     $is_related_model_exists,
-                    $conditions,
-                    $group_fields,
-                    $orders,
-                    $limit
+                    $related_model_class,
+                    $self_field
                 )->findAll();
             }
             if ($result) {
@@ -256,6 +246,47 @@ class QueryBuilder extends BaseClass
     }
 
     /**
+     * @param \Closure $callback
+     * @param int $limit
+     */
+    public function chunkByConditions(
+        \Closure $callback,
+        $limit = 10000
+    )
+    {
+        if ($this->is_single) {
+            $dao = $this->getDaoByConditions(
+                $is_related_model_exists,
+                $related_model_class,
+                $self_field
+            );
+            $offset = 0;
+            while($result = $dao->limit($offset . ',' . $limit)->findAll()) {
+                $offset += $limit;
+
+                $models = [];
+                foreach ($result as $attributes) {
+                    $model_class = get_class($this->_model);
+                    if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
+                        /** @var ActiveRecord $related_model */
+                        $related_model = new $related_model_class();
+                        $related_model->setAttributes($attributes);
+                        $related_model->is_new_record = false;
+                        $attributes[$self_field] = $related_model;
+                    }
+                    /** @var ActiveRecord $model */
+                    $model = new $model_class();
+                    $model->setAttributes($attributes);
+                    $model->is_new_record = false;
+                    $models[] = $model;
+                }
+
+                call_user_func_array($callback, ['result' => $models]);
+            }
+        }
+    }
+
+    /**
      * @param array $conditions
      * @return $this
      */
@@ -270,7 +301,7 @@ class QueryBuilder extends BaseClass
      */
     public function group(Array $groupFields = [])
     {
-        $this->setGroupFields($groupFields);
+        $this->setGroupFields(array_merge($this->getGroupFields(), $groupFields));
     }
 
     /**
@@ -278,23 +309,61 @@ class QueryBuilder extends BaseClass
      */
     public function order(Array $orders)
     {
-        $this->setOrders($orders);
+        $this->setOrders(array_merge($this->getOrders(), $orders));
     }
 
-
-
-    public function all()
+    /**
+     * @param string $limit
+     */
+    public function limit($limit = '')
     {
-        return $this->findByConditions($this->_conditions);
+        $this->setLimit($limit);
     }
 
-    public function chunk()
+    /**
+     * @param null $cacheExpire
+     * @return array|ActiveRecord|ActiveRecord[]
+     */
+    public function all($cacheExpire = null)
     {
-
+        return $this->findByConditions($cacheExpire);
     }
 
-    public function one()
+    /**
+     * @param \Closure $callback
+     * @param int $limit
+     */
+    public function chunk(\Closure $callback, $limit = 10000)
     {
+        return $this->chunkByConditions($callback, $limit);
+    }
 
+    /**
+     * @param null $cacheExpire
+     * @return array|ActiveRecord|ActiveRecord[]
+     */
+    public function one($cacheExpire = null)
+    {
+        $this->setLimit('1');
+        return $this->findByConditions($cacheExpire);
+    }
+
+    /**
+     * @return int
+     */
+    public function countByConditions()
+    {
+        if ($this->is_single) {
+            return $this->getDaoByConditions()->count();
+        }
+        return 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return $this->countByConditions();
     }
 }
