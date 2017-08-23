@@ -18,8 +18,13 @@ abstract class AbstractActiveRecord extends BaseClass
     protected $_attributes = [];
     protected $rules = [];
     protected $errors = [];
+    protected $_primary_key = '';
+    protected $relations = [];
+
     public $labels = [];
     public $is_new_record = true;
+
+    const TABLE_NAME = '';
 
     /**
      * @param $name
@@ -80,6 +85,22 @@ abstract class AbstractActiveRecord extends BaseClass
     }
 
     /**
+     * @return string
+     */
+    public function getTableName()
+    {
+        return static::TABLE_NAME;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+
+    /**
      * @return int|mixed
      */
     public function getPrimaryKey()
@@ -89,7 +110,7 @@ abstract class AbstractActiveRecord extends BaseClass
                 return $this->_attributes[$this->_primary_key];
             }
         }
-        return 0;
+        return null;
     }
 
     /**

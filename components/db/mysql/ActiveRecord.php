@@ -16,9 +16,6 @@ class ActiveRecord extends AbstractActiveRecord
     const PLUS_NOTIFICATION = '+';
     const MINUS_NOTIFICATION = '-';
 
-    protected $_primary_key = '';
-    protected $relations = [];
-
     /**
      * @param array $attributes
      * @return $this|null
@@ -84,6 +81,16 @@ class ActiveRecord extends AbstractActiveRecord
     }
 
     /**
+     * Get a instance of query builder
+     *
+     * @return mixed
+     */
+    public static function find()
+    {
+        return call_user_func([self::className() . 'Query', 'find'], ['model' => self::model()]);
+    }
+
+    /**
      * @return array|ActiveRecord|ActiveRecord[]
      */
     public function findAll()
@@ -94,6 +101,7 @@ class ActiveRecord extends AbstractActiveRecord
                 $models = [];
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
+                    //todo bugfix missing variables
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
                         /** @var ActiveRecord $related_model */
                         $related_model = new $related_model_class();

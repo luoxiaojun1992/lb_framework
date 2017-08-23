@@ -19,7 +19,9 @@ class Connection extends BaseClass
     const CONN_TYPE_MASTER = 'master';
     const CONN_TYPE_SLAVE = 'slave';
 
+    /** @var  \PDO */
     public $write_conn;
+    /** @var  \PDO */
     public $read_conn;
     protected $_master_db;
     protected $_master_host;

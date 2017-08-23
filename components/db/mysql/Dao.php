@@ -31,6 +31,9 @@ class Dao extends BaseClass
 
     protected $_level = 0;
 
+    /** @var \PDOStatement */
+    protected $_statement = null;
+
     //Join Type
     const JOIN_TYPE_LEFT = 'LEFT';
     const JOIN_TYPE_RIGHT = 'RIGHT';
@@ -256,11 +259,11 @@ class Dao extends BaseClass
 
     /**
      * @param bool $count
-     * @return bool
+     * @return null|\PDOStatement
      */
     protected function query($count = false)
     {
-        $result = false;
+        $result = null;
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
@@ -295,6 +298,7 @@ class Dao extends BaseClass
      */
     protected function getConnByNodeType($nodeType)
     {
+        /** @var Connection $connection_component */
         $connection_component = Connection::component();
         switch ($nodeType) {
         case Connection::CONN_TYPE_SLAVE:
@@ -314,17 +318,20 @@ class Dao extends BaseClass
     /**
      * @param $sql_statement
      * @param $node_type
-     * @return bool
+     * @return null|\PDOStatement
      */
     public function prepare($sql_statement, $node_type)
     {
-        $statement = false;
+        $statement = null;
         if ($conn = $this->getConnByNodeType($node_type)) {
             $statement = $conn->prepare($sql_statement);
 
             //Binding values
             $this->bindValues($statement);
+
+            $this->_statement = $statement;
         }
+
         return $statement;
     }
 
@@ -338,9 +345,9 @@ class Dao extends BaseClass
     }
 
     /**
-     * @param $statement
+     * @param \PDOStatement $statement
      */
-    protected function bindValues($statement)
+    protected function bindValues(\PDOStatement $statement)
     {
         $i = 1;
         foreach ($this->_conditions as $val) {
@@ -663,5 +670,10 @@ class Dao extends BaseClass
             }
             $this->_level--;
         }
+    }
+
+    public function getQuerySql()
+    {
+        return $this->_statement->queryString;
     }
 }
