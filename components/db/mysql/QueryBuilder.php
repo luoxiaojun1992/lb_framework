@@ -10,10 +10,14 @@ class QueryBuilder extends BaseClass
 {
     use Singleton;
 
-    /** @var  AbstractActiveRecord */
+    /**
+     * @var  AbstractActiveRecord 
+     */
     protected $_model;
 
-    /** @var  Dao */
+    /**
+     * @var  Dao 
+     */
     protected $_dao;
 
     protected $_conditions;
@@ -123,14 +127,16 @@ class QueryBuilder extends BaseClass
     /**
      * Create Query Builder
      *
-     * @param $model
+     * @param  $model
      * @return bool|QueryBuilder
      */
     public static function find($model)
     {
         if (property_exists(get_called_class(), 'instance')) {
             if (static::$instance instanceof static) {
-                /** @var QueryBuilder $instance */
+                /**
+ * @var QueryBuilder $instance 
+*/
                 $instance = static::$instance;
                 $instance->setDao(Dao::component());
             } else {
@@ -142,6 +148,7 @@ class QueryBuilder extends BaseClass
 
     /**
      * QueryBuilder constructor.
+     *
      * @param AbstractActiveRecord $model
      */
     public function __construct(AbstractActiveRecord $model)
@@ -227,13 +234,17 @@ class QueryBuilder extends BaseClass
                 foreach ($result as $attributes) {
                     $model_class = get_class($this->_model);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -247,13 +258,13 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param \Closure $callback
-     * @param int $limit
+     * @param int      $limit
      */
     public function chunkByConditions(
         \Closure $callback,
         $limit = 10000
-    )
-    {
+    ) {
+    
         if ($this->is_single) {
             $dao = $this->getDaoByConditions(
                 $is_related_model_exists,
@@ -268,13 +279,17 @@ class QueryBuilder extends BaseClass
                 foreach ($result as $attributes) {
                     $model_class = get_class($this->_model);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -331,7 +346,7 @@ class QueryBuilder extends BaseClass
 
     /**
      * @param \Closure $callback
-     * @param int $limit
+     * @param int      $limit
      */
     public function chunk(\Closure $callback, $limit = 10000)
     {

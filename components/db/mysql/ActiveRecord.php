@@ -8,8 +8,9 @@ use lb\components\helpers\ValidationHelper;
 
 /**
  * Class ActiveRecord
+ *
  * @inheritdoc
- * @package lb\components\db\mysql
+ * @package    lb\components\db\mysql
  */
 class ActiveRecord extends AbstractActiveRecord
 {
@@ -83,7 +84,7 @@ class ActiveRecord extends AbstractActiveRecord
     /**
      * Get a instance of query builder
      *
-     * @param $queryBuilderClassName
+     * @param  $queryBuilderClassName
      * @return mixed
      */
     public static function find($queryBuilderClassName)
@@ -104,13 +105,17 @@ class ActiveRecord extends AbstractActiveRecord
                     $model_class = get_class($this);
                     //todo bugfix missing variables
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -124,7 +129,7 @@ class ActiveRecord extends AbstractActiveRecord
 
     /**
      * @param \Closure $callback
-     * @param int $limit
+     * @param int      $limit
      */
     public function chunkAll(\Closure $callback, $limit = 10000)
     {
@@ -138,13 +143,17 @@ class ActiveRecord extends AbstractActiveRecord
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -220,10 +229,10 @@ class ActiveRecord extends AbstractActiveRecord
 
     /**
      * @param $isRelatedModelExists
-     * @param array $conditions
-     * @param array $group_fields
-     * @param array $orders
-     * @param string $limit
+     * @param array                $conditions
+     * @param array                $group_fields
+     * @param array                $orders
+     * @param string               $limit
      * @return bool|Dao|null
      */
     protected function getDaoByConditions(&$isRelatedModelExists, $conditions = [], $group_fields = [], $orders = [], $limit = '')
@@ -270,10 +279,10 @@ class ActiveRecord extends AbstractActiveRecord
     }
 
     /**
-     * @param array $conditions
-     * @param array $group_fields
-     * @param array $orders
-     * @param string $limit
+     * @param array   $conditions
+     * @param array   $group_fields
+     * @param array   $orders
+     * @param string  $limit
      * @param integer $expire
      * @return array|ActiveRecord[]|ActiveRecord
      */
@@ -302,13 +311,17 @@ class ActiveRecord extends AbstractActiveRecord
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -322,10 +335,10 @@ class ActiveRecord extends AbstractActiveRecord
 
     /**
      * @param \Closure $callback
-     * @param int $limit
-     * @param array $conditions
-     * @param array $group_fields
-     * @param array $orders
+     * @param int      $limit
+     * @param array    $conditions
+     * @param array    $group_fields
+     * @param array    $orders
      */
     public function chunkByConditions(
         \Closure $callback,
@@ -333,8 +346,8 @@ class ActiveRecord extends AbstractActiveRecord
         $conditions = [],
         $group_fields = [],
         $orders = []
-    )
-    {
+    ) {
+    
         if ($this->is_single) {
             $dao = $this->getDaoByConditions($is_related_model_exists, $conditions, $group_fields, $orders);
             $offset = 0;
@@ -345,13 +358,17 @@ class ActiveRecord extends AbstractActiveRecord
                 foreach ($result as $attributes) {
                     $model_class = get_class($this);
                     if ($is_related_model_exists && isset($related_model_class) && isset($self_field)) {
-                        /** @var ActiveRecord $related_model */
+                        /**
+ * @var ActiveRecord $related_model 
+*/
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
                         $attributes[$self_field] = $related_model;
                     }
-                    /** @var ActiveRecord $model */
+                    /**
+ * @var ActiveRecord $model 
+*/
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
@@ -404,9 +421,9 @@ class ActiveRecord extends AbstractActiveRecord
     }
 
     /**
-     * @param array $conditions
-     * @param array $group_fields
-     * @param array $orders
+     * @param array  $conditions
+     * @param array  $group_fields
+     * @param array  $orders
      * @param string $limit
      * @return int
      */
@@ -456,16 +473,18 @@ class ActiveRecord extends AbstractActiveRecord
 
     /**
      * @param $primary_key
-     * @param array $values
+     * @param array       $values
      * @return bool
      */
     public function updateByPk($primary_key, $values = [])
     {
         if ($this->is_single) {
             return Dao::component()
-                ->where([
+                ->where(
+                    [
                     $this->_primary_key => $primary_key,
-                ])
+                    ]
+                )
                 ->update(static::TABLE_NAME, $values);
         }
         return false;
@@ -474,9 +493,9 @@ class ActiveRecord extends AbstractActiveRecord
     /**
      * Increase key or keys by primary key
      *
-     * @param $primary_key
-     * @param $keys
-     * @param int $step
+     * @param  $primary_key
+     * @param  $keys
+     * @param  int         $step
      * @return bool
      */
     public function incrementByPk($primary_key, $keys, $step = 1)
@@ -490,9 +509,9 @@ class ActiveRecord extends AbstractActiveRecord
     /**
      * Decrease key or keys by primary key
      *
-     * @param $primary_key
-     * @param $keys
-     * @param int $step
+     * @param  $primary_key
+     * @param  $keys
+     * @param  int         $step
      * @return bool
      */
     public function decrementByPk($primary_key, $keys, $step = 1)
@@ -506,10 +525,10 @@ class ActiveRecord extends AbstractActiveRecord
     /**
      * Increase or decrease key or keys by primary key
      *
-     * @param $primary_key
-     * @param $keys
-     * @param int $steps
-     * @param string $op
+     * @param  $primary_key
+     * @param  $keys
+     * @param  int         $steps
+     * @param  string      $op
      * @return bool
      */
     public function incrementOrDecrementByPk($primary_key, $keys, $steps = 1, $op = self::PLUS_NOTIFICATION)
@@ -529,9 +548,11 @@ class ActiveRecord extends AbstractActiveRecord
             }
 
             return Dao::component()
-                ->where([
+                ->where(
+                    [
                     $this->_primary_key => $primary_key,
-                ])
+                    ]
+                )
                 ->update(static::TABLE_NAME, $values);
         }
         return false;
@@ -545,9 +566,11 @@ class ActiveRecord extends AbstractActiveRecord
     {
         if ($this->is_single) {
             return Dao::component()
-                ->where([
+                ->where(
+                    [
                     $this->_primary_key => $primary_key,
-                ])
+                    ]
+                )
                 ->delete(static::TABLE_NAME);
         }
         return false;
@@ -603,97 +626,97 @@ class ActiveRecord extends AbstractActiveRecord
                     if (array_key_exists($attribute, $this->_attributes)) {
                         $attribute_value = $this->_attributes[$attribute];
                         switch ($rule_type) {
-                            case 'length':
-                                foreach ($condition as $op => $condition_value) {
-                                    switch ($op) {
-                                        case 'max':
-                                            if (strlen($attribute_value) > $condition_value) {
-                                                $is_valid = false;
-                                                $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
-                                            }
-                                            break;
-                                        case 'min':
-                                            if (strlen($attribute_value) < $condition_value) {
-                                                $is_valid = false;
-                                                $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
-                                            }
-                                            break;
-                                    }
-                                }
-                                break;
-                            case 'mb_length':
-                                foreach ($condition as $op => $condition_value) {
-                                    switch ($op) {
-                                        case 'max':
-                                            if (!is_array($condition_value)) {
-                                                if (mb_strlen($attribute_value, 'utf8') > $condition_value) {
-                                                    $is_valid = false;
-                                                    $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
-                                                }
-                                            } else {
-                                                if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
-                                                    list($encoding, $value) = $condition_value;
-                                                    if (is_string($encoding) && is_int($value)) {
-                                                        if (mb_strlen($attribute_value, $encoding) > $value) {
-                                                            $is_valid = false;
-                                                            $this->errors[] = "The length of {$attribute} can't be more than {$value}.";
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                        case 'min':
-                                            if (!is_array($condition_value)) {
-                                                if (mb_strlen($attribute_value, 'utf8') < $condition_value) {
-                                                    $is_valid = false;
-                                                    $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
-                                                }
-                                            } else {
-                                                if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
-                                                    list($encoding, $value) = $condition_value;
-                                                    if (is_string($encoding) && is_int($value)) {
-                                                        if (mb_strlen($attribute_value, $encoding) < $value) {
-                                                            $is_valid = false;
-                                                            $this->errors[] = "The length of {$attribute} can't be less than {$value}.";
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            break;
-                                    }
-                                }
-                                break;
-                            case 'required':
-                                if (!ValidationHelper::isRequired($attribute_value)) {
-                                    $is_valid = false;
-                                    $this->errors[] = "The {$attribute} is required.";
-                                }
-                                break;
-                            case 'email':
-                                if (!ValidationHelper::isEmail($attribute_value)) {
-                                    $is_valid = false;
-                                    $this->errors[] = "The {$attribute} is not a valid email.";
-                                }
-                                break;
-                            case 'ip':
-                                if (!ValidationHelper::isIP($attribute_value)) {
-                                    $is_valid = false;
-                                    $this->errors[] = "The {$attribute} is not a valid ip.";
-                                }
-                                break;
-                            case 'unique':
-                                if ($this->is_new_record) {
-                                    if ($attribute_value && static::model()->findByConditions([$attribute => $attribute_value])) {
+                        case 'length':
+                            foreach ($condition as $op => $condition_value) {
+                                switch ($op) {
+                                case 'max':
+                                    if (strlen($attribute_value) > $condition_value) {
                                         $is_valid = false;
-                                        $this->errors[] = "The {$attribute} is not unique.";
+                                        $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
                                     }
-                                } else {
-                                    if ($attribute_value && static::model()->findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
+                                    break;
+                                case 'min':
+                                    if (strlen($attribute_value) < $condition_value) {
                                         $is_valid = false;
-                                        $this->errors[] = "The {$attribute} is not unique.";
+                                        $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
                                     }
+                                    break;
                                 }
-                                break;
+                            }
+                            break;
+                        case 'mb_length':
+                            foreach ($condition as $op => $condition_value) {
+                                switch ($op) {
+                                case 'max':
+                                    if (!is_array($condition_value)) {
+                                        if (mb_strlen($attribute_value, 'utf8') > $condition_value) {
+                                            $is_valid = false;
+                                            $this->errors[] = "The length of {$attribute} can't be more than {$condition_value}.";
+                                        }
+                                    } else {
+                                        if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
+                                            list($encoding, $value) = $condition_value;
+                                            if (is_string($encoding) && is_int($value)) {
+                                                if (mb_strlen($attribute_value, $encoding) > $value) {
+                                                    $is_valid = false;
+                                                    $this->errors[] = "The length of {$attribute} can't be more than {$value}.";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case 'min':
+                                    if (!is_array($condition_value)) {
+                                        if (mb_strlen($attribute_value, 'utf8') < $condition_value) {
+                                            $is_valid = false;
+                                            $this->errors[] = "The length of {$attribute} can't be less than {$condition_value}.";
+                                        }
+                                    } else {
+                                        if (!ArrayHelper::is_multi_array($condition_value) && count($condition_value) >= 2) {
+                                            list($encoding, $value) = $condition_value;
+                                            if (is_string($encoding) && is_int($value)) {
+                                                if (mb_strlen($attribute_value, $encoding) < $value) {
+                                                    $is_valid = false;
+                                                    $this->errors[] = "The length of {$attribute} can't be less than {$value}.";
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        case 'required':
+                            if (!ValidationHelper::isRequired($attribute_value)) {
+                                $is_valid = false;
+                                $this->errors[] = "The {$attribute} is required.";
+                            }
+                            break;
+                        case 'email':
+                            if (!ValidationHelper::isEmail($attribute_value)) {
+                                $is_valid = false;
+                                $this->errors[] = "The {$attribute} is not a valid email.";
+                            }
+                            break;
+                        case 'ip':
+                            if (!ValidationHelper::isIP($attribute_value)) {
+                                $is_valid = false;
+                                $this->errors[] = "The {$attribute} is not a valid ip.";
+                            }
+                            break;
+                        case 'unique':
+                            if ($this->is_new_record) {
+                                if ($attribute_value && static::model()->findByConditions([$attribute => $attribute_value])) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is not unique.";
+                                }
+                            } else {
+                                if ($attribute_value && static::model()->findByConditions([$attribute => $attribute_value, $this->getPrimaryName() => ['!=' => $this->getPrimaryKey()]])) {
+                                    $is_valid = false;
+                                    $this->errors[] = "The {$attribute} is not unique.";
+                                }
+                            }
+                            break;
                         }
                     }
                 }
