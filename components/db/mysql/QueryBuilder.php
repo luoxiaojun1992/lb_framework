@@ -182,7 +182,7 @@ class QueryBuilder extends BaseClass
                 return (static::$instance = new static($model));
             }
         }
-        return false;
+        return null;
     }
 
     /**

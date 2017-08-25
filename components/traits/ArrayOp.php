@@ -18,7 +18,7 @@ trait ArrayOp
         if (array_key_exists($component_name, $this->components)) {
             return $this->components[$component_name];
         }
-        return false;
+        return null;
     }
 
     public function offsetSet($offset, $value)

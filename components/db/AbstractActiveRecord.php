@@ -71,7 +71,7 @@ abstract class AbstractActiveRecord extends BaseClass
                 return static::$instance;
             }
         }
-        return false;
+        return null;
     }
 
     /**
