@@ -176,6 +176,8 @@ class QueryBuilder extends BaseClass
                     ->setOrders()
                     ->setLimit()
                     ->setSelect();
+
+                return $instance;
             } else {
                 return (static::$instance = new static($model));
             }
@@ -197,6 +199,8 @@ class QueryBuilder extends BaseClass
             ->setOrders()
             ->setLimit()
             ->setSelect();
+
+        $this->is_single = true;
     }
 
     /**

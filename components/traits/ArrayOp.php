@@ -10,17 +10,13 @@ trait ArrayOp
 
     public function __set($component_name, $component_content)
     {
-        if ($component_name && !property_exists('self', $component_name)) {
-            $this->components[$component_name] = $component_content;
-        }
+        $this->components[$component_name] = $component_content;
     }
 
     public function __get($component_name)
     {
-        if ($component_name && !property_exists('self', $component_name)) {
-            if (array_key_exists($component_name, $this->components)) {
-                return $this->components[$component_name];
-            }
+        if (array_key_exists($component_name, $this->components)) {
+            return $this->components[$component_name];
         }
         return false;
     }
