@@ -422,4 +422,9 @@ class QueryBuilder extends BaseClass
         }
         return 0;
     }
+
+    public function asArray()
+    {
+        //
+    }
 }
