@@ -9,6 +9,7 @@ use lb\components\traits\Singleton;
 
 /**
  * Class AbstractActiveRecord
+ *
  * @package lb\components\db
  */
 abstract class AbstractActiveRecord extends BaseClass
