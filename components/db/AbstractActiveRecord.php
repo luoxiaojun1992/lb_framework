@@ -59,7 +59,7 @@ abstract class AbstractActiveRecord extends BaseClass
      */
     public static function model()
     {
-        if (property_exists(get_called_class(), 'instance')) {
+        if (property_exists(self::className(), 'instance')) {
             if (static::$instance instanceof static) {
                 return static::$instance;
             } else {

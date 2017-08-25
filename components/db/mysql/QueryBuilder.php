@@ -164,7 +164,7 @@ class QueryBuilder extends BaseClass
      */
     public static function find($model)
     {
-        if (property_exists(get_called_class(), 'instance')) {
+        if (property_exists(self::className(), 'instance')) {
             if (static::$instance instanceof static) {
                 /**
                  * @var QueryBuilder $instance
