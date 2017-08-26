@@ -195,8 +195,9 @@ class Lb extends BaseClass
     public function getRouteInfo()
     {
         if ($this->isSingle()) {
-            if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) &&
-                ($action = $this->containers['route_info']->get('action'))) {
+            if (isset($this->containers['route_info']) && ($controller = $this->containers['route_info']->get('controller')) 
+                && ($action = $this->containers['route_info']->get('action'))
+            ) {
                 return ['controller' => $controller, 'action' => $action];
             }
         }
@@ -280,21 +281,21 @@ class Lb extends BaseClass
     {
         if ($this->isSingle()) {
             switch ($db_type) {
-                case Connection::DB_TYPE:
-                    switch ($node_type) {
-                        case 'master':
-                            return Connection::component()->write_conn;
-                        case 'slave':
-                            return Connection::component()->read_conn;
-                        default:
-                            return Connection::component()->write_conn;
-                    }
-                    break;
-                case \lb\components\db\mongodb\Connection::DB_TYPE :
-                    return \lb\components\db\mongodb\Connection::component()->_conn;
-                    break;
+            case Connection::DB_TYPE:
+                switch ($node_type) {
+                case 'master':
+                    return Connection::component()->write_conn;
+                case 'slave':
+                    return Connection::component()->read_conn;
                 default:
-                    return false;
+                    return Connection::component()->write_conn;
+                }
+                break;
+            case \lb\components\db\mongodb\Connection::DB_TYPE :
+                return \lb\components\db\mongodb\Connection::component()->_conn;
+                    break;
+            default:
+                return false;
             }
         }
         return false;
@@ -367,7 +368,7 @@ class Lb extends BaseClass
     {
         if ($this->isSingle()) {
             if (file_exists($path) && strtolower(FileHelper::getExtensionName($path)) == 'php') {
-                include_once(str_replace(Security::INSECURE_CODES, '', $path));
+                include_once str_replace(Security::INSECURE_CODES, '', $path);
             }
         }
     }
@@ -391,8 +392,8 @@ class Lb extends BaseClass
         $body = '',
         $content_type = 'text/html',
         $charset = 'UTF-8'
-    )
-    {
+    ) {
+    
         if ($this->isSingle()) {
             Swift::component()->send(
                 $from_name,
@@ -411,7 +412,7 @@ class Lb extends BaseClass
      * Check If Logged In
      *
      * @param $redirect_url
-     * @param RequestContract $request
+     * @param RequestContract  $request
      * @param ResponseContract $response
      */
     public function loginRequired($redirect_url, $request = null, $response = null)
@@ -471,7 +472,7 @@ class Lb extends BaseClass
     /**
      * Detect Action Exists
      *
-     * @param RequestContract $request
+     * @param  RequestContract $request
      * @return bool
      */
     public function isAction($request = null)
@@ -520,7 +521,7 @@ class Lb extends BaseClass
     /**
      * Is Ajax
      *
-     * @param RequestContract $request
+     * @param  RequestContract $request
      * @return bool
      */
     public function isAjax($request = null)
@@ -535,8 +536,8 @@ class Lb extends BaseClass
     public function get_rpc_client($url)
     {
         if ($this->isSingle()) {
-            include_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' .
-                DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
+            include_once Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' .
+            DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php';
             return new \Hprose\Http\Client($url);
         }
         return false;
@@ -570,7 +571,7 @@ class Lb extends BaseClass
     /**
      * Rewrite uniqid
      *
-     * @param string $prefix
+     * @param  string $prefix
      * @return int
      */
     public function uniqid($prefix = '')
@@ -585,9 +586,9 @@ class Lb extends BaseClass
     /**
      * Dispatch a job
      *
-     * @param $job
-     * @param array $data
-     * @param string $handler
+     * @param  $job
+     * @param  array  $data
+     * @param  string $handler
      * @return mixed
      */
     public function dispatchJob($job, $data = [], $handler = 'handler')
@@ -704,13 +705,13 @@ class Lb extends BaseClass
     protected function initLoginRequired()
     {
         $routeInfo = Lb::app()->getRouteInfo();
-        if (
-            !in_array($routeInfo['controller'], Route::KERNEL_WEB_CTR) ||
-            !in_array($routeInfo['action'], Route::KERNEL_WEB_ACTIONS)
+        if (!in_array($routeInfo['controller'], Route::KERNEL_WEB_CTR) 
+            || !in_array($routeInfo['action'], Route::KERNEL_WEB_ACTIONS)
         ) {
             $login_required_filter = Lb::app()->getLoginRequiredFilter();
-            if (!isset($login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) ||
-                !$login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
+            if (!isset($login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) 
+                || !$login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]
+            ) {
                 $login_default_url = Lb::app()->getLoginDefaultUrl();
                 if (Lb::app()->isLoginRequired() && $login_default_url) {
                     Lb::app()->loginRequired($login_default_url);
@@ -747,17 +748,21 @@ class Lb extends BaseClass
      */
     protected function registerFacades()
     {
-        $facades = array_merge([
+        $facades = array_merge(
+            [
             'RedisKit' => RedisFacade::class,
             'MemcacheKit' => MemcacheFacade::class,
             'FilecacheKit' => FilecacheFacade::class,
             'RequestKit' => RequestFacade::class,
             'ResponseKit' => ResponseFacade::class,
-        ], Lb::app()->getFacadesConfig());
+            ], Lb::app()->getFacadesConfig()
+        );
 
-        array_walk($facades, function ($facade, $alias) {
-            class_alias($facade, $alias);
-        });
+        array_walk(
+            $facades, function ($facade, $alias) {
+                class_alias($facade, $alias);
+            }
+        );
     }
 
     /**
@@ -806,10 +811,12 @@ class Lb extends BaseClass
         $this->loadEnv();
 
         // Include Helper Functions
-        require_once(__DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php');
+        include_once __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php';
 
         // Init Config
-        /** @var Scheduler $scheduler */
+        /**
+ * @var Scheduler $scheduler 
+*/
         $scheduler = Scheduler::component();
         $scheduler->newTask($this->initConfig());
         $scheduler->run();
@@ -868,7 +875,7 @@ class Lb extends BaseClass
     /**
      * Get Page Cache
      *
-     * @param $cache_type
+     * @param  $cache_type
      * @return string
      */
     protected function getPageCache($cache_type)
@@ -883,7 +890,7 @@ class Lb extends BaseClass
      *
      * @param $cache_type
      * @param $page_cache
-     * @param int $expire
+     * @param int        $expire
      */
     protected function setPageCache($cache_type, $page_cache, $expire = 60)
     {
@@ -908,15 +915,16 @@ class Lb extends BaseClass
     /**
      * Compress page
      *
-     * @param $page_content
+     * @param  $page_content
      * @return string
      */
     protected function compressPage($page_content)
     {
         $page_compress_config = Lb::app()->getPageCompressConfig();
         $routeInfo = Lb::app()->getRouteInfo();
-        if (isset($page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) &&
-            $page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
+        if (isset($page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) 
+            && $page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]
+        ) {
             return HtmlHelper::compress($page_content);
         }
         return $page_content;
@@ -943,8 +951,8 @@ class Lb extends BaseClass
     /**
      * Get http response
      *
-     * @param $request
-     * @param $response
+     * @param  $request
+     * @param  $response
      * @return string
      */
     protected function getHttpResponse($request = null, $response = null)

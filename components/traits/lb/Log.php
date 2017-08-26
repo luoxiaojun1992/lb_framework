@@ -11,11 +11,11 @@ trait Log
      * Record log
      *
      * @param string $message
-     * @param array $context
-     * @param int $level
+     * @param array  $context
+     * @param int    $level
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function log($message = '', $context = [], $level = Logger::NOTICE, $role = 'system', $times = 0, $ttl = 0)
     {
@@ -28,10 +28,10 @@ trait Log
      * Record debug log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function debug($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -44,10 +44,10 @@ trait Log
      * Record info log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function info($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -60,10 +60,10 @@ trait Log
      * Record notice log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function notice($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -76,10 +76,10 @@ trait Log
      * Record warning log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function warning($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -92,10 +92,10 @@ trait Log
      * Record error log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function error($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -108,10 +108,10 @@ trait Log
      * Record critical log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function critical($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -124,10 +124,10 @@ trait Log
      * Record alert log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function alert($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
@@ -140,10 +140,10 @@ trait Log
      * Record emergency log
      *
      * @param string $message
-     * @param array $context
+     * @param array  $context
      * @param string $role
-     * @param int $times
-     * @param int $ttl
+     * @param int    $times
+     * @param int    $ttl
      */
     public function emergency($message = '', $context = [], $role = 'system', $times = 0, $ttl = 0)
     {
