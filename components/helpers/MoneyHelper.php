@@ -9,11 +9,11 @@ class MoneyHelper extends BaseClass
     /**
      * 人民币小写转大写
      *
-     * @param string $number 数值
-     * @param string $int_unit 币种单位，默认"元"，有的需求可能为"圆"
-     * @param bool $is_round 是否对小数进行四舍五入
-     * @param bool $is_extra_zero 是否对整数部分以0结尾，小数存在的数字附加0,比如1960.30，
-     *             有的系统要求输出"壹仟玖佰陆拾元零叁角"，实际上"壹仟玖佰陆拾元叁角"也是对的
+     * @param  string $number        数值
+     * @param  string $int_unit      币种单位，默认"元"，有的需求可能为"圆"
+     * @param  bool   $is_round      是否对小数进行四舍五入
+     * @param  bool   $is_extra_zero 是否对整数部分以0结尾，小数存在的数字附加0,比如1960.30，
+     *                               有的系统要求输出"壹仟玖佰陆拾元零叁角"，实际上"壹仟玖佰陆拾元叁角"也是对的
      * @return string
      */
     public static function num2rmb($number = 0, $int_unit = '元', $is_round = true, $is_extra_zero = false)
@@ -90,7 +90,7 @@ class MoneyHelper extends BaseClass
     /**
      * 元转分
      *
-     * @param $amount
+     * @param  $amount
      * @return mixed
      */
     public static function yuan2Fen($amount)
@@ -101,7 +101,7 @@ class MoneyHelper extends BaseClass
     /**
      * 分转元
      *
-     * @param $amount
+     * @param  $amount
      * @return float
      */
     public static function fen2Yuan($amount)
@@ -112,7 +112,7 @@ class MoneyHelper extends BaseClass
     /**
      * 元相加运算，不损失精度
      *
-     * @param $yuanAmounts
+     * @param  $yuanAmounts
      * @return int
      */
     public static function yuanAdd(...$yuanAmounts)
