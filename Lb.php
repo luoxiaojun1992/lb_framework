@@ -2,12 +2,10 @@
 
 namespace lb;
 
-use FilecacheKit;
 use lb\components\coroutine\Scheduler;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
-use lb\components\jobs\BaseJob;
 use lb\components\request\RequestContract;
 use lb\components\response\Response;
 use lb\components\response\ResponseContract;
@@ -18,6 +16,7 @@ use lb\components\traits\lb\Queue as QueueTrait;
 use lb\components\traits\lb\Config as ConfigTrait;
 use lb\components\traits\lb\Serializer as SerializerTrait;
 use lb\components\traits\lb\Session as SessionTrait;
+use lb\components\traits\lb\Log as LogTrait;
 use lb\components\facades\FilecacheFacade;
 use lb\components\facades\MemcacheFacade;
 use lb\components\facades\RedisFacade;
@@ -36,7 +35,6 @@ use lb\components\User;
 use lb\components\db\mysql\Connection;
 use lb\components\Environment;
 use lb\components\error_handlers\Level;
-use lb\components\Log;
 use lb\components\mailer\Swift;
 use lb\components\request\Request;
 use lb\components\Route;
@@ -44,9 +42,6 @@ use lb\components\UrlManager;
 use lb\components\Security;
 use lb\components\helpers\FileHelper;
 use lb\components\utils\IdGenerator;
-use Monolog\Logger;
-use MemcacheKit;
-use RedisKit;
 use RequestKit;
 use ResponseKit;
 
@@ -60,6 +55,7 @@ class Lb extends BaseClass
     use QueueTrait;
     use CryptTrait;
     use SerializerTrait;
+    use LogTrait;
 
     public $config = []; // App Configuration
     public $containers = [];
@@ -408,14 +404,6 @@ class Lb extends BaseClass
                 $content_type,
                 $charset
             );
-        }
-    }
-
-    // Log Route Info
-    public function log($message = '', $context = [], $level = Logger::NOTICE, $role = 'system')
-    {
-        if ($this->isSingle()) {
-            Log::component()->record($message, $context, $level, $role);
         }
     }
 
