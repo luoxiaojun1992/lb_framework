@@ -119,7 +119,7 @@ class MoneyHelper extends BaseClass
     {
         $fenAmountTotal = 0;
         foreach ($yuanAmounts as $yuanAmount) {
-            $fenAmountTotal += intval(self::yuan2Fen(round($yuanAmount, 2)));
+            $fenAmountTotal += self::yuan2Fen(round($yuanAmount, 2));
         }
         return self::fen2Yuan($fenAmountTotal);
     }
