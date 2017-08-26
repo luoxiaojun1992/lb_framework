@@ -30,6 +30,26 @@ class QueryBuilder extends BaseClass
 
     protected $_select;
 
+    protected $_asArray;
+
+    /**
+     * @return mixed
+     */
+    public function getAsArray()
+    {
+        return $this->_asArray;
+    }
+
+    /**
+     * @param mixed $asArray
+     * @return $this
+     */
+    public function setAsArray($asArray = false)
+    {
+        $this->_asArray = $asArray;
+        return $this;
+    }
+
     /**
      * @return mixed
      */
@@ -175,11 +195,14 @@ class QueryBuilder extends BaseClass
                     ->setGroupFields()
                     ->setOrders()
                     ->setLimit()
-                    ->setSelect();
+                    ->setSelect()
+                    ->asArray();
 
                 return $instance;
             } else {
-                return (static::$instance = new static($model));
+                $instance = new static($model);
+                $instance->is_single = true;
+                return (static::$instance = $instance);
             }
         }
         return null;
@@ -198,9 +221,8 @@ class QueryBuilder extends BaseClass
             ->setGroupFields()
             ->setOrders()
             ->setLimit()
-            ->setSelect();
-
-        $this->is_single = true;
+            ->setSelect()
+            ->asArray();
     }
 
     /**
@@ -288,7 +310,7 @@ class QueryBuilder extends BaseClass
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
-                        $attributes[$self_field] = $related_model;
+                        $attributes[$self_field] = $this->getAsArray() ? $related_model->toArray() : $related_model;
                     }
                     /**
                      * @var ActiveRecord $model
@@ -296,7 +318,7 @@ class QueryBuilder extends BaseClass
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
-                    $models[] = $model;
+                    $models[] = $this->getAsArray() ? $model->toArray() : $model;
                 }
                 return !$models || count($models) > 1 ? $models : $models[0];
             }
@@ -333,7 +355,7 @@ class QueryBuilder extends BaseClass
                         $related_model = new $related_model_class();
                         $related_model->setAttributes($attributes);
                         $related_model->is_new_record = false;
-                        $attributes[$self_field] = $related_model;
+                        $attributes[$self_field] = $this->getAsArray() ? $related_model->toArray() : $related_model;
                     }
                     /**
                      * @var ActiveRecord $model
@@ -341,7 +363,7 @@ class QueryBuilder extends BaseClass
                     $model = new $model_class();
                     $model->setAttributes($attributes);
                     $model->is_new_record = false;
-                    $models[] = $model;
+                    $models[] = $this->getAsArray() ? $model->toArray() : $model;
                 }
 
                 call_user_func_array($callback, ['result' => $models]);
@@ -423,8 +445,12 @@ class QueryBuilder extends BaseClass
         return 0;
     }
 
-    public function asArray()
+    /**
+     * @param bool $asArray
+     * @return QueryBuilder
+     */
+    public function asArray($asArray = false)
     {
-        //
+        return $this->setAsArray($asArray);
     }
 }

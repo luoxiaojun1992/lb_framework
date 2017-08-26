@@ -251,6 +251,24 @@ abstract class AbstractActiveRecord extends BaseClass
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        if (!$this->is_single) {
+            foreach ($this->_attributes as $k => $attribute) {
+                if (is_object($attribute) && $attribute instanceof AbstractActiveRecord) {
+                    $this->_attributes[$k] = $attribute->toArray();
+                }
+            }
+
+            return $this->_attributes;
+        }
+
+        return [];
+    }
+
+    /**
      * @return bool
      */
     abstract protected function valid();
