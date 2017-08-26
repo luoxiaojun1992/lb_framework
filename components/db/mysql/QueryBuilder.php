@@ -449,7 +449,7 @@ class QueryBuilder extends BaseClass
      * @param bool $asArray
      * @return QueryBuilder
      */
-    public function asArray($asArray = false)
+    public function asArray($asArray = true)
     {
         return $this->setAsArray($asArray);
     }
