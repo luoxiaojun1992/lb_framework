@@ -81,7 +81,7 @@
     "pear/console_getopt": "*",
     "nikic/php-parser": "*",
     "squizlabs/php_codesniffer": "*",
-    "apache/thrift": "*",
+    "luoxiaojun1992/thrift": "*",
     "lcobucci/jwt": "*"
   },
   "autoload": {
