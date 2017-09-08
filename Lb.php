@@ -479,12 +479,15 @@ class Lb extends BaseClass
     {
         $is_action = false;
         if ($this->isSingle()) {
+            $queryString = $request ? $request->getQueryString() : Lb::app()->getQueryString();
+            $requestUri = $request ? $request->getUri() : Lb::app()->getUri();
             if (Lb::app()->isPrettyUrl()) {
-                if (!trim($request ? $request->getUri() : Lb::app()->getUri(), '/') || stripos($request ? $request->getUri() : Lb::app()->getUri(), '/action/') !== false) {
+                $requestUri = str_replace('?' . $queryString, '', $requestUri);
+                if (!trim($requestUri, '/') || stripos($requestUri, '/action/') !== false) {
                     $is_action = true;
                 }
             } else {
-                if (!trim($request ? $request->getUri() : Lb::app()->getUri(), '/') || stripos($request ? $request->getQueryString() : Lb::app()->getQueryString(), 'action=') !== false) {
+                if (!trim($requestUri, '/') || stripos($queryString, 'action=') !== false) {
                     $is_action = true;
                 }
             }

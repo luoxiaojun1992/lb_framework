@@ -34,9 +34,10 @@ class User extends BaseClass
         ) {
             if (Lb::app()->isAction($request)) {
                 $http_port = Lb::app()->getHttpPort();
+                $requestUri = $request ? $request->getUri() : Lb::app()->getUri();
                 if (
-                    stripos(Lb::app()->createAbsoluteUrl($request ? $request->getUri() : Lb::app()->getUri() . ($request ? $request->getQueryString() : Lb::app()->getQueryString()), [], true, $http_port, $request), $redirect_url) === false ||
-                    stripos(Lb::app()->createAbsoluteUrl($request ? $request->getUri() : Lb::app()->getUri() . ($request ? $request->getQueryString() : Lb::app()->getQueryString()), [], false, $http_port, $request), $redirect_url) === false
+                    stripos(Lb::app()->createAbsoluteUrl($requestUri, [], true, $http_port, $request), $redirect_url) === false ||
+                    stripos(Lb::app()->createAbsoluteUrl($requestUri, [], false, $http_port, $request), $redirect_url) === false
                 ) {
                     Lb::app()->redirect($redirect_url, true, null, $response);
                 }
