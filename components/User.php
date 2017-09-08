@@ -28,16 +28,14 @@ class User extends BaseClass
      */
     public static function loginRequired($redirect_url, $request = null, $response = null)
     {
-        if (
-            !($request ? $request->getSession('username') : Lb::app()->getSession('username')) ||
-            !($request ? $request->getSession('user_id') : Lb::app()->getSession('user_id'))
+        if (!($request ? $request->getSession('username') : Lb::app()->getSession('username')) 
+            || !($request ? $request->getSession('user_id') : Lb::app()->getSession('user_id'))
         ) {
             if (Lb::app()->isAction($request)) {
                 $http_port = Lb::app()->getHttpPort();
                 $requestUri = $request ? $request->getUri() : Lb::app()->getUri();
-                if (
-                    stripos(Lb::app()->createAbsoluteUrl($requestUri, [], true, $http_port, $request), $redirect_url) === false ||
-                    stripos(Lb::app()->createAbsoluteUrl($requestUri, [], false, $http_port, $request), $redirect_url) === false
+                if (stripos(Lb::app()->createAbsoluteUrl($requestUri, [], true, $http_port, $request), $redirect_url) === false 
+                    || stripos(Lb::app()->createAbsoluteUrl($requestUri, [], false, $http_port, $request), $redirect_url) === false
                 ) {
                     Lb::app()->redirect($redirect_url, true, null, $response);
                 }
