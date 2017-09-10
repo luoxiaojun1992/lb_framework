@@ -42,7 +42,7 @@ class ModelController extends ConsoleController implements ErrorMsg
      */
     protected function getModelClassName($modelName)
     {
-        return ucfirst($modelName);
+        return $this->formatLabel($modelName);
     }
 
     /**
