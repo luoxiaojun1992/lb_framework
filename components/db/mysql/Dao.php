@@ -31,7 +31,9 @@ class Dao extends BaseClass
 
     protected $_level = 0;
 
-    /** @var \PDOStatement */
+    /**
+     * @var \PDOStatement 
+     */
     protected $_statement = null;
 
     //Join Type
@@ -301,7 +303,9 @@ class Dao extends BaseClass
      */
     protected function getConnByNodeType($nodeType)
     {
-        /** @var Connection $connection_component */
+        /**
+ * @var Connection $connection_component 
+*/
         $connection_component = Connection::component();
         switch ($nodeType) {
         case Connection::CONN_TYPE_SLAVE:
