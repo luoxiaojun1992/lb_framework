@@ -67,16 +67,19 @@ class Dao extends BaseClass
             $instance = static::$instance;
             $instance->setProperties(
                 [
-                '_table' => '',
-                '_fields' => [],
-                '_conditions' => [],
-                'is_query' => false,
-                '_orders' => [],
-                '_limit' => '',
-                '_group_fields' => [],
-                '_joined_table' => '',
-                '_join_condition' => [],
-                '_join_type' => self::JOIN_TYPE_LEFT,
+                    '_table' => '',
+                    '_fields' => [],
+                    '_conditions' => [],
+                    'is_query' => false,
+                    'is_lock_for_update' => false,
+                    '_orders' => [],
+                    '_limit' => '',
+                    '_group_fields' => [],
+                    '_joined_table' => '',
+                    '_join_condition' => [],
+                    '_join_type' => self::JOIN_TYPE_LEFT,
+                    '_joins' => [],
+                    '_statement' => null,
                 ]
             );
             return $instance;
