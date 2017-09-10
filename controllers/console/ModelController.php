@@ -13,6 +13,7 @@ use lb\Lb;
  * Model Generator
  *
  * Class ModelController
+ *
  * @package lb\controllers\console
  */
 class ModelController extends ConsoleController implements ErrorMsg
@@ -37,7 +38,7 @@ class ModelController extends ConsoleController implements ErrorMsg
     /**
      * Get model class name
      *
-     * @param $modelName
+     * @param  $modelName
      * @return string
      */
     protected function getModelClassName($modelName)
@@ -48,7 +49,7 @@ class ModelController extends ConsoleController implements ErrorMsg
     /**
      * Get table name
      *
-     * @param $modelName
+     * @param  $modelName
      * @return string
      */
     protected function getTableName($modelName)
@@ -59,15 +60,17 @@ class ModelController extends ConsoleController implements ErrorMsg
     /**
      * Get model template
      *
-     * @param $modelClassName
-     * @param $tableName
+     * @param  $modelClassName
+     * @param  $tableName
      * @return string
      */
     protected function getModelTpl($modelClassName, $tableName)
     {
         $modelTpl = str_replace(CodeTpl::CLASS_NAME_TAG, $modelClassName, CodeTpl::MODEL_TPL);
 
-        /** @var \PDOStatement $statement */
+        /**
+ * @var \PDOStatement $statement 
+*/
         $statement = Connection::component()->read_conn->prepare('desc ' . $tableName);
         if ($result = $statement->execute()) {
             $fields = $statement->fetchAll();
@@ -156,9 +159,11 @@ EOF;
             }
             $modelTpl = str_replace(CodeTpl::ATTRIBUTES_TAG, rtrim($primaryKeyAttr . $attributes, PHP_EOL), $modelTpl);
             $modelTpl = str_replace(CodeTpl::LABELS_TAG, rtrim($primaryKeyLabel . $labels, PHP_EOL), $modelTpl);
-            $modelTpl = str_replace(CodeTpl::PROPERTY_COMMENTS_TAG,
+            $modelTpl = str_replace(
+                CodeTpl::PROPERTY_COMMENTS_TAG,
                 rtrim($primaryKeyComment . $propertyComments, PHP_EOL),
-                $modelTpl);
+                $modelTpl
+            );
             $modelTpl = str_replace(CodeTpl::PRIMARY_KEY_TAG, $primaryKey, $modelTpl);
             $modelTpl = str_replace(CodeTpl::SETTER, $setter, $modelTpl);
             $modelTpl = str_replace(CodeTpl::GETTER, rtrim($getter, PHP_EOL), $modelTpl);
@@ -170,8 +175,8 @@ EOF;
     /**
      * Format Value
      *
-     * @param $value
-     * @param $type
+     * @param  $value
+     * @param  $type
      * @return float|int|string
      */
     protected function formatValue($value, $type)
@@ -200,7 +205,7 @@ EOF;
     /**
      * Format attribute label
      *
-     * @param $attrName
+     * @param  $attrName
      * @return string
      */
     protected function formatLabel($attrName)
@@ -228,7 +233,7 @@ EOF;
     /**
      * Format attr name
      *
-     * @param $attrName
+     * @param  $attrName
      * @return string
      */
     protected function formatAttr($attrName)
@@ -239,7 +244,7 @@ EOF;
     /**
      * Get comment property variable type
      *
-     * @param $propertyType
+     * @param  $propertyType
      * @return string
      */
     protected function getCommentType($propertyType)
@@ -264,7 +269,9 @@ EOF;
      */
     protected function generateModel($modelClassName, $modelTpl)
     {
-        file_put_contents(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . '/models/' . $modelClassName . '.php',
-            $modelTpl);
+        file_put_contents(
+            Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . '/models/' . $modelClassName . '.php',
+            $modelTpl
+        );
     }
 }
