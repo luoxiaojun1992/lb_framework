@@ -25,9 +25,7 @@ class Dao extends BaseClass
     protected $_limit = '';
     protected $_group_fields = [];
 
-    protected $_joined_table = '';
-    protected $_join_condition = [];
-    protected $_join_type = self::JOIN_TYPE_LEFT;
+    protected $_joins = [];
 
     protected $_level = 0;
 
@@ -77,9 +75,6 @@ class Dao extends BaseClass
                     '_orders' => [],
                     '_limit' => '',
                     '_group_fields' => [],
-                    '_joined_table' => '',
-                    '_join_condition' => [],
-                    '_join_type' => self::JOIN_TYPE_LEFT,
                     '_joins' => [],
                     '_statement' => null,
                 ]
@@ -197,9 +192,11 @@ class Dao extends BaseClass
     public function join($joined_table, $condition, $type = 'LEFT')
     {
         if ($this->_table && $joined_table && is_array($condition) && $condition) {
-            $this->_joined_table = $joined_table;
-            $this->_join_condition = $condition;
-            $this->_join_type = $type;
+            $this->_joins[] = [
+                '_joined_table' => $joined_table,
+                '_join_condition' => $condition,
+                '_join_type' => $type,
+            ];
             return static::$instance;
         }
         return false;
@@ -588,13 +585,15 @@ class Dao extends BaseClass
                 $statement .= $select_from_sql_statement;
 
                 // JOIN
-                if ($this->_joined_table && $this->_join_condition) {
-                    $join_conditions = [];
-                    foreach ($this->_join_condition as $key => $value) {
-                        $join_conditions[] = implode('=', [$key, $value]);
+                foreach ($this->_joins as $join) {
+                    if (!empty($join['_joined_table']) && !empty($join['_join_condition']) && !empty($join['_join_type'])) {
+                        $join_conditions = [];
+                        foreach ($join['_join_condition'] as $key => $value) {
+                            $join_conditions[] = implode('=', [$key, $value]);
+                        }
+                        $condition_str = implode(' AND ', $join_conditions);
+                        $statement .= (' ' . sprintf(static::JOIN_SQL_TPL, $join['_join_type'], $join['_joined_table'], $condition_str));
                     }
-                    $condition_str = implode(' AND ', $join_conditions);
-                    $statement .= (' ' . sprintf(static::JOIN_SQL_TPL, $this->_join_type, $this->_joined_table, $condition_str));
                 }
 
                 // WHERE
