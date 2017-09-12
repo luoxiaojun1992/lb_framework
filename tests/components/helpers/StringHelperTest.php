@@ -18,4 +18,10 @@ class StringHelperTest extends BaseTestCase
         $this->assertEquals('FooBar', StringHelper::camel('foo_bar'));
         $this->assertEquals('FooBar', StringHelper::camel('fooBar'));
     }
+
+    public function testUnderLine()
+    {
+        $this->assertEquals('foo_bar', StringHelper::underLine('FooBar'));
+        $this->assertEquals('foo_bar', StringHelper::underLine('fooBar'));
+    }
 }

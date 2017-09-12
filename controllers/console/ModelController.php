@@ -43,7 +43,7 @@ class ModelController extends ConsoleController implements ErrorMsg
      */
     protected function getModelClassName($modelName)
     {
-        return $this->formatLabel($modelName);
+        return StringHelper::camel($modelName);
     }
 
     /**
@@ -54,7 +54,7 @@ class ModelController extends ConsoleController implements ErrorMsg
      */
     protected function getTableName($modelName)
     {
-        return strtolower($modelName);
+        return StringHelper::underLine($modelName);
     }
 
     /**
@@ -62,7 +62,8 @@ class ModelController extends ConsoleController implements ErrorMsg
      *
      * @param  $modelClassName
      * @param  $tableName
-     * @return string
+     * @return mixed
+     * @throws ParamException
      */
     protected function getModelTpl($modelClassName, $tableName)
     {
@@ -74,6 +75,10 @@ class ModelController extends ConsoleController implements ErrorMsg
         $statement = Connection::component()->read_conn->prepare('desc ' . $tableName);
         if ($result = $statement->execute()) {
             $fields = $statement->fetchAll();
+
+            if (!$fields) {
+                throw new ParamException(ErrorMsg::INVALID_PARAM);
+            }
 
             //Assemble Attributes & Labels
             $primaryKeyAttr = '';
@@ -217,13 +222,17 @@ EOF;
             }
             $attrName = implode(' ', $tempArr);
         } else {
-            $attrName = ucfirst($attrName);
-            $cloneAttrName = $attrName;
-            for ($i = 0; $i < mb_strlen($cloneAttrName, 'UTF8'); ++$i) {
-                if (StringHelper::isCapital($cloneAttrName[$i])) {
-                    str_replace($cloneAttrName[$i], ' ' . $cloneAttrName[$i], $attrName);
+            $capitals = [];
+            for ($i = 0; $i < mb_strlen($attrName, 'UTF8'); ++$i) {
+                if (StringHelper::isCapital($attrName[$i])) {
+                    $capitals[] = $attrName[$i];
                 }
             }
+
+            foreach ($capitals as $capital) {
+                $attrName = str_replace($capital, ' ' . $capital, $attrName);
+            }
+
             $attrName = trim($attrName);
         }
 
