@@ -189,7 +189,7 @@ class Dao extends BaseClass
      * @param string       $type
      * @return bool|Dao
      */
-    public function join($joined_table, $condition, $type = 'LEFT')
+    public function join($joined_table, $condition, $type = self::JOIN_TYPE_LEFT)
     {
         if ($this->_table && $joined_table && is_array($condition) && $condition) {
             $this->_joins[] = [
@@ -200,6 +200,21 @@ class Dao extends BaseClass
             return static::$instance;
         }
         return false;
+    }
+
+    public function leftJoin($joined_table, $condition)
+    {
+        return $this->join($joined_table, $condition, self::JOIN_TYPE_LEFT);
+    }
+
+    public function rightJoin($joined_table, $condition)
+    {
+        return $this->join($joined_table, $condition, self::JOIN_TYPE_RIGHT);
+    }
+
+    public function innerJoin($joined_table, $condition)
+    {
+        return $this->join($joined_table, $condition, self::JOIN_TYPE_INNER);
     }
 
     /**
