@@ -13,7 +13,7 @@ class App extends SwooleLb
 {
     protected function handleException($exception)
     {
-        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
+        Lb::app()->error($exception->getTraceAsString());
         $status_code = $exception->getCode();
         Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
             'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
@@ -24,7 +24,7 @@ class App extends SwooleLb
 
     protected function exitException(\Exception $exception)
     {
-        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
+        Lb::app()->error($exception->getTraceAsString());
         $this->response->getSwooleResponse()->end(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
