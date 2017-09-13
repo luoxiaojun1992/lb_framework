@@ -12,7 +12,7 @@ class App extends Lb
 {
     protected function exitException($exception)
     {
-        Lb::app()->log($exception->getTraceAsString(), [], Logger::ERROR);
+        Lb::app()->error($exception->getTraceAsString());
         dd(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
