@@ -47,4 +47,6 @@ interface RequestContract
     public function getQueryParams();
 
     public function getBodyParams();
+
+    public function validate();
 }
