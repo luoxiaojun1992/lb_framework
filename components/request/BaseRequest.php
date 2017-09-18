@@ -22,8 +22,8 @@ abstract class BaseRequest extends BaseClass implements RequestContract
     /**
      * 校验参数
      *
-     * @param array $rules
-     * @param array $errors
+     * @param  array $rules
+     * @param  array $errors
      * @throws ParamException
      */
     public function validate($rules = [], $errors = [])
@@ -34,24 +34,24 @@ abstract class BaseRequest extends BaseClass implements RequestContract
                 $isError = false;
                 if (!is_array($rule)) {
                     switch ($rule) {
-                        case self::VALIDATE_REQUIRED:
-                            if (is_null($paramValue)) {
-                                $isError = true;
-                            }
-                            break;
-                        case self::VALIDATE_MOBILE:
-//                            if (!Validate::isCorrectMobile($paramValue)) {
-//                                $isError = true;
-//                            }
-                            break;
+                    case self::VALIDATE_REQUIRED:
+                        if (is_null($paramValue)) {
+                            $isError = true;
+                        }
+                        break;
+                    case self::VALIDATE_MOBILE:
+                        //                            if (!Validate::isCorrectMobile($paramValue)) {
+                        //                                $isError = true;
+                        //                            }
+                        break;
                     }
                 } else {
                     switch ($key) {
-                        case self::VALIDATE_ENUM:
-                            if (!in_array($paramValue, $rule)) {
-                                $isError = true;
-                            }
-                            break;
+                    case self::VALIDATE_ENUM:
+                        if (!in_array($paramValue, $rule)) {
+                            $isError = true;
+                        }
+                        break;
                     }
                 }
                 if ($isError) {
