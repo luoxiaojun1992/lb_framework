@@ -9,6 +9,7 @@ use lb\components\helpers\ValidationHelper;
 
 abstract class BaseRequest extends BaseClass implements RequestContract
 {
+    /** Validation Rules */
     const VALIDATE_REQUIRED = 'required';
     const VALIDATE_MOBILE = 'mobile';
     const VALIDATE_ENUM = 'enum';
