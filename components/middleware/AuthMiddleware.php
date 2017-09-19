@@ -13,7 +13,8 @@ class AuthMiddleware extends BaseMiddleware
         /** @var RequestContract $request */
         $request = $params['request'];
         $restConfig = $params['rest_config'];
-        switch($params['auth_type']) {
+        list($requestMethod, $authType) = $restConfig;
+        switch($authType) {
             case Auth::AUTH_TYPE_BASIC:
                 if (!Auth::authBasic($restConfig[2][0], $restConfig[2][1], $request)) {
                     $authResult = false;

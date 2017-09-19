@@ -2,7 +2,6 @@
 
 namespace lb\controllers\web;
 
-use lb\components\Auth;
 use lb\components\middleware\AuthMiddleware;
 use lb\components\middleware\RateLimitFilter;
 use lb\components\middleware\RequestMethodFilter;
@@ -11,11 +10,6 @@ use lb\Lb;
 
 class RestController extends BaseController
 {
-    protected $auth_type = Auth::AUTH_TYPE_BASIC;
-    protected $request_method = '';
-    protected $rest_config = [];
-    protected $self_rest_config = [];
-
     //Middleware
     protected $middleware = [
         'authMiddleware' => [
@@ -45,18 +39,15 @@ class RestController extends BaseController
      */
     protected function beforeAction()
     {
-        $this->rest_config = Lb::app()->getRest();
-        $route_info = ['controller' => $this->controller_id, 'action' => $this->action_id];
-        if (isset($this->rest_config[$route_info['controller']][$route_info['action']])) {
-            $this->self_rest_config = $this->rest_config[$route_info['controller']][$route_info['action']];
-            list($this->request_method, $this->auth_type) = $this->self_rest_config;
+        if (Lb::app()->isRest()) {
+            $restConfig = Lb::app()->getRest()[$this->controller_id][$this->action_id];
+            list($requestMethod, $authType) = $restConfig;
 
             $response = $this->response;
 
             //Set Auth Middleware
             $this->middleware['authMiddleware']['params'] = [
-                'auth_type' => $this->auth_type,
-                'rest_config' => $this->self_rest_config,
+                'rest_config' => $restConfig,
                 'request' => $this->request,
             ];
             $this->middleware['authMiddleware']['failureCallback'] = function () use ($response) {
@@ -65,7 +56,7 @@ class RestController extends BaseController
 
             //Set Request Method Filter
             $this->middleware['requestMethodFilter']['params'] = [
-                'request_method' => $this->request_method,
+                'request_method' => $requestMethod,
                 'request' => $this->request,
             ];
             $this->middleware['requestMethodFilter']['failureCallback'] = function () use ($response) {
@@ -73,8 +64,8 @@ class RestController extends BaseController
             };
 
             //Set Rate Limit Filter
-            if (array_key_exists($route_info['action'], $this->rateLimitActions)) {
-                $this->middleware['rateLimitFilter']['params'] = $this->rateLimitActions[$route_info['action']];
+            if (array_key_exists($this->action_id, $this->rateLimitActions)) {
+                $this->middleware['rateLimitFilter']['params'] = $this->rateLimitActions[$this->action_id];
                 $this->middleware['rateLimitFilter']['failureCallback'] = function () use ($response) {
                     $response->response_invalid_request(403);
                 };

@@ -69,11 +69,11 @@ abstract class BaseRequest extends BaseClass implements RequestContract, ErrorMs
                     if (is_array($rule)) {
                         $rule = $key;
                     }
-                    if (isset($mergedErrors[$param][$rule]['code'])) {
-                        $errCode = $mergedErrors[$param][$rule]['code'];
+                    if (isset($errors[$param][$rule]['code'])) {
+                        $errCode = $errors[$param][$rule]['code'];
                     }
-                    if (isset($mergedErrors[$param][$rule]['msg'])) {
-                        $errMsg = str_replace('{param}', $param, $mergedErrors[$param][$rule]['msg']);
+                    if (isset($errors[$param][$rule]['msg'])) {
+                        $errMsg = str_replace('{param}', $param, $errors[$param][$rule]['msg']);
                     }
                     throw new ParamException($errMsg, $errCode);
                 }

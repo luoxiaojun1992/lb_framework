@@ -495,6 +495,18 @@ class Lb extends BaseClass
         return $is_action;
     }
 
+    public function isRest()
+    {
+        $isRest = false;
+        if ($this->isSingle()) {
+            $restConfig = $this->getRest();
+            $routeInfo = $this->getRouteInfo();
+            return !empty($restConfig[$routeInfo['controller']][$routeInfo['action']]);
+        }
+
+        return $isRest;
+    }
+
     // Output Captcha
     public function captcha()
     {
