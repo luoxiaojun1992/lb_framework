@@ -40,4 +40,10 @@ class ValidationHelperTest extends BaseTestCase
         $this->assertTrue(ValidationHelper::isIP($ip4));
         $this->assertFalse(ValidationHelper::isIP($notIp));
     }
+
+    public function testIsMobile()
+    {
+        $this->assertTrue(ValidationHelper::isMobile('13000000000'));
+        $this->assertFalse(ValidationHelper::isMobile('333333333333333333'));
+    }
 }
