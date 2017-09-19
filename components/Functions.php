@@ -1,6 +1,8 @@
 <?php
 
 use lb\Lb;
+use lb\components\consts\ErrorMsg;
+use lb\components\error_handlers\VariableException;
 
 if (!function_exists('_echo')) {
     /**
@@ -11,7 +13,7 @@ if (!function_exists('_echo')) {
         if (isset($var)) {
             echo $var;
         } else {
-            throw new \lb\components\error_handlers\VariableException(\lb\components\consts\ErrorMsg::VARIABLE_NOT_DEFINED);
+            throw new VariableException(ErrorMsg::errorMsg[ErrorMsg::VARIABLE_NOT_DEFINED], ErrorMsg::ERROR_VARIABLE_NOT_DEFINED);
         }
     }
 }
