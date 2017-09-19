@@ -5,6 +5,7 @@ namespace lb\components\request;
 use lb\BaseClass;
 use lb\components\containers\Header;
 use lb\components\error_handlers\ParamException;
+use lb\components\helpers\ValidationHelper;
 
 abstract class BaseRequest extends BaseClass implements RequestContract
 {
@@ -14,6 +15,12 @@ abstract class BaseRequest extends BaseClass implements RequestContract
 
     abstract public function getHeaders() : Header;
 
+    /**
+     * Get HTTP Header
+     *
+     * @param $headerKey
+     * @return null
+     */
     public function getHeader($headerKey)
     {
         return $this->getHeaders()->get($headerKey);
@@ -34,16 +41,16 @@ abstract class BaseRequest extends BaseClass implements RequestContract
                 $isError = false;
                 if (!is_array($rule)) {
                     switch ($rule) {
-                    case self::VALIDATE_REQUIRED:
-                        if (is_null($paramValue)) {
-                            $isError = true;
-                        }
-                        break;
-                    case self::VALIDATE_MOBILE:
-                        //                            if (!Validate::isCorrectMobile($paramValue)) {
-                        //                                $isError = true;
-                        //                            }
-                        break;
+                        case self::VALIDATE_REQUIRED:
+                            if (is_null($paramValue)) {
+                                $isError = true;
+                            }
+                            break;
+                        case self::VALIDATE_MOBILE:
+                            if (!ValidationHelper::isMobile($paramValue)) {
+                                $isError = true;
+                            }
+                            break;
                     }
                 } else {
                     switch ($key) {

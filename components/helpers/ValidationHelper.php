@@ -45,4 +45,17 @@ class ValidationHelper extends BaseClass
         $validator = static::getValidator();
         return $validator->isValidIP($ip_address);
     }
+
+    /**
+     * 验证手机号合法性
+     *
+     * @param $mobile
+     * @return bool
+     */
+    public static function isMobile($mobile)
+    {
+        $reg = '/^((\(\d{3}\))|(\d{3}\-))?(1[345789]\d{9})$/';
+        $res = preg_match($reg, $mobile);
+        return $res == 1 ? true : false;
+    }
 }
