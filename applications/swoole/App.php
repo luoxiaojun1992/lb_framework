@@ -19,7 +19,7 @@ class App extends SwooleLb
             'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
             'tpl_name' => 'error',
             'status_code' => $status_code
-        ]));
+        ]), true, null, $this->response);
     }
 
     protected function exitException(\Exception $exception)
