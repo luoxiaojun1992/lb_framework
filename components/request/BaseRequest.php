@@ -3,11 +3,12 @@
 namespace lb\components\request;
 
 use lb\BaseClass;
+use lb\components\consts\ErrorMsg;
 use lb\components\containers\Header;
 use lb\components\error_handlers\ParamException;
 use lb\components\helpers\ValidationHelper;
 
-abstract class BaseRequest extends BaseClass implements RequestContract
+abstract class BaseRequest extends BaseClass implements RequestContract, ErrorMsg
 {
     /** Validation Rules */
     const VALIDATE_REQUIRED = 'required';
@@ -63,8 +64,8 @@ abstract class BaseRequest extends BaseClass implements RequestContract
                     }
                 }
                 if ($isError) {
-                    $errCode = 500;
-                    $errMsg = '';
+                    $errCode = self::ERROR_INVALID_PARAM;
+                    $errMsg = self::errorMsg[self::ERROR_INVALID_PARAM];
                     if (is_array($rule)) {
                         $rule = $key;
                     }
