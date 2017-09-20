@@ -59,6 +59,12 @@ class SwooleLb extends Lb
         }
     }
 
+    public function isRest()
+    {
+        $restConfig = Lb::app()->getRest();
+        return !empty($restConfig[$this->route_info['controller']][$this->route_info['action']]);
+    }
+
     /**
      * Init Login Required
      */

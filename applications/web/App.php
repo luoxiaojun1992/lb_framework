@@ -7,23 +7,36 @@ use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\components\response\Response;
 use lb\Lb;
-use Monolog\Logger;
 
 class App extends Lb
 {
+    protected function handleRestException($exception)
+    {
+        Response::component()->response(
+            [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+            ], Response::RESPONSE_TYPE_JSON, false, $exception->getCode()
+        );
+    }
+
     protected function handleException($exception)
     {
         Lb::app()->error($exception->getTraceAsString());
         $status_code = $exception->getCode();
-        Lb::app()->redirect(
-            Lb::app()->createAbsoluteUrl(
-                '/web/action/error', [
-                'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
-                'tpl_name' => 'error',
-                'status_code' => $status_code
-                ]
-            )
-        );
+        if (Lb::app()->isRest()) {
+            $this->handleRestException($exception);
+        } else {
+            Lb::app()->redirect(
+                Lb::app()->createAbsoluteUrl(
+                    '/web/action/error', [
+                        'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
+                        'tpl_name' => 'error',
+                        'status_code' => $status_code
+                    ]
+                )
+            );
+        }
     }
 
     protected function exitException(\Exception $exception)
@@ -31,12 +44,7 @@ class App extends Lb
         Lb::app()->error($exception->getTraceAsString());
 
         if (Lb::app()->isRest()) {
-            Response::component()->response(
-                [
-                'code' => $exception->getCode(),
-                'msg' => $exception->getMessage(),
-                ], Response::RESPONSE_TYPE_JSON, false, $exception->getCode()
-            );
+            $this->handleRestException($exception);
         } else {
             Lb::app()->stop(implode(':', [$exception->getCode(), $exception->getMessage()]));
         }

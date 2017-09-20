@@ -5,27 +5,45 @@ namespace lb\applications\swoole;
 use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
+use lb\components\response\SwooleResponse;
 use lb\Lb;
 use lb\SwooleLb;
-use Monolog\Logger;
 
 class App extends SwooleLb
 {
+    protected function handleRestException($exception)
+    {
+        $this->response->response(
+            [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+            ], SwooleResponse::RESPONSE_TYPE_JSON, false, $exception->getCode()
+        );
+    }
+
     protected function handleException($exception)
     {
         Lb::app()->error($exception->getTraceAsString());
         $status_code = $exception->getCode();
-        Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
-            'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
-            'tpl_name' => 'error',
-            'status_code' => $status_code
-        ]), true, null, $this->response);
+        if ($this->isRest()) {
+            $this->handleRestException($exception);
+        } else {
+            Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
+                'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
+                'tpl_name' => 'error',
+                'status_code' => $status_code
+            ]), true, null, $this->response);
+        }
     }
 
     protected function exitException(\Exception $exception)
     {
         Lb::app()->error($exception->getTraceAsString());
-        $this->response->getSwooleResponse()->end(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        if ($this->isRest()) {
+            $this->handleRestException($exception);
+        } else {
+            $this->response->getSwooleResponse()->end(implode(':', [$exception->getCode(), $exception->getMessage()]));
+        }
     }
 
     public function run()
