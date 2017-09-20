@@ -19,8 +19,9 @@ class SwooleLb extends Lb
 
     /**
      * SwooleLb constructor.
+     *
      * @param RequestContract $request
-     * @param SwooleResponse $response
+     * @param SwooleResponse  $response
      */
     public function __construct($request, $response)
     {
@@ -71,13 +72,13 @@ class SwooleLb extends Lb
     protected function initLoginRequired()
     {
         $routeInfo = $this->route_info;
-        if (
-            !in_array($routeInfo['controller'], Route::KERNEL_WEB_CTR) ||
-            !in_array($routeInfo['action'], Route::KERNEL_WEB_ACTIONS)
+        if (!in_array($routeInfo['controller'], Route::KERNEL_WEB_CTR) 
+            || !in_array($routeInfo['action'], Route::KERNEL_WEB_ACTIONS)
         ) {
             $login_required_filter = Lb::app()->getLoginRequiredFilter();
-            if (!isset($login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) ||
-                !$login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
+            if (!isset($login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]) 
+                || !$login_required_filter['controllers'][$routeInfo['controller']][$routeInfo['action']]
+            ) {
                 $login_default_url = Lb::app()->getLoginDefaultUrl();
                 if (Lb::app()->isLoginRequired() && $login_default_url) {
                     Lb::app()->loginRequired($login_default_url, $this->request, $this->response);
@@ -156,8 +157,8 @@ class SwooleLb extends Lb
     /**
      * Get http response
      *
-     * @param $request
-     * @param $response
+     * @param  $request
+     * @param  $response
      * @return string
      */
     protected function getHttpResponse($request = null, $response = null)
@@ -206,7 +207,7 @@ class SwooleLb extends Lb
     /**
      * Get Page Cache
      *
-     * @param $cache_type
+     * @param  $cache_type
      * @return string
      */
     protected function getPageCache($cache_type)
@@ -221,7 +222,7 @@ class SwooleLb extends Lb
      *
      * @param $cache_type
      * @param $page_cache
-     * @param int $expire
+     * @param int        $expire
      */
     protected function setPageCache($cache_type, $page_cache, $expire = 60)
     {
@@ -233,15 +234,16 @@ class SwooleLb extends Lb
     /**
      * Compress page
      *
-     * @param $page_content
+     * @param  $page_content
      * @return string
      */
     protected function compressPage($page_content)
     {
         $page_compress_config = Lb::app()->getPageCompressConfig();
         $routeInfo = $this->route_info;
-        if (isset($page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) &&
-            $page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) {
+        if (isset($page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]) 
+            && $page_compress_config['controllers'][$routeInfo['controller']][$routeInfo['action']]
+        ) {
             return HtmlHelper::compress($page_content);
         }
         return $page_content;

@@ -28,11 +28,15 @@ class App extends SwooleLb
         if ($this->isRest()) {
             $this->handleRestException($exception);
         } else {
-            Lb::app()->redirect(Lb::app()->createAbsoluteUrl('/web/action/error', [
-                'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
-                'tpl_name' => 'error',
-                'status_code' => $status_code
-            ]), true, null, $this->response);
+            Lb::app()->redirect(
+                Lb::app()->createAbsoluteUrl(
+                    '/web/action/error', [
+                    'err_msg' => implode(':', [$status_code, $exception->getMessage()]),
+                    'tpl_name' => 'error',
+                    'status_code' => $status_code
+                    ]
+                ), true, null, $this->response
+            );
         }
     }
 
