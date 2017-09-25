@@ -48,5 +48,5 @@ interface RequestContract
 
     public function getBodyParams();
 
-    public function validate();
+    public function validate($rules = [], $errors = []);
 }
