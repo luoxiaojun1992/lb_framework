@@ -70,7 +70,8 @@ class Security extends BaseClass
         if (property_exists(
             get_called_class(),
             $filter_name = strtolower(Lb::app()->getRequestMethod()) . 'filter'
-        )) {
+        )
+        ) {
             $filter = "/" . static::$$filter_name . "/is";
             $value = preg_match($filter, $value) == true ?
                 preg_replace($filter, '', $value) : $value;
@@ -127,9 +128,9 @@ class Security extends BaseClass
             if ($cors) {
                 if (isset($cors[$controller][$action]) && $cors[$controller][$action] == true) {
                     if ($response) {
-                        $response->setHeader('Access Control Allow Origin', '*');
+                        $response->setHeader('Access-Control-Allow-Origin', '*');
                     } else {
-                        ResponseKit::setHeader('Access Control Allow Origin', '*');
+                        ResponseKit::setHeader('Access-Control-Allow-Origin', '*');
                     }
                 }
             }
