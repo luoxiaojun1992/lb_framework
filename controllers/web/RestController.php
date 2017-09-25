@@ -5,6 +5,7 @@ namespace lb\controllers\web;
 use lb\components\middleware\AuthMiddleware;
 use lb\components\middleware\RateLimitFilter;
 use lb\components\middleware\RequestMethodFilter;
+use lb\components\response\Response;
 use lb\controllers\BaseController;
 use lb\Lb;
 
@@ -139,5 +140,15 @@ class RestController extends BaseController
     {
         $this->beforeResponse();
         $this->response->response($data, $format, $is_success, $status_code);
+    }
+
+    /**
+     * @param $data
+     * @param bool $isSuccess
+     * @param int $statusCode
+     */
+    protected function responseJson($data, $isSuccess = true, $statusCode = 200)
+    {
+        $this->response($data, Response::RESPONSE_TYPE_JSON, $isSuccess, $statusCode);
     }
 }
