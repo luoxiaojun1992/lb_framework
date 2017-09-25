@@ -27,12 +27,12 @@ class RestController extends BaseController
     //Rate Limit Actions
     protected $rateLimitActions = [
         //Example Rate Limit Configuration
-//        'index' => [
-//            'rate' => 60,
-//            'expire' => 60,
-//            'step' => 1,
-//            'key' => self::class . '@' . 'index',
-//        ]
+    //        'index' => [
+    //            'rate' => 60,
+    //            'expire' => 60,
+    //            'step' => 1,
+    //            'key' => self::class . '@' . 'index',
+    //        ]
     ];
 
     /**
@@ -133,8 +133,8 @@ class RestController extends BaseController
      *
      * @param $data
      * @param $format
-     * @param bool $is_success
-     * @param int $status_code
+     * @param bool   $is_success
+     * @param int    $status_code
      */
     protected function response($data, $format, $is_success=true, $status_code = 200)
     {
@@ -145,7 +145,7 @@ class RestController extends BaseController
     /**
      * @param $data
      * @param bool $isSuccess
-     * @param int $statusCode
+     * @param int  $statusCode
      */
     protected function responseJson($data, $isSuccess = true, $statusCode = 200)
     {
