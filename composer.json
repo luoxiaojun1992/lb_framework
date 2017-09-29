@@ -82,7 +82,8 @@
     "nikic/php-parser": "*",
     "squizlabs/php_codesniffer": "*",
     "luoxiaojun1992/thrift": "*",
-    "lcobucci/jwt": "*"
+    "lcobucci/jwt": "*",
+    "danielstjules/stringy": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
