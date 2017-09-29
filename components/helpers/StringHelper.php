@@ -135,7 +135,7 @@ class StringHelper extends BaseClass
     {
         $capitals = [];
         for ($i = 0; $i < mb_strlen($str, 'UTF8'); ++$i) {
-            if (StringHelper::isCapital($str[$i])) {
+            if (self::isCapital($str[$i])) {
                 $capitals[] = $str[$i];
             }
         }
