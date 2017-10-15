@@ -116,7 +116,7 @@ class StringHelper extends BaseClass
         return $ascii >= ord('A') && $ascii <= ord('Z');
     }
 
-    public static function camel($str, $delimiter)
+    public static function camel($str, $delimiter = '_')
     {
         if (strpos($str, $delimiter) !== false) {
             $tempArr = explode($delimiter, $str);

@@ -119,14 +119,14 @@ class Route extends BaseClass
     }
 
     /**
-     * @param array $route_info
+     * @param array    $route_info
      * @param $request
      * @param $response
      * @throws HttpException
      */
     public static function hprose(Array $route_info, $request = null, $response = null)
     {
-        require_once(Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php');
+        include_once Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'hprose' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Hprose.php';
         $controller_id = $route_info['controller'];
         if (in_array($controller_id, self::KERNEL_WEB_CTR)) {
             $controller_name = self::KERNEL_WEB_CTR_ROOT . ucfirst($controller_id) . 'Controller';
@@ -136,7 +136,9 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                /** @var BaseController $controller */
+                /**
+ * @var BaseController $controller 
+*/
                 $controller = new $controller_name($controller_id, $action_name, $request, $response);
                 //Trigger AOP Event
                 self::triggerAopEvent($controller_id, $action_name, $request, $response);
@@ -214,7 +216,7 @@ class Route extends BaseClass
     }
 
     /**
-     * @param array $route_info
+     * @param array    $route_info
      * @param $request
      * @param $response
      * @throws HttpException
@@ -230,7 +232,9 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                /** @var BaseController $controller */
+                /**
+ * @var BaseController $controller 
+*/
                 $controller = new $controller_name($controller_id, $action_name, $request, $response);
                 //Trigger AOP Event
                 self::triggerAopEvent($controller_id, $action_name, $request, $response);
@@ -259,7 +263,9 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                /** @var BaseController $controller */
+                /**
+ * @var BaseController $controller 
+*/
                 $controller = new $controller_name($controller_id, $action_name);
                 //Trigger AOP Event
                 self::triggerAopEvent($controller_id, $action_name);
@@ -277,16 +283,16 @@ class Route extends BaseClass
      *
      * @param $controller_id
      * @param $action_name
-     * @param null $request
-     * @param null $response
+     * @param null          $request
+     * @param null          $response
      */
     protected static function triggerAopEvent(
         $controller_id,
         $action_name,
         $request = null,
         $response = null
-    )
-    {
+    ) {
+    
         $context = [
             'controller_id' => $controller_id,
             'action_id' => $action_name,
