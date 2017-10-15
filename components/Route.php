@@ -7,6 +7,7 @@ use lb\components\consts\Event;
 use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
 use lb\components\events\AopEvent;
+use lb\components\helpers\StringHelper;
 use lb\components\request\RequestContract;
 use lb\controllers\BaseController;
 use lb\Lb;
@@ -49,10 +50,12 @@ class Route extends BaseClass
         $route_info = [
             'controller' => '',
             'action' => '',
-            'id' => '',
         ];
-        $request_uri = $request ? $request->getUri() : Lb::app()->getUri();
-        $query_string = $request ? $request->getQueryString() : Lb::app()->getQueryString();
+
+        $request = $request ?: Lb::app();
+
+        $request_uri = $request->getUri();
+        $query_string = $request->getQueryString();
         if (Lb::app()->isPrettyUrl()) {
             if ($query_string) {
                 $request_uri = str_replace('?' . $query_string, '', $request_uri);
@@ -61,29 +64,36 @@ class Route extends BaseClass
             if ($url_suffix) {
                 $request_uri = str_replace($url_suffix, '', $request_uri);
             }
-            $query_params = explode('/', trim($request_uri, '/'));
-            $route_info['controller'] = array_shift($query_params);
-            foreach ($query_params as $key => $query_param) {
-                if (array_key_exists($query_param, $route_info) && $query_param != 'controller') {
-                    $route_info[$query_param] = $query_params[$key + 1];
-                }
-            }
+            $queryParams = explode('/', trim($request_uri, '/'));
         } else {
-            if (strpos($request_uri, '?') !== false) {
-                $query_params = explode('&', $query_string);
-                if ($query_params) {
-                    $route_info['controller'] = array_shift($query_params);
-                    foreach ($query_params as $query_param) {
-                        if (strpos($query_param, '=') !== false) {
-                            list($query_param_name, $query_param_value) = explode('=', $query_param);
-                            if (array_key_exists($query_param_name, $route_info) && $query_param_name != 'controller') {
-                                $route_info[$query_param_name] = $query_param_value;
-                            }
-                        }
-                    }
-                }
+            $queryParams = explode('/', trim($request->getParam('r'), '/'));
+        }
+
+        $isController = true;
+        $isAction = false;
+        foreach ($queryParams as $queryParam) {
+            if ($queryParam == 'controller') {
+                $isController = true;
+                $isAction = false;
+                continue;
+            }
+            if ($queryParam == 'action') {
+                $isController = false;
+                $isAction = true;
+                continue;
+            }
+
+            if ($isController) {
+                $route_info['controller'] .= $queryParam . '/';
+            }
+            if ($isAction) {
+                $route_info['action'] .= $queryParam . '/';
             }
         }
+
+        $route_info['controller'] = trim($route_info['controller'], '/');
+        $route_info['action'] = trim($route_info['action'], '/');
+
         return $route_info;
     }
 
@@ -100,7 +110,7 @@ class Route extends BaseClass
             $controller_action_info = $_SERVER['argv'][1];
             if (strpos($controller_action_info, '/') > 0) {
                 list($route_info['controller'], $route_info['action']) = explode('/', $controller_action_info);
-                $route_info['action'] = $route_info['action'] ? : 'index';
+                $route_info['action'] = StringHelper::camel($route_info['action'], '-') ? : 'index';
             } else {
                 $route_info['controller'] = $controller_action_info;
             }

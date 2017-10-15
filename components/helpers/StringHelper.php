@@ -116,10 +116,10 @@ class StringHelper extends BaseClass
         return $ascii >= ord('A') && $ascii <= ord('Z');
     }
 
-    public static function camel($str)
+    public static function camel($str, $delimiter)
     {
-        if (strpos($str, '_') !== false) {
-            $tempArr = explode('_', $str);
+        if (strpos($str, $delimiter) !== false) {
+            $tempArr = explode($delimiter, $str);
             foreach ($tempArr as $key => $item) {
                 $tempArr[$key] = ucfirst(strtolower($item));
             }
