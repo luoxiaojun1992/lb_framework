@@ -228,7 +228,7 @@ class Route extends BaseClass
         foreach ($controllerIdArray as $k => $item) {
             $controllerIdArray[$k] = ucfirst($item);
         }
-        $upperCaseControllerId = implode('/', $controllerIdArray);
+        $upperCaseControllerId = implode('\\', $controllerIdArray);
         if (in_array($controllerId, self::KERNEL_WEB_CTR)) {
             $controller_name = self::KERNEL_WEB_CTR_ROOT . $upperCaseControllerId . 'Controller';
         } else {
