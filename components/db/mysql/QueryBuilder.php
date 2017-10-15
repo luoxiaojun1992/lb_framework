@@ -196,7 +196,7 @@ class QueryBuilder extends BaseClass
                     ->setOrders()
                     ->setLimit()
                     ->setSelect()
-                    ->asArray();
+                    ->setAsArray();
 
                 return $instance;
             } else {
@@ -222,7 +222,7 @@ class QueryBuilder extends BaseClass
             ->setOrders()
             ->setLimit()
             ->setSelect()
-            ->asArray();
+            ->setAsArray();
     }
 
     /**
