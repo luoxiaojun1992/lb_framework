@@ -223,21 +223,24 @@ class Route extends BaseClass
      */
     public static function runWebAction(Array $route_info, $request = null, $response = null)
     {
-        $controller_id = $route_info['controller'];
-        if (in_array($controller_id, self::KERNEL_WEB_CTR)) {
-            $controller_name = self::KERNEL_WEB_CTR_ROOT . ucfirst($controller_id) . 'Controller';
+        $controllerId = $route_info['controller'];
+        $controllerIdArray = explode('/', $controllerId);
+        foreach ($controllerIdArray as $k => $item) {
+            $controllerIdArray[$k] = ucfirst($item);
+        }
+        $upperCaseControllerId = implode('/', $controllerIdArray);
+        if (in_array($controllerId, self::KERNEL_WEB_CTR)) {
+            $controller_name = self::KERNEL_WEB_CTR_ROOT . $upperCaseControllerId . 'Controller';
         } else {
-            $controller_name = self::APP_WEB_CTR_ROOT . ucfirst($controller_id);
+            $controller_name = self::APP_WEB_CTR_ROOT . $upperCaseControllerId;
         }
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                /**
- * @var BaseController $controller 
-*/
-                $controller = new $controller_name($controller_id, $action_name, $request, $response);
+                /** @var BaseController $controller */
+                $controller = new $controller_name($controllerId, $action_name, $request, $response);
                 //Trigger AOP Event
-                self::triggerAopEvent($controller_id, $action_name, $request, $response);
+                self::triggerAopEvent($controllerId, $action_name, $request, $response);
                 $method = new \ReflectionMethod($controller, $action_name);
                 $method->invokeArgs($controller, self::matchActionParams($method));
             } else {
