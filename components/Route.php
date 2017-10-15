@@ -237,7 +237,9 @@ class Route extends BaseClass
         if (class_exists($controller_name)) {
             $action_name = $route_info['action'];
             if (method_exists($controller_name, $action_name)) {
-                /** @var BaseController $controller */
+                /**
+ * @var BaseController $controller 
+*/
                 $controller = new $controller_name($controllerId, $action_name, $request, $response);
                 //Trigger AOP Event
                 self::triggerAopEvent($controllerId, $action_name, $request, $response);
