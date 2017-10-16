@@ -110,7 +110,7 @@ class Route extends BaseClass
             $controller_action_info = $_SERVER['argv'][1];
             if (strpos($controller_action_info, '/') > 0) {
                 list($route_info['controller'], $route_info['action']) = explode('/', $controller_action_info);
-                $route_info['action'] = StringHelper::camel($route_info['action'], '-') ? : 'index';
+                $route_info['action'] = $route_info['action'] ? : 'index';
             } else {
                 $route_info['controller'] = $controller_action_info;
             }
