@@ -12,10 +12,14 @@ abstract class BaseController extends BaseClass
     public $controller_id = '';
     public $action_id = '';
 
-    /** @var  RequestContract */
+    /**
+     * @var  RequestContract 
+     */
     public $request;
 
-    /** @var  ResponseContract */
+    /**
+     * @var  ResponseContract 
+     */
     public $response;
 
     protected $middleware = [];
@@ -44,7 +48,9 @@ abstract class BaseController extends BaseClass
         if (isset($middlewares[$middlewareSerial])) {
             $middlewareConfig = $middlewares[$middlewareSerial];
             $middlewareClass = $middlewareConfig['class'];
-            /** @var MiddlewareInterface $middleware */
+            /**
+ * @var MiddlewareInterface $middleware 
+*/
             $middleware = new $middlewareClass;
             $middleware->setSerial($middlewareSerial);
             $middleware->setMiddlewares($middlewares);
@@ -54,11 +60,13 @@ abstract class BaseController extends BaseClass
                 $middlewareConfig['successCallback'] : null;
             $failureCallback = !empty($middlewareConfig['failureCallback']) ?
                 $middlewareConfig['failureCallback'] : null;
-            call_user_func_array([$middleware, $action], [
+            call_user_func_array(
+                [$middleware, $action], [
                 'params' => $params,
                 'successCallback' => $successCallback,
                 'failureCallback' => $failureCallback,
-            ]);
+                ]
+            );
         }
     }
 
@@ -73,7 +81,7 @@ abstract class BaseController extends BaseClass
     /**
      * Set controller id
      *
-     * @param $controllerId
+     * @param  $controllerId
      * @return $this
      */
     public function setControllerId($controllerId)
@@ -85,7 +93,7 @@ abstract class BaseController extends BaseClass
     /**
      * Set action id
      *
-     * @param $actionId
+     * @param  $actionId
      * @return $this
      */
     public function setActionId($actionId)
@@ -97,7 +105,7 @@ abstract class BaseController extends BaseClass
     /**
      * Set request
      *
-     * @param $request
+     * @param  $request
      * @return $this
      */
     public function setRequest($request)
@@ -109,7 +117,7 @@ abstract class BaseController extends BaseClass
     /**
      * Set response
      *
-     * @param $response
+     * @param  $response
      * @return $this
      */
     public function setResponse($response)
@@ -132,8 +140,8 @@ abstract class BaseController extends BaseClass
     /**
      * Get Flash Message
      *
-     * @param $flashKey
-     * @param $once
+     * @param  $flashKey
+     * @param  $once
      * @return mixed
      */
     public function getFlash($flashKey, $once = true)
