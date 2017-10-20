@@ -9,14 +9,14 @@ use lb\components\response\ResponseContract;
 
 abstract class BaseController extends BaseClass
 {
-    protected $controller_id = '';
-    protected $action_id = '';
+    public $controller_id = '';
+    public $action_id = '';
 
     /** @var  RequestContract */
-    protected $request;
+    public $request;
 
     /** @var  ResponseContract */
-    protected $response;
+    public $response;
 
     protected $middleware = [];
 
