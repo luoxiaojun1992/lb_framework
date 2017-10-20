@@ -50,7 +50,7 @@ class App extends Lb
         }
     }
 
-    public function __construct($is_single)
+    public function __construct($is_single = false)
     {
         // Start App
         if (class_exists('\Throwable')) {
