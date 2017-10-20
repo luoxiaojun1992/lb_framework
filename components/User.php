@@ -51,6 +51,6 @@ class User extends BaseClass
     public static function logOut()
     {
         Lb::app()->delSessions(['username', 'user_id']);
-        Lb::app()->delHeaderCookies(['username', 'remember_token']);
+        Lb::app()->delCookies(['username', 'remember_token']);
     }
 }
