@@ -50,6 +50,38 @@ class App extends Lb
         }
     }
 
+    public function __construct($is_single)
+    {
+        // Start App
+        if (class_exists('\Throwable')) {
+            // if php version >= 7.0.0
+            try {
+                parent::__construct($is_single);
+            } catch (HttpException $httpException) {
+                $this->handleException($httpException);
+            } catch (VariableException $variableException) {
+                $this->exitException($variableException);
+            } catch (ParamException $paramException) {
+                $this->exitException($paramException);
+            } catch (\Throwable $throwable) {
+                $this->handleException($throwable);
+            }
+        } else {
+            // if php version < 7.0.0
+            try {
+                parent::__construct($is_single);
+            } catch (HttpException $httpException) {
+                $this->handleException($httpException);
+            } catch (VariableException $variableException) {
+                $this->exitException($variableException);
+            } catch (ParamException $paramException) {
+                $this->exitException($paramException);
+            } catch (\Exception $e) {
+                $this->handleException($e);
+            }
+        }
+    }
+
     public function run()
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
