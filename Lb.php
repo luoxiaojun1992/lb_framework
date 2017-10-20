@@ -959,7 +959,7 @@ class Lb extends BaseClass
                 $this->runConsoleApp();
             }
         } else {
-            throw new HttpException('Single run is forbidden.', 500);
+            throw new HttpException('Singleton is forbidden.', 500);
         }
     }
 
