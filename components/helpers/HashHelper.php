@@ -11,8 +11,8 @@ class HashHelper extends BaseClass
 
     /**
      * @param $str
-     * @param string $algo
-     * @param string $hmacKey
+     * @param string   $algo
+     * @param string   $hmacKey
      * @param $rawOuput
      * @return string
      */
@@ -23,14 +23,14 @@ class HashHelper extends BaseClass
         }
 
         switch ($algo) {
-            case 'md5':
-                $hashCode = md5($str, $rawOuput);
-                break;
-            case 'sha1':
-                $hashCode = sha1($str, $rawOuput);
-                break;
-            default:
-                $hashCode = md5($str, $rawOuput);
+        case 'md5':
+            $hashCode = md5($str, $rawOuput);
+            break;
+        case 'sha1':
+            $hashCode = sha1($str, $rawOuput);
+            break;
+        default:
+            $hashCode = md5($str, $rawOuput);
         }
 
         return $hashCode;
