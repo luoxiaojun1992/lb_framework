@@ -12,19 +12,25 @@ class HashHelper extends BaseClass
     /**
      * @param $str
      * @param string $algo
+     * @param string $hmacKey
+     * @param $rawOuput
      * @return string
      */
-    public static function hash($str, $algo = 'md5')
+    public static function hash($str, $algo = 'md5', $hmacKey = '', $rawOuput = false)
     {
+        if ($hmacKey) {
+            return hash_hmac($algo, $str, $hmacKey, $rawOuput);
+        }
+
         switch ($algo) {
             case 'md5':
-                $hashCode = md5($str);
+                $hashCode = md5($str, $rawOuput);
                 break;
             case 'sha1':
-                $hashCode = sha1($str);
+                $hashCode = sha1($str, $rawOuput);
                 break;
             default:
-                $hashCode = md5($str);
+                $hashCode = md5($str, $rawOuput);
         }
 
         return $hashCode;
