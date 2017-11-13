@@ -7,6 +7,7 @@ use lb\BaseClass;
 use lb\components\consts\IO;
 use lb\components\request\RequestContract;
 use lb\components\response\ResponseContract;
+use lb\components\utils\IdGenerator;
 use lb\Lb;
 use RequestKit;
 use ResponseKit;
@@ -125,7 +126,9 @@ class FileHelper extends BaseClass implements IO
         $file = new \Upload\File($file_name, $storage);
 
         // Optionally you can rename the file on upload
-        $new_filename = uniqid();
+        /** @var IdGenerator $idGenerator */
+        $idGenerator = IdGenerator::component();
+        $new_filename = $idGenerator->generate();
         $file->setName($new_filename);
 
         // Validate file upload
