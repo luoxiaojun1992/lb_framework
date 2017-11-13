@@ -126,7 +126,9 @@ class FileHelper extends BaseClass implements IO
         $file = new \Upload\File($file_name, $storage);
 
         // Optionally you can rename the file on upload
-        /** @var IdGenerator $idGenerator */
+        /**
+ * @var IdGenerator $idGenerator 
+*/
         $idGenerator = IdGenerator::component();
         $new_filename = $idGenerator->generate();
         $file->setName($new_filename);
