@@ -7,6 +7,7 @@ use lb\components\consts\Event;
 use lb\components\error_handlers\ConsoleException;
 use lb\components\error_handlers\HttpException;
 use lb\components\events\AopEvent;
+use lb\components\events\RequestEvent;
 use lb\components\helpers\StringHelper;
 use lb\components\request\RequestContract;
 use lb\controllers\BaseController;
@@ -311,6 +312,10 @@ class Route extends BaseClass
         Lb::app()->trigger(
             Event::AOP_EVENT . '_' . implode('@', [$controller_id, $action_name]),
             new AopEvent($context)
+        );
+        Lb::app()->trigger(
+            Event::REQUEST_EVENT,
+            new RequestEvent($context)
         );
     }
 }
