@@ -3,6 +3,7 @@
 namespace lb;
 
 use lb\components\coroutine\Scheduler;
+use lb\components\events\RequestEvent;
 use lb\components\facades\RequestFacade;
 use lb\components\facades\ResponseFacade;
 use lb\components\helpers\HttpHelper;
@@ -829,9 +830,7 @@ class Lb extends BaseClass
         include_once __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php';
 
         // Init Config
-        /**
- * @var Scheduler $scheduler 
-*/
+        /** @var Scheduler $scheduler */
         $scheduler = Scheduler::component();
         $scheduler->newTask($this->initConfig());
         $scheduler->run();
@@ -853,6 +852,16 @@ class Lb extends BaseClass
 
         // Route
         $this->setRouteInfo();
+
+        //Register Events
+        $eventsConfig = Lb::app()->getConfigByName('events');
+        if ($eventsConfig) {
+            foreach ($eventsConfig as $event => $handlers) {
+                foreach ($handlers as $handler) {
+                    Lb::app()->on($event, new $handler());
+                }
+            }
+        }
     }
 
     /**
