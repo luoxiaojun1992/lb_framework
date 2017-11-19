@@ -830,7 +830,9 @@ class Lb extends BaseClass
         include_once __DIR__ . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'Functions.php';
 
         // Init Config
-        /** @var Scheduler $scheduler */
+        /**
+ * @var Scheduler $scheduler 
+*/
         $scheduler = Scheduler::component();
         $scheduler->newTask($this->initConfig());
         $scheduler->run();
