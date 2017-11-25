@@ -18,6 +18,8 @@ class IteratorTest extends BaseTestCase
         }
         $iterator = $container->iterator();
         $position = 0;
+        $this->assertEquals('first', $iterator->key());
+        $this->assertEquals('a', $iterator->current());
         while($iterator->valid()) {
             $this->assertEquals($values[$position], $iterator->current());
             $iterator->next();
