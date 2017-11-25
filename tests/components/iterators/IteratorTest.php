@@ -13,6 +13,7 @@ class IteratorTest extends BaseTestCase
         $container = new Base();
         $data = ['first' => 'a', 'second' => 'b'];
         $values = array_values($data);
+        $keys = array_keys($data);
         foreach ($data as $key => $val) {
             $container->set($key, $val);
         }
@@ -21,6 +22,7 @@ class IteratorTest extends BaseTestCase
         $this->assertEquals('first', $iterator->key());
         $this->assertEquals('a', $iterator->current());
         while($iterator->valid()) {
+            $this->assertEquals($keys[$position], $iterator->key());
             $this->assertEquals($values[$position], $iterator->current());
             $iterator->next();
             ++$position;
