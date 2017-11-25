@@ -45,13 +45,13 @@ class Iterator implements \Iterator
 
     function current()
     {
-        $valueArr = array_slice($this->getCollection(), $this->getPosition(), 1);
-        return array_pop($valueArr);
+        return array_slice($this->getCollection(), $this->getPosition(), 1)[0] ?? null;
     }
 
     function key()
     {
-        return array_slice(array_keys($this->getCollection()), $this->getPosition(), 1)[0] ?? null;
+        $arr = array_flip(array_slice($this->getCollection(), $this->getPosition(), 1, true));
+        return array_pop($arr);
     }
 
     function next()
