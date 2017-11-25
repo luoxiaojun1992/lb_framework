@@ -51,7 +51,7 @@ class Iterator implements \Iterator
 
     function key()
     {
-        return array_slice(array_keys($this->getCollection()), $this->getPosition(), 1)[0];
+        return array_slice(array_keys($this->getCollection()), $this->getPosition(), 1)[0] ?? null;
     }
 
     function next()
@@ -61,6 +61,7 @@ class Iterator implements \Iterator
 
     function valid()
     {
-        return isset(array_values(array_slice($this->getCollection(), $this->getPosition(), 1))[0]);
+        $currentValue = $this->current();
+        return isset($currentValue);
     }
 }
