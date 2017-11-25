@@ -9,9 +9,7 @@ class IteratorTest extends BaseTestCase
 {
     public function testContainerIterator()
     {
-        /**
- * @var Base $container 
-*/
+        /** @var Base $container */
         $container = new Base();
         $data = ['first' => 'a', 'second' => 'b'];
         $values = array_values($data);
