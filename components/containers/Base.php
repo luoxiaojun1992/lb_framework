@@ -6,7 +6,7 @@ use lb\BaseClass;
 use lb\components\traits\ArrayOp;
 use lb\components\traits\Singleton;
 
-class Base extends BaseClass implements \ArrayAccess
+class Base extends BaseClass implements \ArrayAccess, \Serializable
 {
     use Singleton;
 
