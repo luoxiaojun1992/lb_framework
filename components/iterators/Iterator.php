@@ -45,7 +45,6 @@ class Iterator implements \Iterator
 
     function current()
     {
-//        return array_pop(array_slice($this->getCollection(), $this->getPosition(), 1));
         return array_slice(array_values($this->getCollection()), $this->getPosition(), 1)[0];
     }
 
