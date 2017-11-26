@@ -834,6 +834,12 @@ class Lb extends BaseClass
  * @var Scheduler $scheduler 
 */
         $scheduler = Scheduler::component();
+
+        if (defined('ROOT_DIR')) {
+            // Autoload
+            spl_autoload_register(['self', 'autoload'], true, false);
+        }
+
         $scheduler->newTask($this->initConfig());
         $scheduler->run();
 
@@ -846,8 +852,10 @@ class Lb extends BaseClass
         // Register Facades
         $this->registerFacades();
 
-        // Autoload
-        spl_autoload_register(['self', 'autoload'], true, false);
+        if (!defined('ROOT_DIR')) {
+            // Autoload
+            spl_autoload_register(['self', 'autoload'], true, false);
+        }
 
         // Set Error Level
         Level::set();

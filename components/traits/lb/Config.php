@@ -14,7 +14,7 @@ trait Config
      */
     public function getRootDir()
     {
-        return $this->getConfigByName('root_dir');
+        return defined('ROOT_DIR') ? ROOT_DIR : $this->getConfigByName('root_dir');
     }
 
     /**
