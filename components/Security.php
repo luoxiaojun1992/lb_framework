@@ -98,9 +98,12 @@ class Security extends BaseClass
     {
         $csrf_config = Lb::app()->getCsrfConfig();
         if (!isset($csrf_config['filter']['controllers'][$controller][$action]) || !$csrf_config['filter']['controllers'][$controller][$action]) {
+            $csrfTokenKey = self::getCsrfTokenKey($controller, $action);
+
             if (strtolower($request ? $request->getRequestMethod() : Lb::app()->getRequestMethod()) == 'post') {
-                $session_csrf_token = $request ? $request->getSession(implode('_', ['csrf_token', $controller, $action])) : Lb::app()->getSession(implode('_', ['csrf_token', $controller, $action]));
-                $request_csrf_token = $request ? $request->getParam('csrf_token') : Lb::app()->getParam('csrf_token');
+                $request = $request ? : Lb::app();
+                $session_csrf_token = $request->getSession($csrfTokenKey);
+                $request_csrf_token = $request->getParam('csrf_token');
                 if ($session_csrf_token && $request_csrf_token) {
                     if ($session_csrf_token != $request_csrf_token) {
                         throw new HttpException('Csrf token invalid.', 403);
@@ -110,9 +113,17 @@ class Security extends BaseClass
                 }
             }
             if (!(Lb::app()->isAjax($request) && strtolower($request ? $request->getRequestMethod() : Lb::app()->getRequestMethod()) == 'post')) {
-                $response ? $response->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken()) : Lb::app()->setSession(implode('_', ['csrf_token', $controller, $action]), Lb::app()->getCsrfToken());
+                $response = $response ? : Lb::app();
+                $csrfToken = Lb::app()->getCsrfToken();
+                $response->setSession($csrfTokenKey, $csrfToken);
+                $response->setCookie($csrfTokenKey, $csrfToken, 0, '', '', false, true);
             }
         }
+    }
+
+    private static function getCsrfTokenKey($controller, $action)
+    {
+        return implode('_', ['csrf_token', $controller, $action]);
     }
 
     /**
