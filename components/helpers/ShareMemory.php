@@ -111,28 +111,57 @@ class ShareMemory extends BaseClass
         return $this;
     }
 
+    /**
+     * ShareMemory constructor.
+     *
+     * @param $key
+     * @param $mode
+     * @param $privilege
+     * @param $size
+     */
     public function __construct($key, $mode, $privilege, $size)
     {
         $this->setKey($key)->setMode($mode)->setPrivilege($privilege)->setSize($size);
     }
 
+    /**
+     * @return mixed
+     */
     public function open()
     {
         return $this->setFd(shmop_open($this->getKey(), $this->getMode(), $this->getPrivilege(), $this->getSize()))->getFd();
     }
 
+    /**
+     * @param $data
+     * @param $offset
+     * @return int
+     */
     public function write($data, $offset)
     {
         return shmop_write($this->getFd(), $data, $offset);
     }
 
+    /**
+     * @param $offset
+     * @param $limit
+     * @return string
+     */
     public function read($offset, $limit)
     {
         return shmop_read($this->getFd(), $offset, $limit);
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
         return shmop_delete($this->getFd());
+    }
+
+    public function close()
+    {
+        shmop_close($this->getFd());
     }
 }
