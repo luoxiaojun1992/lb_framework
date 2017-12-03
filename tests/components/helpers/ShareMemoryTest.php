@@ -12,8 +12,7 @@ class ShareMemoryTest extends BaseTestCase
         $shareMemory = new ShareMemory(0x4337b700, ShareMemory::MODE_C, 0644, 256);
         $shareMemory->open();
         $shareMemory->write(pack('a*', 'Hello World'), 0);
-        $this->assertEquals('Hello World', unpack('a*', $shareMemory->read(0, 256))[1]);
-        $shareMemory->close();
+        $this->assertEquals('Hello World', unpack('a*', $shareMemory->read(0, 11))[1]);
         $shareMemory->delete();
     }
 }
