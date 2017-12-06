@@ -104,8 +104,9 @@ class Security extends BaseClass
                 $request = $request ? : Lb::app();
                 $session_csrf_token = $request->getSession($csrfTokenKey);
                 $request_csrf_token = $request->getParam('csrf_token');
-                if ($session_csrf_token && $request_csrf_token) {
-                    if ($session_csrf_token != $request_csrf_token) {
+                $csrfTokenFromCookie = $request->getCookie($csrfTokenKey);
+                if ($session_csrf_token && $csrfTokenFromCookie) {
+                    if ($session_csrf_token != $csrfTokenFromCookie) {
                         throw new HttpException('Csrf token invalid.', 403);
                     }
                 } else {
