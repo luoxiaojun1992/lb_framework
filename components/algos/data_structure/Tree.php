@@ -8,6 +8,7 @@ use lb\BaseClass;
  * 树/深度、广度优先遍历、翻转
  *
  * Class Tree
+ *
  * @package lb\components\algos\math
  */
 class Tree extends BaseClass
@@ -22,7 +23,7 @@ class Tree extends BaseClass
     /**
      * 深度优先遍历
      *
-     * @param array $tree
+     * @param array         $tree
      * @param \Closure|null $callback
      */
     public function depthFirst($tree = [], \Closure $callback = null)
@@ -44,7 +45,7 @@ class Tree extends BaseClass
     /**
      * 广度优先遍历
      *
-     * @param array $tree
+     * @param array         $tree
      * @param \Closure|null $callback
      */
     public function breadthFirst($tree = [], \Closure $callback = null)
@@ -70,7 +71,7 @@ class Tree extends BaseClass
     /**
      * 翻转
      *
-     * @param array $tree
+     * @param  array $tree
      * @return array
      */
     public function reverseTree($tree = [])
