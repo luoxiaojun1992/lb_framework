@@ -115,4 +115,30 @@ class Tree extends BaseClass
             }
         }
     }
+
+    /**
+     * 右序遍历
+     *
+     * @param array         $tree
+     * @param \Closure|null $callback
+     */
+    public function rightSequence($tree = [], \Closure $callback = null)
+    {
+        if (!$tree) {
+            $tree = $this->tree;
+        }
+
+        foreach ($tree as $k => $node) {
+            $nodeChild = $node['children'];
+            if ($nodeChild) {
+                $this->leftSequence([$nodeChild[1]]);
+            }
+            if ($callback) {
+                call_user_func_array($callback, ['node' => $node]);
+            }
+            if ($nodeChild) {
+                $this->leftSequence([$nodeChild[0]]);
+            }
+        }
+    }
 }
