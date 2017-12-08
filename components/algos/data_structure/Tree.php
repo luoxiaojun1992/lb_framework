@@ -89,4 +89,15 @@ class Tree extends BaseClass
         }
         return $tempArr;
     }
+
+    /**
+     * 左序遍历
+     *
+     * @param array $tree
+     * @param \Closure|null $callback
+     */
+    public function leftSequence($tree = [], \Closure $callback = null)
+    {
+        //
+    }
 }

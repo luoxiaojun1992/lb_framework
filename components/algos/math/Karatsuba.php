@@ -70,7 +70,13 @@ class Karatsuba extends BaseClass
      */
     private function getBit($num)
     {
-        return strlen(abs(intval($num)));
+        $i = 0;
+        while (abs($num) >= 1) {
+            $num = $num / 10;
+            ++$i;
+        }
+
+        return $i;
     }
 
     /**
