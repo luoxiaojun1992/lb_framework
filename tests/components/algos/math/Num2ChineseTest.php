@@ -9,7 +9,9 @@ class Num2ChineseTest extends BaseTestCase
 {
     private $num;
 
-    /** @var Num2Chinese */
+    /**
+     * @var Num2Chinese 
+     */
     private $num2Chinese;
 
     public function setUp()

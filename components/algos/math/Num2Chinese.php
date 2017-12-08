@@ -25,6 +25,7 @@ class Num2Chinese extends BaseClass
 
     /**
      * Num2Chinese constructor.
+     *
      * @param $num
      */
     public function __construct($num)
@@ -35,8 +36,8 @@ class Num2Chinese extends BaseClass
     /**
      * 取数的低位
      *
-     * @param $num
-     * @param $m
+     * @param  $num
+     * @param  $m
      * @return int
      */
     private function getLowBitPart($num, $m)
@@ -47,7 +48,7 @@ class Num2Chinese extends BaseClass
     /**
      * 数字转中文
      *
-     * @param bool $simple
+     * @param  bool $simple
      * @return string
      */
     public function number2Chinese($simple = true)
@@ -87,7 +88,7 @@ class Num2Chinese extends BaseClass
      *
      * @param $section
      * @param $str
-     * @param bool $simple
+     * @param bool    $simple
      */
     private function section2Chinese($section, &$str, $simple = true)
     {
