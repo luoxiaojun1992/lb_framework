@@ -18,8 +18,9 @@ class Karatsuba extends BaseClass
 
     /**
      * Karatsuba constructor.
-     * @param $num1
-     * @param $num2
+     *
+     * @param  $num1
+     * @param  $num2
      * @throws ParamException
      */
     public function __construct($num1, $num2)
@@ -40,8 +41,8 @@ class Karatsuba extends BaseClass
     /**
      * 取数的高位
      *
-     * @param $num
-     * @param $m
+     * @param  $num
+     * @param  $m
      * @return int
      */
     private function getHighBitPart($num, $m)
@@ -52,8 +53,8 @@ class Karatsuba extends BaseClass
     /**
      * 取数的低位
      *
-     * @param $num
-     * @param $m
+     * @param  $num
+     * @param  $m
      * @return int
      */
     private function getLowBitPart($num, $m)
@@ -64,7 +65,7 @@ class Karatsuba extends BaseClass
     /**
      * 获取数字位数
      *
-     * @param $num
+     * @param  $num
      * @return int
      */
     private function getBit($num)
@@ -75,8 +76,8 @@ class Karatsuba extends BaseClass
     /**
      * 大数相乘Karatsuba算法
      *
-     * @param $num1
-     * @param $num2
+     * @param  $num1
+     * @param  $num2
      * @return float|int|mixed
      */
     private function bigMul($num1, $num2)

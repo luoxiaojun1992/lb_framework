@@ -26,7 +26,8 @@ class Num2Chinese extends BaseClass
 
     /**
      * Num2Chinese constructor.
-     * @param $num
+     *
+     * @param  $num
      * @throws ParamException
      */
     public function __construct($num)
