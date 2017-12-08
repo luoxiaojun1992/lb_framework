@@ -5,7 +5,7 @@ namespace lb\components\algos\math;
 use lb\BaseClass;
 
 /**
- * 树/深度、广度优先遍历、翻转
+ * 树/深度、广度优先遍历、翻转、左序遍历
  *
  * Class Tree
  *
@@ -98,6 +98,21 @@ class Tree extends BaseClass
      */
     public function leftSequence($tree = [], \Closure $callback = null)
     {
-        //
+        if (!$tree) {
+            $tree = $this->tree;
+        }
+
+        foreach ($tree as $k => $node) {
+            $nodeChild = $node['children'];
+            if ($nodeChild) {
+                $this->leftSequence([$nodeChild[0]]);
+            }
+            if ($callback) {
+                call_user_func_array($callback, ['node' => $node]);
+            }
+            if ($nodeChild) {
+                $this->leftSequence([$nodeChild[1]]);
+            }
+        }
     }
 }
