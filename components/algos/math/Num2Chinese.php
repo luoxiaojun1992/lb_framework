@@ -3,6 +3,7 @@
 namespace lb\components\algos\math;
 
 use lb\BaseClass;
+use lb\components\error_handlers\ParamException;
 
 /**
  * 数字转中文
@@ -25,11 +26,15 @@ class Num2Chinese extends BaseClass
 
     /**
      * Num2Chinese constructor.
-     *
      * @param $num
+     * @throws ParamException
      */
     public function __construct($num)
     {
+        if (!is_numeric($num)) {
+            throw new ParamException('必须是数字');
+        }
+
         $this->num = $num;
     }
 
