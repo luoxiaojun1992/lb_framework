@@ -93,7 +93,7 @@ class Tree extends BaseClass
     /**
      * 左序遍历
      *
-     * @param array $tree
+     * @param array         $tree
      * @param \Closure|null $callback
      */
     public function leftSequence($tree = [], \Closure $callback = null)
