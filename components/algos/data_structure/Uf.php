@@ -27,8 +27,8 @@ class Uf extends BaseClass
     /**
      * p和q点是否连通
      *
-     * @param $p
-     * @param $q
+     * @param  $p
+     * @param  $q
      * @return bool
      */
     public function connected($p, $q)
@@ -74,7 +74,7 @@ class Uf extends BaseClass
     /**
      * 避免递归
      *
-     * @param $i
+     * @param  $i
      * @return mixed
      */
     private function root($i)
