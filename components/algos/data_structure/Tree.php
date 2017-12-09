@@ -131,13 +131,13 @@ class Tree extends BaseClass
         foreach ($tree as $k => $node) {
             $nodeChild = $node['children'];
             if ($nodeChild) {
-                $this->leftSequence([$nodeChild[1]]);
+                $this->rightSequence([$nodeChild[1]]);
             }
             if ($callback) {
                 call_user_func_array($callback, ['node' => $node]);
             }
             if ($nodeChild) {
-                $this->leftSequence([$nodeChild[0]]);
+                $this->rightSequence([$nodeChild[0]]);
             }
         }
     }
