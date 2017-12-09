@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components\algos\math;
+namespace lb\components\algos\data_structure;
 
 use lb\BaseClass;
 
