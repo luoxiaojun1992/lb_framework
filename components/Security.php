@@ -256,8 +256,8 @@ class Security extends BaseClass
      */
     public static function generatePasswordHash($password)
     {
-        if (function_exists('password_hash')) {
-            return password_hash($password, PASSWORD_DEFAULT);
+        if (function_exists(HashHelper::PASSWORD_HASH)) {
+            return HashHelper::hash($password, HashHelper::PASSWORD_HASH);
         }
 
         return HashHelper::hash($password);

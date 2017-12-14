@@ -8,26 +8,39 @@ class HashHelper extends BaseClass
 {
     const MD5_HASH = 'md5';
     const SHA1_HASH = 'sha1';
+    const CRYPT_HASH = 'crypt';
+    const PASSWORD_HASH = 'password_hash';
 
     /**
-     * @param $str
-     * @param string   $algo
-     * @param string   $hmacKey
-     * @param $rawOuput
-     * @return string
+     * Hashing
+     *
+     * @param  $str
+     * @param  string $algo
+     * @param  string $hmacKey
+     * @param  bool   $rawOuput
+     * @param  null   $salt
+     * @param  int    $passwordAlgo
+     * @param  array  $passwordOptions
+     * @return bool|string
      */
-    public static function hash($str, $algo = 'md5', $hmacKey = '', $rawOuput = false)
+    public static function hash($str, $algo = self::MD5_HASH, $hmacKey = '', $rawOuput = false, $salt = null, $passwordAlgo = PASSWORD_DEFAULT, $passwordOptions = [])
     {
-        if ($hmacKey) {
+        if ($hmacKey && in_array($algo, [self::MD5_HASH, self::SHA1_HASH])) {
             return hash_hmac($algo, $str, $hmacKey, $rawOuput);
         }
 
         switch ($algo) {
-        case 'md5':
+        case self::MD5_HASH:
             $hashCode = md5($str, $rawOuput);
             break;
-        case 'sha1':
+        case self::SHA1_HASH:
             $hashCode = sha1($str, $rawOuput);
+            break;
+        case self::CRYPT_HASH:
+            $hashCode = crypt($str, $salt);
+            break;
+        case self::PASSWORD_HASH:
+            $hashCode = password_hash($str, $passwordAlgo, $passwordOptions);
             break;
         default:
             $hashCode = md5($str, $rawOuput);
