@@ -54,7 +54,7 @@ class HashHelper extends BaseClass
     /**
      * Flexi hashing
      *
-     * @param $str
+     * @param  $str
      * @return int
      */
     public static function flexiHash($str)
@@ -72,10 +72,10 @@ class HashHelper extends BaseClass
     /**
      * Murmurhash 3
      *
-     * @param $str
-     * @param int $seed
-     * @param bool $isInt
-     * @param int $version
+     * @param  $str
+     * @param  int  $seed
+     * @param  bool $isInt
+     * @param  int  $version
      * @return mixed
      * @throws ParamException
      */
