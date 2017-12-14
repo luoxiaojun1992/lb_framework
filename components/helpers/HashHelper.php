@@ -8,6 +8,7 @@ use lb\components\error_handlers\ParamException;
 
 class HashHelper extends BaseClass
 {
+    //Hash Algorithms
     const MD5_HASH = 'md5';
     const SHA1_HASH = 'sha1';
     const CRYPT_HASH = 'crypt';
