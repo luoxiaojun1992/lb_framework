@@ -3,6 +3,8 @@
 namespace lb\components\helpers;
 
 use lb\BaseClass;
+use lastguest\Murmur;
+use lb\components\error_handlers\ParamException;
 
 class HashHelper extends BaseClass
 {
@@ -50,6 +52,8 @@ class HashHelper extends BaseClass
     }
 
     /**
+     * Flexi hashing
+     *
      * @param $str
      * @return int
      */
@@ -63,5 +67,24 @@ class HashHelper extends BaseClass
             $i++;
         }
         return $hash & 0x7FFFFFFF;
+    }
+
+    /**
+     * Murmurhash 3
+     *
+     * @param $str
+     * @param int $seed
+     * @param bool $isInt
+     * @param int $version
+     * @return mixed
+     * @throws ParamException
+     */
+    public static function murmurhash($str, int $seed = 0, $isInt = false, $version = 3)
+    {
+        if ($version != 3) {
+            throw new ParamException('Murmurhash' . $version . ' not supported');
+        }
+
+        return $isInt ? Murmur::hash3_int($str, $seed) : Murmur::hash3($str, $seed);
     }
 }
