@@ -153,12 +153,21 @@ class WebController extends BaseController
      */
     protected function injectDebugBar($output)
     {
-        if (!Lb::app()->getConfigByName('debugbar')) {
+        if (!($debugBarConfig = Lb::app()->getConfigByName('debugbar'))) {
+            return $output;
+        }
+        if (empty($debugBarConfig['enabled'])) {
+            return $output;
+        }
+        if (empty($debugBarConfig['baseUrl'])) {
+            return $output;
+        }
+        if (empty($debugBarConfig['basePath'])) {
             return $output;
         }
 
         $debugBar = new StandardDebugBar();
-        $debugBarRenderer = $debugBar->getJavascriptRenderer();
+        $debugBarRenderer = $debugBar->getJavascriptRenderer($debugBarConfig['baseUrl'], $debugBarConfig['basePath']);
         $debugBarComponent = $debugBarRenderer->renderHead() . $debugBarRenderer->render();
         $replace = <<<EOF
 {$debugBarComponent}
