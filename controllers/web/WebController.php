@@ -2,6 +2,7 @@
 
 namespace lb\controllers\web;
 
+use DebugBar\StandardDebugBar;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\JsonHelper;
@@ -110,9 +111,14 @@ class WebController extends BaseController
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
-            return Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, $this->layout, $return, $js_files, $css_files);
+            $output = Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, $this->layout, $return, $js_files, $css_files);
+            return $this->injectDebugBar($output);
         } else {
+            ob_start();
             Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, $this->layout, $return, $js_files, $css_files);
+            $output = ob_get_contents();
+            ob_end_clean();
+            @_echo($this->injectDebugBar($output));
         }
     }
 
@@ -126,10 +132,31 @@ class WebController extends BaseController
         $js_files = Lb::app()->getJsFiles($this->controller_id, $template_name);
         $css_files = Lb::app()->getCssFiles($this->controller_id, $template_name);
         if ($return) {
-            return Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
+            $output = Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
+            return $this->injectDebugBar($output);
         } else {
+            ob_start();
             Render::output($this->controller_id . DIRECTORY_SEPARATOR . $template_name, $params, '', $return, $js_files, $css_files);
+            $output = ob_get_contents();
+            ob_end_clean();
+            @_echo($this->injectDebugBar($output));
         }
+    }
+
+    protected function injectDebugBar($output)
+    {
+        if (!Lb::app()->getConfigByName('debugbar')) {
+            return $output;
+        }
+
+        $debugBar = new StandardDebugBar();
+        $debugBarRenderer = $debugBar->getJavascriptRenderer();
+        $debugBarComponent = $debugBarRenderer->renderHead() . $debugBarRenderer->render();
+        $replace = <<<EOF
+{$debugBarComponent}
+</body>
+EOF;
+        return str_replace('</body>', $replace, $output);
     }
 
     protected function assign($param_name, $param_value)
