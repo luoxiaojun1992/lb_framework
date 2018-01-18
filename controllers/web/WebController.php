@@ -164,7 +164,8 @@ EOF;
         $this->public_params[$param_name] = $param_value;
     }
 
-    protected function get($param_name) {
+    protected function get($param_name) 
+    {
         if (array_key_exists($param_name, $this->public_params)) {
             return $this->public_params[$param_name];
         }
@@ -209,10 +210,12 @@ EOF;
 
         $viewPath = Lb::app()->getRootDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . "{$tpl_name}.php";
         if (file_exists($viewPath)) {
-            $this->render($tpl_name, [
+            $this->render(
+                $tpl_name, [
                 'title' => 'Exception',
                 'err_msg' => $err_msg,
-            ]);
+                ]
+            );
         } else {
             echo $err_msg;
         }
@@ -235,9 +238,11 @@ EOF;
             }
         }
         header('Content-Type: application/json');
-        $swagger = \Swagger\scan($scan, [
+        $swagger = \Swagger\scan(
+            $scan, [
             'exclude' => $exclude,
-        ]);
+            ]
+        );
         echo $swagger;
     }
 }
