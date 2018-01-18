@@ -84,7 +84,8 @@
     "luoxiaojun1992/thrift": "*",
     "lcobucci/jwt": "*",
     "danielstjules/stringy": "*",
-    "lastguest/murmurhash": "*"
+    "lastguest/murmurhash": "*",
+    "maximebf/debugbar": "*"
   },
   "autoload": {
     "psr-4": {"lb\\": ""}
