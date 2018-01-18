@@ -119,6 +119,7 @@ class WebController extends BaseController
             $output = ob_get_contents();
             ob_end_clean();
             @_echo($this->injectDebugBar($output));
+            return '';
         }
     }
 
@@ -140,9 +141,16 @@ class WebController extends BaseController
             $output = ob_get_contents();
             ob_end_clean();
             @_echo($this->injectDebugBar($output));
+            return '';
         }
     }
 
+    /**
+     * Inject debug bar to html output
+     *
+     * @param $output
+     * @return mixed
+     */
     protected function injectDebugBar($output)
     {
         if (!Lb::app()->getConfigByName('debugbar')) {
