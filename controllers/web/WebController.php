@@ -148,7 +148,7 @@ class WebController extends BaseController
     /**
      * Inject debug bar to html output
      *
-     * @param $output
+     * @param  $output
      * @return mixed
      */
     protected function injectDebugBar($output)
