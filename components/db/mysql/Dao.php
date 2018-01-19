@@ -713,9 +713,22 @@ class Dao extends BaseClass
 
         $res = $this->_statement->execute();
 
+        $bindings = [];
+        $i = 1;
+        foreach ($this->_conditions as $val) {
+            if (!is_array($val)) {
+                $bindings[$i++] = $val;
+            } else {
+                foreach ($val as $value) {
+                    $bindings[$i++] = $value;
+                }
+            }
+        }
+
         $pdoEvent = (new PDOEvent())->setPdoStatement($this->_statement)
             ->setDuration(microtime(true) - $start)
-            ->setStatement($this->getQuerySql());
+            ->setStatement($this->getQuerySql())
+            ->setBindings($bindings);
         Lb::app()->trigger('pdo_event', $pdoEvent);
 
         return $res;

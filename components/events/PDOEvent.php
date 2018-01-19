@@ -7,6 +7,7 @@ class PDOEvent extends BaseEvent
     public $statement;
     public $duration;
     public $pdoStatement;
+    public $bindings;
 
     public function __construct()
     {
@@ -64,6 +65,24 @@ class PDOEvent extends BaseEvent
     public function setPdoStatement(\PDOStatement $pdoStatement)
     {
         $this->pdoStatement = $pdoStatement;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBindings()
+    {
+        return $this->bindings;
+    }
+
+    /**
+     * @param $bindings
+     * @return $this
+     */
+    public function setBindings($bindings)
+    {
+        $this->bindings = $bindings;
         return $this;
     }
 }

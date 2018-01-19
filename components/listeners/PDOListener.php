@@ -21,7 +21,7 @@ class PDOListener extends BaseListener
  * @var TraceablePDO $traceablePDO 
 */
         $traceablePDO = $event->getData();
-        $tracedStatement = new TracedStatement($event->getStatement());
+        $tracedStatement = new TracedStatement($event->getStatement(), $event->getBindings());
         $traceablePDO->addExecutedStatement($tracedStatement);
     }
 }
