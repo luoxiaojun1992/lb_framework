@@ -710,6 +710,7 @@ class Dao extends BaseClass
         }
 
         $start = microtime(true);
+        $startMemory = memory_get_usage();
 
         $res = $this->_statement->execute();
 
@@ -726,7 +727,12 @@ class Dao extends BaseClass
         }
 
         $pdoEvent = (new PDOEvent())->setPdoStatement($this->_statement)
+            ->setStartTime($start)
+            ->setEndTime(microtime(true))
             ->setDuration(microtime(true) - $start)
+            ->setStartMemory($startMemory)
+            ->setEndMemory(memory_get_usage())
+            ->setMemory(memory_get_usage() - $startMemory)
             ->setStatement($this->getQuerySql())
             ->setBindings($bindings);
         Lb::app()->trigger('pdo_event', $pdoEvent);
