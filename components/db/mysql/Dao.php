@@ -713,7 +713,7 @@ class Dao extends BaseClass
 
         $res = $this->_statement->execute();
 
-        $pdoEvent = (new PDOEvent())->setStatement($this->_statement)
+        $pdoEvent = (new PDOEvent())->setPdoStatement($this->_statement)
             ->setDuration(microtime(true) - $start)
             ->setStatement($this->getQuerySql());
         Lb::app()->trigger('pdo_event', $pdoEvent);
