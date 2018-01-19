@@ -7,6 +7,7 @@ use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\JsonHelper;
 use lb\components\helpers\XMLHelper;
+use lb\components\middleware\DebugbarMiddleware;
 use lb\controllers\BaseController;
 use lb\Lb;
 use lb\components\Render;
@@ -16,8 +17,18 @@ class WebController extends BaseController
     protected $layout = 'default';
     protected $public_params = [];
 
+    //Middleware
+    protected $middleware = [];
+
     protected function beforeAction()
     {
+        $debugbarConfig = Lb::app()->getConfigByName('debugbar');
+        if (!empty($debugbarConfig['enabled'])) {
+            $this->middleware['debugbarMiddleware'] = [
+                'class' => DebugbarMiddleware::class,
+            ];
+        }
+
         parent::beforeAction();
     }
 
@@ -166,7 +177,8 @@ class WebController extends BaseController
             return $output;
         }
 
-        $debugBar = new StandardDebugBar();
+        /** @var StandardDebugBar $debugBar */
+        $debugBar = Lb::app()->getDIContainer()->get('debugbar');
         $debugBarRenderer = $debugBar->getJavascriptRenderer($debugBarConfig['baseUrl'], $debugBarConfig['basePath']);
         $debugBarComponent = $debugBarRenderer->renderHead() . $debugBarRenderer->render();
         $replace = <<<EOF
