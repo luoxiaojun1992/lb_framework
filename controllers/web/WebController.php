@@ -177,7 +177,9 @@ class WebController extends BaseController
             return $output;
         }
 
-        /** @var StandardDebugBar $debugBar */
+        /**
+ * @var StandardDebugBar $debugBar 
+*/
         $debugBar = Lb::app()->getDIContainer()->get('debugbar');
         $debugBarRenderer = $debugBar->getJavascriptRenderer($debugBarConfig['baseUrl'], $debugBarConfig['basePath']);
         $debugBarComponent = $debugBarRenderer->renderHead() . $debugBarRenderer->render();

@@ -19,7 +19,9 @@ class DebugbarMiddleware extends BaseMiddleware
     {
         $container = Lb::app()->getDIContainer();
         $container->set('debugbar', new StandardDebugBar());
-        /** @var StandardDebugBar $debugbar */
+        /**
+ * @var StandardDebugBar $debugbar 
+*/
         $debugbar = $container->get('debugbar');
         $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
         $pdoCollector = new PDOCollector($traceablePDO, new TimeDataCollector(microtime(true)));
