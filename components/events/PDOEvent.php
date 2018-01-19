@@ -6,19 +6,64 @@ class PDOEvent extends BaseEvent
 {
     public $statement;
     public $duration;
+    public $pdo;
 
-    public function __construct($logData)
+    public function __construct()
     {
-        $this->setLogData($logData);
+
     }
 
-    public function setLogData($logData)
+    /**
+     * @return mixed
+     */
+    public function getStatement()
     {
-        $this->logData = $logData;
+        return $this->statement;
     }
 
-    public function getLogData()
+    /**
+     * @param $statement
+     * @return $this
+     */
+    public function setStatement($statement)
     {
-        return $this->logData;
+        $this->statement = $statement;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param $duration
+     * @return $this
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
+    /**
+     * @param \PDO $pdo
+     * @return $this
+     */
+    public function setPdo(\PDO $pdo)
+    {
+        $this->pdo = $pdo;
+        return $this;
     }
 }
