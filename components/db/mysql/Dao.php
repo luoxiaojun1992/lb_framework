@@ -284,21 +284,21 @@ class Dao extends BaseClass
         if ($this->is_query) {
             $query_sql_statement = $this->createQueryStatement($count);
             if ($query_sql_statement) {
-                $statement = $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
-                if ($statement) {
+                $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
+                if ($this->_statement) {
                     try {
-                        $res = $statement->execute();
+                        $res = $this->execute();
                         if ($res) {
-                            $result = $statement;
+                            $result = $this->_statement;
                         }
                     } catch(\PDOException $e) {
                         if($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
-                            $statement = $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
-                            if ($statement) {
-                                $res = $statement->execute();
+                            $this->prepare($query_sql_statement, Connection::CONN_TYPE_SLAVE);
+                            if ($this->_statement) {
+                                $res = $this->execute();
                                 if ($res) {
-                                    $result = $statement;
+                                    $result = $this->_statement;
                                 }
                             }
                         }
@@ -696,5 +696,14 @@ class Dao extends BaseClass
     public function getQuerySql()
     {
         return $this->_statement->queryString;
+    }
+
+    public function execute()
+    {
+        if (!$this->_statement) {
+            return false;
+        }
+
+        return $this->_statement->execute();
     }
 }
