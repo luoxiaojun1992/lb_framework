@@ -24,7 +24,8 @@ class PDOListener extends BaseListener
         $tracedStatement = new TracedStatement($event->getStatement(), $event->getBindings());
         $tracedStatement->start($event->getStartTime(), $event->getStartMemory());
         $tracedStatement->end(
-            null, $event->getPdoStatement()->rowCount(), $event->getEndTime(), $event->getEndMemory());
+            null, $event->getPdoStatement()->rowCount(), $event->getEndTime(), $event->getEndMemory()
+        );
         $traceablePDO->addExecutedStatement($tracedStatement);
     }
 }
