@@ -3,6 +3,7 @@
 namespace lb\components\db\mysql;
 
 use lb\BaseClass;
+use lb\components\events\PDOEvent;
 use lb\components\helpers\ArrayHelper;
 use lb\components\traits\BaseObject;
 use lb\Lb;
@@ -404,13 +405,13 @@ class Dao extends BaseClass
                 $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
-                        $result = $statement->execute();
+                        $result = $this->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
                             $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
-                                $result = $statement->execute();
+                                $result = $this->execute();
                             }
                         }
                     }
@@ -450,13 +451,13 @@ class Dao extends BaseClass
                 $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
-                        $result = $statement->execute();
+                        $result = $this->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
                             $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
-                                $result = $statement->execute();
+                                $result = $this->execute();
                             }
                         }
                     }
@@ -509,13 +510,13 @@ class Dao extends BaseClass
                 $statement = $this->prepare($update_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
-                        $result = $statement->execute();
+                        $result = $this->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
                             $statement = $this->prepare($update_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
-                                $result = $statement->execute();
+                                $result = $this->execute();
                             }
                         }
                     }
@@ -545,13 +546,13 @@ class Dao extends BaseClass
             $statement = $this->prepare($delete_sql_statement, Connection::CONN_TYPE_MASTER);
             if ($statement) {
                 try {
-                    $result = $statement->execute();
+                    $result = $this->execute();
                 } catch (\PDOException $e) {
                     if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                         Connection::component(Connection::component()->containers, true);
                         $statement = $this->prepare($delete_sql_statement, Connection::CONN_TYPE_MASTER);
                         if ($statement) {
-                            $result = $statement->execute();
+                            $result = $this->execute();
                         }
                     }
                 }
@@ -695,6 +696,10 @@ class Dao extends BaseClass
 
     public function getQuerySql()
     {
+        if (!$this->_statement) {
+            return '';
+        }
+
         return $this->_statement->queryString;
     }
 
@@ -704,6 +709,15 @@ class Dao extends BaseClass
             return false;
         }
 
-        return $this->_statement->execute();
+        $start = microtime(true);
+
+        $res = $this->_statement->execute();
+
+        $pdoEvent = (new PDOEvent())->setStatement($this->_statement)
+            ->setDuration(microtime(true) - $start)
+            ->setStatement($this->getQuerySql());
+        Lb::app()->trigger('pdo_event', $pdoEvent);
+
+        return $res;
     }
 }
