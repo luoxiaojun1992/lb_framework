@@ -2,12 +2,14 @@
 
 namespace lb\components\middleware;
 
+use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DataCollector\PDO\TraceablePDO;
 use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\StandardDebugBar;
 use lb\components\consts\Event;
+use lb\components\containers\Config;
 use lb\components\db\mysql\Connection;
 use lb\components\listeners\LogWriteListener;
 use lb\components\listeners\PDOListener;
@@ -53,5 +55,13 @@ class DebugbarMiddleware extends BaseMiddleware
         $messageCollector = new MessagesCollector('logs');
         Lb::app()->on(Event::LOG_WRITE_EVENT, new LogWriteListener(), $messageCollector);
         $debugBar->addCollector($messageCollector);
+
+        //Config Collector
+        /**
+         * @var Config $configContainer
+         */
+        $configContainer = Lb::app()->containers['config'];
+        $configCollector = new ConfigCollector($configContainer->iterator()->getCollection());
+        $debugBar->addCollector($configCollector);
     }
 }
