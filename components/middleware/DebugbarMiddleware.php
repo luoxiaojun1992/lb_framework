@@ -26,24 +26,32 @@ class DebugbarMiddleware extends BaseMiddleware
      */
     public function runAction($params, $successCallback, $failureCallback)
     {
-        $container = Lb::app()->getDIContainer();
-        $container->set('debugbar', new StandardDebugBar());
+        Lb::app()->getDIContainer()->set('debugbar', new StandardDebugBar());
+
+        $this->addCollectors();
+
+        $this->runNextMiddleware();
+    }
+
+    /**
+     * @throws \DebugBar\DebugBarException
+     */
+    protected function addCollectors()
+    {
         /**
-         * @var StandardDebugBar $debugbar
+         * @var StandardDebugBar $debugBar
          */
-        $debugbar = $container->get('debugbar');
+        $debugBar = Lb::app()->getDIContainer()->get('debugbar');
 
         //PDO Collector
         $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
         $pdoCollector = new PDOCollector($traceablePDO, new TimeDataCollector(microtime(true)));
         Lb::app()->on(Event::PDO_EVENT, new PDOListener(), $traceablePDO);
-        $debugbar->addCollector($pdoCollector);
+        $debugBar->addCollector($pdoCollector);
 
         //Message Collector
         $messageCollector = new MessagesCollector('logs');
         Lb::app()->on(Event::LOG_WRITE_EVENT, new LogWriteListener(), $messageCollector);
-        $debugbar->addCollector($messageCollector);
-
-        $this->runNextMiddleware();
+        $debugBar->addCollector($messageCollector);
     }
 }
