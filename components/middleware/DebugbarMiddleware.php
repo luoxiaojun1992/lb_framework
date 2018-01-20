@@ -18,13 +18,19 @@ class DebugbarMiddleware extends BaseMiddleware
 {
     use RateLimit;
 
+    /**
+     * @param $params
+     * @param $successCallback
+     * @param $failureCallback
+     * @throws \DebugBar\DebugBarException
+     */
     public function runAction($params, $successCallback, $failureCallback)
     {
         $container = Lb::app()->getDIContainer();
         $container->set('debugbar', new StandardDebugBar());
         /**
- * @var StandardDebugBar $debugbar 
-*/
+         * @var StandardDebugBar $debugbar
+         */
         $debugbar = $container->get('debugbar');
 
         //PDO Collector
