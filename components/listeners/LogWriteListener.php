@@ -16,7 +16,9 @@ class LogWriteListener extends BaseListener
     {
         parent::handler($event);
 
-        /** @var MessagesCollector $messageCollector */
+        /**
+ * @var MessagesCollector $messageCollector 
+*/
         $messageCollector = $event->getData();
 
         $logData = $event->getLogData();
