@@ -3,6 +3,7 @@
 namespace lb\components\db\mysql;
 
 use lb\BaseClass;
+use lb\components\consts\Event;
 use lb\components\events\PDOEvent;
 use lb\components\helpers\ArrayHelper;
 use lb\components\traits\BaseObject;
@@ -735,7 +736,7 @@ class Dao extends BaseClass
             ->setMemory(memory_get_usage() - $startMemory)
             ->setStatement($this->getQuerySql())
             ->setBindings($bindings);
-        Lb::app()->trigger('pdo_event', $pdoEvent);
+        Lb::app()->trigger(Event::PDO_EVENT, $pdoEvent);
 
         return $res;
     }

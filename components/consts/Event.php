@@ -9,4 +9,6 @@ interface Event
     const AOP_EVENT = 'aop_event';
 
     const REQUEST_EVENT = 'request_event';
+
+    const PDO_EVENT = 'pdo_event';
 }
