@@ -11,7 +11,6 @@ use DebugBar\StandardDebugBar;
 use lb\components\consts\Event;
 use lb\components\containers\Config;
 use lb\components\db\mysql\Connection;
-use lb\components\debugbar\collectors\CpuCollector;
 use lb\components\debugbar\DebugBar;
 use lb\components\listeners\LogWriteListener;
 use lb\components\listeners\PDOListener;
@@ -67,7 +66,6 @@ class DebugbarMiddleware extends BaseMiddleware
         $this->debugBar->addCollector($configCollector);
 
         //Memory Collector For CPU LoadAVG
-        $this->debugBar->addCollector(new CpuCollector());
-
+        $this->debugBar['messages']->info('CPU Load Avg: ' . implode(',', sys_getloadavg()));
     }
 }
