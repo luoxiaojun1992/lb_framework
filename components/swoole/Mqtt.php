@@ -34,10 +34,10 @@ class Mqtt extends BaseClass
         $connect_info['version'] = ord(substr($data, $offset, 1));
         $offset += 1;
         $byte = ord($data[$offset]);
-        $connect_info['willRetain'] = ($byte & 0x20 == 0x20);
+        $connect_info['willRetain'] = (($byte & 0x20) == 0x20);
         $connect_info['willQos'] = ($byte & 0x18 >> 3);
-        $connect_info['willFlag'] = ($byte & 0x04 == 0x04);
-        $connect_info['cleanStart'] = ($byte & 0x02 == 0x02);
+        $connect_info['willFlag'] = (($byte & 0x04) == 0x04);
+        $connect_info['cleanStart'] = (($byte & 0x02) == 0x02);
         $offset += 1;
         $connect_info['keepalive'] = self::decodeValue(substr($data, $offset, 2));
         $offset += 2;
