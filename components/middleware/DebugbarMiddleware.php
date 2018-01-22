@@ -12,6 +12,7 @@ use lb\components\consts\Event;
 use lb\components\containers\Config;
 use lb\components\db\mysql\Connection;
 use lb\components\DebugBar;
+use lb\components\debugbar\collectors\CpuCollector;
 use lb\components\listeners\LogWriteListener;
 use lb\components\listeners\PDOListener;
 use lb\components\traits\RateLimit;
@@ -64,5 +65,9 @@ class DebugbarMiddleware extends BaseMiddleware
         $configContainer = Lb::app()->containers['config'];
         $configCollector = new ConfigCollector($configContainer->iterator()->getCollection());
         $this->debugBar->addCollector($configCollector);
+
+        //Memory Collector For CPU LoadAVG
+        $this->debugBar->addCollector(new CpuCollector());
+
     }
 }
