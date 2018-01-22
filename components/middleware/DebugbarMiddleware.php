@@ -65,7 +65,7 @@ class DebugbarMiddleware extends BaseMiddleware
         $configCollector = new ConfigCollector($configContainer->iterator()->getCollection());
         $this->debugBar->addCollector($configCollector);
 
-        //Memory Collector For CPU LoadAVG
+        //CPU Load Avg
         $this->debugBar['messages']->info('CPU Load Avg: ' . implode(',', sys_getloadavg()));
     }
 }
