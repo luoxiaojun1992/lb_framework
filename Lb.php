@@ -282,19 +282,19 @@ class Lb extends BaseClass
     {
         if ($this->isSingle()) {
             switch ($db_type) {
-                case Connection::DB_TYPE:
-                    switch ($node_type) {
-                        case 'master':
-                            return Connection::component()->write_conn;
-                        case 'slave':
-                            return Connection::component()->read_conn;
-                        default:
-                            return Connection::component()->write_conn;
-                    }
-                case \lb\components\db\mongodb\Connection::DB_TYPE :
-                    return \lb\components\db\mongodb\Connection::component()->_conn;
+            case Connection::DB_TYPE:
+                switch ($node_type) {
+                case 'master':
+                    return Connection::component()->write_conn;
+                case 'slave':
+                    return Connection::component()->read_conn;
                 default:
-                    return false;
+                    return Connection::component()->write_conn;
+                }
+                case \lb\components\db\mongodb\Connection::DB_TYPE :
+                return \lb\components\db\mongodb\Connection::component()->_conn;
+            default:
+                return false;
             }
         }
         return false;
