@@ -3,6 +3,7 @@
 namespace lb\controllers\web;
 
 use DebugBar\StandardDebugBar;
+use lb\components\DebugBar;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\JsonHelper;
@@ -178,9 +179,9 @@ class WebController extends BaseController
         }
 
         /**
- * @var StandardDebugBar $debugBar 
-*/
-        $debugBar = Lb::app()->getDIContainer()->get('debugbar');
+         * @var StandardDebugBar $debugBar
+         */
+        $debugBar = DebugBar::getInstance();
         $debugBarRenderer = $debugBar->getJavascriptRenderer($debugBarConfig['baseUrl'], $debugBarConfig['basePath']);
         $debugBarComponent = $debugBarRenderer->renderHead() . $debugBarRenderer->render();
         $replace = <<<EOF

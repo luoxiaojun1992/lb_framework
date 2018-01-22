@@ -11,6 +11,7 @@ use DebugBar\StandardDebugBar;
 use lb\components\consts\Event;
 use lb\components\containers\Config;
 use lb\components\db\mysql\Connection;
+use lb\components\DebugBar;
 use lb\components\listeners\LogWriteListener;
 use lb\components\listeners\PDOListener;
 use lb\components\traits\RateLimit;
@@ -21,6 +22,11 @@ class DebugbarMiddleware extends BaseMiddleware
     use RateLimit;
 
     /**
+     * @var StandardDebugBar
+     */
+    protected $debugBar;
+
+    /**
      * @param $params
      * @param $successCallback
      * @param $failureCallback
@@ -28,7 +34,7 @@ class DebugbarMiddleware extends BaseMiddleware
      */
     public function runAction($params, $successCallback, $failureCallback)
     {
-        Lb::app()->getDIContainer()->set('debugbar', new StandardDebugBar());
+        $this->debugBar = DebugBar::getInstance();
 
         $this->addCollectors();
 
@@ -40,21 +46,16 @@ class DebugbarMiddleware extends BaseMiddleware
      */
     protected function addCollectors()
     {
-        /**
-         * @var StandardDebugBar $debugBar
-         */
-        $debugBar = Lb::app()->getDIContainer()->get('debugbar');
-
         //PDO Collector
         $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
         $pdoCollector = new PDOCollector($traceablePDO, new TimeDataCollector(microtime(true)));
         Lb::app()->on(Event::PDO_EVENT, new PDOListener(), $traceablePDO);
-        $debugBar->addCollector($pdoCollector);
+        $this->debugBar->addCollector($pdoCollector);
 
         //Message Collector
         $messageCollector = new MessagesCollector('logs');
         Lb::app()->on(Event::LOG_WRITE_EVENT, new LogWriteListener(), $messageCollector);
-        $debugBar->addCollector($messageCollector);
+        $this->debugBar->addCollector($messageCollector);
 
         //Config Collector
         /**
@@ -62,6 +63,6 @@ class DebugbarMiddleware extends BaseMiddleware
          */
         $configContainer = Lb::app()->containers['config'];
         $configCollector = new ConfigCollector($configContainer->iterator()->getCollection());
-        $debugBar->addCollector($configCollector);
+        $this->debugBar->addCollector($configCollector);
     }
 }
