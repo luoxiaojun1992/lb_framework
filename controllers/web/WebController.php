@@ -3,7 +3,7 @@
 namespace lb\controllers\web;
 
 use DebugBar\StandardDebugBar;
-use lb\components\DebugBar;
+use lb\components\debugbar\DebugBar;
 use lb\components\error_handlers\HttpException;
 use lb\components\helpers\ArrayHelper;
 use lb\components\helpers\JsonHelper;

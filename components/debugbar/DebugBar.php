@@ -1,6 +1,6 @@
 <?php
 
-namespace lb\components;
+namespace lb\components\debugbar;
 
 use DebugBar\StandardDebugBar;
 use lb\BaseClass;
