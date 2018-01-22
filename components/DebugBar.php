@@ -3,15 +3,17 @@
 namespace lb\components;
 
 use DebugBar\StandardDebugBar;
+use lb\BaseClass;
 use lb\Lb;
 
-class DebugBar
+class DebugBar extends BaseClass
 {
     const DEBUG_BAR = 'debugbar';
 
     public static function getInstance()
     {
-        if ($debugBar = Lb::app()->getDIContainer()->get(self::DEBUG_BAR)) {
+        $debugBar = Lb::app()->getDIContainer()->get(self::DEBUG_BAR);
+        if ($debugBar instanceof StandardDebugBar) {
             return $debugBar;
         }
 
