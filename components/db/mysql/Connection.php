@@ -43,6 +43,7 @@ class Connection extends BaseClass
      * @var \PDO[]
      */
     public $extraConns = [];
+    public $extraConfigs = [];
     public $containers = [];
     protected static $instance;
 
@@ -53,13 +54,15 @@ class Connection extends BaseClass
     {
         $this->containers = $containers;
         if ($this->containers['config']) {
-            $db_config = $this->containers['config']->get('mysql');
-            if ($db_config) {
-                if (isset($db_config['master'])) {
-                    $this->getMasterConnection();
-                }
-                if (isset($db_config['slaves'])) {
-                    $this->getSlaveConnection();
+            $dbConfigs = $this->containers['config']->get('mysql');
+            if (is_array($dbConfigs)) {
+                foreach ($dbConfigs as $conn => $dbConfig) {
+                    if ($conn == self::CONN_TYPE_MASTER) {
+                        $this->getMasterConnection();
+                    }
+                    if ($conn == self::CONN_TYPE_SLAVE) {
+                        $this->getSlaveConnection();
+                    }
                 }
             }
         }
