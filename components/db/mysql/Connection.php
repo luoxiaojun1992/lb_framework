@@ -35,6 +35,10 @@ class Connection extends BaseClass
     protected $_slave_password;
     protected $_slave_options;
     protected $_slave_dsn;
+    /**
+     * @var \PDO[]
+     */
+    public $extraConns = [];
     public $containers = [];
     protected static $instance;
 
