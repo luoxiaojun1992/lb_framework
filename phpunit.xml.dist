@@ -11,7 +11,7 @@
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist>
+        <whitelist addUncoveredFilesFromWhitelist="true">
             <directory>./components</directory>
         </whitelist>
     </filter>
