@@ -55,6 +55,7 @@ class Connection extends BaseClass
 
     /**
      * Connection constructor.
+     *
      * @param $containers
      */
     public function __construct($containers)
