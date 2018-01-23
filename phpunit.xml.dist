@@ -12,7 +12,13 @@
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory>./applications</directory>
             <directory>./components</directory>
+            <directory>./controllers</directory>
+            <directory>./models</directory>
+            <file>./BaseClass.php</file>
+            <file>./Lb.php</file>
+            <file>./SwooleLb.php</file>
         </whitelist>
     </filter>
     <!--<filter>-->
