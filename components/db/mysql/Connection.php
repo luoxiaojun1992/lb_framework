@@ -125,10 +125,10 @@ class Connection extends BaseClass
         $dbConfigs = $this->containers['config']->get('mysql');
         $dbConfig = $dbConfigs[$conn];
         $this->extraConfigs[$conn]['_db'] = isset($dbConfig['dbname']) ? $dbConfig['dbname'] : '';
-//        $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
-//        $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
-//        $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
-//        $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
+        //        $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
+        //        $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
+        //        $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
+        //        $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
         $this->getDsn($conn);
         $this->getConnection($conn);
     }
