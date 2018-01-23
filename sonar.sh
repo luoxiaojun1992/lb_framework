@@ -1,5 +1,7 @@
 #! /bin/bash
 
+mkdir -p ./reports
+
 ./vendor/bin/phpunit --coverage-clover ./reports/phpunit.coverage.xml --log-junit ./reports/phpunit.report.xml ./tests
 
 mv ./vendor ../vendor-bak
