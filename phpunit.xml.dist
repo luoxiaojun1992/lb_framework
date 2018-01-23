@@ -10,6 +10,24 @@
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory>./.phan</directory>
+            <directory>./.scannerwork</directory>
+            <directory>./_ide_helper</directory>
+            <directory>./vendor</directory>
+            <file>./.gitignore</file>
+            <file>./.reviewboardrc</file>
+            <file>./.travis.yml</file>
+            <file>./composer.json</file>
+            <file>./composer.lock</file>
+            <file>./LICENSE</file>
+            <file>./phpunit.xml.dist</file>
+            <file>./pre-commit</file>
+            <file>./README.md</file>
+            <file>./sonar.sh</file>
+        </whitelist>
+    </filter>
     <!--<filter>-->
         <!--<blacklist>-->
             <!--<file>framework/helpers/Json.php</file>-->
