@@ -53,6 +53,10 @@ class Connection extends BaseClass
     const DB_TYPE = 'mysql';
     protected $dsn_format = '%s:host=%s;dbname=%s;charset=utf8';
 
+    /**
+     * Connection constructor.
+     * @param $containers
+     */
     public function __construct($containers)
     {
         $this->containers = $containers;
@@ -124,6 +128,11 @@ class Connection extends BaseClass
         }
     }
 
+    /**
+     * Establish extra mysql connection
+     *
+     * @param $conn
+     */
     protected function getExtraConnection($conn)
     {
         $dbConfigs = $this->containers['config']->get('mysql');
@@ -137,6 +146,9 @@ class Connection extends BaseClass
         $this->getConnection($conn);
     }
 
+    /**
+     * @param $node_type
+     */
     protected function getDsn($node_type)
     {
         switch ($node_type) {
@@ -156,6 +168,9 @@ class Connection extends BaseClass
         }
     }
 
+    /**
+     * @param $node_type
+     */
     protected function getConnection($node_type)
     {
         switch ($node_type) {
