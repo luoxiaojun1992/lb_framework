@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<phpunit xmlns="http://schema.phpunit.de/coverage/1.0">
+  <file name="LogHandler.php" path="/queues/handlers">
+    <totals>
+      <lines total="25" comments="2" code="23" executable="10" executed="0" percent="0.00"/>
+      <methods count="2" tested="0" percent="0.00"/>
+      <functions count="0" tested="0" percent="0"/>
+      <classes count="1" tested="0" percent="0.00"/>
+      <traits count="0" tested="0" percent="0"/>
+    </totals>
+    <class name="lb\components\queues\handlers\LogHandler" start="8" executable="10" executed="0" crap="6">
+      <package full="" name="" sub="" category=""/>
+      <namespace name="lb\components\queues\handlers"/>
+      <method name="__construct" signature="__construct()" start="10" end="13" crap="2" executable="2" executed="0" coverage="0"/>
+      <method name="handle" signature="handle(Job $job)" start="15" end="24" crap="2" executable="8" executed="0" coverage="0"/>
+    </class>
+    <source>
+      <line no="1">
+        <token name="T_OPEN_TAG">&lt;?php</token>
+      </line>
+      <line no="2"/>
+      <line no="3">
+        <token name="T_NAMESPACE">namespace</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lb</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">components</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">queues</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">handlers</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="4"/>
+      <line no="5">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lb</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">components</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">db</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">mysql</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">Connection</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="6">
+        <token name="T_USE">use</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">lb</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">components</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">queues</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">jobs</token>
+        <token name="T_NS_SEPARATOR">\</token>
+        <token name="T_STRING">Job</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="7"/>
+      <line no="8">
+        <token name="T_CLASS">class</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">LogHandler</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_IMPLEMENTS">implements</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">HandlerInterface</token>
+      </line>
+      <line no="9">
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="10">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">__construct</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+      </line>
+      <line no="11">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="12">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_COMMENT">//</token>
+      </line>
+      <line no="13">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="14"/>
+      <line no="15">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_PUBLIC">public</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_FUNCTION">function</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_STRING">handle</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_STRING">Job</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_VARIABLE">$job</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+      </line>
+      <line no="16">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_OPEN_CURLY">{</token>
+      </line>
+      <line no="17">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">Connection</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">component</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">write_conn</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">exec</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'CREATE TABLE IF NOT EXISTS monolog '</token>
+      </line>
+      <line no="18">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_DOT">.</token>
+        <token name="T_WHITESPACE"> </token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'(channel VARCHAR(255), level INTEGER, message LONGTEXT, time INTEGER UNSIGNED)'</token>
+      </line>
+      <line no="19">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="20"/>
+      <line no="21">
+        <token name="T_WHITESPACE">        </token>
+        <token name="T_STRING">Connection</token>
+        <token name="T_DOUBLE_COLON">::</token>
+        <token name="T_STRING">component</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">write_conn</token>
+      </line>
+      <line no="22">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">prepare</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CONSTANT_ENCAPSED_STRING">'INSERT INTO monolog (channel, level, message, time) VALUES (:channel, :level, :message, :time)'</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+      </line>
+      <line no="23">
+        <token name="T_WHITESPACE">            </token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">execute</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_VARIABLE">$job</token>
+        <token name="T_OBJECT_OPERATOR">-&gt;</token>
+        <token name="T_STRING">getData</token>
+        <token name="T_OPEN_BRACKET">(</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_CLOSE_BRACKET">)</token>
+        <token name="T_SEMICOLON">;</token>
+      </line>
+      <line no="24">
+        <token name="T_WHITESPACE">    </token>
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="25">
+        <token name="T_CLOSE_CURLY">}</token>
+      </line>
+      <line no="26"/>
+    </source>
+  </file>
+</phpunit>
