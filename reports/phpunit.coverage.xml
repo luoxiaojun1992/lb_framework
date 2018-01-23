@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1516690436">
-  <project timestamp="1516690436">
+<coverage generated="1516690491">
+  <project timestamp="1516690491">
     <package name="lb\components">
       <file name="/Users/luoxiaojun/lb_framework/components/Auth.php">
         <class name="lb\components\Auth" namespace="lb\components">
