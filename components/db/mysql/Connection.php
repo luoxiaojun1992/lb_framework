@@ -48,6 +48,10 @@ class Connection extends BaseClass
     protected $extraDsns = [];
 
     public $containers = [];
+
+    /**
+     * @var Connection
+     */
     protected static $instance;
 
     const DB_TYPE = 'mysql';
@@ -82,6 +86,9 @@ class Connection extends BaseClass
         //
     }
 
+    /**
+     * Establish master node mysql connection
+     */
     protected function getMasterConnection()
     {
         $db_config = $this->containers['config']->get('mysql');
@@ -95,6 +102,11 @@ class Connection extends BaseClass
         $this->getConnection(self::CONN_TYPE_MASTER);
     }
 
+    /**
+     * Establish slave node mysql connection
+     *
+     * @param array $server_hosts
+     */
     protected function getSlaveConnection($server_hosts = [])
     {
         $db_config = $this->containers['config']->get('mysql');
@@ -148,6 +160,8 @@ class Connection extends BaseClass
     }
 
     /**
+     * Generate dsn
+     *
      * @param $node_type
      */
     protected function getDsn($node_type)
@@ -170,6 +184,8 @@ class Connection extends BaseClass
     }
 
     /**
+     * Establish mysql connection
+     *
      * @param $node_type
      */
     protected function getConnection($node_type)
