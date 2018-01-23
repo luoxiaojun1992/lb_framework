@@ -120,6 +120,19 @@ class Connection extends BaseClass
         }
     }
 
+    protected function getExtraConnection($conn)
+    {
+        $dbConfigs = $this->containers['config']->get('mysql');
+        $dbConfig = $dbConfigs[$conn];
+        $this->extraConfigs[$conn]['_db'] = isset($dbConfig['dbname']) ? $dbConfig['dbname'] : '';
+//        $this->_master_host = isset($master_db_config['host']) ? $master_db_config['host'] : '';
+//        $this->_master_username = isset($master_db_config['username']) ? $master_db_config['username'] : '';
+//        $this->_master_password = isset($master_db_config['password']) ? $master_db_config['password'] : '';
+//        $this->_master_options = isset($master_db_config['options']) ? $master_db_config['options'] : [];
+        $this->getDsn($conn);
+        $this->getConnection($conn);
+    }
+
     protected function getDsn($node_type)
     {
         switch ($node_type) {
