@@ -140,38 +140,38 @@ class Connection extends BaseClass
     protected function getDsn($node_type)
     {
         switch ($node_type) {
-            case self::CONN_TYPE_MASTER:
+        case self::CONN_TYPE_MASTER:
+            $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
+            break;
+        case self::CONN_TYPE_SLAVE:
+            $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
+            break;
+        default:
+            if (in_array($node_type, $this->extraConfigs)) {
+                $extraConfig = $this->extraConfigs[$node_type];
+                $this->extraDsns[$node_type] = sprintf($this->dsn_format, static::DB_TYPE, $extraConfig['_host'], $extraConfig['_db']);
+            } else {
                 $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
-                break;
-            case self::CONN_TYPE_SLAVE:
-                $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
-                break;
-            default:
-                if (in_array($node_type, $this->extraConfigs)) {
-                    $extraConfig = $this->extraConfigs[$node_type];
-                    $this->extraDsns[$node_type] = sprintf($this->dsn_format, static::DB_TYPE, $extraConfig['_host'], $extraConfig['_db']);
-                } else {
-                    $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
-                }
+            }
         }
     }
 
     protected function getConnection($node_type)
     {
         switch ($node_type) {
-            case self::CONN_TYPE_MASTER:
+        case self::CONN_TYPE_MASTER:
+            $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+            break;
+        case self::CONN_TYPE_SLAVE:
+            $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
+            break;
+        default:
+            if (in_array($node_type, $this->extraConfigs) && in_array($node_type, $this->extraDsns)) {
+                $extraConfig = $this->extraConfigs[$node_type];
+                $this->extraConns[$node_type] = new \PDO($this->extraDsns[$node_type], $extraConfig['_username'], $extraConfig['_password'], $extraConfig['_options']);
+            } else {
                 $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
-                break;
-            case self::CONN_TYPE_SLAVE:
-                $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
-                break;
-            default:
-                if (in_array($node_type, $this->extraConfigs) && in_array($node_type, $this->extraDsns)) {
-                    $extraConfig = $this->extraConfigs[$node_type];
-                    $this->extraConns[$node_type] = new \PDO($this->extraDsns[$node_type], $extraConfig['_username'], $extraConfig['_password'], $extraConfig['_options']);
-                } else {
-                    $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
-                }
+            }
         }
     }
 
