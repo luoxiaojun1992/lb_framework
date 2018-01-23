@@ -19,9 +19,13 @@ class Connection extends BaseClass
     const CONN_TYPE_MASTER = 'master';
     const CONN_TYPE_SLAVE = 'slave';
 
-    /** @var  \PDO */
+    /**
+     * @var  \PDO 
+     */
     public $write_conn;
-    /** @var  \PDO */
+    /**
+     * @var  \PDO 
+     */
     public $read_conn;
     protected $_master_db;
     protected $_master_host;
@@ -116,34 +120,34 @@ class Connection extends BaseClass
     protected function getDsn($node_type)
     {
         switch ($node_type) {
-            case self::CONN_TYPE_MASTER:
-                $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
-                break;
-            case self::CONN_TYPE_SLAVE:
-                $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
-                break;
-            default:
-                $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
+        case self::CONN_TYPE_MASTER:
+            $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
+            break;
+        case self::CONN_TYPE_SLAVE:
+            $this->_slave_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_slave_host, $this->_slave_db);
+            break;
+        default:
+            $this->_master_dsn = sprintf($this->dsn_format, static::DB_TYPE, $this->_master_host, $this->_master_db);
         }
     }
 
     protected function getConnection($node_type)
     {
         switch ($node_type) {
-            case self::CONN_TYPE_MASTER:
-                $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
-                break;
-            case self::CONN_TYPE_SLAVE:
-                $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
-                break;
-            default:
-                $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+        case self::CONN_TYPE_MASTER:
+            $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+            break;
+        case self::CONN_TYPE_SLAVE:
+            $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
+            break;
+        default:
+            $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
         }
     }
 
     /**
      * @param array $containers
-     * @param bool $reset
+     * @param bool  $reset
      * @return Connection
      */
     public static function component($containers = [], $reset = false)
