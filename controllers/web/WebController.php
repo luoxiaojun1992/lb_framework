@@ -27,6 +27,9 @@ class WebController extends BaseController
         if (!empty($debugbarConfig['enabled'])) {
             $this->middleware['debugbarMiddleware'] = [
                 'class' => DebugbarMiddleware::class,
+                'params' => [
+                    'request' => $this->request,
+                ]
             ];
         }
 

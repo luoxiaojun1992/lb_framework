@@ -14,6 +14,7 @@ use lb\components\db\mysql\Connection;
 use lb\components\debugbar\DebugBar;
 use lb\components\listeners\LogWriteListener;
 use lb\components\listeners\PDOListener;
+use lb\components\request\RequestContract;
 use lb\components\traits\RateLimit;
 use lb\Lb;
 
@@ -36,7 +37,7 @@ class DebugbarMiddleware extends BaseMiddleware
     {
         $this->debugBar = DebugBar::getInstance();
 
-        $this->addCollectors();
+        $this->addCollectors($params);
 
         $this->runNextMiddleware();
     }
@@ -44,7 +45,7 @@ class DebugbarMiddleware extends BaseMiddleware
     /**
      * @throws \DebugBar\DebugBarException
      */
-    protected function addCollectors()
+    protected function addCollectors($params)
     {
         //PDO Collector
         $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
@@ -67,5 +68,13 @@ class DebugbarMiddleware extends BaseMiddleware
 
         //CPU Load Avg
         $this->debugBar['messages']->info('CPU Load Avg: ' . implode(',', sys_getloadavg()));
+        //PHP PID
+        $this->debugBar['messages']->info('PHP PID: ' . getmypid());
+        /**
+         * @var RequestContract $request
+         */
+        $request = $params['request'];
+        //Server IP
+        $this->debugBar['messages']->info('Server IP: ' . $request->getHostAddress());
     }
 }

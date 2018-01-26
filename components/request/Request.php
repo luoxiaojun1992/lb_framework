@@ -47,7 +47,7 @@ class Request extends BaseRequest
 
     public function getHostAddress()
     {
-        return isset($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '';
+        return $_SERVER['SERVER_ADDR'] ?? gethostbyname(gethostname());
     }
 
     public function getUserAgent()

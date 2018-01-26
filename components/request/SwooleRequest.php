@@ -58,7 +58,7 @@ class SwooleRequest extends RequestAdapter
     {
         $swooleRequest = $this->swooleRequest;
         $server = $swooleRequest->server;
-        return isset($server['server_addr']) ? $server['server_addr'] : '';
+        return $server['server_addr'] ?? gethostbyname(gethostname());
     }
 
     public function getUserAgent()
