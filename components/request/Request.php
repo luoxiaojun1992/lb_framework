@@ -10,7 +10,9 @@ class Request extends BaseRequest
 {
     use Singleton;
 
-    /** @var  Header */
+    /**
+     * @var  Header 
+     */
     protected $_headers;
 
     public function getClientAddress()
@@ -20,7 +22,7 @@ class Request extends BaseRequest
             $ip = $_SERVER["HTTP_CLIENT_IP"];
         }
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ips = explode (", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $ips = explode(", ", $_SERVER['HTTP_X_FORWARDED_FOR']);
             if ($ip) {
                 array_unshift($ips, $ip);
                 $ip = false;

@@ -12,7 +12,9 @@ class SwooleRequest extends RequestAdapter
 {
     use Singleton;
 
-    /** @var  Header */
+    /**
+     * @var  Header 
+     */
     protected $_headers;
 
     public function getClientAddress()
@@ -24,7 +26,7 @@ class SwooleRequest extends RequestAdapter
             $ip = $header["client-ip"];
         }
         if (!empty($header['x-forwarded-for'])) {
-            $ips = explode (", ", $header['x-forwarded-for']);
+            $ips = explode(", ", $header['x-forwarded-for']);
             if ($ip) {
                 array_unshift($ips, $ip);
                 $ip = false;
