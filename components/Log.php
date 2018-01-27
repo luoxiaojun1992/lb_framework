@@ -20,6 +20,8 @@ class Log extends BaseClass implements Event
 
     protected $loggers = [];
 
+    protected $deferLogs = [];
+
     //Log Handler Types
     const LOG_TYPE_MYSQL = 'mysql';
     const LOG_TYPE_QUEUE = 'queue';
