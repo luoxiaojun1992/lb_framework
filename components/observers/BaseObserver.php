@@ -27,7 +27,9 @@ class BaseObserver implements ObserverInterface
                     $event->setData($data);
                 }
 
-                /** @var BaseListener $listener */
+                /**
+ * @var BaseListener $listener 
+*/
                 $listener = $event_listener[1];
                 if (!$ignoreQueue && $listener::$useQueue) {
                     Lb::app()->queuePush(new Job(EventHandler::class, ['event_name' => $event_name, 'event' => $event]));

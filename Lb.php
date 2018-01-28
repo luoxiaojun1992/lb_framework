@@ -875,9 +875,11 @@ class Lb extends BaseClass
         }
 
         //Register shutdown function
-        register_shutdown_function(function(){
-            Lb::app()->trigger(Event::SHUTDOWN_EVENT);
-        });
+        register_shutdown_function(
+            function () {
+                Lb::app()->trigger(Event::SHUTDOWN_EVENT);
+            }
+        );
     }
 
     /**

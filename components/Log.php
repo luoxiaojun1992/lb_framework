@@ -57,9 +57,11 @@ class Log extends BaseClass implements Event
         $user_logger->pushHandler($handler);
         $this->loggers['user'] = $user_logger;
 
-        Lb::app()->on(Event::SHUTDOWN_EVENT, function ($event) {
-            Log::component()->flush();
-        });
+        Lb::app()->on(
+            Event::SHUTDOWN_EVENT, function ($event) {
+                Log::component()->flush();
+            }
+        );
     }
 
     /**
@@ -78,12 +80,12 @@ class Log extends BaseClass implements Event
      * Add a log
      *
      * @param string $message
-     * @param array $context
-     * @param int $level
+     * @param array  $context
+     * @param int    $level
      * @param string $role
-     * @param int $times
-     * @param int $ttl
-     * @param bool $defer
+     * @param int    $times
+     * @param int    $ttl
+     * @param bool   $defer
      */
     public function record(
         $message = '',
@@ -93,8 +95,7 @@ class Log extends BaseClass implements Event
         $times = 0,
         $ttl = 0,
         $defer = false
-    )
-    {
+    ) {
         if (isset($this->loggers[$role])) {
             if ($times > 0 && $ttl > 0) {
                 $cacheKey = md5($message);
