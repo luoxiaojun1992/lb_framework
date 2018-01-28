@@ -20,6 +20,11 @@ class Log extends BaseClass implements Event
 
     protected $loggers = [];
 
+    /**
+     * Defer logs
+     *
+     * @var array
+     */
     protected $deferLogs = [];
 
     //Log Handler Types
@@ -51,6 +56,10 @@ class Log extends BaseClass implements Event
         $user_logger = new Logger('user');
         $user_logger->pushHandler($handler);
         $this->loggers['user'] = $user_logger;
+
+        Lb::app()->on(Event::SHUTDOWN_EVENT, function ($event) {
+            Log::component()->flush();
+        });
     }
 
     /**
@@ -66,14 +75,25 @@ class Log extends BaseClass implements Event
     }
 
     /**
+     * Add a log
+     *
      * @param string $message
-     * @param array  $context
-     * @param $level
+     * @param array $context
+     * @param int $level
      * @param string $role
-     * @param $times
-     * @param $ttl
+     * @param int $times
+     * @param int $ttl
+     * @param bool $defer
      */
-    public function record($message = '', $context = [], $level = Logger::NOTICE, $role = 'system', $times = 0, $ttl = 0)
+    public function record(
+        $message = '',
+        $context = [],
+        $level = Logger::NOTICE,
+        $role = 'system',
+        $times = 0,
+        $ttl = 0,
+        $defer = false
+    )
     {
         if (isset($this->loggers[$role])) {
             if ($times > 0 && $ttl > 0) {
@@ -85,6 +105,11 @@ class Log extends BaseClass implements Event
                 if ($cnt > $times) {
                     return;
                 }
+            }
+
+            if ($defer) {
+                $this->addDeferLog($role, $level, $message, $context);
+                return;
             }
 
             $this->loggers[$role]->addRecord($level, $message, $context);
@@ -99,6 +124,29 @@ class Log extends BaseClass implements Event
                     ]
                 )
             );
+        }
+    }
+
+    /**
+     * Add a defer log
+     *
+     * @param $role
+     * @param $level
+     * @param $message
+     * @param $context
+     */
+    protected function addDeferLog($role, $level, $message, $context)
+    {
+        $this->deferLogs[] = compact('role', 'level', 'message', 'context');
+    }
+
+    /**
+     * Flush defer logs
+     */
+    public function flush()
+    {
+        foreach ($this->deferLogs as $deferLog) {
+            $this->record($deferLog['message'], $deferLog['context'], $deferLog['level'], $deferLog['role']);
         }
     }
 }

@@ -13,7 +13,7 @@ class BaseObserver implements ObserverInterface
 {
     protected static $event_listeners = [];
 
-    public static function on($event_name, BaseListener $listener, $data = null)
+    public static function on($event_name, $listener, $data = null)
     {
         static::$event_listeners[] = [$event_name, $listener, $data];
     }
@@ -32,7 +32,13 @@ class BaseObserver implements ObserverInterface
                 if (!$ignoreQueue && $listener::$useQueue) {
                     Lb::app()->queuePush(new Job(EventHandler::class, ['event_name' => $event_name, 'event' => $event]));
                 } else {
-                    $listener->handler($event);
+                    if ($listener instanceof \Closure) {
+                        $callableListener = $listener;
+                    } else {
+                        $callableListener = [$listener, 'handler'];
+                    }
+
+                    call_user_func_array($callableListener, ['event' => $event]);
                 }
             }
         }

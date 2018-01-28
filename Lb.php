@@ -2,6 +2,7 @@
 
 namespace lb;
 
+use lb\components\consts\Event;
 use lb\components\coroutine\Scheduler;
 use lb\components\events\RequestEvent;
 use lb\components\facades\RequestFacade;
@@ -567,7 +568,7 @@ class Lb extends BaseClass
     }
 
     // Register Event Listener
-    public function on($event_name, BaseListener $listener, $data = null)
+    public function on($event_name, $listener, $data = null)
     {
         if ($this->isSingle()) {
             BaseObserver::on($event_name, $listener, $data);
@@ -829,10 +830,11 @@ class Lb extends BaseClass
 
         // Init Config
         /**
- * @var Scheduler $scheduler 
-*/
+         * @var Scheduler $scheduler
+         */
         $scheduler = Scheduler::component();
 
+        //Pre autoload
         if (defined('ROOT_DIR')) {
             // Autoload
             spl_autoload_register(['self', 'autoload'], true, false);
@@ -850,6 +852,7 @@ class Lb extends BaseClass
         // Register Facades
         $this->registerFacades();
 
+        //Defer autoload
         if (!defined('ROOT_DIR')) {
             // Autoload
             spl_autoload_register(['self', 'autoload'], true, false);
@@ -870,6 +873,11 @@ class Lb extends BaseClass
                 }
             }
         }
+
+        //Register shutdown function
+        register_shutdown_function(function(){
+            Lb::app()->trigger(Event::SHUTDOWN_EVENT);
+        });
     }
 
     /**
