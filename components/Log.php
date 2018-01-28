@@ -27,6 +27,8 @@ class Log extends BaseClass implements Event
      */
     protected $deferLogs = [];
 
+    const MAX_DEFER_LOGS = 10;
+
     //Log Handler Types
     const LOG_TYPE_MYSQL = 'mysql';
     const LOG_TYPE_QUEUE = 'queue';
@@ -110,6 +112,9 @@ class Log extends BaseClass implements Event
 
             if ($defer) {
                 $this->addDeferLog($role, $level, $message, $context);
+                if (count($this->deferLogs) >= self::MAX_DEFER_LOGS) {
+                    $this->flush();
+                }
                 return;
             }
 
