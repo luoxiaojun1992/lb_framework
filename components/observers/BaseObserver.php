@@ -33,23 +33,37 @@ class BaseObserver implements ObserverInterface
                 $listener = $event_listener[1];
 
                 //Async Queue
-                if (!($listener instanceof \Closure)) {
-                    if (!$ignoreQueue && $listener::$useQueue) {
-                        Lb::app()->queuePush(new Job(EventHandler::class, ['event_name' => $event_name, 'event' => $event]));
-                        continue;
-                    }
+                if (static::asyncQueue($event_name, $event, $listener, $ignoreQueue)) {
+                    continue;
                 }
 
                 //Sync Listener
-                if ($listener instanceof \Closure) {
-                    $callableListener = $listener;
-                } else {
-                    $callableListener = [$listener, 'handler'];
-                }
-
-                call_user_func_array($callableListener, ['event' => $event]);
+                static::sync($event, $listener);
 
             }
         }
+    }
+
+    protected static function asyncQueue($eventName, $event, $listener, $ignoreQueue)
+    {
+        if (!($listener instanceof \Closure)) {
+            if (!$ignoreQueue && $listener::$useQueue) {
+                Lb::app()->queuePush(new Job(EventHandler::class, ['event_name' => $eventName, 'event' => $event]));
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected static function sync($event, $listener)
+    {
+        if ($listener instanceof \Closure) {
+            $callableListener = $listener;
+        } else {
+            $callableListener = [$listener, 'handler'];
+        }
+
+        call_user_func_array($callableListener, ['event' => $event]);
     }
 }
