@@ -4,7 +4,6 @@ namespace lb\components\observers;
 
 use lb\components\events\BaseEvent;
 use lb\components\listeners\BaseListener;
-use lb\components\listeners\ListenerInterface;
 use lb\components\queues\handlers\EventHandler;
 use lb\components\queues\jobs\Job;
 use lb\Lb;
