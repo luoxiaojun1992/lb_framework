@@ -26,6 +26,7 @@ class Log extends BaseClass implements Event
      * @var array
      */
     protected $deferLogs = [];
+    protected $deferLogsCount = 0;
 
     const MAX_DEFER_LOGS = 10;
 
@@ -112,7 +113,7 @@ class Log extends BaseClass implements Event
 
             if ($defer) {
                 $this->addDeferLog($role, $level, $message, $context);
-                if (count($this->deferLogs) >= self::MAX_DEFER_LOGS) {
+                if ($this->deferLogsCount >= self::MAX_DEFER_LOGS) {
                     $this->flush();
                 }
                 return;
@@ -144,6 +145,7 @@ class Log extends BaseClass implements Event
     protected function addDeferLog($role, $level, $message, $context)
     {
         $this->deferLogs[] = compact('role', 'level', 'message', 'context');
+        $this->deferLogsCount++;
     }
 
     /**
@@ -151,8 +153,10 @@ class Log extends BaseClass implements Event
      */
     public function flush()
     {
-        foreach ($this->deferLogs as $deferLog) {
+        foreach ($this->deferLogs as $k => $deferLog) {
             $this->record($deferLog['message'], $deferLog['context'], $deferLog['level'], $deferLog['role']);
+            unset($this->deferLogs[$k]);
+            $this->deferLogsCount--;
         }
     }
 }
