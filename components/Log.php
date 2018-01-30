@@ -168,6 +168,7 @@ class Log extends BaseClass implements Event
      */
     public function flush()
     {
+        //todo bugfix batch record
         foreach ($this->deferLogs as $k => $deferLog) {
             $this->record($deferLog['message'], $deferLog['context'], $deferLog['level'], $deferLog['role']);
             $this->removeDeferLog($k);
