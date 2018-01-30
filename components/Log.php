@@ -149,14 +149,28 @@ class Log extends BaseClass implements Event
     }
 
     /**
+     * Remove a defer log
+     *
+     * @param $k
+     */
+    protected function removeDeferLog($k)
+    {
+        if (!isset($this->deferLogs[$k])) {
+            return;
+        }
+
+        unset($this->deferLogs[$k]);
+        $this->deferLogsCount--;
+    }
+
+    /**
      * Flush defer logs
      */
     public function flush()
     {
         foreach ($this->deferLogs as $k => $deferLog) {
             $this->record($deferLog['message'], $deferLog['context'], $deferLog['level'], $deferLog['role']);
-            unset($this->deferLogs[$k]);
-            $this->deferLogsCount--;
+            $this->removeDeferLog($k);
         }
     }
 }
