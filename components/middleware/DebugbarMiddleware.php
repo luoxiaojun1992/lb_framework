@@ -48,12 +48,10 @@ class DebugbarMiddleware extends BaseMiddleware
     protected function addCollectors($params)
     {
         //PDO Collector
-        if (!extension_loaded('connect_pool')) {
-            $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
-            $pdoCollector = new PDOCollector($traceablePDO, new TimeDataCollector(microtime(true)));
-            Lb::app()->on(Event::PDO_EVENT, new PDOListener(), $traceablePDO);
-            $this->debugBar->addCollector($pdoCollector);
-        }
+        $traceablePDO = new TraceablePDO(Connection::component()->write_conn);
+        $pdoCollector = new PDOCollector($traceablePDO, new TimeDataCollector(microtime(true)));
+        Lb::app()->on(Event::PDO_EVENT, new PDOListener(), $traceablePDO);
+        $this->debugBar->addCollector($pdoCollector);
 
         //Message Collector
         $messageCollector = new MessagesCollector('logs');

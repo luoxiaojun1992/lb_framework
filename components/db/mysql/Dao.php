@@ -35,12 +35,6 @@ class Dao extends BaseClass
      * @var \PDOStatement 
      */
     protected $_statement = null;
-    /**
-     * @var null \PDO
-     */
-    protected $_conn = null;
-
-    protected $_lastInsertId;
 
     //Join Type
     const JOIN_TYPE_LEFT = 'LEFT';
@@ -351,8 +345,6 @@ class Dao extends BaseClass
     {
         $statement = null;
         if ($conn = $this->getConnByNodeType($node_type)) {
-            $this->_conn = $conn;
-
             $statement = $conn->prepare($sql_statement);
 
             //Binding values
@@ -376,7 +368,7 @@ class Dao extends BaseClass
     /**
      * @param \PDOStatement $statement
      */
-    protected function bindValues($statement)
+    protected function bindValues(\PDOStatement $statement)
     {
         $i = 1;
         foreach ($this->_conditions as $val) {
@@ -414,24 +406,16 @@ class Dao extends BaseClass
                 $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     try {
-                        $result = $this->execute(true);
+                        $result = $this->execute();
                     } catch(\PDOException $e) {
                         if ($e->errorInfo[0] == 70100 || $e->errorInfo[0] == 2006) {
                             Connection::component(Connection::component()->containers, true);
                             $statement = $this->prepare($insert_sql_statement, Connection::CONN_TYPE_MASTER);
                             if ($statement) {
-                                $result = $this->execute(true);
+                                $result = $this->execute();
                             }
                         }
                     }
-                }
-            }
-        }
-        if ($result) {
-            $this->_lastInsertId = $this->_conn->lastInsertId();
-            if (extension_loaded('connect_pool')) {
-                if (!$this->_conn->inTransaction()) {
-                    $this->_conn->release();
                 }
             }
         }
@@ -689,9 +673,6 @@ class Dao extends BaseClass
             if (!$currentLevel) {
                 $write_conn->commit();
                 $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
-                if (extension_loaded('connect_pool')) {
-                    $write_conn->release();
-                }
             } else {
                 $write_conn->exec('RELEASE SAVEPOINT trans' . $currentLevel);
             }
@@ -707,9 +688,6 @@ class Dao extends BaseClass
             if (!$currentLevel) {
                 $write_conn->rollBack();
                 $write_conn->setAttribute(\PDO::ATTR_AUTOCOMMIT, true);
-                if (extension_loaded('connect_pool')) {
-                    $write_conn->release();
-                }
             } else {
                 $write_conn->exec('ROLLBACK TO trans' . $currentLevel);
             }
@@ -726,7 +704,7 @@ class Dao extends BaseClass
         return $this->_statement->queryString;
     }
 
-    public function execute($deferReleaseConn = false)
+    public function execute()
     {
         if (!$this->_statement) {
             return false;
@@ -736,14 +714,6 @@ class Dao extends BaseClass
         $startMemory = memory_get_usage();
 
         $res = $this->_statement->execute();
-
-        if (extension_loaded('connect_pool')) {
-            if (!$this->_conn->inTransaction()) {
-                if (!$deferReleaseConn) {
-                    $this->_conn->release();
-                }
-            }
-        }
 
         $bindings = [];
         $i = 1;
@@ -769,21 +739,5 @@ class Dao extends BaseClass
         Lb::app()->trigger(Event::PDO_EVENT, $pdoEvent);
 
         return $res;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function lastInsertId()
-    {
-        return $this->_lastInsertId;
-    }
-
-    /**
-     * @return null
-     */
-    public function getConn()
-    {
-        return $this->_conn;
     }
 }
