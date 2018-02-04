@@ -190,19 +190,20 @@ class Connection extends BaseClass
      */
     protected function getConnection($node_type)
     {
+        $pdoClass = extension_loaded('connect_pool') ? \pdoProxy::class : \PDO::class;
         switch ($node_type) {
         case self::CONN_TYPE_MASTER:
-            $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+            $this->write_conn = new $pdoClass($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
             break;
         case self::CONN_TYPE_SLAVE:
-            $this->read_conn = new \PDO($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
+            $this->read_conn = new $pdoClass($this->_slave_dsn, $this->_slave_username, $this->_slave_password, $this->_slave_options);
             break;
         default:
             if (in_array($node_type, $this->extraConfigs) && in_array($node_type, $this->extraDsns)) {
                 $extraConfig = $this->extraConfigs[$node_type];
-                $this->extraConns[$node_type] = new \PDO($this->extraDsns[$node_type], $extraConfig['_username'], $extraConfig['_password'], $extraConfig['_options']);
+                $this->extraConns[$node_type] = new $pdoClass($this->extraDsns[$node_type], $extraConfig['_username'], $extraConfig['_password'], $extraConfig['_options']);
             } else {
-                $this->write_conn = new \PDO($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
+                $this->write_conn = new $pdoClass($this->_master_dsn, $this->_master_username, $this->_master_password, $this->_master_options);
             }
         }
     }

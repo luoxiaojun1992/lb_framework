@@ -17,6 +17,11 @@ class MysqlSession extends \SessionHandler
             'CREATE TABLE IF NOT EXISTS lb_session '
             . '(id int unsigned not null primary key, expire int unsigned not null default 0, data text not null)'
         );
+        if (extension_loaded('connect_pool')) {
+            if (!Connection::component()->write_conn->inTransaction()) {
+                Connection::component()->write_conn->release();
+            }
+        }
     }
 
     public function open($save_path, $session_name)
@@ -46,10 +51,12 @@ class MysqlSession extends \SessionHandler
             $now_time = time();
             $expire_time = $now_time + intval(get_cfg_var('session.gc_maxlifetime'));
             if ($lb_session) {
-                $lb_session->setAttributes([
+                $lb_session->setAttributes(
+                    [
                     'expire' => $expire_time,
                     'data' => $sess_data,
-                ]);
+                    ]
+                );
                 if ($lb_session->save()) {
                     return true;
                 }
@@ -58,6 +65,11 @@ class MysqlSession extends \SessionHandler
                 $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_MASTER);
                 if ($statement) {
                     $res = $statement->execute();
+                    if (extension_loaded('connect_pool')) {
+                        if (!Dao::component()->getConn()->inTransaction()) {
+                            Dao::component()->getConn()->release();
+                        }
+                    }
                     if ($res) {
                         return true;
                     }
