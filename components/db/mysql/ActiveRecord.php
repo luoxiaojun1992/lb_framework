@@ -390,11 +390,6 @@ class ActiveRecord extends AbstractActiveRecord
             $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_SLAVE);
             if ($statement) {
                 $res = $statement->execute();
-                if (extension_loaded('connect_pool')) {
-                    if (!Dao::component()->getConn()->inTransaction()) {
-                        Dao::component()->getConn()->release();
-                    }
-                }
                 if ($res) {
                     $result = $statement->fetchAll();
                     if ($result) {
@@ -465,11 +460,6 @@ class ActiveRecord extends AbstractActiveRecord
             $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_SLAVE);
             if ($statement) {
                 $res = $statement->execute();
-                if (extension_loaded('connect_pool')) {
-                    if (!Dao::component()->getConn()->inTransaction()) {
-                        Dao::component()->getConn()->release();
-                    }
-                }
                 if ($res) {
                     $result = $statement->fetch();
                     if (isset($result[$count_field])) {
@@ -611,11 +601,6 @@ class ActiveRecord extends AbstractActiveRecord
             $statement = Dao::component()->prepare($sql, Connection::CONN_TYPE_MASTER);
             if ($statement) {
                 $res = $statement->execute();
-                if (extension_loaded('connect_pool')) {
-                    if (!Dao::component()->getConn()->inTransaction()) {
-                        Dao::component()->getConn()->release();
-                    }
-                }
             }
             return $res;
         }
@@ -758,7 +743,7 @@ class ActiveRecord extends AbstractActiveRecord
                     }
                     $res = Dao::component()->insertOne(static::TABLE_NAME, array_keys($values), array_values($values));
                     if ($res) {
-                        $this->{$this->_primary_key} = Dao::component()->lastInsertId();
+                        $this->{$this->_primary_key} = Connection::component()->write_conn->lastInsertId();
                         $this->is_new_record = false;
                     }
                 } else {

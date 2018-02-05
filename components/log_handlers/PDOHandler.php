@@ -11,7 +11,7 @@ class PDOHandler extends AbstractProcessingHandler
     private $pdo;
     private $statement;
 
-    public function __construct($pdo, $level = Logger::DEBUG, $bubble = true)
+    public function __construct(\PDO $pdo, $level = Logger::DEBUG, $bubble = true)
     {
         $this->pdo = $pdo;
         parent::__construct($level, $bubble);
@@ -23,20 +23,12 @@ class PDOHandler extends AbstractProcessingHandler
             $this->initialize();
         }
 
-        $this->statement->execute(
-            array(
+        $this->statement->execute(array(
             'channel' => $record['channel'],
             'level' => $record['level'],
             'message' => $record['formatted'],
             'time' => $record['datetime']->format('U'),
-            )
-        );
-
-        if (extension_loaded('connect_pool')) {
-            if (!$this->pdo->inTransaction()) {
-                $this->pdo->release();
-            }
-        }
+        ));
     }
 
     private function initialize()
