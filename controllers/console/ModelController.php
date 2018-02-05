@@ -76,6 +76,12 @@ class ModelController extends ConsoleController implements ErrorMsg
         if ($result = $statement->execute()) {
             $fields = $statement->fetchAll();
 
+            if (extension_loaded('connect_pool')) {
+                if (!Connection::component()->read_conn->inTransaction()) {
+                    Connection::component()->read_conn->release();
+                }
+            }
+
             if (!$fields) {
                 throw new ParamException(ErrorMsg::INVALID_PARAM);
             }

@@ -67,7 +67,7 @@ class PDOEvent extends BaseEvent
      * @param \PDOStatement $pdoStatement
      * @return $this
      */
-    public function setPdoStatement(\PDOStatement $pdoStatement)
+    public function setPdoStatement($pdoStatement)
     {
         $this->pdoStatement = $pdoStatement;
         return $this;
