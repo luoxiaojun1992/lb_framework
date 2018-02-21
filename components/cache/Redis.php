@@ -11,7 +11,9 @@ class Redis extends BaseClass
 {
     use Singleton;
 
-    /** @var $conn \Redis */
+    /**
+     * @var $conn \Redis 
+     */
     public $conn;
     protected $_host = '127.0.0.1';
     protected $_port = 6379;
@@ -79,7 +81,7 @@ class Redis extends BaseClass
 
     /**
      * @param array $containers
-     * @param bool $reset
+     * @param bool  $reset
      * @return Redis
      */
     public static function component($containers = [], $reset = false)
@@ -109,7 +111,7 @@ class Redis extends BaseClass
     /**
      * @param $key
      * @param $value
-     * @param null $expiration
+     * @param null  $expiration
      * @return bool
      */
     public function set($key, $value, $expiration = null)
@@ -400,9 +402,11 @@ class Redis extends BaseClass
     {
         $this->getKey($key);
 
-        return $this->execute(function ($redisConn) use ($key, $step) {
-            return $redisConn ? $redisConn->incrBy($key, $step) : 0;
-        });
+        return $this->execute(
+            function ($redisConn) use ($key, $step) {
+                return $redisConn ? $redisConn->incrBy($key, $step) : 0;
+            }
+        );
     }
 
     /**
@@ -413,9 +417,11 @@ class Redis extends BaseClass
     {
         $this->getKey($key);
 
-        return $this->execute(function ($redisConn) use ($key) {
-            return $redisConn ? $redisConn->exists($key) : false;
-        });
+        return $this->execute(
+            function ($redisConn) use ($key) {
+                return $redisConn ? $redisConn->exists($key) : false;
+            }
+        );
     }
 
     /**
