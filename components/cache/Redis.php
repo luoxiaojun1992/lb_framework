@@ -394,25 +394,48 @@ class Redis extends BaseClass
     /**
      * @param $key
      * @param int $step
-     * @return int
+     * @return mixed
      */
     public function incr($key, $step = 1)
     {
         $this->getKey($key);
-        //todo retry refactor
-        //todo unit test
-        $redisConn = $this->conn;
-        $handleFunc = function () use ($redisConn, $key, $step) {
+
+        return $this->execute(function ($redisConn) use ($key, $step) {
             return $redisConn ? $redisConn->incrBy($key, $step) : 0;
-        };
+        });
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function exists($key)
+    {
+        $this->getKey($key);
+
+        return $this->execute(function ($redisConn) use ($key) {
+            return $redisConn ? $redisConn->exists($key) : false;
+        });
+    }
+
+    /**
+     * @param $callback
+     * @return mixed
+     */
+    protected function execute($callback)
+    {
         try {
-            return call_user_func($handleFunc);
+            return call_user_func($callback, ['redisConn' => $this->conn]);
         } catch (\Exception $e) {
             self::component($this->containers, true);
-            return call_user_func($handleFunc);
+            return call_user_func($callback, ['redisConn' => $this->conn]);
         }
     }
 
+    /**
+     * @param $key
+     * @return string
+     */
     protected function getKey(&$key)
     {
         if (stripos($key, $this->_key_prefix) !== 0) {
