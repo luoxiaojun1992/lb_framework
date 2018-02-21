@@ -99,7 +99,7 @@ class Redis extends BaseClass
      */
     public function get($key)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->get($key) : '';
         } catch (\Exception $e) {
@@ -116,7 +116,7 @@ class Redis extends BaseClass
      */
     public function set($key, $value, $expiration = null)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
         } catch (\Exception $e) {
@@ -133,7 +133,7 @@ class Redis extends BaseClass
      */
     public function setnx($key, $value, $ttl = 0)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         if ($this->conn) {
             if ($ttl) {
                 if ($this->watch($key) && $this->multi()) {
@@ -199,7 +199,7 @@ class Redis extends BaseClass
     public function delete($key)
     {
         if ($this->conn) {
-            $this->getKey($key);
+            $key = $this->getKey($key);
             try {
                 $this->conn->delete($key);
             } catch (\Exception $e) {
@@ -219,7 +219,7 @@ class Redis extends BaseClass
      */
     public function expire($key, $ttl)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->expire($key, $ttl) : false;
         } catch (\Exception $e) {
@@ -273,7 +273,7 @@ class Redis extends BaseClass
      */
     public function watch($key)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->watch($key) : false;
         } catch (\Exception $e) {
@@ -288,7 +288,7 @@ class Redis extends BaseClass
      */
     public function scard($key)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sCard($key) : 0;
         } catch (\Exception $e) {
@@ -304,7 +304,7 @@ class Redis extends BaseClass
      */
     public function sismember($key, $value)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sIsMember($key, $value) : false;
         } catch (\Exception $e) {
@@ -320,7 +320,7 @@ class Redis extends BaseClass
      */
     public function sadd($key, $value)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sAdd($key, $value) : 0;
         } catch (\Exception $e) {
@@ -336,7 +336,7 @@ class Redis extends BaseClass
      */
     public function rpush($key, $value)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->rPush($key, $value) : 0;
         } catch (\Exception $e) {
@@ -353,7 +353,7 @@ class Redis extends BaseClass
      */
     public function zrange($key, $start, $end)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
         } catch (\Exception $e) {
@@ -369,7 +369,7 @@ class Redis extends BaseClass
      */
     public function zrem($key, $member)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->zRem($key, $member) : 0;
         } catch (\Exception $e) {
@@ -384,7 +384,7 @@ class Redis extends BaseClass
      */
     public function lpop($key)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->lPop($key) : null;
         } catch (\Exception $e) {
@@ -400,7 +400,7 @@ class Redis extends BaseClass
      */
     public function incr($key, $step = 1)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
 
         return $this->execute(
             function ($redisConn) use ($key, $step) {
@@ -415,7 +415,7 @@ class Redis extends BaseClass
      */
     public function exists($key)
     {
-        $this->getKey($key);
+        $key = $this->getKey($key);
 
         return $this->execute(
             function ($redisConn) use ($key) {
@@ -430,11 +430,15 @@ class Redis extends BaseClass
      */
     protected function execute($callback)
     {
+        $handler = function () use ($callback) {
+            return call_user_func_array($callback, ['redisConn' => $this->conn]);
+        };
+
         try {
-            return call_user_func($callback, ['redisConn' => $this->conn]);
+            return call_user_func($handler);
         } catch (\Exception $e) {
             self::component($this->containers, true);
-            return call_user_func($callback, ['redisConn' => $this->conn]);
+            return call_user_func($handler);
         }
     }
 
@@ -442,7 +446,7 @@ class Redis extends BaseClass
      * @param $key
      * @return string
      */
-    protected function getKey(&$key)
+    protected function getKey($key)
     {
         if (stripos($key, $this->_key_prefix) !== 0) {
             $key = $this->_key_prefix . $key;
