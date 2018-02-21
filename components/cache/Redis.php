@@ -430,8 +430,9 @@ class Redis extends BaseClass
      */
     protected function execute($callback)
     {
-        $handler = function () use ($callback) {
-            return call_user_func_array($callback, ['redisConn' => $this->conn]);
+        $redisConn = $this->conn;
+        $handler = function () use ($callback, $redisConn) {
+            return call_user_func_array($callback, ['redisConn' => $redisConn]);
         };
 
         try {
