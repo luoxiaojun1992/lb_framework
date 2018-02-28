@@ -134,62 +134,26 @@ class Redis extends BaseClass
     public function setnx($key, $value, $ttl = 0)
     {
         $key = $this->getKey($key);
-        if ($this->conn) {
-            if ($ttl) {
-                if ($this->watch($key) && $this->multi()) {
-                    if (class_exists('\Throwable')) {
-                        try {
-                            if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
-                                $execResult = $this->exec();
-                                if (is_array($execResult)) {
-                                    return $execResult[0];
-                                } else {
-                                    return $execResult;
-                                }
-                            } else {
-                                $this->discard();
-                            }
-                        } catch (\Throwable $e) {
-                            $this->discard();
-                        }
-                    } else {
-                        try {
-                            if ($this->_setnx($key, $value) && $this->expire($key, $ttl)) {
-                                $execResult = $this->exec();
-                                if (is_array($execResult)) {
-                                    return $execResult[0];
-                                } else {
-                                    return $execResult;
-                                }
-                            } else {
-                                $this->discard();
-                            }
-                        } catch (\Exception $e) {
-                            $this->discard();
-                        }
+
+        return $this->execute(
+            function (\Redis $redisConn) use ($key, $value, $ttl) {
+                if ($redisConn) {
+                    $redisConn->multi(\Redis::PIPELINE);
+                    $res = $redisConn->setnx($key, $value);
+                    if (!$res) {
+                        return 0;
                     }
+                    $res = $redisConn->expire($key, $ttl);
+                    if (!$res) {
+                        return 0;
+                    }
+                    $execResult = $redisConn->exec();
+                    return is_array($execResult) ? $execResult[0] : $execResult;
                 }
-            } else {
-                return $this->_setnx($key, $value);
+
+                return 0;
             }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @return bool
-     */
-    protected function _setnx($key, $value)
-    {
-        try {
-            return $this->conn ? $this->conn->setnx($key, $value) : false;
-        } catch (\Exception $e) {
-            self::component($this->containers, true);
-            return $this->conn ? $this->conn->setnx($key, $value) : false;
-        }
+        );
     }
 
     /**
