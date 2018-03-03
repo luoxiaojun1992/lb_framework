@@ -10,10 +10,14 @@ use nsqphp\nsqphp;
 
 class NsqQueue extends BaseQueue
 {
-    /** @var nsqphp */
+    /**
+     * @var nsqphp 
+     */
     private $conn;
 
-    /** @var  nsqphp */
+    /**
+     * @var  nsqphp 
+     */
     private $pullConn;
 
     private $key = 'queue';
@@ -40,7 +44,9 @@ class NsqQueue extends BaseQueue
                 $this->getKey(),
                 $this->getChannel(),
                 function ($msg) {
-                    /** @var Job $job */
+                    /**
+                * @var Job $job 
+                */
                     $job = $this->deserialize($msg->getPayload());
                     if ($job) {
                         $job->handle();

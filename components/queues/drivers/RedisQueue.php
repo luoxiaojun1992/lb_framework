@@ -8,7 +8,9 @@ use lb\Lb;
 
 class RedisQueue extends BaseQueue
 {
-    /** @var Redis */
+    /**
+     * @var Redis 
+     */
     private $conn;
     private $key = 'queue';
     private $delayed_key = 'queue:delayed';
@@ -25,7 +27,9 @@ class RedisQueue extends BaseQueue
         $delayed_queues = $conn->zrange($this->getDelayedKey(), 0, -1);
         foreach ($delayed_queues as $delayed_queue) {
             if ($delayed_queue) {
-                /** @var Job $job */
+                /**
+ * @var Job $job 
+*/
                 $job = $this->deserialize($delayed_queue);
                 if ($job->getExecuteAt() <= date('Y-m-d H:i:s')) {
                     $conn->watch($this->getDelayedKey() . '@' . $job->getId());
