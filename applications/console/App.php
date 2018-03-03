@@ -2,9 +2,6 @@
 
 namespace lb\applications\console;
 
-use lb\components\error_handlers\ConsoleException;
-use lb\components\error_handlers\ParamException;
-use lb\components\error_handlers\VariableException;
 use lb\Lb;
 
 class App extends Lb
@@ -15,11 +12,11 @@ class App extends Lb
         dd(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
-    public function __construct($request, $response)
+    public function __construct($is_single = false)
     {
         // Start App
         try {
-            parent::__construct($request, $response);
+            parent::__construct($is_single);
         } catch (\Throwable $throwable) {
             $this->exitException($throwable);
         }

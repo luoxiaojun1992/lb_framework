@@ -2,7 +2,6 @@
 
 namespace lb\applications\web;
 
-use lb\components\error_handlers\HttpException;
 use lb\components\error_handlers\ParamException;
 use lb\components\error_handlers\VariableException;
 use lb\components\response\Response;
