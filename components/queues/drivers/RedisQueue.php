@@ -34,7 +34,7 @@ class RedisQueue extends BaseQueue
                         $conn->zrem($this->getDelayedKey(), $delayed_queue);
                         $this->push($job);
                         $conn->exec();
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         $conn->discard();
                     }
                 }

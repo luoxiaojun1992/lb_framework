@@ -53,32 +53,14 @@ class App extends Lb
     public function __construct($is_single = false)
     {
         // Start App
-        if (class_exists('\Throwable')) {
-            // if php version >= 7.0.0
-            try {
-                parent::__construct($is_single);
-            } catch (HttpException $httpException) {
-                $this->handleException($httpException);
-            } catch (VariableException $variableException) {
-                $this->exitException($variableException);
-            } catch (ParamException $paramException) {
-                $this->exitException($paramException);
-            } catch (\Throwable $throwable) {
-                $this->handleException($throwable);
-            }
-        } else {
-            // if php version < 7.0.0
-            try {
-                parent::__construct($is_single);
-            } catch (HttpException $httpException) {
-                $this->handleException($httpException);
-            } catch (VariableException $variableException) {
-                $this->exitException($variableException);
-            } catch (ParamException $paramException) {
-                $this->exitException($paramException);
-            } catch (\Exception $e) {
-                $this->handleException($e);
-            }
+        try {
+            parent::__construct($is_single);
+        } catch (VariableException $variableException) {
+            $this->exitException($variableException);
+        } catch (ParamException $paramException) {
+            $this->exitException($paramException);
+        } catch (\Throwable $throwable) {
+            $this->handleException($throwable);
         }
     }
 
@@ -86,32 +68,14 @@ class App extends Lb
     {
         if (strtolower(php_sapi_name()) !== 'cli') {
             // Start App
-            if (class_exists('\Throwable')) {
-                // if php version >= 7.0.0
-                try {
-                    parent::run();
-                } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Throwable $throwable) {
-                    $this->handleException($throwable);
-                }
-            } else {
-                // if php version < 7.0.0
-                try {
-                    parent::run();
-                } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Exception $e) {
-                    $this->handleException($e);
-                }
+            try {
+                parent::run();
+            } catch (VariableException $variableException) {
+                $this->exitException($variableException);
+            } catch (ParamException $paramException) {
+                $this->exitException($paramException);
+            } catch (\Throwable $throwable) {
+                $this->handleException($throwable);
             }
         } else {
             Lb::app()->stop('Unsupported running mode.');

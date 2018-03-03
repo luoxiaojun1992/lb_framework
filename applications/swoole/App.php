@@ -50,36 +50,32 @@ class App extends SwooleLb
         }
     }
 
+    public function __construct($request, $response)
+    {
+        // Start App
+        try {
+            parent::__construct($request, $response);
+        } catch (VariableException $variableException) {
+            $this->exitException($variableException);
+        } catch (ParamException $paramException) {
+            $this->exitException($paramException);
+        } catch (\Throwable $throwable) {
+            $this->handleException($throwable);
+        }
+    }
+
     public function run()
     {
         if (strtolower(php_sapi_name()) === 'cli') {
             // Start App
-            if (class_exists('\Throwable')) {
-                // if php version >= 7.0.0
-                try {
-                    parent::run();
-                } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Throwable $throwable) {
-                    $this->handleException($throwable);
-                }
-            } else {
-                // if php version < 7.0.0
-                try {
-                    parent::run();
-                } catch (HttpException $httpException) {
-                    $this->handleException($httpException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Exception $e) {
-                    $this->handleException($e);
-                }
+            try {
+                parent::run();
+            } catch (VariableException $variableException) {
+                $this->exitException($variableException);
+            } catch (ParamException $paramException) {
+                $this->exitException($paramException);
+            } catch (\Throwable $throwable) {
+                $this->handleException($throwable);
             }
         } else {
             $this->response->getSwooleResponse()->end('Unsupported running mode.');

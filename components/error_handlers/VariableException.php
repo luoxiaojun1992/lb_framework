@@ -2,7 +2,7 @@
 
 namespace lb\components\error_handlers;
 
-class VariableException extends \Exception
+class VariableException extends \RuntimeException
 {
     public function __construct($message = '', $code = 500, \Exception $previous = null)
     {

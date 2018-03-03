@@ -100,22 +100,12 @@ class Job implements JobInterface
             $this->canTry() && Lb::app()->queuePush($this);
         } else if ($pid == 0) {
             $handler_class = $this->getHandler();
-            if (class_exists('\Throwable')) {
-                try {
-                    (new $handler_class)->handle($this);
-                } catch (\Throwable $e) {
-                    $this->canTry() && Lb::app()->queuePush($this);
-                    echo $e->getMessage() . PHP_EOL;
-                    echo $e->getTraceAsString() . PHP_EOL;
-                }
-            } else {
-                try {
-                    (new $handler_class)->handle($this);
-                } catch (\Exception $e) {
-                    $this->canTry() && Lb::app()->queuePush($this);
-                    echo $e->getMessage() . PHP_EOL;
-                    echo $e->getTraceAsString() . PHP_EOL;
-                }
+            try {
+                (new $handler_class)->handle($this);
+            } catch (\Throwable $e) {
+                $this->canTry() && Lb::app()->queuePush($this);
+                echo $e->getMessage() . PHP_EOL;
+                echo $e->getTraceAsString() . PHP_EOL;
             }
             Lb::app()->stop();
         } else {

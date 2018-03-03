@@ -59,7 +59,7 @@ class Redis extends BaseClass
                     $this->_key_prefix = $target_cache_config['key_prefix'] ?? $this->_key_prefix;
                     try {
                         $this->getConnection();
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         unset($server_hosts[$slave_target_num]);
                         $this->getShardingConnection($server_hosts);
                     }
@@ -102,7 +102,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->get($key) : '';
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->get($key) : '';
         }
@@ -119,7 +119,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->set($key, $value, $expiration) : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->get($key) : '';
         }
@@ -166,7 +166,7 @@ class Redis extends BaseClass
             $key = $this->getKey($key);
             try {
                 $this->conn->delete($key);
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 self::component($this->containers, true);
                 $this->conn->delete($key);
             }
@@ -186,7 +186,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->expire($key, $ttl) : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->expire($key, $ttl) : false;
         }
@@ -199,7 +199,7 @@ class Redis extends BaseClass
     {
         try {
             return $this->conn ? $this->conn->multi() : null;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->multi() : null;
         }
@@ -212,7 +212,7 @@ class Redis extends BaseClass
     {
         try {
             return $this->conn ? $this->conn->exec() : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->exec() : false;
         }
@@ -225,7 +225,7 @@ class Redis extends BaseClass
     {
         try {
             return $this->conn ? $this->conn->discard() : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->discard() : false;
         }
@@ -240,7 +240,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->watch($key) : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->watch($key) : false;
         }
@@ -255,7 +255,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sCard($key) : 0;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->sCard($key) : 0;
         }
@@ -271,7 +271,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sIsMember($key, $value) : false;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->sIsMember($key, $value) : false;
         }
@@ -287,7 +287,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->sAdd($key, $value) : 0;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->sAdd($key, $value) : 0;
         }
@@ -303,7 +303,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->rPush($key, $value) : 0;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->rPush($key, $value) : 0;
         }
@@ -320,7 +320,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->zRange($key, $start, $end) : [];
         }
@@ -336,7 +336,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->zRem($key, $member) : 0;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->zRem($key, $member) : 0;
         }
@@ -351,7 +351,7 @@ class Redis extends BaseClass
         $key = $this->getKey($key);
         try {
             return $this->conn ? $this->conn->lPop($key) : null;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return $this->conn ? $this->conn->lPop($key) : null;
         }
@@ -401,7 +401,7 @@ class Redis extends BaseClass
 
         try {
             return call_user_func($handler);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             self::component($this->containers, true);
             return call_user_func($handler);
         }

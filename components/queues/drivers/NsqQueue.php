@@ -47,7 +47,7 @@ class NsqQueue extends BaseQueue
                     }
                 }
             )->run();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->setPullConn();
         }
 

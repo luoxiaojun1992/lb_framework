@@ -166,7 +166,7 @@ class FileHelper extends BaseClass implements IO
             // Success!
             $file->upload();
             return ['result' => 'success', 'new_name' => $new_filename, 'data' => $data];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // Fail!
             $errors = $file->getErrors();
             return ['result' => 'failed', 'errors' => $errors];

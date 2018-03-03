@@ -90,24 +90,13 @@ class SwooleController extends ConsoleController implements Protocol
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_from_id'] = $from_id;
                 $handlerClass = $jsonData['handler'];
-                if (class_exists('\Throwable')) {
-                    try {
-                        $serv->send(
-                            $fd,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Throwable $e) {
-                        $serv->send($fd, 'Exception:' . $e->getTraceAsString());
-                    }
-                } else {
-                    try {
-                        $serv->send(
-                            $fd,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Exception $e) {
-                        $serv->send($fd, 'Exception:' . $e->getTraceAsString());
-                    }
+                try {
+                    $serv->send(
+                        $fd,
+                        Lb::app()->dispatchJob($handlerClass, $jsonData)
+                    );
+                } catch (\Throwable $e) {
+                    $serv->send($fd, 'Exception:' . $e->getTraceAsString());
                 }
             } else {
                 $serv->send($fd, 'Handler not exists');
@@ -148,34 +137,18 @@ class SwooleController extends ConsoleController implements Protocol
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_client_info'] = $clientInfo;
                 $handlerClass = $jsonData['handler'];
-                if (class_exists('\Throwable')) {
-                    try {
-                        $serv->sendto(
-                            $clientAddress,
-                            $clientPort,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Throwable $e) {
-                        $serv->sendto(
-                            $clientAddress,
-                            $clientPort,
-                            'Exception:' . $e->getTraceAsString()
-                        );
-                    }
-                } else {
-                    try {
-                        $serv->sendto(
-                            $clientAddress,
-                            $clientPort,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Exception $e) {
-                        $serv->sendto(
-                            $clientAddress,
-                            $clientPort,
-                            'Exception:' . $e->getTraceAsString()
-                        );
-                    }
+                try {
+                    $serv->sendto(
+                        $clientAddress,
+                        $clientPort,
+                        Lb::app()->dispatchJob($handlerClass, $jsonData)
+                    );
+                } catch (\Throwable $e) {
+                    $serv->sendto(
+                        $clientAddress,
+                        $clientPort,
+                        'Exception:' . $e->getTraceAsString()
+                    );
                 }
             } else {
                 $serv->sendto(
@@ -210,30 +183,16 @@ class SwooleController extends ConsoleController implements Protocol
             if (isset($jsonData['handler'])) {
                 $jsonData['swoole_frame'] = $frame;
                 $handlerClass = $jsonData['handler'];
-                if (class_exists('\Throwable')) {
-                    try {
-                        $ws->push(
-                            $frame->fd,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Throwable $e) {
-                        $ws->push(
-                            $frame->fd,
-                            'Exception:' . $e->getTraceAsString()
-                        );
-                    }
-                } else {
-                    try {
-                        $ws->push(
-                            $frame->fd,
-                            Lb::app()->dispatchJob($handlerClass, $jsonData)
-                        );
-                    } catch (\Exception $e) {
-                        $ws->push(
-                            $frame->fd,
-                            'Exception:' . $e->getTraceAsString()
-                        );
-                    }
+                try {
+                    $ws->push(
+                        $frame->fd,
+                        Lb::app()->dispatchJob($handlerClass, $jsonData)
+                    );
+                } catch (\Throwable $e) {
+                    $ws->push(
+                        $frame->fd,
+                        'Exception:' . $e->getTraceAsString()
+                    );
                 }
             } else {
                 $ws->push(

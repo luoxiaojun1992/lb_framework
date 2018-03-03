@@ -2,7 +2,7 @@
 
 namespace lb\components\error_handlers;
 
-class ParamException extends \Exception
+class ParamException extends \RuntimeException
 {
     public function __construct($message = '', $code = 500, \Exception $previous = null)
     {

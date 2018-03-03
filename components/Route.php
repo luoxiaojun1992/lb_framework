@@ -206,7 +206,7 @@ class Route extends BaseClass
                 } else {
                     try {
                         $param_values[] = $param->getDefaultValue();
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         $param_values[] = null;
                     }
                 }

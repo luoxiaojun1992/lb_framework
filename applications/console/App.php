@@ -15,36 +15,24 @@ class App extends Lb
         dd(implode(':', [$exception->getCode(), $exception->getMessage()]));
     }
 
+    public function __construct($request, $response)
+    {
+        // Start App
+        try {
+            parent::__construct($request, $response);
+        } catch (\Throwable $throwable) {
+            $this->exitException($throwable);
+        }
+    }
+
     public function run()
     {
         if (strtolower(php_sapi_name()) === 'cli') {
             // Start App
-            if (class_exists('\Throwable')) {
-                // if php version >= 7.0.0
-                try {
-                    parent::run();
-                } catch (ConsoleException $consoleException) {
-                    $this->exitException($consoleException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Throwable $throwable) {
-                    $this->exitException($throwable);
-                }
-            } else {
-                // if php version < 7.0.0
-                try {
-                    parent::run();
-                } catch (ConsoleException $consoleException) {
-                    $this->exitException($consoleException);
-                } catch (VariableException $variableException) {
-                    $this->exitException($variableException);
-                } catch (ParamException $paramException) {
-                    $this->exitException($paramException);
-                } catch (\Exception $e) {
-                    $this->exitException($e);
-                }
+            try {
+                parent::run();
+            } catch (\Throwable $throwable) {
+                $this->exitException($throwable);
             }
         } else {
             Lb::app()->stop('Unsupported running mode.');
