@@ -38,7 +38,7 @@ class {{%className}} extends ActiveRecord
     public $labels = [
     {{%labels}}
     ];
-    protected static $_instance = false;
+    protected static $_instance = null;
 
     protected $rules = [];
 
