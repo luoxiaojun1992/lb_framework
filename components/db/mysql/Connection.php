@@ -71,7 +71,7 @@ class Connection extends BaseClass
                 foreach ($dbConfigs as $conn => $dbConfig) {
                     if ($conn == self::CONN_TYPE_MASTER) {
                         $this->getMasterConnection();
-                    } elseif ($conn == self::CONN_TYPE_SLAVE) {
+                    } elseif ($conn == 'slaves') {
                         $this->getSlaveConnection();
                     } else {
                         $this->getExtraConnection($conn);
