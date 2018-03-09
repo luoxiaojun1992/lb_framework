@@ -43,6 +43,7 @@
     "overtrue/pinyin": "*",
     "goat1000/svggraph": "*",
     "phpoffice/phpexcel": "*",
+    "phpoffice/phpspreadsheet": "*",
     "qiniu/php-sdk": "*",
     "elasticsearch/elasticsearch": "*",
     "denissimon/prediction-builder": "*",
