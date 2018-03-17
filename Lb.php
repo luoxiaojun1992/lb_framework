@@ -790,7 +790,12 @@ class Lb extends BaseClass
         if (!$response) {
             if ($session_config = Lb::app()->getSessionConfig()) {
                 if (isset($session_config['type'])) {
-                    Session::setSession($session_config['type']);
+                    $route_info = Lb::app()->getRouteInfo();
+                    $controller = $route_info['controller'];
+                    $action = $route_info['action'];
+                    if (empty($session_config['filter'][$controller][$action])) {
+                        Session::setSession($session_config['type']);
+                    }
                 }
             }
         }
